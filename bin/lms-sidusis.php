@@ -65,7 +65,7 @@ $sidusisZoomFactor = ConfigHelper::getConfig('sidusis.zoom_factor', 20);
 
 $apiEndPoints = array(
     'export-ranges' => '/api/import_network_ranges/',
-    'import-demands' => '/api/demand_notifications/?page_size=all&status=new/',
+    'import-demands' => '/api/demand_notifications/?page_size=all&status=new',
     'mark-demand-as-read' => '/api/demand_notifications/%id/read/',
 );
 
@@ -202,6 +202,8 @@ function getSidusisRangesReport($divisionid)
                 $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
                 ($building['services'] & 1) ? 'TAK' : 'NIE',
                 ($building['services'] & 2) ? 'TAK' : 'NIE',
+                'TAK',
+                '',
                 OPERATOR_REPRESENTATIVE_ID,
             )
         );

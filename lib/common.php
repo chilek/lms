@@ -772,7 +772,19 @@ function truncate_str($string, $length, $etc = '...')
 
 function location_str($data)
 {
-    $location = $data['city_name'];
+    if (isset($data['zip'])) {
+        $location = $data['zip'];
+    } elseif (isset($data['location_zip'])) {
+        $location = $data['location_zip'];
+    } else {
+        $location = '';
+    }
+
+    if (!isset($data['city_name'])) {
+        $data['city_name'] = $data['location_city_name'];
+    }
+
+    $location .= empty($location) ? '' : ' ' . $data['city_name'];
 
     if ($data['location_flat']) {
         $h = ConfigHelper::getConfig('phpui.house_template', '%h/%f');
@@ -782,9 +794,15 @@ function location_str($data)
         $h = $data['location_house'];
     }
 
-    if ($data['street_name']) {
+    if (empty($data['street_name']) && !empty($data['location_street_name'])) {
+        $data['street_name'] = $data['location_street_name'];
+    }
+
+    if (!empty($data['street_name'])) {
         $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
-        $location .= ($location ? ',' : '') . $street;
+        $location .= ($location ? ', ' : '') . $street;
+    } else {
+        $location .= ($location ? ', ' : '') . $data['city_name'] . ' ';
     }
 
     if ($h) {
@@ -799,7 +817,7 @@ function document_address($data)
     $lines = array();
 
     if ($data['name']) {
-        $lines[] = $data['name'];
+        $lines[] = htmlspecialchars($data['name']);
     }
 
     if ($data['postoffice'] && $data['postoffice'] != $data['city']) {

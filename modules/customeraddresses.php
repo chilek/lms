@@ -76,6 +76,10 @@ switch (strtolower($_GET['action'])) {
             $params['data']['default_type'] = 1;
         }
 
+        if (!empty($_GET['location_address_type'])) {
+            $params['data']['location_address_type'] = intval($_GET['location_address_type']);
+        }
+
         smarty_function_location_box_expandable($params, $SMARTY);
         die();
     break;

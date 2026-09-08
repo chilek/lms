@@ -113,7 +113,7 @@ if (!empty($_POST['marks'])) {
     $SESSION->redirect_to_history_entry();
 }
 
-$backid = $_GET['ownerid'] ?? 0;
+$backid = intval($_GET['ownerid'] ?? 0);
 
 if ($backid && $LMS->CustomerExists($backid)) {
     $res = $LMS->NodeSetWarnU($backid, $warning);

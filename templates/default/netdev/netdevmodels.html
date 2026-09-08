@@ -145,7 +145,7 @@
 				<input type="text" name="modeledit[alternative_name]" style="width:550px" id="id_model_alternative_name" value="{$modeledit.alternative_name}">
 			</td>
 			<td class="valign-top">
-				{networkdevicetypes elemname="modeledit[type]" id="id_model_type" selected=$modeledit.type}
+				{networkdevicetypes elemname="modeledit[type]" id="id_model_type" selected=$modeledit.devtype}
 			</td>
 		</tr>
 		<tr>
@@ -205,7 +205,14 @@
 	<tr id="idtr{$model.id}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="nobr">{$model.name}</td>
 		<td>{$model.alternative_name}</td>
-		<td>{if $model.type}{trans($model.typename)}{/if}</td>
+		<td>
+			{if !empty($model.devtype)}
+				{trans($model.devtypename)}
+				({strip}
+				{if empty($model.devtypepassive)}{trans("<!netdevmodeltype>active")}{else}{trans("<!netdevmodeltype>passive")}{/if}
+				{/strip})
+			{/if}
+		</td>
 		<td class="text-center nobr">{if $model.netdevcount}{$model.netdevcount}{/if}</td>
 		<td class="lms-ui-buttons text-right nobr">
 			{if $model.filecontainers}

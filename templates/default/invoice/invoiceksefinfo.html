@@ -1,0 +1,176 @@
+<style>
+
+	.invoice-ksef-info {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.invoice-ksef-info.offline {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.invoice-ksef-info > * {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.invoice-ksef-info > .ksef-error-info {
+		display: inline;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * {
+		display: inline;
+	}
+
+	.invoice-ksef-info > * > * {
+		padding-top: 0.2em;
+		padding-bottom: 0.2em;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * {
+		padding: 0;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > * > *:first-child {
+		padding: 0;
+	}
+
+	.invoice-ksef-info > * > *:first-child {
+		padding-right: 0.5em;
+		padding-left: 0.5em;
+	}
+
+	.invoice-ksef-info > .ksef-error-info > *:first-child {
+		padding: 0;
+	}
+
+	.invoice-ksef-info img {
+		max-width: 100px;
+	}
+
+	.lms-ui-ksef-qr-code > * {
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.invoice-ksef-info.offline .lms-ui-ksef-qr-code {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+
+	.lms-ui-ksef-qr-code > a {
+		background-color: white;
+	}
+
+	.ksef-number {
+		font-weight: bold;
+		font-size: 8pt;
+		white-space: nowrap;
+	}
+
+	.ksef-info {
+		max-width: 30vw;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.ksef-batch-session-number {
+		white-space: nowrap;
+		font-weight: bold;
+	}
+
+	.ksef-properties {
+		display: flex;
+		justify-content: center;
+		margin-top: 0.35em;
+		margin-bottom: 0;
+	}
+
+	.ksef-properties > * {
+		margin-left: 0.25em;
+		margin-right: 0.25em;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+	}
+
+</style>
+
+<script>
+
+	$(function() {
+		$('.invoice-ksef-info .view-button').click(function(e) {
+			window.open($(this).attr('data-href'));
+			e.stopImmediatePropagation();
+		})
+	});
+
+</script>
+
+<div class="invoice-ksef-info{if empty($invoice.status) && ConfigHelper::checkConfig('ksef.offline_support')} offline{/if}">
+	{if $invoice.status == 200}
+		<div class="lms-ui-ksef-qr-code">
+			<a href="{$url}" target="_blank">
+				{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+			</a>
+			<span class="ksef-number">{$invoice.ksefnumber}</span>
+		</div>
+		<div>
+			{if $invoice_file_exists}
+				<div class="ksef-properties">
+					{button icon="download" label="<!ksef>Download invoice" href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-download"}
+					{button icon="view" label="<!ksef>View invoice" class="view-button" data_href="?m=invoiceksefinfo&id={$invoice.id}&purchase=1&action=invoice-view"}
+				</div>
+			{elseif $upo_file_exists}
+				<div class="ksef-properties">
+					{button icon="download" label="Download UPO" href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-download"}
+					{button icon="view" label="View UPO" class="view-button" data_href="?m=invoiceksefinfo&id={$invoice.id}&action=upo-view"}
+				</div>
+			{/if}
+		</div>
+	{elseif empty($invoice.status)}
+		{if ConfigHelper::checkConfig('ksef.offline_support')}
+			<div class="lms-ui-ksef-qr-code">
+				<a href="{$url}" target="_blank">
+					{barcode type="QRCODE" text=$url show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+				</a>
+				<span class="ksef-number">OFFLINE</span>
+			</div>
+			{if !empty($certificateurl)}
+				<div class="lms-ui-ksef-qr-code">
+					<a href="{$url}" target="_blank">
+						{barcode type="QRCODE" text=$certificateurl show_text=false transliterate=false width=-3 height=-3 tooltip_class="lms-ui-ksef-qrcode"}
+					</a>
+					<span class="ksef-number">CERTYFIKAT</span>
+				</div>
+			{/if}
+		{else}
+			<span class="ksef-info">
+				{t
+					a="<span class=\"ksef-batch-session-number\">{$invoice.ksefbatchsessionnumber}</span>"
+					b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+					c="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"}Invoice sent to KSeF in batch session $a at $b on $c and waiting for handling...{/t}
+			</span>
+		{/if}
+	{else}
+		<span class="ksef-error-info">
+			{t
+				a="<span class=\"ksef-batch-session-number\">{$invoice.ksefbatchsessionnumber}</span>"
+				b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+				c="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"
+			}<!ksef>Invoice sent to KSeF in batch session $a{/t}
+			<br>
+			{t
+				a="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"H:i:s"}</strong>"
+				b="<strong>{$invoice.ksefbatchsessionlastupdate|date_format:"Y/m/d"}</strong>"
+			}<!ksef>at $a on $b and its handling has finished with error:{/t}
+			<br>
+			<span class="red">
+				{t a=$invoice.ksefstatusdescription b=$invoice.status}<!ksef>$a (error code: $b){/t}
+				<br>
+				({$invoice.ksefstatusdetails})
+			</span>
+		</span>
+	{/if}
+</div>

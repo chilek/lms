@@ -10,14 +10,14 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" nowrap>
-			<img src="img/pass.gif" alt=""> <B>{trans("Enter new password:")}</B>
+			<img src="img/pass.gif" alt=""> <B>{trans("Enter new password")}</B>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD align="right" nowrap>
-			<B>{trans("New password:")}</B>
+			<B>{trans("New password")}</B>
 		</TD>
 		<TD nowrap>
 			<input type="password" name="passwd[passwd]" value="{$account.passwd1}" {tip text="Enter password" trigger="passwd"}>
@@ -25,7 +25,7 @@
 	</TR>
 	<TR>
 		<TD align="right" nowrap>
-			<B>{trans("Repeat password:")}</B>
+			<B>{trans("Repeat password")}</B>
 		</TD>
 		<TD nowrap>
 			<input type="password" name="passwd[confirm]" value="{$account.passwd2}" {tip text="Confirm password" trigger="passwd"}>

@@ -3,13 +3,19 @@
 <div class="row">
     <div class="col">
         {if $userinfo.balance < 0}
-	    <h4 class="font-weight-bold">{trans("Current balance:")}<br/><strong class="text-danger">{moneyf($userinfo.balance)}</strong></h4>
+            <h4 class="font-weight-bold">
+                {trans("Current balance:")}<br>
+                <strong class="text-danger">{moneyf($userinfo.balance)}</strong>
+            </h4>
             {$custom_content}
             {if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
                 {button class="btn btn-primary" href="?m=finances&amp;f=transferform" external=true icon="print" label="Print payment form"}
             {/if}
         {else}
-            <h4>{trans("Current balance:")}<br/><strong class="text-success">{moneyf($userinfo.balance)}</strong></h4>
+            <h4>
+                {trans("Current balance:")}<br>
+                <strong class="text-success">{moneyf($userinfo.balance)}</strong>
+            </h4>
             {button class="btn btn-primary" disabled=true label="All your covenants are settled"}
         {/if}
     </div>

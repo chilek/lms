@@ -1,10 +1,10 @@
 <?php
 
 /*!
- * \class VoipDbBuffor
+ * \class VoipDbBuffer
  * \brief Class responsibile for optimize SQL queries to database.
  */
-class VoipDbBuffor
+class VoipDbBuffer
 {
 
     /*!

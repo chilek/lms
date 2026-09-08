@@ -53,9 +53,21 @@ function LmsUiDialog(id, options) {
                 jQuery('.ui-widget-overlay').bind('click', function () {
                     $("#" + id).dialog('close');
                 })
+                $($(this).dialog('option', 'buttons')).each(function(index, button) {
+                    if (button.hasOwnProperty('data-icon')) {
+                        var buttonElem = $('#' + button.id);
+                        if (buttonElem.html().indexOf('<i') === -1) {
+                            $('<i>', {
+                                class: 'fa-fw ' + button['data-icon']
+                            }).prependTo(buttonElem);
+                        }
+                        delete button['data-icon'];
+                    }
+                });
             },
             close: function () {
                 that.formReset();
+                $(that).trigger('lms:dialog:form_reset_required');
             }
         },
         typeof(options) === 'object' ? options : {}
@@ -94,7 +106,9 @@ LmsUiDialog.prototype.close = function() {
  * \brief Restore default forms value inside dialog box.
  */
 LmsUiDialog.prototype.formReset = function() {
-    $( this.dialog_body_id + " form" ).each( function() { this.reset() } );
+    $(this.dialog_body_id + " form").each(function() {
+        this.reset();
+    });
 }
 
 /*
@@ -125,6 +139,11 @@ LmsUiDialog.prototype.enableButtons = function() {
 LmsUiDialog.prototype.setButtons = function( buttons ) {
     $.each(buttons, function(index, button) {
        button.class = 'lms-ui-button';
+       if (button.hasOwnProperty('icon') && button.icon.indexOf('lms-ui-icon-') === 0) {
+           button['data-icon'] = button.icon;
+           button.id = 'lms-ui-dialog-button-' + lms_uniqid();
+           delete button.icon;
+       }
     });
     $(this.handler).dialog('option', 'buttons', buttons);
 }

@@ -141,6 +141,7 @@ if (isset($_POST['voipaccountedit'])) {
         $voipaccountedit['cost_limit'] = $voipaccountinfo['cost_limit'];
     }
 
+    $voipaccountinfo['numbers'] = $voipaccountedit['numbers'];
     $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
     $voipaccountinfo['login']   = $voipaccountedit['login'] ?? null;
     $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
@@ -154,9 +155,18 @@ if (isset($_POST['voipaccountedit'])) {
         }
         // check if selected address is teryt address
         if (!isset($error['address_id']) && !ConfigHelper::checkPrivilege('full_access')
-            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountedit['address_id'] == -1
-                || !$LMS->isTerritAddress($voipaccountedit['address_id']))) {
-            $error['address_id'] = trans('TERYT address is required!');
+            && ($voipaccountedit['address_id'] <= 0 || !$LMS->isTerritAddress($voipaccountedit['address_id']))) {
+            $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+            if ($terytRequired === 'error') {
+                $terytRequired = true;
+            } elseif ($terytRequired !== 'warning') {
+                $terytRequired = ConfigHelper::checkValue($terytRequired);
+            }
+            if (is_bool($terytRequired) && $terytRequired) {
+                $error['voipaccountedit[address_id]'] = trans('TERYT address is required!');
+            } elseif ($terytRequired === 'warning' && !isset($warnings['voipaccountedit-address_id-'])) {
+                $warning['voipaccountedit[address_id]'] = trans('TERYT address recommended!');
+            }
         }
     }
 
@@ -171,7 +181,7 @@ if (isset($_POST['voipaccountedit'])) {
     $voipaccountedit = $hook_data['voipaccountedit'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $LMS->VoipAccountUpdate($voipaccountedit);
         $SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountedit['id']);
         die;

@@ -217,7 +217,7 @@ function updateNodeLock($params)
 function getThroughput($ip)
 {
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
-    if (empty($cmd)) {
+    if (empty($cmd) || !check_ip($ip)) {
         return '';
     }
 
@@ -301,27 +301,20 @@ function getRadioSectors($netdev, $technology = 0)
     return $result;
 }
 
-function getFirstFreeAddress($netid, $elemid)
+function getFirstFreeAddress($netid)
 {
     global $LMS;
 
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != false) {
-        $result->assign($elemid, 'value', $ip);
-        $result->script('
-            $("#ipaddr").removeClass("lms-ui-warning").removeAttr("data-tooltip").attr("title", null);
-        ');
-    } else {
-        $result->script('
-            $("#ipaddr").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-                $t("No free addresses in selected network!"));
-        ');
-    }
+
+    $result->call('first_free_address_received', $ip);
 
     return $result;
 }
+
+$session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
 
 if (isset($_GET['action'])) {
     header('Content-type: text/html');
@@ -338,8 +331,68 @@ if (isset($_GET['action'])) {
             }
             die(getThroughput($_GET['ip']));
             break;
+        case 'session_state':
+            $session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
+
+            if (!isset($_GET['id']) && empty($nodesessions) || empty($session_state_helper)) {
+                die;
+            }
+            $nodesession = reset($nodesessions);
+            if (empty($nodesession['nasipaddr'])) {
+                die;
+            }
+            $nasip = long2ip($nodesession['nasipaddr']);
+
+            $username = empty($nodeinfo['login']) ? $nodeinfo['name'] : $nodeinfo['login'];
+
+            $cmd = str_replace(
+                array(
+                    '%ip%',
+                    '%nasip%',
+                    '%username%',
+                ),
+                array(
+                    $nodeinfo['ip'],
+                    $nasip,
+                    $username,
+                ),
+                $session_state_helper
+            );
+
+            $output = '';
+            $ret = 0;
+            exec($cmd, $output, $ret);
+            if (!empty($output) && empty($ret)) {
+                $result = implode(PHP_EOL, $output);
+                $result = trim($result);
+                $result = preg_replace("/\n{3,}/", PHP_EOL, $result);
+                $result = str_replace(
+                    array(
+                        ' ',
+                        PHP_EOL
+                    ),
+                    array(
+                        '&nbsp;',
+                        '<br>',
+                    ),
+                    $result
+                );
+                if (empty($result)) {
+                    $result = '<span class="red bold">' . trans('No session information on NAS device!') . '</span>';
+                } else {
+                    $result = '<pre>' . $result . '</pre>';
+                }
+            } else {
+                $result = '<span class="red bold">' . trans('Error during communication with NAS device!') . '</span>';
+            }
+
+            die($result);
+
+            break;
     }
 }
+
+$SMARTY->assign('session_state_helper', $session_state_helper);
 
 $LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'updateNodeLock',
     'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',

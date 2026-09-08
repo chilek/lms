@@ -271,6 +271,26 @@ if (isset($_POST['tariff'])) {
         $error['taxcategory'] = trans('Tax category selection is required!');
     }
 
+    if (!empty($tariff['extid'])) {
+        if ($DB->GetOne(
+            'SELECT 1
+            FROM tariffs
+            WHERE id <> ?
+                AND extid = ?'
+                . (empty($tariff['serviceproviderid']) ? '' : ' AND serviceproviderid = ' . intval($tariff['serviceproviderid'])),
+            array(
+                $tariff['id'],
+                $tariff['extid'],
+            )
+        )) {
+            if (empty($tariff['serviceproviderid'])) {
+                $error['extid'] = trans('Another tariff with specified External ID already exists!');
+            } else {
+                $error['extid'] = trans('Another tariff with specified External ID assigned to selected service provider already exists!');
+            }
+        }
+    }
+
     if (!$error) {
         $LMS->TariffUpdate($tariff);
 

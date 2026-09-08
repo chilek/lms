@@ -76,6 +76,10 @@ interface LMSDBDriverInterface extends LMSDBInterface
 
     public function _driver_unlocktables();
 
+    public function _driver_lockbyhandle($handle): mixed;
+
+    public function _driver_unlockbyhandle($handle): mixed;
+
     public function _driver_lastinsertid($table = null);
 
     public function _driver_groupconcat($field, $separator = ',');

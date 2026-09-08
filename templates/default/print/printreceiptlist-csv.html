@@ -1,0 +1,56 @@
+{strip}
+{trans("No.")}
+|
+{trans("Date")}
+|
+{trans("Number")}
+|
+{trans("Customer")}
+|
+{trans("Zip")}
+|
+{trans("City")}
+|
+{trans("Address")}
+|
+{trans("Title")}
+|
+{trans("Income")}
+|
+{trans("Expense")}
+|
+{trans("After")}
+{/strip}
+{foreach $receiptlist as $receipt}{strip}
+	{counter}
+	|
+	{$receipt.cdate|date_format:"d.m.Y"}
+	|
+	{$receipt.number}
+	|
+	{$receipt.name}
+	|
+	{$receipt.zip}
+	|
+	{$receipt.city}
+	|
+	{$receipt.address}
+	|
+	{foreach $receipt.title as $title}
+		{$title}
+		{if !$title@last}
+			;
+		{/if}
+	{/foreach}
+	|
+	{if $receipt.value > 0}
+		{moneyf($receipt.value, $receipt.currency)}
+	{/if}
+	|
+	{if $receipt.value < 0}
+		{moneyf($receipt.value * -1, $receipt.currency)}
+	{/if}
+	|
+	{moneyf($receipt.after)}
+{/strip}
+{/foreach}

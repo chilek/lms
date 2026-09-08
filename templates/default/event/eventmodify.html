@@ -81,6 +81,18 @@
 						</select>
 					{/box_row}
 
+					{box_row icon="division" label="Division" icon_class="fa-fw"}
+						<select name="event[divisionid]" size="1">
+							<option value="">{trans("— none —")}</option>
+								{foreach $divisions as $division}
+									{if !$division.status || $division.id == $event.divisionid}
+										<option value="{$division.id}"{if !empty($event.divisionid) && $division.id == $event.divisionid} selected{/if}
+										>{$division.label|escape}</option>
+									{/if}
+								{/foreach}
+						</select>
+					{/box_row}
+
 					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 							{$customer_selector='[name=&quot;event[custid]&quot;]'}
@@ -110,7 +122,7 @@
 						{if empty($netnodeid)}
 							{network_node_selection
 								id='netnodeid'
-								name='event[netnodeid]'
+								elemname='event[netnodeid]'
 								form='event'
 								selected=$event.netnodeid
 								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')"}
@@ -136,7 +148,7 @@
 
 					{$visibility=!empty($nodes)}
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
-						{if !empty($event.ticketid)}
+						{if !empty($event.ticketid) || !empty($nodes)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("— none —")}</option>
 								{foreach $nodes as $node}
@@ -154,7 +166,7 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
+						<select name="event[userlist][]" class="lms-ui-advanced-select-test" id="userlist" multiple
 								{if ConfigHelper::checkConfig('timetable.event_user_required', ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
@@ -201,16 +213,16 @@
 					{function event_ticket_item_content}
 						{capture name="item_content_result" assign="item_content_result"}
 							{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
-							#{$item.id}
-							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+							(#{$item.id})
+							<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 						{/capture}
 					{/function}
 
-					{if $layout.module == 'eventedit'}
-						{box_row icon="note" icon_class="fa-fw" label="Note:"}
-							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
-						{/box_row}
+					{box_row icon="note" icon_class="fa-fw" label="Note:"}
+						<textarea name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</textarea>
+					{/box_row}
 
+					{if $layout.module == 'eventedit'}
 						{box_row icon="helpdesk" icon_class="fa-fw" label="Assign ticket"}
 							<input type="hidden" name="event[ticketid]" value="0">
 							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
@@ -347,6 +359,18 @@
 							item.name + '</a>';
 				}
 			});
+
+			function customerChanged(selector) {
+				var disabled = !['', '0'].includes(typeof(selector) == 'string' ? $(selector).val() : $(this).val());
+
+				$('[name="event[divisionid]"]')
+					.prop('disabled', disabled)
+					.closest('.lms-ui-box-row')
+					.toggleClass('lms-ui-disabled', disabled);
+			}
+
+			$('[name="event[custid]"]').change(customerChanged);
+			customerChanged('[name="event[custid]"]');
 		});
 
 		function update_user_selection(users) {
@@ -357,8 +381,7 @@
 				var users2 = jQuery.unique([].concat.apply(users, userms));
 				$("#userlist").val( users2 );
 			{/if}
-			updateAdvancedSelects(userlist);
-
+			updateAdvancedSelectsTest(userlist);
 		}
 
 		{if intval($event.customerid)}
@@ -369,20 +392,47 @@
 			{/if}
 		{/if}
 
-		initAdvancedSelects('#customer_addresses');
-		$('#customer_addresses').chosen().change(function() {
+		initAdvancedSelectsTest('#customer_addresses');
+		$('#customer_addresses').change(function() {
 			xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+		}).on('lms:address_list_updated', function() {
+			{if ConfigHelper::checkConfig('timetable.location_required')}
+				$(this).prop('required', $('[name="event[custid]"]').val().length > 0).trigger('lms:advanced_select_update');
+			{/if}
+		}).on('lms:advanced_select_validate_required', function(e, data) {
+			{if ConfigHelper::checkConfig('timetable.location_required')}
+				var emptyCustomerId = !$('[name="event[custid]"]').val().length;
+				data.advancedSelectElement.toggleClass('lms-ui-error', !emptyCustomerId && data.invalidValue);
+				this.setCustomValidity(!emptyCustomerId && data.invalidValue ? $t('Location address is not selected') : '');
+			{/if}
+			return false;
 		});
+
+		{if ConfigHelper::checkConfig('timetable.location_required')}
+			$('#customer_addresses').trigger('lms:address_list_updated');
+		{/if}
 
 		{if $layout.module == 'eventedit'}
 			function change_customer(customer_selector, address_selector) {
-				getCustomerAddresses($(customer_selector).val(), function (addresses) {
+				var customerId = $(customer_selector).val();
+				getCustomerAddresses(customerId, function (addresses) {
+					var addressId = $('#customer_addresses').val();
 					setAddressList('#customer_addresses', addresses);
-					if (Object.keys(addresses).length == 1) {
-						$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-						updateAdvancedSelects('#customer_addresses');
+
+					if (Object.keys(addresses).length) {
+						$.each(addresses, function(index, address) {
+							if (address.hasOwnProperty('default_address')) {
+								$('#customer_addresses').val(address.address_id);
+								updateAdvancedSelectsTest('#customer_addresses');
+							}
+						});
+					} else {
+						$('#customer_addresses').val(addressId);
 					}
-					xajax_select_location($(customer_selector).val(), $(address_selector).val());
+					updateAdvancedSelectsTest('#customer_addresses');
+
+					xajax_select_location(customerId, $(address_selector).val());
+					$('#customer_addresses').trigger('lms:address_list_updated');
 				});
 			}
 		{/if}

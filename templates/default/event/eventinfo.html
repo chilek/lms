@@ -179,6 +179,21 @@
 					</td>
 				</tr>
 			{/if}
+			{if !empty($event.divisionid)}
+				<tr>
+					<td class="valign-top">
+						{icon name="division"}
+					</td>
+					<td>
+						<strong>{trans("Division")}</strong>
+					</td>
+					<td>
+						<a href="?m=divisionedit&id={$event.divisionid}">
+							{$event.div_label|escape} (#{$event.divisionid})
+						</a>
+					</td>
+				</tr>
+			{/if}
 			{if $event.customerid}
 				<tr>
 					<td class="valign-top">

@@ -70,11 +70,7 @@ function try_generate_archive_notes($ids)
 
                 $note = $LMS->GetNoteContent($noteid);
                 $note['dontpublish'] = $dontpublish;
-                $note['division_header'] = str_replace(
-                    '%bankaccount',
-                    format_bankaccount(bankaccount($note['customerid'], $note['account'])),
-                    $note['division_header']
-                );
+
                 Localisation::setUiLanguage($note['lang']);
                 $document->Draw($note);
 
@@ -178,28 +174,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         if ($i == $count) {
             $note['last'] = true;
         }
-        $note['division_header'] = str_replace(
-            '%bankaccount',
-            format_bankaccount(bankaccount($note['customerid'], $note['account'])),
-            $note['division_header']
-        );
-
-        if (!empty($note['division_footer'])) {
-            $tmp = $note['division_footer'];
-
-            $accounts = array(bankaccount($note['customerid'], $note['account']));
-            if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
-                $accounts = array_merge($accounts, $note['bankaccounts']);
-            }
-            foreach ($accounts as &$account) {
-                $account = format_bankaccount($account);
-            }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $note['bankaccounts'] = implode("\n", $accounts);
-            $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-            $note['division_footer'] = $tmp;
-        }
-
 
         Localisation::setUiLanguage($note['lang']);
         $document->Draw($note);
@@ -251,27 +225,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         }
 
         $note['dontpublish'] = $dontpublish;
-        $note['division_header'] = str_replace(
-            '%bankaccount',
-            format_bankaccount(bankaccount($note['customerid'], $note['account'])),
-            $note['division_header']
-        );
-
-        if (!empty($note['division_footer'])) {
-            $tmp = $note['division_footer'];
-
-            $accounts = array(bankaccount($note['customerid'], $note['account']));
-            if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
-                $accounts = array_merge($accounts, $note['bankaccounts']);
-            }
-            foreach ($accounts as &$account) {
-                $account = format_bankaccount($account);
-            }
-            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-            $note['bankaccounts'] = implode("\n", $accounts);
-            $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-            $note['division_footer'] = $tmp;
-        }
 
         Localisation::setUiLanguage($note['lang']);
         $document->Draw($note);
@@ -283,7 +236,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     if ($note['archived']) {
         $note = $LMS->GetArchiveDocument($_GET['id']);
         if ($note) {
-            header('Content-Type: ' . $invoice['content-type']);
+            header('Content-Type: ' . $note['content-type']);
             header('Content-Disposition: inline; filename=' . $note['filename']);
             echo $note['data'];
         }
@@ -300,27 +253,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $note['dontpublish'] = $dontpublish;
     $note['last'] = true;
-    $note['division_header'] = str_replace(
-        '%bankaccount',
-        format_bankaccount(bankaccount($note['customerid'], $note['account'])),
-        $note['division_header']
-    );
-
-    if (!empty($note['division_footer'])) {
-        $tmp = $note['division_footer'];
-
-        $accounts = array(bankaccount($note['customerid'], $note['account']));
-        if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
-            $accounts = array_merge($accounts, $note['bankaccounts']);
-        }
-        foreach ($accounts as &$account) {
-            $account = format_bankaccount($account);
-        }
-        $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
-        $note['bankaccounts'] = implode("\n", $accounts);
-        $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-        $note['division_footer'] = $tmp;
-    }
 
     Localisation::setUiLanguage($note['lang']);
     $document->Draw($note);

@@ -92,7 +92,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                         $data[$pkey]['period'] = $pvalue;
                     } elseif (!isset($mons[$pvalue])) {
                         $error['form' . $assignment_part . '[period][' . $pkey . ']'] = trans('Incorrent value!');
-                    } elseif ($schema[$skey] && $schema[$skey] % $mons[$pvalue]) {
+                    } elseif (isset($schema[$skey]) && !empty($schema[$skey]) && $schema[$skey] % $mons[$pvalue]) {
                         $error['form' . $assignment_part . '[period][' . $pkey . ']'] = trans('Not possible to use this period here!');
                     } else {
                         $data[$pkey]['period'] = $pvalue;
@@ -101,7 +101,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                 break;
             case 'value':
                 foreach ($value as $vkey => $vvalue) {
-                    $vvalue = trim($vvalue);
+                    $vvalue = preg_replace('/\s+/u', '', trim($vvalue));
                     if (!strlen($vvalue)) {
                         $data[$vkey]['value'] = 'NULL';
                     } elseif (!preg_match('/^[-]?[0-9.,]+$/', $vvalue)) {
@@ -235,6 +235,68 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     }
 
     echo json_encode(array('result' => $result));
+    die;
+} elseif ($action == 'change-assignments' && isset($_POST['action'])) {
+    switch ($_POST['action']) {
+        case 'grant':
+        case 'revoke':
+            if (isset($_POST['users'], $_POST['assignments'])) {
+                $result = $LMS->changePromotionSchemaTariffPermissions(
+                    $_GET['id'],
+                    array(
+                        'users' => $_POST['users'],
+                        'assignments' => $_POST['assignments'],
+                        'action' => $_POST['action'],
+                    )
+                );
+            }
+
+            break;
+        case 'delete':
+            if (isset($_POST['assignments'])) {
+                $assignments = Utils::filterIntegers($_POST['assignments']);
+                if (!empty($assignments)) {
+                    foreach ($assignments as $aid) {
+                        if ($SYSLOG) {
+                            $assign = $DB->GetRow(
+                                'SELECT
+                                    promotionschemaid,
+                                    tariffid,
+                                    promotionid
+                                FROM promotionassignments a
+                                JOIN promotionschemas s ON s.id = a.promotionschemaid
+                                WHERE a.id = ?',
+                                array($aid)
+                            );
+                            $args = array(
+                                SYSLOG::RES_PROMOASSIGN => $aid,
+                                SYSLOG::RES_PROMOSCHEMA => $assign['promotionschemaid'],
+                                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                                SYSLOG::RES_PROMO => $assign['promotionid']
+                            );
+                            $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
+                        }
+
+                        $DB->Execute(
+                            'DELETE FROM promotionassignments
+                            WHERE id = ?',
+                            array(
+                                $aid,
+                            )
+                        );
+                    }
+                }
+            }
+
+            break;
+    }
+
+    $data['servicetype'] = $_POST['form']['servicetype'];
+    $data['tags'] = $_POST['form']['tags'] ?? array();
+    $data['alltariffs'] = empty($_POST['form']['alltariffs']) ? 0 : 1;
+    $SESSION->save('psdform', $data);
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'promotionschemainfo.php');
     die;
 }
 

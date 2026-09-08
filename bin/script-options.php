@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2024 LMS Developers';
+const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2026 LMS Developers';
 
 $http_mode = isset($_SERVER['HTTP_HOST']);
 

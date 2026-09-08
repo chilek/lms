@@ -208,41 +208,36 @@
         </tr>
         <tr>
             <td class="nobr valign-top">
-                <label for="auth_type">
-                    {trans("Authentication type")}
-                </label>
+                <label for="reminder_type">{trans("Reminder type")}</label>
             </td>
             <td>
-                <select name="auth_type" {tip text="Userpanel authentication type" } form="general-settings-form">
-                    {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
-                        <option value="{$typeidx}"{if $auth_type == $typeidx} selected{/if}>{$type.selection}</option>
-                        {if isset($type['options'])}
-                            {capture append="auth_option_elements"}
-                            <tr class="auth-options" data-auth-type="{$typeidx}">
-                                <td>
-                                </td>
+                <select id="reminder_type" name="reminder_type" {tip text="Userpanel reminder type"} form="general-settings-form">
+                    {foreach $_USERPANEL_REMINDER_TYPES as $typeidx => $type}
+                        <option value="{$typeidx}"{if $reminder_type == $typeidx} selected{/if}>{$type.selection}</option>
+                        {if isset($type.options)}
+                            {capture append="reminder_option_elements"}
+                            <tr class="reminder-options" data-reminder-type="{$typeidx}">
+                                <td></td>
                                 <td>
                                     <fieldset>
-                                        <legend class="bold">
-                                            {$type['options-label']}
-                                        </legend>
+                                        <legend class="bold">{$type['options-label']}</legend>
                                         <table>
-                                            {foreach $type['options'] as $option_idx => $option}
+                                            {foreach $type.options as $opt_idx => $opt}
                                                 <tr>
                                                     <td>
-                                                        <label for="auth-option-{$typeidx}-{$option_idx}">
-                                                            {$option.label}
-                                                        </label>
+                                                        <label for="reminder-option-{$typeidx}-{$opt_idx}">{$opt.label}</label>
                                                     </td>
                                                     <td>
-                                                        {if $option.type == 'single-select'}
-                                                            {$auth_options = call_user_func($option['getter'])}
-                                                            <select id="auth-option-{$typeidx}-{$option_idx}"
-                                                                name="{$option.name}"
+                                                        {if $opt.type == 'single-select'}
+                                                            {assign var=reminder_select_options value=call_user_func($opt.getter)}
+                                                            <select id="reminder-option-{$typeidx}-{$opt_idx}"
+                                                                name="{$opt.name}"
                                                                 form="general-settings-form">
-                                                                {foreach $auth_options as $auth_option_idx => $auth_option}
-                                                                    <option value="{$auth_option.id}"
-                                                                        {if $auth_option.id == $options[$option.name]} selected{/if}>{$auth_option.label}</option>
+                                                                {foreach $reminder_select_options as $item}
+                                                                    <option value="{$item.id}"
+                                                                        {if $item.id == $reminder_options[$opt.name]} selected{/if}>
+                                                                        {$item.label}
+                                                                    </option>
                                                                 {/foreach}
                                                             </select>
                                                         {/if}
@@ -254,7 +249,55 @@
                                 </td>
                             </tr>
                             {/capture}
-                       {/if}
+                        {/if}
+                    {/foreach}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="nobr valign-top">
+                <label for="auth_type">{trans("Authentication type")}</label>
+            </td>
+            <td>
+                <select id="auth_type" name="auth_type" {tip text="Userpanel authentication type"} form="general-settings-form">
+                    {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
+                        <option value="{$typeidx}"{if $auth_type == $typeidx} selected{/if}>{$type.selection}</option>
+                        {if isset($type.options)}
+                            {capture append="auth_option_elements"}
+                              <tr class="auth-options" data-auth-type="{$typeidx}">
+                                  <td></td>
+                                  <td>
+                                      <fieldset>
+                                          <legend class="bold">{$type['options-label']}</legend>
+                                          <table>
+                                              {foreach $type.options as $opt_idx => $opt}
+                                                  <tr>
+                                                      <td>
+                                                          <label for="auth-option-{$typeidx}-{$opt_idx}">{$opt.label}</label>
+                                                      </td>
+                                                      <td>
+                                                          {if $opt.type == 'single-select'}
+                                                              {assign var=auth_select_options value=call_user_func($opt.getter)}
+                                                              <select id="auth-option-{$typeidx}-{$opt_idx}"
+                                                                  name="{$opt.name}"
+                                                                  form="general-settings-form">
+                                                                  {foreach $auth_select_options as $item}
+                                                                      <option value="{$item.id}"
+                                                                          {if $item.id == $auth_options[$opt.name]} selected{/if}>
+                                                                          {$item.label}
+                                                                      </option>
+                                                                  {/foreach}
+                                                              </select>
+                                                          {/if}
+                                                      </td>
+                                                  </tr>
+                                              {/foreach}
+                                          </table>
+                                      </fieldset>
+                                  </td>
+                                </tr>
+                            {/capture}
+                        {/if}
                     {/foreach}
                 </select>
             </td>
@@ -450,6 +493,10 @@
         $('[name="auth_type"]').change(function () {
             $(".auth-options").find('fieldset').addClass('lms-ui-disabled').find("[form]").prop('disabled', true).addClass('lms-ui-disabled');
             $('.auth-options[data-auth-type="' + $(this).val() + '"]').find('fieldset').removeClass('lms-ui-disabled').find("[form]").prop('disabled', false).removeClass('lms-ui-disabled');
+        }).change();
+        $('[name="reminder_type"]').change(function () {
+            $(".reminder-options").find('fieldset').addClass('lms-ui-disabled').find("[form]").prop('disabled', true).addClass('lms-ui-disabled');
+            $('.reminder-options[data-reminder-type="' + $(this).val() + '"]').find('fieldset').removeClass('lms-ui-disabled').find("[form]").prop('disabled', false).removeClass('lms-ui-disabled');
         }).change();
 	});
 

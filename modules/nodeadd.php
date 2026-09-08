@@ -323,7 +323,7 @@ if (isset($_POST['nodedata'])) {
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
     if (!isset($warnings['nodedata-address_id-']) && isset($nodedata['address_id'])
-        && $nodedata['address_id'] == -1 && !empty($nodedata['ownerid'])) {
+        && $nodedata['address_id'] <= 0 && !empty($nodedata['ownerid'])) {
         $addresses = $LMS->getCustomerAddresses($nodedata['ownerid'], true);
         if (count($addresses) > 1) {
             $i = 0;
@@ -378,9 +378,19 @@ if (isset($_POST['nodedata'])) {
         $error['netdev'] = trans('Network device selection is required!');
     }
 
-    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+    if (!ConfigHelper::checkPrivilege('full_access')
         && !empty($nodedata['address_id']) && !$LMS->isTerritAddress($nodedata['address_id'])) {
-        $error['address_id'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['nodedata[address_id]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['nodedata-address_id-'])) {
+            $warning['nodedata[address_id]'] = trans('TERYT address recommended!');
+        }
     }
 
     if ($nodedata['invprojectid'] == '-1') { // nowy projekt
@@ -503,6 +513,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
+    $nodedata['info'] = ConfigHelper::getConfig('nodes.default_info', '', true);
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
 /*
@@ -531,7 +542,9 @@ if (!strlen($node_empty_mac) && empty($nodedata['macs'])) {
 $layout['pagetitle'] = trans('New Node');
 
 if (!empty($nodedata['ownerid']) && $LMS->CustomerExists($nodedata['ownerid']) && ($customerid = $nodedata['ownerid'])) {
-    include(MODULES_DIR.'/customer.inc.php');
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 } else {
     $SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 }

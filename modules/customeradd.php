@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,6 +27,8 @@
 if (isset($_GET['ajax'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
+
+    $mode = null;
 
     switch ($_GET['mode']) {
         case 'street':
@@ -97,6 +99,21 @@ $legal_person_required_properties = ConfigHelper::getConfig(
 );
 $legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
 
+$natural_person_required_property_validation_error = ConfigHelper::checkConfig(
+    'customers.natural_person_required_property_validation_error',
+    true
+);
+$legal_person_required_property_validation_error = ConfigHelper::checkConfig(
+    'customers.legal_person_required_property_validation_error',
+    true
+);
+$natural_person_required_property_validation_customer_statuses = Utils::determineAllowedCustomerStatus(
+    ConfigHelper::getConfig('customers.natural_person_required_property_validation_customer_statuses')
+);
+$legal_person_required_property_validation_customer_statuses = Utils::determineAllowedCustomerStatus(
+    ConfigHelper::getConfig('customers.legal_person_required_property_validation_customer_statuses')
+);
+
 $groups = trim(ConfigHelper::getConfig('customers.groups_required_on_add', ConfigHelper::getConfig('phpui.add_customer_group_required', 'false')));
 if (preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $groups)) {
     $groups_required = false;
@@ -119,6 +136,8 @@ if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
     $required_properties = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_properties : $natural_person_required_properties;
+    $required_property_validation_error = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_property_validation_error : $natural_person_required_property_validation_error;
+    $required_property_validation_customer_statuses = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_property_validation_customer_statuses : $natural_person_required_property_validation_customer_statuses;
 
     $contacttypes = array_keys($CUSTOMERCONTACTTYPES);
     foreach ($contacttypes as &$contacttype) {
@@ -160,17 +179,44 @@ if (isset($_POST['customeradd'])) {
             }
         }
 
-        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+        if (!ConfigHelper::checkPrivilege('full_access')
             && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
             && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
-            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
-            $customeradd['addresses'][ $k ]['show'] = true;
+            $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+            if ($terytRequired === 'error') {
+                $terytRequired = true;
+            } elseif ($terytRequired !== 'warning') {
+                $terytRequired = ConfigHelper::checkValue($terytRequired);
+            }
+            if (is_bool($terytRequired) && $terytRequired) {
+                $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERYT address is required!');
+                $customeradd['addresses'][$k]['show'] = true;
+            } elseif ($terytRequired === 'warning' && !isset($warnings['customeradd-addresses--' . $k . '--teryt-'])) {
+                $warning['customeradd[addresses][' . $k . '][teryt]']= trans('TERYT address recommended!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
         }
 
         Localisation::setSystemLanguage($countryCode);
-        if ($v['location_zip'] && !check_zip($v['location_zip'])) {
-            $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
-            $customeradd['addresses'][ $k ]['show'] = true;
+
+        if (!ConfigHelper::checkConfig('phpui.skip_zip_validation') && $v['location_zip']) {
+            $zip_validation_result = check_zip($v['location_zip']);
+            if (isset($zip_validation_result) && !$zip_validation_result) {
+                $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
+        }
+
+        if (!empty($v['location_ten']) && !isset($warnings['customeradd-addresses--' . $k . '--location_ten-'])) {
+            $ten_validation_result = check_ten($v['location_ten']);
+            if (!$ten_validation_result) {
+                $ksef_internal_id_validation = check_ksef_internal_id($v['location_ten']);
+                $ten_validation_result |= $ksef_internal_id_validation === true || !isset($ksef_internal_id_validation);
+            }
+            if (isset($ten_validation_result) && !$ten_validation_result) {
+                $warning['customeradd[addresses][' . $k . '][location_ten]'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                $customeradd['addresses'][$k]['show'] = true;
+            }
         }
     }
 
@@ -220,9 +266,12 @@ if (isset($_POST['customeradd'])) {
 
     if (isset($customeradd['ten'])) {
         if ($customeradd['ten'] != '') {
-            if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
-                $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                $customeradd['tenwarning'] = 1;
+            if (!isset($customeradd['tenwarning'])) {
+                $ten_validation_result = check_ten($customeradd['ten']);
+                if (isset($ten_validation_result) && !$ten_validation_result) {
+                    $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $customeradd['tenwarning'] = 1;
+                }
             }
             $ten_existence_check = ConfigHelper::getConfig(
                 'customers.ten_existence_check',
@@ -253,16 +302,27 @@ if (isset($_POST['customeradd'])) {
                     }
                     break;
             }
-        } elseif (isset($required_properties['ten'])) {
-            $error['ten'] = trans('Missed required TEN identifier!');
+        } elseif (in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['ten'])) {
+            if ($required_property_validation_error) {
+                $error['ten'] = trans('Missed required TEN identifier!');
+            } elseif (!isset($warnings['customeradd-ten-'])) {
+                $warning['customeradd[ten]'] = trans('Missed recommended TEN identifier!');
+            }
         }
     }
 
     if (isset($customeradd['ssn'])) {
         if ($customeradd['ssn'] != '') {
-            if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
-                $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                $customeradd['ssnwarning'] = 1;
+            if (isset($customeradd['ssnwarning']) && isset($customeradd['oldssn']) && $customeradd['oldssn'] != $customeradd['ssn']) {
+                unset($customeradd['ssnwarning']);
+            }
+            if (!isset($customeradd['ssnwarning'])) {
+                $ssn_validation_result = check_ssn($customeradd['ssn']);
+                if (isset($ssn_validation_result) && !$ssn_validation_result) {
+                    $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $customeradd['ssnwarning'] = 1;
+                }
             }
             $ssn_existence_check = ConfigHelper::getConfig(
                 'customers.ssn_existence_check',
@@ -273,7 +333,7 @@ if (isset($_POST['customeradd'])) {
                 ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global')
             );
             if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
-                $ssb_existence_scope = 'global';
+                $ssn_existence_scope = 'global';
             }
             $ssn_exists = $LMS->checkCustomerSsnExistence(
                 null,
@@ -293,22 +353,39 @@ if (isset($_POST['customeradd'])) {
                     }
                     break;
             }
-        } elseif (isset($required_properties['ssn'])) {
-            $error['ssn'] = trans('Missed required SSN identifier!');
+        } elseif (in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['ssn'])) {
+            if ($required_property_validation_error) {
+                $error['ssn'] = trans('Missed required SSN identifier!');
+            } elseif (!isset($warnings['customeradd-ssn-'])) {
+                $warning['customeradd[ssn]'] = trans('Missed recommended SSN identifier!');
+            }
         }
     }
 
     if (isset($customeradd['icn'])) {
-        if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
-            $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-            $icnwarning = 1;
-        } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
-            $error['icn'] = trans('Missed required Identity Card Number!');
+        if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning'])) {
+            $icn_validation_result = check_icn($customeradd['icn']);
+            if (isset($icn_validation_result) && !$icn_validation_result) {
+                $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                $icnwarning = 1;
+            }
+        } elseif ($customeradd['icn'] == ''
+            && in_array($customeradd['status'], $required_property_validation_customer_statuses)
+            && isset($required_properties['icn'])) {
+            if ($required_property_validation_error) {
+                $error['icn'] = trans('Missed required Identity Card Number!');
+            } elseif (!isset($warnings['customeradd-icn-'])) {
+                $warning['customeradd[icn]'] = trans('Missed recommended Identity Card Number!');
+            }
         }
     }
 
-    if ($customeradd['regon'] != '' && !check_regon($customeradd['regon'])) {
-        $error['regon'] = trans('Incorrect Business Registration Number!');
+    if ($customeradd['regon'] != '') {
+        $regon_validation_result = check_regon($customeradd['regon']);
+        if (isset($regon_validation_result) && !$regon_validation_result) {
+            $error['regon'] = trans('Incorrect Business Registration Number!');
+        }
     }
 
     Localisation::resetSystemLanguage();
@@ -585,6 +662,10 @@ $SMARTY->assign($LMS->getCustomerPinRequirements());
 $SMARTY->assign('default_states', $default_states);
 $SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
+$SMARTY->assign('legal_person_required_property_validation_error', $legal_person_required_property_validation_error);
+$SMARTY->assign('natural_person_required_property_validation_error', $natural_person_required_property_validation_error);
+$SMARTY->assign('legal_person_required_property_validation_customer_statuses', $legal_person_required_property_validation_customer_statuses);
+$SMARTY->assign('natural_person_required_property_validation_customer_statuses', $natural_person_required_property_validation_customer_statuses);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
 

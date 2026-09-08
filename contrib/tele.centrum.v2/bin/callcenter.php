@@ -226,9 +226,12 @@ if ($inbox === false) {
 $emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.sender_email', ConfigHelper::getConfig('callcenter.mailfrom')) . '"');
 
 if (!empty($emails)) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+
     foreach ($emails as $email_number) {
         $structure     = imap_fetchstructure($inbox, $email_number);
         $attachments = array();
+        $uid = null;
 
         if (isset($structure->parts) && count($structure->parts)) {
             for ($i = 0; $i < count($structure->parts); $i++) {
@@ -250,10 +253,14 @@ if (!empty($emails)) {
                 }
                 if (!$structure->parts[$i]->type) {
                     foreach ($structure->parts[$i]->parameters as $object) {
-                        $uid = imap_fetchbody($inbox, $email_number, 1);
-                        $uid = explode('<UniqueID>', $uid);
-                        $uid = explode('</UniqueID>', $uid[1]);
-                        $uid = $uid[0];
+                        $content = imap_fetchbody($inbox, $email_number, 1);
+                        foreach (preg_split('/[\n\r]/', $content, -1, PREG_SPLIT_NO_EMPTY) as $line) {
+                            $line = trim($line);
+                            if (stripos($line, '<UniqueID>') !== false
+                                && preg_match('/^<UniqueID>(?<uniqueid>[0-9]+(?:\.[0-9]+)?)<\/UniqueID>/', $line, $m)) {
+                                $uid = $m['uniqueid'];
+                            }
+                        }
                     }
                 }
 
@@ -264,11 +271,16 @@ if (!empty($emails)) {
                     } elseif ($structure->parts[$i]->encoding == 4) {
                         $attachment['attachment'] = quoted_printable_decode($attachment['attachment']);
                     }
+
+                    $mime = $finfo->buffer($attachment['attachment']);
+                    $attachment['contenttype'] = $mime === false ? 'application/octet-stream' : $mime;
+
                     $attachments[] = $attachment;
                 }
             }
         }
-        if (count($attachments) && !empty($uid)) {
+
+        if (count($attachments) && isset($uid)) {
             foreach ($attachments as $at) {
                 if ($at['is_attachment'] && !empty($rt_dir)) {
                     $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';

@@ -36,17 +36,33 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
       */
     protected function fetch($name, &$source, &$mtime)
     {
-        global $module_dir;
+        global $module_dir, $modules_dirs, $USERPANEL;
 
-        $module = $_GET['m'];
+        $dir = $module_dir;
+
+        $i = strpos($name, ':');
+        if ($i === false) {
+            $module = $_GET['m'];
+        } else {
+            [$module, $name] = explode(':', $name, 2);
+
+            foreach ($modules_dirs as $suspected_module_dir) {
+                if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
+                    && isset($USERPANEL->MODULES[$module])) {
+                    $dir = $suspected_module_dir;
+                    break;
+                }
+            }
+        }
+
         $style = ConfigHelper::getConfig('userpanel.style', 'default');
-        $template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
+        $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
             . $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($template_path)) {
             $mtime = filectime($template_path);
             $source = file_get_contents($template_path);
         } else {
-            $template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+            $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
             if (file_exists($template_path)) {
                 $mtime = filectime($template_path);
                 $source = file_get_contents($template_path);
@@ -66,16 +82,32 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
       */
     protected function fetchTimestamp($name)
     {
-        global $module_dir;
+        global $module_dir, $modules_dirs, $USERPANEL;
 
-        $module = $_GET['m'];
+        $dir = $module_dir;
+
+        $i = strpos($name, ':');
+        if ($i === false) {
+            $module = $_GET['m'];
+        } else {
+            [$module, $name] = explode(':', $name, 2);
+
+            foreach ($modules_dirs as $suspected_module_dir) {
+                if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
+                    && isset($USERPANEL->MODULES[$module])) {
+                    $dir = $suspected_module_dir;
+                    break;
+                }
+            }
+        }
+
         $style = ConfigHelper::getConfig('userpanel.style', 'default');
-        $template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
+        $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
             .  $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($template_path)) {
             return filectime($template_path);
         } else {
-            $template_path = $module_dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
+            $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
             if (file_exists($template_path)) {
                 return filectime($template_path);
             } else {

@@ -31,10 +31,17 @@ function smarty_function_sum($params, $template)
     $default = ($params['default'] ?? 0);
     $result = 0;
 
+    $alreadyAssocArray = false;
+
     if ($array) {
         foreach ($array as $row) {
-            if (is_array($row) && isset($row[$params['column']])) {
-                $result += $row[$params['column']];
+            if (is_array($row)) {
+                if (isset($params['column'], $row[$params['column']])) {
+                    $result += $row[$params['column']];
+                    $alreadyAssocArray = true;
+                }
+            } elseif (!$alreadyAssocArray) {
+                $result += floatval($row);
             }
         }
     }

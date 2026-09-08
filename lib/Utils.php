@@ -48,8 +48,11 @@ class Utils
     public const PESEL_STATUS_RESERVED = 'ZASTRZEZONY';
     public const PESEL_STATUS_NOT_RESERVED = 'NIEZASTRZEZONY';
 
-    public static function filterIntegers(array $params)
+    public static function filterIntegers(?array $params)
     {
+        if ($params === null) {
+            return [];
+        }
         return array_filter($params, function ($value) {
             if (!isset($value)) {
                 return false;
@@ -207,6 +210,21 @@ class Utils
         return trigger_error($error_msg, $error_type);
     }
 
+    public static function getDebugBacktrace($context = 1)
+    {
+        $stack = debug_backtrace();
+        $backtrace = array();
+
+        for ($i = 0; $i < $context; $i++) {
+            if (false === ($frame = next($stack))) {
+                break;
+            }
+            $backtrace[] = $frame['function'] . ' (' . $frame['file'] . ' line ' . $frame['line'] . ')';
+        }
+
+        return $backtrace;
+    }
+
     public static function LoadMarkdownDocumentation($variable_name = null)
     {
         $markdown_documentation_file = ConfigHelper::getConfig(
@@ -335,7 +353,7 @@ class Utils
 
         $value = ConfigHelper::getConfig(
             'customers.default_consents',
-            ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true),
+            ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form,balance_on_documents', true),
             true
         );
         if (!empty($value)) {
@@ -535,6 +553,23 @@ class Utils
             if (defined('CACHE_DIR')) {
                 $hm_config->set('Cache.SerializerPath', CACHE_DIR . DIRECTORY_SEPARATOR . 'htmlpurifier');
             }
+            $hm_purifier = new HTMLPurifier($hm_config);
+        }
+
+        return $hm_purifier->purify($html);
+    }
+
+    public static function removeHtml($html)
+    {
+        static $hm_purifier;
+        if (!isset($hm_purifier)) {
+            $hm_config = HTMLPurifier_Config::createDefault();
+
+            $hm_config->set('HTML.Allowed', '');
+            $hm_config->set('CSS.AllowedProperties', []);
+
+            $hm_config->set('AutoFormat.AutoParagraph', false);
+
             $hm_purifier = new HTMLPurifier($hm_config);
         }
 
@@ -1358,6 +1393,159 @@ class Utils
         }
     }
 
+    public static function docTypeByFileName($fileName)
+    {
+        if (preg_match('/^.+\.(?<type>[[:alnum:]+]+)$/i', $fileName, $m)) {
+            return strtolower($m['type']);
+        } else {
+            return false;
+        }
+    }
+
+    public static function docTypeByMimeType($mimeType)
+    {
+        if (preg_match('#html$#i', $mimeType)) {
+            return 'htm';
+        } elseif (preg_match('#^application/rtf$#i', $mimeType)) {
+            return 'rtf';
+        } elseif (preg_match('#^application/msword$#i', $mimeType)) {
+            return 'doc';
+        } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.wordprocessingml.document$#i', $mimeType)) {
+            return 'docx';
+        } elseif (preg_match('#^application/ms-excel$#i', $mimeType)) {
+            return 'xls';
+        } elseif (preg_match('#^application/vnd.openxmlformats-officedocument.spreadsheetml.sheet$#i', $mimeType)) {
+            return 'xlsx';
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.text.*$#i', $mimeType)) {
+            return 'odt';
+        } elseif (preg_match('#^application/vnd.oasis.opendocument.spreadsheet.*$#i', $mimeType)) {
+            return 'ods';
+        } else {
+            return false;
+        }
+    }
+
+    public static function office2pdf(array $params)
+    {
+        extract($params);
+
+        if (!isset($title)) {
+            $title = '';
+        }
+
+        if (!isset($doctype)) {
+            if (stripos($content, 'PK') !== 0) {
+                $doctype = 'rtf';
+            } else {
+                $doctype = 'docx';
+            }
+        }
+
+        if (!isset($md5sum)) {
+            $md5sum = '';
+        }
+
+        if (!isset($office2pdf_command)) {
+            $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+        }
+        if (empty($office2pdf_command)) {
+            throw new Exception('Office to PDF file conversion mechanism is not enabled!');
+        }
+
+        if ($dest === true) {
+            $dest = 'D';
+        } elseif ($dest === false) {
+            $dest = 'I';
+        }
+
+        $pipes = null;
+        $process = proc_open(
+            str_replace(
+                array(
+                    '%doctype%',
+                ),
+                array(
+                    $doctype,
+                ),
+                $office2pdf_command
+            ),
+            array(
+                0 => array('pipe', 'r'),
+                1 => array('pipe', 'w'),
+                2 => array('pipe', 'w'),
+            ),
+            $pipes
+        );
+
+        if (is_resource($process)) {
+            fwrite($pipes[0], $content);
+            fclose($pipes[0]);
+
+            $content = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            $error = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            $result = proc_close($process);
+
+            if (!$result) {
+                // cache pdf file
+                if ($md5sum) {
+                    file_put_contents(
+                        DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf',
+                        $content
+                    );
+                }
+
+                if (function_exists('mb_convert_encoding')) {
+                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+                } else {
+                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+                }
+                $filename = preg_replace('/[^[:alnum:]_\-\.]/i', '_', $filename);
+
+                switch ($dest) {
+                    case 'D':
+                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+                        header('Pragma: public');
+                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+                        // force download dialog
+                        header('Content-Type: application/pdf');
+                        // use the Content-Disposition header to supply a recommended filename
+                        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+                        header('Content-Transfer-Encoding: binary');
+
+                        echo $content;
+
+                        break;
+
+                    case 'S':
+                        return $content;
+
+                    default:
+                        header('Content-Type: application/pdf');
+                        header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+                        //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+                        header('Pragma: public');
+                        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+                        header('Content-Disposition: inline; filename="' . basename($filename) . '"');
+
+                        echo $content;
+
+                        break;
+                }
+            }
+        } else {
+            throw new Exception('Cannot create Office to PDF conversion process!');
+        }
+
+        return true;
+    }
+
     public static function mazovia_to_utf8($text)
     {
         static $mazovia_code_to_utf8_letter_map = array(
@@ -1473,5 +1661,308 @@ class Utils
         }
 
         return $phoneNumber;
+    }
+
+    public static function trimUrl($url)
+    {
+        return trim(
+            str_replace(
+                array(
+                    'https://',
+                    'http://',
+                ),
+                array(
+                    '',
+                    '',
+                ),
+                $url
+            ),
+            '/'
+        );
+    }
+
+    public static function haversineDistanceMeters($lat1, $lon1, $lat2, $lon2, $earthRadius = 6371008.8)
+    {
+        $phi1 = deg2rad($lat1);
+        $phi2 = deg2rad($lat2);
+        $dphi = deg2rad($lat2 - $lat1);
+        $dlambda = deg2rad($lon2 - $lon1);
+
+        $sinDphi2 = sin($dphi / 2.0);
+        $sinDlam2 = sin($dlambda / 2.0);
+
+        $a = $sinDphi2 * $sinDphi2 + cos($phi1) * cos($phi2) * $sinDlam2 * $sinDlam2;
+        $c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
+
+        return $earthRadius * $c;
+    }
+
+    public static function getForeignEntities()
+    {
+        $DB = LMSDB::getInstance();
+
+        $entities = $DB->GetCol(
+            '(
+                SELECT DISTINCT coowner
+                FROM netnodes
+                WHERE coowner IS NOT NULL
+                    AND coowner <> ?
+            ) UNION (
+                SELECT DISTINCT foreignentity
+                FROM netlinks
+                WHERE foreignentity IS NOT NULL
+            )',
+            array(
+                '',
+            )
+        );
+
+        if (empty($entities)) {
+            $entities = array();
+        } else {
+            $entities = array_map(
+                function ($entity) {
+                    return array(
+                        'name' => $entity,
+                        'type' => 0,
+                        'id' => $entity,
+                    );
+                },
+                array_combine(
+                    $entities,
+                    $entities
+                )
+            );
+        }
+
+        if (preg_match_all('/(?<id>[[:alnum:]]+)(?:\((?<name>[^\)]+)\))?(?:\s|[\s]*[,;][\s]*|$)/', ConfigHelper::getConfig('uke.pit_foreign_entities', '', true), $m)) {
+            foreach ($m['id'] as $idx => $id) {
+                $entities[$id] = array(
+                    'name' => empty($m['name'][$idx]) || !strlen($m['name'][$idx]) ? null : $m['name'][$idx],
+                    'type' => 1,
+                    'id' => $id,
+                );
+            }
+        }
+
+        uasort(
+            $entities,
+            function ($a, $b) {
+                return strcasecmp($a['name'], $b['name']);
+            }
+        );
+
+        return $entities;
+    }
+
+    /**
+     * Zamienia HTML na czytelny tekst do użycia np. jako AltBody w PHPMailer.
+     *
+     * - usuwa <script>, <style>, <head>, <noscript>
+     * - zamienia <br> na nowe linie
+     * - zamienia akapity/bloki na podwójne nowe linie
+     * - formatuje listy jako wypunktowania
+     * - zamienia <a href="">tekst</a> na "tekst (URL)" lub samo "URL"
+     * - usuwa pozostałe tagi, dekoduje encje HTML, porządkuje białe znaki
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function generateTextFromHtml($html)
+    {
+        // Normalizacja końców linii
+        $text = str_replace(["\r\n", "\r"], "\n", (string) $html);
+
+        // Usuwamy sekcje, których w tekście nie chcemy
+        $text = preg_replace(
+            '~<(head|style|script|noscript)[^>]*>.*?</\1>~is',
+            '',
+            $text
+        );
+
+        // Linki: <a href="url">tekst</a> -> "tekst (url)" lub samo "url"
+        $text = preg_replace_callback(
+            '~<\s*a\b[^>]*href=("|\')(.*?)\1[^>]*>(.*?)</a>~is',
+            function (array $m) {
+                $url   = trim($m[2]);
+                $label = trim(strip_tags($m[3]));
+
+                if ($label === '' || $label === $url) {
+                    return $url;
+                }
+
+                return $label . ' (' . $url . ')';
+            },
+            $text
+        );
+
+        // <br> -> nowa linia
+        $text = preg_replace('~<\s*br\s*/?\s*>~i', "\n", $text);
+
+        // Blokowe tagi -> podwójna nowa linia
+        $text = preg_replace(
+            '~<\s*/?(p|div|section|article|header|footer|aside|tr|table|h[1-6])\b[^>]*>~i',
+            "\n\n",
+            $text
+        );
+
+        // Listy: <li> -> punkt wypunktowania
+        $text = preg_replace('~<\s*li\b[^>]*>~i', "\n * ", $text);
+        $text = preg_replace('~<\s*/li\s*>~i', '', $text);
+        // Usuwamy same <ul>/<ol>, ale zamieniamy je na pustą linię dla czytelności
+        $text = preg_replace('~<\s*/?(ul|ol)\b[^>]*>~i', "\n\n", $text);
+
+        // <hr> jako "-----"
+        $text = preg_replace('~<\s*hr\s*/?\s*>~i', "\n------------------------------\n", $text);
+
+        // Usuwamy pozostałe tagi HTML
+        $text = strip_tags($text);
+
+        // Dekodujemy encje HTML
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Rozbijamy na linie, czyścimy spacje
+        $lines = explode("\n", $text);
+        foreach ($lines as &$line) {
+            // Trim z lewej i prawej
+            $line = trim($line);
+            // Redukcja wielokrotnych spacji/tabów do jednej spacji
+            $line = preg_replace('~[ \t]{2,}~', ' ', $line);
+        }
+        unset($line);
+
+        $text = implode("\n", $lines);
+
+        // Redukcja wielu pustych linii do maks. dwóch
+        $text = preg_replace("~\n{3,}~", "\n\n", $text);
+
+        // Ostateczny trim
+        $text = trim($text);
+
+        // Opcjonalnie: zawijanie linii do 78 znaków (dobry zwyczaj w mailach tekstowych)
+        $text = wordwrap($text, 78, "\n");
+
+        return $text;
+    }
+
+    public static function wordWrapToArray(string $text, int $maxLen = 256): array
+    {
+        if ($maxLen < 1) {
+            throw new InvalidArgumentException('Maximum row length must have value greater than 0!');
+        }
+
+        // Normalizacja końców linii
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+
+        // Zachowujemy istniejące akapity / linie wejściowe
+        $paragraphs = explode("\n", $text);
+
+        $result = [];
+
+        foreach ($paragraphs as $paragraph) {
+            // Zachowaj pusty wiersz
+            if ($paragraph === '') {
+                $result[] = '';
+                continue;
+            }
+
+            // Podział na "słowa", z uwzględnieniem UTF-8
+            $words = preg_split('/\s+/u', trim($paragraph), -1, PREG_SPLIT_NO_EMPTY);
+
+            if (!$words) {
+                $result[] = '';
+                continue;
+            }
+
+            $currentLine = '';
+
+            foreach ($words as $word) {
+                if ($currentLine === '') {
+                    // Jeśli pojedynczy wyraz jest dłuższy niż limit,
+                    // zostawiamy go w całości w osobnym wierszu
+                    $currentLine = $word;
+                    continue;
+                }
+
+                $candidate = $currentLine . ' ' . $word;
+
+                if (mb_strlen($candidate, 'UTF-8') <= $maxLen) {
+                    $currentLine = $candidate;
+                } else {
+                    $result[] = $currentLine;
+                    $currentLine = $word;
+                }
+            }
+
+            if ($currentLine !== '') {
+                $result[] = $currentLine;
+            }
+        }
+
+        return $result;
+    }
+
+    public static function isEuCountryCode(string $countryCode): bool
+    {
+        static $euCountryCodes = [
+            // Austria
+            'AT' => 'AT',
+            // Belgia
+            'BE' => 'BE',
+            // Bułgaria
+            'BG' => 'BG',
+            // Cypr
+            'CY' => 'CY',
+            // Czechy
+            'CZ' => 'CZ',
+            // Dania
+            'DK' => 'DK',
+            // Estonia
+            'EE' => 'EE',
+            // Finlandia
+            'FI' => 'FI',
+            // Francja
+            'FR' => 'FR',
+            // Niemcy
+            'DE' => 'DE',
+            // Grecja
+            'EL' => 'EL',
+            // Chorwacja
+            'HR' => 'HR',
+            // Węgry
+            'HU' => 'HU',
+            // Irlandia
+            'IE' => 'IE',
+            // Włochy
+            'IT' => 'IT',
+            // Łotwa
+            'LV' => 'LV',
+            // Litwa
+            'LT' => 'LT',
+            // Luksemburg
+            'LU' => 'LU',
+            // Malta
+            'MT' => 'MT',
+            // Holandia
+            'NL' => 'NL',
+            // Polska
+            //'PL' => 'PL',
+            // Portugalia
+            'PT' => 'PT',
+            // Rumunia
+            'RO' => 'RO',
+            // Słowacja
+            'SK' => 'SK',
+            // Słowenia
+            'SI' => 'SI',
+            // Hiszpania
+            'ES' => 'ES',
+            // Szwecja
+            'SE' => 'SE',
+            // Irlandia Północna
+            'XI' => 'XI',
+        ];
+
+        return isset($euCountryCodes[$countryCode]);
     }
 }

@@ -23,14 +23,14 @@ $(function() {
                 ownerElem.val(owner_prev_state);
             }
         }
-        updateAdvancedSelects(stateElem);
-        updateAdvancedSelects(ownerElem);
+        updateAdvancedSelectsTest(stateElem);
+        updateAdvancedSelectsTest(ownerElem);
     });
 
     $("#queue-selection").change(function() {
         {if !empty($reset_ticket_state)}
             $('#state option:eq("{$smarty.const.RT_NEW}")').prop("selected", true);
-            updateAdvancedSelects(stateElem);
+            updateAdvancedSelectsTest(stateElem);
             $("#resolve").prop("checked", false);
         {/if}
         xajax_queue_changed($(this).val(), $("#rtverifiers select").val());
@@ -50,7 +50,7 @@ $(function() {
         } else {
             ownerElem.val($(this).attr('data-old-userid'));
         }
-        updateAdvancedSelects(ownerElem);
+        updateAdvancedSelectsTest(ownerElem);
     });
 });
 

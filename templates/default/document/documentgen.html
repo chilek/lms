@@ -11,15 +11,45 @@
 		border-top: none;
 	}
 
+	#document-period {
+		display: flex;
+	}
+
+	#document-period > *:not(:first-child) {
+		margin-left: 0.5em;
+	}
+
+	#document-period > div {
+		display: flex;
+	}
+
+	#document-period > div:first-child {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#document-period > div:first-child > :not(:first-child) {
+		margin-top: 0.3em;
+	}
+
+	#document-period > div:not(:first-child) {
+		display: flex;
+		align-items: center;
+		margin-left: 0.5em;
+	}
+
 </style>
 
 <script>
 
 	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+		xajax_DocTemplateChanged(
+			$('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-			0);
+			0,
+			{}
+		);
 	}
 
 	function DocTypeChanged() {
@@ -59,7 +89,7 @@
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onChange="DocTypeChanged();"
-					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}
+					{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"}
 					required>
 					<option value="0">{trans("— select type —")}</option>
 					{foreach $_DOCTYPES as $key => $item}
@@ -125,26 +155,37 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="period"}
 			</td>
-			<td>
+			<td class="valign-top">
 				<strong>{trans("Period")}</strong>
 			</td>
 			<td>
-				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
-				{trans("from:")}
-				<input type="text" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">
-				{trans("to:")}
-				<input type="text" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
-					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-					size="10">
+				<div id="document-period">
+					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
+					<div>
+						<label>
+							{trans("from")}
+							<input type="text" name="document[fromdate]" id="fromdate"
+								value="{if $document.fromdate}{$document.fromdate}{/if}"
+								placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+								{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+								size="10">&nbsp;
+						</label>
+						<label>
+							{trans("to")}
+							<input type="text" name="document[todate]" id="todate"
+								value="{if $document.todate}{$document.todate}{/if}"
+								placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+								{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+								size="10">
+						</label>
+					</div>
+					{date_period_preset from="#fromdate" to="#todate" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -328,6 +369,10 @@
 		$('[name="document[type]"]').change(function() {
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
 		});
+
+		{if !empty($defaultDocEngine)}
+			DocTemplateChanged();
+		{/if}
 	});
 
 </script>

@@ -106,7 +106,7 @@
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
-        <COL style="width: 1%;">
+        <COL style="width: 1%; min-width: 20em;">
         <COL style="width: 91%;">
         <COL style="width: 1%;">
     </COLGROUP>
@@ -245,14 +245,17 @@
 		<TD class="text-right nobr">
 			{if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
-		<TD class="text-right nobr">
-			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:20}</A>{else} - {/if}
+		<TD class="text-right">
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:110}</A>{else} - {/if}
 		</TD>
 		<TD>
 			{$balance.comment|escape}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.docid}
+				{if !empty($balance.ksefhash)}
+					{hint icon="lock" url="?m=invoiceksefinfo&id={$balance.docid}" tooltip_class="lms-ui-ksef-qr-code"}
+				{/if}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
 						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"

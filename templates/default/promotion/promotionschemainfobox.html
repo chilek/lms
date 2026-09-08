@@ -119,9 +119,13 @@
 							{foreach $schema.attachments as $attachmentid => $attachment}
 								<tr>
 									<td>
-										{documentview id="{$schema.id}-{$attachment.id}" type=$attachment.contenttype name=$attachment.filename
-											url="?m=promotionattachmentview&schemaid={$schema.id}&attachmentid={$attachment.id}" external=true
-											text="{$attachment.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/', $attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)} xls{/if}\"></i>"}
+										{documentview
+											id="{$schema.id}-{$attachment.id}"
+											type=$attachment.contenttype
+											name=$attachment.filename
+											url="?m=promotionattachmentview&schemaid={$schema.id}&attachmentid={$attachment.id}"
+											external=true
+										}
 									</td>
 									<td>
 										{$attachment.label|escape}

@@ -64,7 +64,7 @@ switch ($_RELOAD_TYPE) {
                     echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
                     echo '<TABLE WIDTH="100%" class="superlight" CELLPADDING="5"><TR><TD class="fall">';
                     foreach ($execlist as $execcmd) {
-                        $execcmd = str_replace('%host', $host['name'], $execcmd);
+                        $execcmd = str_replace('%host', escapeshellarg($host['name']), $execcmd);
                         $execcmd_buffer = popen("$execcmd", "r");
                         echo '<P><B>'.$execcmd.'</B>:</P>';
                         flush();

@@ -1,12 +1,14 @@
-<tr id="{$row_id}" class="highlight">
+<tr id="row-{$row_id}" class="highlight">
 	<td>
         <input type="hidden" name="rule[group][{$row_id}][ruleid]"  value="{$row_id}">
 		<input type="hidden" name="rule[group][{$row_id}][groupid]" value="{$group.groupid}">
-		{$group.groupid}
+		<span class="number">
+			{$iteration}
+		</span>
 	</td>
 	<td>
 		<input type="hidden" name="rule[group][{$row_id}][name]" value="{$group.name}">
-		{$group.name}
+		{$group.name} (#{$group.groupid})
 	</td>
 	<td>
 		<input type="number"
@@ -34,6 +36,6 @@
 		       {tip trigger="unit_size{$row_id}"}>
 	</td>
 	<td>
-		<a href="javascript:deleteRow('{$row_id}')">{trans("delete")}</a>
+		{button type="link" href="javascript:deleteRow('row-{$row_id}')" icon="delete" tip="Delete"}
 	</td>
 </tr>

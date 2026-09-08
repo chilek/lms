@@ -32,9 +32,17 @@ if (isset($_POST['marks'])) {
     }
 }
 
+$selectedAttachments = [];
+if (!empty($_POST['attachment-marks'])) {
+    foreach ($_POST['attachment-marks'] as $documentId => $documentAttachments) {
+        $selectedAttachments = array_merge($selectedAttachments, array_keys($documentAttachments));
+    }
+    $selectedAttachments = Utils::filterIntegers($selectedAttachments);
+}
+
 if (!empty($docids)) {
     foreach ($docids as $id) {
-        if (!$LMS->DeleteDocument($id)) {
+        if (!$LMS->DeleteDocument($id, $selectedAttachments)) {
             access_denied();
         }
     }

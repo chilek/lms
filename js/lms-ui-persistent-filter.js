@@ -118,7 +118,7 @@ $(function() {
 	});
 
 	if ($('.lms-ui-persistent-filter .scombobox').length) {
-		$('.lms-ui-persistent-filter .scombobox').scombobox('change', function () {
+		$('.lms-ui-persistent-filter .scombobox').scombobox('change', function() {
 			var div = $(this).closest('div.lms-ui-persistent-filter');
 			var selectelem = div.find('.scombobox')
 			var selection = selectelem.scombobox('val');
@@ -140,5 +140,9 @@ $(function() {
 				location.href = url;
 			}
 		}, 'lms-ui');
+		$('.lms-ui-persistent-filter .scombobox-display').on('input', function() {
+			var selection = $(this).val();
+			$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', selection.length < 5 || selection.match(/^— /));
+		});
 	}
 });

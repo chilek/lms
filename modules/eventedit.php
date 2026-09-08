@@ -37,9 +37,14 @@ $event_overlap_warning = ConfigHelper::checkConfig('timetable.event_overlap_warn
 $max_userlist_size = ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $now = time();
+$currentuser = Auth::GetCurrentUser();
 
-if (isset($_GET['id'])) {
-    $event = $LMS->GetEvent($_GET['id']);
+$action = isset($_GET['action']) ? $_GET['action'] : null;
+$id = !empty($_GET['id']) ? intval($_GET['id']) : null;
+$ticketid = !empty($_GET['ticketid']) ? intval($_GET['ticketid']) : null;
+
+if (!empty($id)) {
+    $event = $LMS->GetEvent($id);
     if (empty($event)) {
         $SESSION->redirect('?m=eventlist');
     }
@@ -66,38 +71,38 @@ $action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
-            $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
+            $LMS->OpenEvent($id);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die(trans('Cannot open event - event closed too long ago.'));
+            die(trans('Error: cannot open event - event closed too long ago'));
         }
         break;
     case 'close':
         $SESSION->remove_history_entry();
-        if (isset($_GET['ticketid'])) {
-            $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
+        if (isset($ticketid)) {
+            $LMS->CloseEvent(array('ticketid' => $ticketid));
         } else {
-            $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE id = ?', array(Auth::GetCurrentUser(), $_GET['id']));
+            $LMS->CloseEvent(array('id' => $id));
         }
         $SESSION->redirect($backurl);
         break;
     case 'assign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && (($now - $event['closeddate']) < $aee)) || $superuser) {
-            $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
+            $LMS->AssignUserToEvent($id, $currentuser);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die("Cannot assign to event - event closed too long ago.");
+            die(trans("Error: cannot assign to event - event closed too long ago"));
         }
         break;
     case 'unassign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && (($now - $event['closeddate']) < $aee)) || $superuser) {
-            $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
+            $LMS->UnassignUserFromEvent($id, $currentuser);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
-            die("Cannot unassign from event - event closed too long ago.");
+            die(trans("Error: cannot unassign from event - event closed too long ago"));
         }
         break;
 }
@@ -222,7 +227,7 @@ if (isset($_POST['event'])) {
     if (!$error) {
         $event['private'] = isset($event['private']) ? 1 : 0;
 
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] <= 0 ? null : $event['address_id'];
         $event['nodeid'] = empty($event['nodeid']) ? null : $event['nodeid'];
 
         $event['date'] = $date;
@@ -279,13 +284,15 @@ if (!isset($event['usergroup'])) {
 
 $SMARTY->assign(array(
     'xajax' => $LMS->RunXajax(),
-    'netdevices' => $netdevices,
-    'netnodes' => $LMS->GetNetNodes(),
+    'netdevlist' => $netdevices,
+    'netnodelist' => $LMS->GetNetNodes(),
     'max_userlist_size' => $max_userlist_size,
     'customerlist' => $big_networks ? null : $LMS->GetAllCustomerNames(),
     'userlist' => $userlist,
     'usergroups' => $usergroups,
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'error' => $error,
-    'event' => $event));
+    'event' => $event,
+));
 
 $SMARTY->display('event/eventmodify.html');

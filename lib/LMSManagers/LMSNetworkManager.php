@@ -72,6 +72,214 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $res;
     }
 
+    public function SplitNetworkInHalf(int $netid): int
+    {
+        if ($netid <= 0) {
+            throw new InvalidArgumentException('Invalid network ID.');
+        }
+
+        $network = $this->GetNetworkRecord($netid);
+        if (!$network) {
+            throw new RuntimeException('Network does not exist.');
+        }
+
+        $old_prefix = intval($network['prefix']);
+        if ($old_prefix >= 31) {
+            throw new InvalidArgumentException('Network is too small to be split.');
+        }
+
+        $prefix = $old_prefix + 1;
+        $mask = prefix2mask($prefix);
+        $subnet_size = 2 ** (32 - $prefix);
+
+        $first_network = intval($network['addresslong']);
+        $second_network = $first_network + $subnet_size;
+        $first_broadcast = $second_network - 1;
+        $second_broadcast = $second_network + $subnet_size - 1;
+        $old_broadcast = $second_broadcast;
+
+        $all_assignable = !empty($network['allassignable'])
+            || ConfigHelper::getConfig('phpui.network_all_addresses_assignable');
+
+        $usable_range = static function (int $net, int $broadcast) use ($all_assignable): array {
+            if ($all_assignable) {
+                return [$net, $broadcast];
+            }
+            return [$net + 1, $broadcast - 1];
+        };
+
+        [$old_usable_start, $old_usable_end] = $usable_range($first_network, $old_broadcast);
+        [$first_usable_start, $first_usable_end] = $usable_range($first_network, $first_broadcast);
+        [$second_usable_start, $second_usable_end] = $usable_range($second_network, $second_broadcast);
+
+        $clip_range = static function (int $start, int $end, int $usable_start, int $usable_end): array {
+            $range_start = max($start, $usable_start);
+            $range_end = min($end, $usable_end);
+            if ($range_start > $range_end) {
+                return ['', ''];
+            }
+            return [long_ip($range_start), long_ip($range_end)];
+        };
+
+        $gateways = [
+            'first' => '',
+            'second' => '',
+        ];
+
+        if (!empty($network['gateway'])) {
+            $gateway = ip_long($network['gateway']);
+            if ($gateway === $old_usable_start) {
+                $gateways['first'] = long_ip($first_usable_start);
+                $gateways['second'] = long_ip($second_usable_start);
+            } elseif ($gateway === $old_usable_end) {
+                $gateways['first'] = long_ip($first_usable_end);
+                $gateways['second'] = long_ip($second_usable_end);
+            } elseif ($gateway >= $first_usable_start && $gateway <= $first_usable_end) {
+                $gateways['first'] = $network['gateway'];
+            } elseif ($gateway >= $second_usable_start && $gateway <= $second_usable_end) {
+                $gateways['second'] = $network['gateway'];
+            }
+        }
+
+        $first_dhcp_start = '';
+        $first_dhcp_end = '';
+        $second_dhcp_start = '';
+        $second_dhcp_end = '';
+
+        if (!empty($network['dhcpstart']) && !empty($network['dhcpend'])) {
+            $dhcp_start = ip_long($network['dhcpstart']);
+            $dhcp_end = ip_long($network['dhcpend']);
+            [$first_dhcp_start, $first_dhcp_end] = $clip_range(
+                $dhcp_start,
+                $dhcp_end,
+                $first_usable_start,
+                $first_usable_end
+            );
+            [$second_dhcp_start, $second_dhcp_end] = $clip_range(
+                $dhcp_start,
+                $dhcp_end,
+                $second_usable_start,
+                $second_usable_end
+            );
+        }
+
+        $second_address = long_ip($second_network);
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE netid = ?
+                AND ipaddr = ?
+            LIMIT 1',
+            [$netid, $second_network]
+        )) {
+            throw new RuntimeException(
+                'Unable to split network: network address is already assigned to a computer.'
+            );
+        }
+
+        if ($this->NetworkOverlaps($second_address, $mask, $network['hostid'], $netid)) {
+            throw new RuntimeException('Specified IP address overlaps with other network!');
+        }
+
+        $counter = 2;
+        do {
+            $second_name = strtoupper($network['name'] . '_' . $counter++);
+        } while ($this->db->GetOne('SELECT id FROM networks WHERE name = ? LIMIT 1', [$second_name]));
+
+        $this->db->BeginTrans();
+
+        try {
+            $args = [
+              'id' => $netid,
+              'name' => $network['name'],
+              'address' => $network['address'],
+              'mask' => $mask,
+              'interface' => strtolower($network['interface'] ?? ''),
+              'gateway' => $gateways['first'] ?? null,
+              'dns' => $network['dns'],
+              'dns2' => $network['dns2'],
+              'domain' => $network['domain'],
+              'wins' => $network['wins'],
+              'dhcpstart' => $first_dhcp_start ?? null,
+              'dhcpend' => $first_dhcp_end ?? null,
+              'notes' => $network['notes'],
+              'hostid' => $network['hostid'],
+              'vlanid' => empty($network['vlanid']) ? null : intval($network['vlanid']),
+              SYSLOG::RES_HOST => empty($network['hostid']) ? null : $network['hostid'],
+              'authtype' => $network['authtype'],
+              'snat' => !empty($network['snat']) ? $network['snat'] : null,
+              'pubnetid' => empty($network['pubnetid']) ? null : $network['pubnetid'],
+              'allassignable' => empty($network['allassignable']) ? 0 : 1,
+              'disabled' => intval($network['disabled']),
+            ];
+
+            $res = $this->NetworkUpdate($args);
+
+            if ($res === false) {
+                throw new RuntimeException('Unable to update original network.');
+            }
+
+            $args['name'] = $second_name;
+            $args['address'] = $second_address;
+            $args['gateway'] = $gateways['second'];
+            $args['dhcpstart'] = $second_dhcp_start;
+            $args['dhcpend'] = $second_dhcp_end;
+            unset($args['id']);
+
+            $res = $this->NetworkAdd($args);
+
+            if ($res === false) {
+                throw new RuntimeException('Unable to create second network.');
+            }
+
+            $newnetid = $this->db->GetLastInsertID('networks');
+            if (!$newnetid) {
+                throw new RuntimeException('Unable to create second network.');
+            }
+
+            $res = $this->db->Execute(
+                'UPDATE nodes
+                SET netid = ?
+                WHERE netid = ?
+                    AND ipaddr >= ?
+                    AND ipaddr < ?',
+                [
+                    $newnetid,
+                    $netid,
+                    $second_network,
+                    $second_network + $subnet_size,
+                ]
+            );
+
+            if ($res === false) {
+                throw new RuntimeException('Unable to move nodes to new network.');
+            }
+
+            if ($this->syslog) {
+                $this->syslog->AddMessage(
+                    SYSLOG::RES_NETWORK,
+                    SYSLOG::OPER_DIVIDE,
+                    [
+                        SYSLOG::RES_NETWORK => $netid,
+                        SYSLOG::RES_HOST => $network['hostid'],
+                        'newnetid' => $newnetid,
+                        'network' => $network['address'] . '/' . $old_prefix,
+                        'newnetwork1' => long_ip($first_network) . '/' . $prefix,
+                        'newnetwork2' => $second_address . '/' . $prefix,
+                    ]
+                );
+            }
+
+            $this->db->CommitTrans();
+
+            return $newnetid;
+        } catch (Throwable $e) {
+            $this->db->RollbackTrans();
+            throw $e;
+        }
+    }
+
     public function IsIPFree($ip, $netid = 0)
     {
         if ($netid) {
@@ -94,7 +302,19 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function IsIPGateway($ip)
     {
-        return (bool)$this->db->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip));
+        $network_all_addresses_assignable = ConfigHelper::checkConfig('phpui.network_all_addresses_assignable');
+
+        return (bool)$this->db->GetOne(
+            'SELECT gateway
+            FROM networks
+            WHERE gateway = ?
+                AND allassignable = ?'
+                . ($network_all_addresses_assignable ? ' AND 1 = 0' : ''),
+            array(
+                $ip,
+                0,
+            )
+        );
     }
 
     public function GetPrefixList()
@@ -334,59 +554,62 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['compareType'] = '=';
         }
 
-        if (empty($search['operatorType'])) {
+        if (empty($search['operatorType']) || !preg_match('/^(AND|OR)$/i', $search['operatorType'])) {
             $search['operatorType'] = 'AND';
+        } else {
+            $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
                     case 'network_name':
-                        $sqlwhere .= " lower(n.name) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.name) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'network_address':
-                        $sqlwhere .= " inet_ntoa(address) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' inet_ntoa(address) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'dhcp':
-                        $sqlwhere .= " '$v' BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' BETWEEN n.dhcpstart AND n.dhcpend ' . $search['operatorType'];
                         break;
 
                     case 'size':
-                        $sqlwhere .= " $v ". $search['size_compare_char'] . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
+                        $sqlwhere .= ' ' . $this->db->Escape($v) . ' ' . $search['size_compare_char'] . ' pow(2, 32 - mask2prefix(inet_aton(n.mask))) ' . $search['operatorType'];
                         break;
 
                     case 'interface':
-                        $sqlwhere .= " lower(n.interface) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.interface) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType']
+                        ;
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= " vl.vlanid = " . $v . " " . $search['operatorType'];
+                        $sqlwhere .= ' vl.vlanid = ' . $this->db->Escape($v) . ' ' . $search['operatorType'];
                         break;
 
                     case 'gateway':
-                        $sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.gateway ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'dns':
-                        $sqlwhere .= " (n.dns " . $search['compareType'] . " '" . $p.$v.$p . "' OR n.dns2 " . $search['compareType'] . " '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' (n.dns ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' OR n.dns2 ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'wins':
-                        $sqlwhere .= " n.wins " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+                        $sqlwhere .= ' n.wins ' . $search['compareType'] . ' ' . $this->db->Escape($p . $v . $p) . ' ' . $search['operatorType'];
                         break;
 
                     case 'domain':
-                        $sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.domain) ' . $search['compareType'] . ' lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'host':
-                        $sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? '" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? ' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
 
                     case 'description':
-                        $sqlwhere .= " lower(n.notes) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
+                        $sqlwhere .= ' lower(n.notes) ?LIKE? lower(' . $this->db->Escape($p . $v . $p) . ') ' . $search['operatorType'];
                         break;
                 }
             }
@@ -428,7 +651,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			LEFT JOIN hosts h ON h.id = n.hostid
 			LEFT JOIN vlans vl ON n.vlanid = vl.id'
             . ($sqlwhere != ' WHERE' ? $sqlwhere : '')
-            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+            . (empty($sqlord) ? '' : $sqlord . ' ' . $direction)
             . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
             . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''),
             array(intval(ConfigHelper::getConfig('phpui.lastonline_limit')))
@@ -439,7 +662,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $assigned = 0;
             $online = 0;
 
-            foreach ($networks as $idx => $row) {
+            foreach ($networks as $row) {
                 $size += $row['size'];
                 $assigned += $row['assigned'];
                 $online += $row['online'];
@@ -940,7 +1163,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
                     } elseif (!$prefix_31 && !$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
+                    } elseif (!$network_all_addresses_assignable && empty($network['allassignable']) && $network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
                     } elseif ($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend'])) {
                         $network['nodes']['name'][$i] = '<b>DHCP</b>';

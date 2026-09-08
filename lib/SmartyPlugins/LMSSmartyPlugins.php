@@ -492,6 +492,8 @@ class LMSSmartyPlugins
 
         // base name for localization inputs
         $input_name             = 'location';
+        $input_name_ten         = 'location_ten';
+        $input_name_entity_type = 'location_entity_type';
         $input_name_country_id  = 'location_country_id';
         $input_name_state       = 'location_state_name';
         $input_name_state_id    = 'location_state';
@@ -513,6 +515,8 @@ class LMSSmartyPlugins
             $p = trim($params['prefix']);
 
             $input_name             = $p . '[' . $input_name             . ']';
+            $input_name_ten         = $p . '[' . $input_name_ten         . ']';
+            $input_name_entity_type = $p . '[' . $input_name_entity_type . ']';
             $input_name_country_id  = $p . '[' . $input_name_country_id  . ']';
             $input_name_state       = $p . '[' . $input_name_state       . ']';
             $input_name_state_id    = $p . '[' . $input_name_state_id    . ']';
@@ -559,6 +563,46 @@ class LMSSmartyPlugins
                   <input type="hidden" value="' . ($params['location'] ?? '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
+
+        if (isset($params['location_address_type'])
+            && ($params['location_address_type'] == LOCATION_ADDRESS || $params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['location_address_type'] == POSTAL_ADDRESS)) {
+            echo '<tr>
+                    <td>' . trans('TEN') . '</td>
+                    <td>
+                        <input type="text" value="' . (!empty($params['location_ten']) ? htmlspecialchars($params['location_ten']) : '')
+                            . '" name="' . $input_name_ten . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="ten">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="0" data-address="entity-type"
+                            ' . (empty($params['location_entity_type']) ? ' checked' : '') . '>
+                            ' . trans('<!ksef>other (role 2)') . '
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="1" data-address="entity-type"
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 1 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>Local Government Unit (role 8)') . '
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="2" data-address="entity-type"
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 2 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>VAT group (role 10)') . '
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="' . $input_name_entity_type . '" value="3" data-address="entity-type"
+                            ' . (!empty($params['location_entity_type']) && $params['location_entity_type'] == 3 ? ' checked' : '') . '>
+                            ' . trans('<!ksef>employee (role 11)') . '
+                        </label>
+                    </td>
+                </tr>';
+        }
 
         echo '<tr>
               <td>' . trans('State') . '</td>
@@ -635,7 +679,8 @@ class LMSSmartyPlugins
               <td class="nobr">' . trans('Postcode') . '</td>
               <td>
                 <input type="text" value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip
-                    . '" data-address="zip" size="7" maxlength="10"' . ($zipcode_required ? ' required' : '') . '>
+                    . '" data-address="zip" size="7" maxlength="10"' . (!empty($params['location_city_name']) && $zipcode_required ? ' required' : '')
+                    . ($zipcode_required ? ' data-required="1"' : '') . '>
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
           </tr>';
@@ -661,9 +706,9 @@ class LMSSmartyPlugins
 
             foreach ($countries as $v) {
                 if (isset($params['location_country_id']) && $v['id'] == $params['location_country_id']) {
-                    echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
+                    echo '<option value="'.$v['id'].'" data-ccode="' . $v['ccode'] . '" selected>' . trans($v['name']) . '</option>' ;
                 } else {
-                    echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
+                    echo '<option value="'.$v['id'].'" data-ccode="' . $v['ccode'] . '">' . trans($v['name']) . '</option>' ;
                 }
             }
 
@@ -733,6 +778,12 @@ class LMSSmartyPlugins
         $uid = uniqid();
         $location_str = isset($params['data']['location_address_type']) && $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
+
+        $location_str .= isset($params['data']['location_address_type'])
+            && ($params['data']['location_address_type'] == LOCATION_ADDRESS || $params['data']['location_address_type'] == DEFAULT_LOCATION_ADDRESS || $params['data']['location_address_type'] == POSTAL_ADDRESS)
+            && !empty($params['data']['location_ten'])
+                ? trans('TEN') . ' ' . htmlspecialchars($params['data']['location_ten']) . ', '
+                : '';
 
         $location_str .= isset($params['data']['location'])
             ? (
@@ -1356,16 +1407,17 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         $argv = array(
-            'userAccess' => empty($params['hide_disabled']),
-            'hideDeleted' => empty($params['hide_deleted']),
-            'short' => true
+            'userAccess' => !empty($params['hide_disabled']),
+            'hideDeleted' => !empty($params['hide_deleted']),
+            'order' => 'rname,asc',
+            'short' => true,
         );
         $userlist = $LMS->getUserList($argv);
 
         $elemid = $params['elemid'] ?? false;
         $elemname = $params['elemname'] ?? false;
         $class = $params['class'] ?? false;
-        $selected = empty($params['selected']) ? false : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
+        $selected = empty($params['selected']) ? array() : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
         $placeholder = empty($params['placeholder']) ? trans('Select users') : trans($params['placeholder']);
         $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
         $trigger = $params['trigger'] ?? $elemname;
@@ -1374,15 +1426,37 @@ class LMSSmartyPlugins
         $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
         $required = !empty($params['required']);
 
+        $selected = array_combine($selected, $selected);
+
+        $visible = $params['visible'] ?? null;
+        if (!empty($visible)) {
+            $visible = array_combine($visible, $visible);
+            foreach ($userlist as &$user) {
+                $user['hidden'] = !isset($visible[$user['id']]);
+                if ($user['hidden'] && isset($selected[$user['id']])) {
+                    unset($selected[$user['id']]);
+                }
+            }
+            unset($user);
+        }
+
         $options = '';
 
         foreach ($userlist as $item) {
+            $classes = array();
+            if (empty($item['accessinfo'])) {
+                $classes[] = 'blend';
+            }
+            if (!empty($item['deleted'])) {
+                $classes[] = 'crossed';
+            }
             $options .= '<option value="' . $item['id'] . '"'
-                . (is_array($selected) && in_array($item['id'], $selected) ? ' selected' : '')
-                . ' class="' . (empty($item['accessinfo']) ? 'blend' : '') . (empty($item['deleted']) ? '' : ' crossed') . '"'
+                . (isset($selected[$item['id']]) ? ' selected' : '')
+                . (empty($classes) ? '' : ' class="' . implode(' ', $classes) . '"')
+                . (empty($item['hidden']) ? '' : ' style="display: none;"')
                 . '>' . htmlspecialchars(substr(trans($item['rname']), 0, 40)) . ' (' . $item['login'] . ')</option>';
         }
-        $options .= '<option value="-1"' . (is_array($selected) && in_array('-1', $selected) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
+        $options .= '<option value="-1"' . (isset($selected['-1']) ? ' selected' : '') . ' data-exclusive> ' . trans('— unassigned —') . '</option>';
 
         return '<select data-placeholder="' . $placeholder . '"'
             . ($elemname ? ' name="' . $elemname . '"' : '')
@@ -1390,7 +1464,7 @@ class LMSSmartyPlugins
             . ($form ? ' form="' . $form . '"' : '')
             . ($multiple ? ' multiple' : '')
             . ($required ? ' required' : '')
-            . ' class="lms-ui-advanced-select' . ($class ? ' ' . $class : '') . '"'
+            . ' class="lms-ui-advanced-select-test' . ($class ? ' ' . $class : '') . '"'
             . ' onChange="' . $onChange . '"'
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
@@ -1402,8 +1476,13 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         static $netdevicelist = array();
-        if (empty($netdevicelist)) {
-            $netdevicelist = $LMS->GetNetDevList();
+
+        if (empty($params['list'])) {
+            if (empty($netdevicelist)) {
+                $netdevicelist = $LMS->GetNetDevList();
+            }
+        } else {
+            $netdevicelist = $params['list'];
         }
 
         unset($netdevicelist['total'], $netdevicelist['order'], $netdevicelist['direction']);
@@ -1421,7 +1500,7 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netdev-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netdev-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
         $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
         foreach ($netdevicelist as $item) {
@@ -1458,7 +1537,7 @@ class LMSSmartyPlugins
             $template
         );
 
-        $class = 'class="netnode-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+        $class = 'class="netnode-list lms-ui-advanced-select-test ' . (!empty($params['class']) ? $params['class'] : null) . '"';
 
         $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
         foreach ($netnodelist as $item) {
@@ -1466,7 +1545,8 @@ class LMSSmartyPlugins
                 . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
         }
 
-        return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
+        return '<select data-placeholder="' . trans("— none —") . '" data-allow-clear="true" '
+            . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
     }
 
     public static function identityTypesFunction(array $params, $template)
@@ -1499,11 +1579,17 @@ class LMSSmartyPlugins
 
         return '<a class="lms-ui-button lms-ui-hint-' . $mode
             . (isset($params['class']) ? ' ' . $params['class'] : '') . '"'
+            . (isset($params['tooltip_class']) ? ' data-tooltip-class="' . $params['tooltip_class'] . '"' : '')
             . (isset($params['content']) ? ' data-hint="' . htmlspecialchars(trans($params['content'])) . '"' : '')
             . (isset($params['text']) ? ' data-hint="' . htmlspecialchars($params['text']) . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
-            . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i></a>';
+            . (empty($params['disabled']) ? '' : ' disabled')
+            . (empty($params['id']) ? '' : ' id="' . $params['id'] . '"')
+            . ($mode == self::HINT_TYPE_TOGGLE && !empty($params['tip']) ? ' title="' . trans($params['tip']) . '"' : '')
+            . '><i class="lms-ui-icon-' . ($params['icon'] ?? 'hint') . ' fa-fw"></i>'
+            . (empty($params['label']) ? '' : ' <span class="lms-ui-label">' . trans($params['label']) . '</label>')
+            . '</a>';
     }
 
     public static function speechRecognitionFunction(array $params, $template)
@@ -1854,12 +1940,14 @@ class LMSSmartyPlugins
         if (!isset($scale)) {
             $scale = 1;
         }
+        $width = isset($params['width']) ? filter_var($params['width'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
+        $height = isset($params['height']) ? filter_var($params['height'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         $color = $params['color'] ?? 'black';
         $padding = isset($params['padding']) && is_array($params['padding']) && count($params['padding']) == 4
             ? $params['padding']
             : array(0, 0, 0, 0);
 
-        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $scale * -1, $scale * -1 * 30, $color, $padding);
+        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $width ?? $scale * -1, $height ?? $scale * -1 * 30, $color, $padding);
 
         $img_element = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
         if ($show_text) {
@@ -1869,5 +1957,73 @@ class LMSSmartyPlugins
         } else {
             return $img_element;
         }
+    }
+
+    public static function contactFunction($params, $template)
+    {
+        $content = $params['content'] ?? null;
+        $text = $params['text'] ?? null;
+        $type = $params['type'] ?? null;
+        $clipboard_button = !empty($params['clipboard_button']) && ConfigHelper::checkValue($params['clipboard_button']);
+        $qrcode_button = !empty($params['qrcode_button']) && ConfigHelper::checkValue($params['qrcode_button']);
+
+        if (!isset($content, $type)) {
+            return '';
+        }
+
+        if ($type & (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_EMAIL)) {
+            if ($clipboard_button) {
+                $content .= self::iconFunction(
+                    array(
+                        'name' => 'copy',
+                        'class' => 'lms-ui-button-clipboard',
+                        'data_clipboard_text' => $text,
+                    ),
+                    $template
+                );
+            }
+
+            if ($qrcode_button) {
+                $content .= self::hintFunction(
+                    array(
+                        'icon' => 'qrcode',
+                        'tooltip_class' => 'lms-ui-qrcode',
+                        'text' => self::barcodeFunction(
+                            array(
+                                'type' => 'QRCODE',
+                                'text' => ($type & CONTACT_EMAIL ? 'mailto:' : 'tel:') . $text,
+                                'show_text' => false,
+                                'width' => -5,
+                                'height' => -5,
+                            ),
+                            $template
+                        ),
+                    ),
+                    $template
+                );
+            }
+        }
+
+        return $content;
+    }
+
+    public static function nobrBlock($params, $content, $template, $repeat)
+    {
+        if ($repeat) {
+            return '';
+        } else {
+            return '<span class="nobr">' . $content . '</span>';
+        }
+    }
+
+    public static function dateFunction($params, $template)
+    {
+        static $dateFormat = null;
+
+        if (!isset($dateFormat)) {
+            $dateFormat = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
+        }
+
+        return date($dateFormat, $params['date'] ?? $params['value'] ?? time());
     }
 }

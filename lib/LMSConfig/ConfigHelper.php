@@ -150,6 +150,26 @@ class ConfigHelper
         return true;
     }
 
+    public static function getSubSections($section_name)
+    {
+        return LMSConfig::getConfig()->getSubSections($section_name);
+    }
+
+    public static function parseSubSection($sub_section_name)
+    {
+        if (preg_match('/[a-z0-9_-]+-(?<type>[[:alnum:]]+):(?<name>[a-z0-9_-]+)$/', $sub_section_name, $m)) {
+            return array_filter(
+                $m,
+                function ($key) {
+                    return preg_match('/^(type|name)$/', $key);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Determines if user has got access privilege
      *

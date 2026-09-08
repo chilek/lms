@@ -43,6 +43,10 @@ foreach ($ids as $id) {
         continue;
     }
 
+    if ($LMS->isKsefDocument($id)) {
+        continue;
+    }
+
     $hook_data = $LMS->executeHook('invoicedel_before_delete', array(
         'id' => $id,
     ));

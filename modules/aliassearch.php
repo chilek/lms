@@ -137,7 +137,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($aliaslist['direction']);
 
         $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
-        $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $queuedata['total']);
+        $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $listdata['total']);
         $start = ($page - 1) * $pagelimit;
 
         $SESSION->save('alsp', $page);

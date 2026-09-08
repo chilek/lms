@@ -72,7 +72,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype']   ?: 0,
-            'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] >= 0 ? $nodedata['address_id'] : null,
+            'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] > 0 ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
         );
 
@@ -356,6 +356,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *                  -1 = project id is ignored,
      *              createdfrom - node created after this date (default: null = ignore),
      *              createdto - node created before this date (default: null = ignore),
+     *              modifiedfrom - node modified after this date (default: null = ignore),
+     *              modifiedto - node modified before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
      *              address-origin - check node address origin (default: empty = ignore):
@@ -415,6 +417,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             case 'location':
                 $sqlord = ' ORDER BY location';
                 break;
+        }
+
+        if (empty($sqlskey) || strtoupper($sqlskey) != 'OR') {
+            $sqlskey = 'AND';
+        } else {
+            $sqlskey = 'OR';
+        }
+
+        if (isset($network) && $network) {
+            $network = intval($network);
         }
 
         $searchargs = array();
@@ -494,6 +506,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         case 'createdto':
                             $searchargs[] = 'n.creationdate <= ' . intval($value);
                             break;
+                        case 'modifiedfrom':
+                            $searchargs[] = 'n.moddate >= ' . intval($value);
+                            break;
+                        case 'modifiedto':
+                            $searchargs[] = 'n.moddate <= ' . intval($value);
+                            break;
                         case 'lastonlinebefore':
                             $searchargs[] = 'n.lastonline <= ' . intval($value);
                             break;
@@ -510,8 +528,21 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                     break;
                             }
                             break;
+                        case 'authtype':
+                            if (!empty($value) && is_array($value)) {
+                                if (empty($search['authtypek']) || $search['authtypek'] == 'AND') {
+                                    $searchargs[] = 'n.authtype = ' . array_sum($value);
+                                } else {
+                                    $searchargs[] = '(n.authtype & ' . array_sum($value) . ') > 0';
+                                }
+                            }
+                            break;
+                        case 'authtypek':
+                            break;
                         default:
-                            $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            if (preg_match('/^[a-z0-9_]+$/', $key)) {
+                                $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+                            }
                     }
                 }
             }
@@ -621,12 +652,34 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
                 . ($status == 12 ? ' AND n.lastonline < ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //offline
-                . ($status == 4 ? ' AND n.id NOT IN (
-					SELECT DISTINCT nodeid FROM nodeassignments na
-					JOIN assignments a ON a.id = na.assignmentid
-					WHERE a.suspended = 0 AND a.commited = 1 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
-						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
-					)' : '')
+                . ($status == 14 ? ' AND n.lastonline = 0' : '') // unknown
+                . ($status == 4
+                    ? ' AND NOT EXISTS (
+                        SELECT 1
+                        FROM nodeassignments na
+                        JOIN assignments a ON a.id = na.assignmentid
+                        WHERE na.nodeid = n.id
+                            AND a.commited = 1
+                            AND a.suspended = 0
+                            AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+                            AND a.datefrom <= ?NOW?
+                            AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                    )'
+                    : ''
+                )
+                . ($status == 13
+                    ? ' AND NOT EXISTS (
+                        SELECT 1
+                        FROM nodeassignments na
+                        JOIN assignments a ON a.id = na.assignmentid
+                        WHERE na.nodeid = n.id
+                            AND a.commited = 1
+                            AND a.suspended = 0
+                            AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+                            AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                    )'
+                    : ''
+                )
                 . ($status == 5 ? ' AND n.location_city IS NULL' : '')
                 . ($status == 11 ? ' AND (n.location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL))' : '')
                 . ($status == 6 ? ' AND n.netdev IS NULL' : '')
@@ -809,9 +862,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeSetWarnU($id, $warning = false)
     {
+        $id = Utils::filterIntegers(is_array($id) ? $id : array($id));
+        if (empty($id)) {
+            return false;
+        }
+
         if ($this->syslog) {
-            $nodes = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE ownerid IN ('
-                    . (is_array($id) ? implode(',', $id) : $id) . ')');
+            $nodes = $this->db->GetAll(
+                'SELECT id, ownerid
+                FROM vnodes
+                WHERE ownerid IN ?',
+                [
+                    $id,
+                ]
+            );
             if (!empty($nodes)) {
                 foreach ($nodes as $node) {
                     $args = array(
@@ -823,8 +887,15 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
             }
         }
-        return $this->db->Execute('UPDATE nodes SET warning = ? WHERE ownerid IN ('
-                        . (is_array($id) ? implode(',', $id) : $id) . ')', array($warning ? 1 : 0));
+        return $this->db->Execute(
+            'UPDATE nodes
+            SET warning = ?
+            WHERE ownerid IN ?',
+            [
+                $warning ? 1 : 0,
+                $id,
+            ]
+        );
     }
 
     public function IPSetU($netdev, $access = false)

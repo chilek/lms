@@ -90,6 +90,7 @@ if (isset($_POST['queue'])) {
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
 				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=?,
+				uiconfigsection = ?,
 				newticketsmsbody = ?, newmessagesmsbody = ?, resolveticketsmsbody = ?
 				WHERE id=?',
             array(
@@ -99,6 +100,7 @@ if (isset($_POST['queue'])) {
                 $queue['newmessagesubject'], $queue['newmessagebody'],
                 $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
                 !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['uiconfigsection']) ? null : $queue['uiconfigsection'],
                 empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
                 empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
                 empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],
@@ -165,5 +167,6 @@ $SESSION->add_history_entry();
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('configsections', $LMS->getConfigSectionsByPattern('rt-%'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueuemodify.html');

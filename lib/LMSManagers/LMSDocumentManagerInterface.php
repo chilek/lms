@@ -72,11 +72,13 @@ interface LMSDocumentManagerInterface
 
     public function DocumentAttachmentExists($md5sum);
 
-    public function GetDocumentFullContents($id);
+    public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null);
 
     public function SendDocuments($docs, $type, $params);
 
-    public function DeleteDocument($docid);
+    public function deleteDocumentAttachments($docid, array $attachmentIds = []);
+
+    public function DeleteDocument($docid, array $attachmentIds = []);
 
     public function CopyDocumentPermissions($src_userid, $dst_userid);
 
@@ -88,7 +90,7 @@ interface LMSDocumentManagerInterface
 
     public function getDocumentReferences($docid, $cashid = null);
 
-    public function getDefaultNumberPlanID($doctype, $divisionid = null);
+    public function getDefaultNumberPlanID($doctype, $divisionid = null, $cdate = null);
 
     public function checkNumberPlanAccess($id);
 
@@ -107,4 +109,10 @@ interface LMSDocumentManagerInterface
     public function getDocumentType($docid);
 
     public function getDocumentFullNumber($docid);
+
+    public function checkDocumentPermission($docType, $permission);
+
+    public function isKsefDocument($docid);
+
+    public function isKsefDocumentByCashId($cashid);
 }

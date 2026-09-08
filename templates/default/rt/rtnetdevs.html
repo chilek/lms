@@ -1,4 +1,8 @@
 {$elemname=$form|cat:'[netdevid]'}
 {$elemid=$form|cat:'netdevid'}
 
-{network_device_selection elemname=$elemname id=$elemid selected=$ticket.netdevid}
+{if empty($netdevlist)}
+    {network_device_selection elemname=$elemname id=$elemid selected=$ticket.netdevid}
+{else}
+    {network_device_selection elemname=$elemname id=$elemid list=$netdevlist selected=$ticket.netdevid}
+{/if}

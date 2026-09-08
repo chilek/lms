@@ -42,15 +42,28 @@ function ClickShowHideMenu(params) {
 		this.initEventHandlers(nodes)
 
 		this.load();
-		if (window.attachEvent) {
-			window.attachEvent("onunload", function (e) {
-				self.save();
-			});
-		} else if (window.addEventListener) {
-			window.addEventListener("unload", function (e) {
-				self.save();
-			}, false);
+
+		var saved = false;
+
+		function saveOnce() {
+			if (saved) {
+				return;
+			}
+			saved = true;
+			self.save();
 		}
+
+		// Najbardziej zalecane obecnie
+		document.addEventListener("visibilitychange", function () {
+			if (document.visibilityState === "hidden") {
+				saveOnce();
+			}
+		});
+
+		// Dodatkowy fallback zgodny z bfcache
+		window.addEventListener("pagehide", function () {
+			saveOnce();
+		});
 	}
 
 	this.initEventHandlers = function (nodes) {

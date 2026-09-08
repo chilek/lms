@@ -134,17 +134,19 @@
 					{/if}
 				</td>
 				<td>
-					{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
+					{if $doc.closed
+						|| ConfigHelper::checkConfig('userpanel.show_unapproved_document_attachments')
+						|| ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
 						<div class="container">
 							{foreach $doc.attachments as $docattach}
 								<div class="row document-attachment">
 									<div class="col-md-auto">
-											{if $docattach.type == 1}
-												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
-											{else}
-												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
-											{/if}
-										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
+										{if $docattach.type == 1}
+											{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
+										{else}
+											{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
+										{/if}
+										{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last) && $doc.confirmdate != -1}
 											{if $scan_active}
 												{button class="btn btn-primary" data_toggle="modal" data_target="#newscan-dialog" data_document_id="{$doc.id}" icon="upload" label="Submit scan"}
 											{/if}
@@ -154,7 +156,7 @@
 										{/if}
 									</div>
 								</div>
-								{if !$doc.closed && $docattach.type == 1}
+								{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last)}
 									<div class="row">
 										{if $scan_active}
 											<div class="awaits-scan col-md-auto alert alert-warning">

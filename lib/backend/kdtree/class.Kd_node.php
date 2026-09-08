@@ -35,7 +35,7 @@ class Kd_node
     public $left  = null;
     public $right = null;
 
-    public function __construct(array $p = null)
+    public function __construct(?array $p = null)
     {
         if ($p) {
             $this->loc = $p;

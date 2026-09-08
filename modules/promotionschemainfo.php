@@ -101,8 +101,11 @@ if (!empty($schema['tariffs'])) {
             if (!empty($data['users'][$didx])) {
                 $user_names = array();
                 foreach ($data['users'][$didx] as $userid) {
-                    $user_names[] = $users[$userid]['rname'];
+                    if (isset($users[$userid])) {
+                        $user_names[] = $users[$userid]['rname'];
+                    }
                 }
+                sort($user_names, SORT_STRING | SORT_FLAG_CASE);
                 $data['users_text'][$didx] = implode('<br>', $user_names);
             }
         }

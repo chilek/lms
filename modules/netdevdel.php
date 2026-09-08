@@ -28,6 +28,7 @@ $id = intval($_GET['id']);
 
 if ($api) {
     if (!$LMS->NetDevExists($id)) {
+        $SESSION->close();
         die;
     }
 } elseif (!$LMS->NetDevExists($id)) {
@@ -77,6 +78,7 @@ if ($LMS->CountNetDevLinks($id) > 0) {
                 header('Content-Type: application/json');
                 echo json_encode(array('id' => $id));
             }
+            $SESSION->close();
             die;
         }
     } else {
@@ -89,6 +91,7 @@ if ($api) {
         header('Content-Type: application/json');
         echo json_encode($error);
     }
+    $SESSION->close();
     die;
 }
 

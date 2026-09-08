@@ -15,6 +15,7 @@ program
     .option("-m, --media-type <screen|print|null>", "force specified media type", "print")
     .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
     .option("-p, --page-numbers", "print page numbers in output footer")
+    .option("--margins <margins>", "set document margins")
     .parse(process.argv);
 
 var options = program.opts();
@@ -34,6 +35,7 @@ if (options.inFile) {
 }
 
 var outFile = options.outFile ? options.outFile : null;
+var margins = options.margins ? options.margins : null;
 
 if (["Letter", "Legal", "Tabloid", "Ledger", "A0", "A1", "A2", "A3", "A4", "A5", "A6"].lastIndexOf(options.format) == -1) {
     console.error('Invalid format value!');
@@ -95,6 +97,50 @@ async function readStream(stream) {
             opts.footerTemplate = '<div style="font-size: 10px; text-align: center; width: 100%;">' +
                 '<span class="pageNumber"></span> / <span class="totalPages"></span>' +
                 '</div>';
+        }
+        if (options.margins) {
+            var margins = options.margins.split(',');
+            margins.forEach(function(item, index, arr) {
+                if (!item.match(/[a-z]+$/)) {
+                    arr[index] = item + 'mm';
+                }
+            });
+            var pdfMargin;
+            switch (margins.length) {
+                case 1:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[0],
+                        bottom: margins[0],
+                        left: margins[0]
+                    }
+                    break;
+                case 2:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[0],
+                        left: margins[1]
+                    }
+                    break;
+                case 3:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[2],
+                        left: margins[1]
+                    }
+                    break;
+                default:
+                    pdfMargin = {
+                        top: margins[0],
+                        right: margins[1],
+                        bottom: margins[2],
+                        left: margins[3]
+                    }
+                    break;
+            }
+            opts.margin = pdfMargin;
         }
 
         const pdf = await page.pdf(opts);

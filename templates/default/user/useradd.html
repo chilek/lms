@@ -175,6 +175,7 @@
 			</td>
 			<td>
 				<input type="password" name="useradd[password]" required {tip trigger="password"} autocomplete="new-password">
+				{button type="link" icon="password" tip="Generate new password and copy it to clipboard" id="genpasswd" class="lms-ui-button-clipboard" data_clipboard_handler="1"}
 			</td>
 		</tr>
 		<tr>
@@ -449,6 +450,12 @@
 					}
 				});
 			}
+		});
+
+		$("#genpasswd").on("lms:clipboard:click", function(e) {
+			var newPassword = generate_random_string({ConfigHelper::getConfig('users.default_password_length', 14)}, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+			$('[name="useradd[password]"],[name="useradd[confirm]"]').val(newPassword);
+			e.result = newPassword;
 		});
 	});
 

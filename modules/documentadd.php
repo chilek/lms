@@ -89,7 +89,7 @@ if (isset($_POST['document'])) {
     }
 
     if (ConfigHelper::checkPrivilege('document_consent_date') && $document['cdate'] && !isset($warnings['document-cdate-'])) {
-        if ($document['type']) {
+        if (!ConfigHelper::checkConfig('documents.disable_cdate_validation') && $document['type']) {
             if (empty($document['numberplanid'])) {
                 $maxdate = $DB->GetOne(
                     'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
@@ -212,9 +212,16 @@ if (isset($_POST['document'])) {
     if (!isset($_GET['ajax'])) {
         if (isset($document['reference']) && $document['reference']) {
             $document['reference'] = $DB->GetRow(
-                'SELECT id, type, fullnumber, cdate
-                FROM documents
-                WHERE id = ?',
+                'SELECT
+                    d.id,
+                    d.type,
+                    d.fullnumber,
+                    d.cdate,
+                    dc.fromdate,
+                    dc.todate
+                FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
+                WHERE d.id = ?',
                 array($document['reference'])
             );
         }
@@ -250,6 +257,10 @@ if (isset($_POST['document'])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 
+            if (!isset($document['archive-reference']) && isset($engine['archive-reference-document'])) {
+                $document['archive-reference'] = false;
+            }
+
             // call plugin
             if (!empty($engine['plugin'])) {
                 if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -261,7 +272,10 @@ if (isset($_POST['document'])) {
                     . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
                     $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
                 }
+            } else {
+                $result = $script_result = '';
             }
+
             // get plugin content
             $SMARTY->assign('plugin_result', $result);
             $SMARTY->assign('script_result', $script_result);
@@ -271,109 +285,127 @@ if (isset($_POST['document'])) {
                 $document['attachments'] ?? array()
             ));
 
-            // prepare some useful customer properties to use in document templates
-            if (!empty($document['assignment']['location_address_id'])) {
-                $location_address_id = intval($document['assignment']['location_address_id']);
-                $location_address = $LMS->GetAddress($location_address_id);
-            } else {
-                $location_address = null;
-            }
+            if (empty($error) && empty($warning)) {
+                // prepare some useful customer properties to use in document templates
+                if (!empty($document['assignment']['location_address_id'])) {
+                    $location_address_id = intval($document['assignment']['location_address_id']);
+                    $location_address = $LMS->GetAddress($location_address_id);
+                } else {
+                    $location_address = null;
+                }
 
-            if (!empty($document['assignment']['recipient_address_id'])) {
-                $recipient_address_id = intval($document['assignment']['recipient_address_id']);
-                $recipient_address = $LMS->GetAddress($recipient_address_id);
-            } else {
-                $recipient_address = null;
-            }
+                if (!empty($document['assignment']['recipient_address_id'])) {
+                    $recipient_address_id = intval($document['assignment']['recipient_address_id']);
+                    $recipient_address = $LMS->GetAddress($recipient_address_id);
+                    $recipient_address['ten'] = $LMS->getRecipientTen($recipient_address_id);
+                    $recipient_address['entity_type'] = $LMS->getEntityType($recipient_address_id);
+                } else {
+                    $recipient_address = null;
+                }
 
-            $hook_data = $LMS->executeHook(
-                'documentadd_prepare_data',
-                compact('customer', 'division', 'location_address', 'recipient_address', 'document', 'engine')
-            );
-            if (!empty($hook_data) && is_array($hook_data)) {
-                extract($hook_data);
-            }
-
-            $SMARTY->assign(array(
-                'customer' => $customer,
-                'customerinfo' => $customer,
-                'division' => $division,
-                'location_address' => $location_address,
-                'recipient_address' => $recipient_address,
-                'document' => $document,
-                'engine' => $engine,
-            ));
-
-            ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
-
-            $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
-            if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
-                $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
-            }
-
-            $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
-
-            $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
-            if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
-                $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
-            }
-
-            $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
-
-            $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
-            if (strlen($default_header) && is_readable($default_header)) {
-                $header = $SMARTY->fetch($default_header);
-            } else {
-                $header = '';
-            }
-
-            $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
-            if (strlen($default_footer) && is_readable($default_footer)) {
-                $footer = $SMARTY->fetch($default_footer);
-            } else {
-                $footer = '';
-            }
-
-            $SMARTY->assign(compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer'));
-
-            // run template engine
-            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
-                $SMARTY->AddTemplateDir(
-                    array(
-                        'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
-                            . DIRECTORY_SEPARATOR . $engine['name']
-                    )
+                $hook_data = $LMS->executeHook(
+                    'documentadd_prepare_data',
+                    compact('customer', 'division', 'location_address', 'recipient_address', 'document', 'engine')
                 );
-                require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
-            } else {
-                $SMARTY->AddTemplateDir(
-                    array(
-                        'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
-                            . DIRECTORY_SEPARATOR . 'default'
-                    )
-                );
-                require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-                    . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
-            }
+                if (!empty($hook_data) && is_array($hook_data)) {
+                    extract($hook_data);
+                }
 
-            if (!empty($output)) {
-                $file = tempnam(DOC_DIR, 'tmp.file');
-                $fh = fopen($file, 'w');
-                fwrite($fh, $output);
-                fclose($fh);
+                $SMARTY->assign(array(
+                    'customer' => $customer,
+                    'customerinfo' => $customer,
+                    'division' => $division,
+                    'location_address' => $location_address,
+                    'recipient_address' => $recipient_address,
+                    'document' => $document,
+                    'engine' => $engine,
+                ));
 
-                $files[] = array(
-                    'tmpname' => $file,
-                    'filename' => $engine['output'],
-                    'name' => $engine['output'],
-                    'type' => $engine['content_type'],
-                    'md5sum' => md5_file($file),
-                    'attachmenttype' => 1,
+                ConfigHelper::setFilter($customer['divisionid'], Auth::GetCurrentUser());
+
+                $company_logo = ConfigHelper::getConfig('documents.company_logo', '', true);
+                if (strlen($company_logo) && strpos($company_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $company_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $company_logo;
+                }
+
+                $company_logo_width = intval(ConfigHelper::getConfig('documents.company_logo_width', '150'));
+
+                $project_logo = ConfigHelper::getConfig('documents.project_logo', '', true);
+                if (strlen($project_logo) && strpos($project_logo, DIRECTORY_SEPARATOR) !== 0) {
+                    $project_logo = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $project_logo;
+                }
+
+                $date_format = ConfigHelper::getConfig('documents.date_format', 'd.m.Y');
+
+                $default_header = ConfigHelper::getConfig('documents.default_header', '', true);
+                if (strlen($default_header) && is_readable($default_header)) {
+                    $header = $SMARTY->fetch($default_header);
+                } else {
+                    $header = '';
+                }
+
+                $default_footer = ConfigHelper::getConfig('documents.default_footer', '', true);
+                if (strlen($default_footer) && is_readable($default_footer)) {
+                    $footer = $SMARTY->fetch($default_footer);
+                } else {
+                    $footer = '';
+                }
+
+                $SMARTY->assign(
+                    compact('company_logo', 'company_logo_width', 'project_logo', 'date_format', 'header', 'footer')
                 );
-            } else if (empty($error)) {
-                $error['templ'] = trans('Problem during file generation!');
+
+                $outputs = array();
+
+                // run template engine
+                if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                    $SMARTY->AddTemplateDir(
+                        array(
+                            'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
+                                . DIRECTORY_SEPARATOR . $engine['name']
+                        )
+                    );
+                    require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                        . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+                } else {
+                    $SMARTY->AddTemplateDir(
+                        array(
+                            'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
+                                . DIRECTORY_SEPARATOR . 'default'
+                        )
+                    );
+                    require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                        . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
+                }
+
+                if (empty($outputs) && !empty($output)) {
+                    $outputs[] = array(
+                        'filename' => $engine['output'],
+                        'content-type' => $engine['content_type'],
+                        'output' => $output
+                    );
+                }
+
+                if (!empty($outputs)) {
+                    foreach ($outputs as $output) {
+                        $file = tempnam(sys_get_temp_dir(), 'lms-document-attachment-');
+                        file_put_contents($file, $output['output']);
+
+                        $files[] = array(
+                            'tmpname' => $file,
+                            'filename' => $output['filename'],
+                            'name' => $output['filename'],
+                            'type' => $output['content-type'],
+                            'md5sum' => md5_file($file),
+                            'attachmenttype' => 1,
+                        );
+                    }
+                } else {
+                    if (empty($error)) {
+                        $error['templ'] = trans('Problem during file generation!');
+                    }
+                }
             }
         }
     }
@@ -417,38 +449,40 @@ if (isset($_POST['document'])) {
         }
     }
 
-    $promotionattachments = array();
-    if (!empty($document['assignment']['promotion-attachments'])) {
-        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
-    }
-    if (!empty($document['assignment']['promotion-schema-attachments'])) {
-        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
-    }
-    $promotionattachments = Utils::filterIntegers($promotionattachments);
-    if (!empty($promotionattachments)) {
-        $promotionattachments = $DB->GetAll(
-            'SELECT *
-            FROM promotionattachments
-            WHERE id IN ?',
-            array(
-                $promotionattachments,
-            )
-        );
+    if (!empty($engine['promotion-schema-selection'])) {
+        $promotionattachments = array();
+        if (!empty($document['assignment']['promotion-attachments'])) {
+            $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
+        }
+        if (!empty($document['assignment']['promotion-schema-attachments'])) {
+            $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
+        }
+        $promotionattachments = Utils::filterIntegers($promotionattachments);
         if (!empty($promotionattachments)) {
-            foreach ($promotionattachments as $attachment) {
-                $filename = STORAGE_DIR . DIRECTORY_SEPARATOR
-                    . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
-                    . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
-                    . DIRECTORY_SEPARATOR . $attachment['filename'];
-                if (is_readable($filename)) {
-                    $files[] = array(
-                        'tmpname' => null,
-                        'filename' => basename($filename),
-                        'name' => $filename,
-                        'type' => $attachment['contenttype'],
-                        'md5sum' => md5_file($filename),
-                        'attachmenttype' => 0,
-                    );
+            $promotionattachments = $DB->GetAll(
+                'SELECT *
+                FROM promotionattachments
+                WHERE id IN ?',
+                array(
+                    $promotionattachments,
+                )
+            );
+            if (!empty($promotionattachments)) {
+                foreach ($promotionattachments as $attachment) {
+                    $filename = STORAGE_DIR . DIRECTORY_SEPARATOR
+                        . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
+                        . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
+                        . DIRECTORY_SEPARATOR . $attachment['filename'];
+                    if (is_readable($filename)) {
+                        $files[] = array(
+                            'tmpname' => null,
+                            'filename' => basename($filename),
+                            'name' => $filename,
+                            'type' => $attachment['contenttype'],
+                            'md5sum' => md5_file($filename),
+                            'attachmenttype' => 0,
+                        );
+                    }
                 }
             }
         }
@@ -463,6 +497,22 @@ if (isset($_POST['document'])) {
         if (empty($error) && !empty($tmppath)) {
             rrmdir($tmppath);
         }
+    }
+
+    $supported_customer_consents = $CCONSENTS;
+    if (!empty($engine['supported-customer-consents'])) {
+        $engine['supported-customer-consents'] = array_flip($engine['supported-customer-consents']);
+        $supported_customer_consents = array_filter(
+            $supported_customer_consents,
+            function ($consent, $consent_id) use ($engine) {
+                if (is_array($consent)) {
+                    return isset($engine['supported-customer-consents'][$consent_id]);
+                } else {
+                    return isset($engine['supported-customer-consents'][$consent]);
+                }
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     if (!$error && !$warning) {
@@ -481,6 +531,17 @@ if (isset($_POST['document'])) {
             }
         }
 
+        if (empty($document['closed'])) {
+            $closed = 0;
+        } else {
+            $confirmPermission = $LMS->checkDocumentPermission($document['type'], DOCRIGHT_CONFIRM);
+            if (empty($confirmPermission)) {
+                $closed = 0;
+            } else {
+                $closed = 1;
+            }
+        }
+
         $DB->Execute(
             'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid, confirmdate,
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
@@ -492,9 +553,9 @@ if (isset($_POST['document'])) {
                 $document['number'],
                 empty($document['numberplanid']) ? null : $document['numberplanid'],
                 $document['cdate'],
-                isset($document['closed']) ? $time : 0,
-                isset($document['closed']) ? Auth::GetCurrentUser() : null,
-                isset($document['closed']) || empty($document['confirmdate']) ? 0 : strtotime('+ 1 day', $document['confirmdate']) - 1,
+                empty($closed) ? 0 : $time,
+                empty($closed) ? null : Auth::GetCurrentUser(),
+                empty($closed) && !empty($document['confirmdate']) ? strtotime('+ 1 day', $document['confirmdate']) - 1 : 0,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
                 $customer['customername'],
@@ -517,7 +578,7 @@ if (isset($_POST['document'])) {
                 ($division['inv_footer'] ?: ''),
                 ($division['inv_author'] ?: ''),
                 ($division['inv_cplace'] ?: ''),
-                isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
+                empty($closed) ? DOC_OPEN : DOC_CLOSED,
                 $fullnumber,
                 empty($document['reference']) ? null : $document['reference']['id'],
                 empty($document['templ']) ? null : $document['templ'],
@@ -569,11 +630,12 @@ if (isset($_POST['document'])) {
                 // create assignments basing on selected promotion schema
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
-                $selected_assignment['commited'] = empty($document['closed']) ? 0 : 1;
+                $selected_assignment['commited'] = empty($closed) ? 0 : 1;
                 $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
                 $selected_assignment['dynamicperiod'] = empty($document['dynamicperiod']) ? 0 : 1;
                 if (!empty($engine['customer-consent-selection'])) {
                     $selected_assignment['consents'] = isset($document['consents']) ? $document['consents'] : array();
+                    $selected_assignment['supported-customer-consents'] = array_keys($supported_customer_consents);
                 }
 
                 if ($selected_assignment['schemaid'] && is_array($selected_assignment['sassignmentid'][$schemaid])) {
@@ -604,11 +666,12 @@ if (isset($_POST['document'])) {
                 }
             }
 
-            if (!empty($engine['customer-consent-selection']) && isset($document['closed'])) {
+            if (!empty($engine['customer-consent-selection']) && !empty($closed)) {
                 $LMS->updateCustomerConsents(
                     $document['customerid'],
                     array_keys($document['default-consents']),
-                    array_keys($document['consents'])
+                    array_keys($document['consents']),
+                    array_keys($supported_customer_consents)
                 );
             }
         }
@@ -616,6 +679,10 @@ if (isset($_POST['document'])) {
         $DB->CommitTrans();
 
         if ($LMS->DocumentExists($docid)) {
+            if (!empty($document['archive-reference']) && !empty($document['reference'])) {
+                $LMS->ArchiveDocuments([$document['reference']['id']]);
+            }
+
             $hook_data = $LMS->executeHook(
                 'documentadd_after_submit',
                 array(
@@ -639,78 +706,49 @@ if (isset($_POST['document'])) {
                 $docs = $DB->GetAll(
                     "SELECT
                         d.id,
+                        d.type,
                         d.customerid,
                         d.name,
-                        m.email
+                        m.email,
+                        p.phone
                     FROM documents d
                     JOIN (
-                        SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+                        SELECT
+                            customerid, "
+                            . $DB->GroupConcat('contact') . " AS email
                         FROM customercontacts
                         WHERE (type & ?) = ?
                         GROUP BY customerid
                     ) m ON m.customerid = d.customerid
+                    LEFT JOIN (
+                        SELECT
+                            customerid, "
+                            . $DB->GroupConcat('contact') . " AS phone
+                        FROM customercontacts
+                        WHERE (type & ?) = ?
+                        GROUP BY customerid
+                    ) p ON p.customerid = d.customerid
                     WHERE d.id = ?",
                     array(
                         CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                         CONTACT_EMAIL | CONTACT_DOCUMENTS,
+                        CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
+                        CONTACT_MOBILE | CONTACT_DOCUMENTS,
                         $docid,
                     )
                 );
 
-                $smtp_options = array(
-                    'host' => ConfigHelper::getConfig('documents.smtp_host'),
-                    'port' => ConfigHelper::getConfig('documents.smtp_port'),
-                    'user' => ConfigHelper::getConfig('documents.smtp_user'),
-                    'pass' => ConfigHelper::getConfig('documents.smtp_pass'),
-                    'auth' => ConfigHelper::getConfig('documents.smtp_auth'),
-                    'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', true),
-                    'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', true),
-                    'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed'),
-                );
-
-                $debug_email = ConfigHelper::getConfig('documents.debug_email', '', true);
-                $sender_name = ConfigHelper::getConfig('documents.sender_name', '', true);
-                $sender_email = ConfigHelper::getConfig('documents.sender_email', '', true);
-                $mail_subject = ConfigHelper::getConfig('documents.mail_subject', '%document');
-                $mail_body = ConfigHelper::getConfig('documents.mail_body', '%document');
-                $mail_format = ConfigHelper::getConfig('documents.mail_format', 'text');
-                $notify_email = ConfigHelper::getConfig('documents.notify_email', '', true);
-                $reply_email = ConfigHelper::getConfig('documents.reply_email', '', true);
-                $add_message = ConfigHelper::checkConfig('documents.add_message');
-                $message_attachments = ConfigHelper::checkConfig('documents.message_attachments');
-                $dsn_email = ConfigHelper::getConfig('documents.dsn_email', '', true);
-                $mdn_email = ConfigHelper::getConfig('documents.mdn_email', '', true);
-
                 $errors = array();
 
-                if (empty($sender_email)) {
-                    $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
-                }
-
-                $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
-                if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
-                    $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
-                }
-
                 if (empty($errors)) {
+                    $reference_document = !empty($document['sendmail-with-reference-document']);
+
                     $result = $LMS->SendDocuments(
                         $docs,
                         'userpanel',
                         compact(
-                            'debug_email',
-                            'mail_body',
-                            'mail_subject',
-                            'mail_format',
                             'currtime',
-                            'sender_email',
-                            'sender_name',
-                            'dsn_email',
-                            'reply_email',
-                            'mdn_email',
-                            'notify_email',
-                            'add_message',
-                            'message_attachments',
-                            'smtp_options'
+                            'reference_document'
                         )
                     );
 
@@ -758,7 +796,7 @@ if (isset($_POST['document'])) {
             $SESSION->redirect('?m=documentlist&c=' . $document['customerid']);
         }
 
-        unset($document['title']);
+        //unset($document['title']);
         unset($document['number']);
         unset($document['description']);
         unset($document['fromdate']);
@@ -767,6 +805,21 @@ if (isset($_POST['document'])) {
         if (isset($autonumber)) {
             $document['number'] = '';
         }
+
+        if (!empty($engine['supported-customer-consents'])) {
+            $document['default-consents'] = array_filter(
+                $document['default-consents'],
+                function ($consent, $consent_id) use ($engine) {
+                    if (is_array($consent)) {
+                        return isset($engine['supported-customer-consents'][$consent_id]);
+                    } else {
+                        return isset($engine['supported-customer-consents'][$consent]);
+                    }
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
+        }
+        $SMARTY->assign('supported_customer_consents', $supported_customer_consents);
     }
 } else {
     $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
@@ -788,6 +841,44 @@ if (isset($_POST['document'])) {
                 }
             }
         }
+    }
+
+    if (isset($_GET['templ'])) {
+        $document['templ'] = $_GET['templ'];
+
+        foreach ($documents_dirs as $doc) {
+            if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
+                $doc_dir = $doc;
+                $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+                break;
+            }
+        }
+
+        $result = '';
+        $script_result = '';
+
+        // read template information
+        include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+
+        if (!empty($engine['title'])) {
+            $document['title'] = $engine['title'];
+        }
+
+        // call plugin
+        if (!empty($engine['plugin'])) {
+            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php')) {
+                include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+                    . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+            }
+            if (is_readable($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
+                $script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
+            }
+        }
+        // get plugin content
+        $SMARTY->assign('plugin_result', $result);
+        $SMARTY->assign('script_result', $script_result);
     }
 
     $default_document_type = ConfigHelper::getConfig(
@@ -857,11 +948,25 @@ if (isset($_POST['document'])) {
         $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    $document['assignment']['dont-create-assignments'] = ConfigHelper::checkConfig('assignments.default_dont_create_assignments');
+
     $document['dynamicperiod'] = ConfigHelper::checkConfig('documents.default_dynamic_period');
 
-    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid']) ? $LMS->getCustomerConsents($document['customerid']) : array();
+    $document['consents'] = $document['default-consents'] = isset($document['customerid']) && intval($document['customerid'])
+        ? (
+            isset($engine['default-customer-consents']) && is_array($engine['default-customer-consents'])
+                ? array_flip($engine['default-customer-consents'])
+                : $LMS->getCustomerConsents($document['customerid'])
+        )
+        : array();
 
-    $document['cdate'] = time();
+    $document['cdate'] = isset($_GET['cdate']) ? strtotime($_GET['cdate']) : time();
+
+    $confirmDateDefaultDays = ConfigHelper::getConfig('documents.confirm_date_default_days', null, true);
+    if (isset($confirmDateDefaultDays)) {
+        $confirmDateDefaultDays = intval($confirmDateDefaultDays);
+        $document['confirmdate'] = strtotime('+ ' . $confirmDateDefaultDays . ' days');
+    }
 
     $document['reuse'] = ConfigHelper::checkConfig('documents.default_reuse');
 }
@@ -888,6 +993,26 @@ $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('planDocumentType', $document['type'] ?? null);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
+
+if (isset($document['type']) && !empty($docengines) && !isset($_POST['document'])) {
+    $defaultDocEngine = array_filter(
+        $docengines,
+        function ($engine) use ($document) {
+            return !empty($engine['default'][$document['type']]);
+        }
+    );
+    $defaultDocEngine = reset($defaultDocEngine);
+    if (!empty($defaultDocEngine)) {
+        $SMARTY->assign('defaultDocEngine', $defaultDocEngine);
+    }
+}
+
+if (empty($document['type'])) {
+    $confirmPermission = false;
+} else {
+    $confirmPermission = $LMS->checkDocumentPermission($document['type'], DOCRIGHT_CONFIRM);
+}
+$SMARTY->assign('confirm_permission', $confirmPermission ? 1 : 0);
 
 $references = empty($document['customerid']) ? null : $LMS->GetDocuments($document['customerid']);
 $SMARTY->assign('references', $references);

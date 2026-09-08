@@ -76,51 +76,112 @@
 		</TD>
 	</TR>
 	</TFOOT>
-	<TBODY>
-	{foreach $netlist as $net}
-	<TR class="highlight{if $net.disabled == 1} blend{/if}" data-target-url="?m=netinfo&id={$net.id}" data-name="{$net.name}">
-		<TD>
-			<A name="{$net.id}" class="nobr">
-			<IMG src="img/network.gif" alt=""> <span class="bold">{$net.name|truncate:40:"&hellip;":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $net.hostname}{$net.hostname}{else}{trans("none")}{/if} / {$net.address} / {$net.prefix} {if $net.interface}({$net.interface}){/if} {if $net.vlanid}/ {$net.vlanid}{/if}
-			</A>
-		</TD>
-		<TD class="valign-top text-right nobr">
-			<img src="img/empty.gif" width="1" height="16" alt="">({$net.id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" alt="">{$net.size}/{$net.assigned|string_format:"%01d"}/{$net.online|string_format:"%01d"}
-		</TD>
-		<TD class="nobr">
-			{if $net.dns != ""}<IMG src="img/dns.gif" alt=""> {$net.dns}{if $net.dns2 != ""}, {$net.dns2}{/if}{/if}<BR>
-			{if $net.domain != ""}<IMG src="img/domain.gif" alt=""> {$net.domain}{/if}&nbsp;
-		</TD>
-		<TD class="nobr">
-			{if $net.gateway != ""}<IMG src="img/gateway.gif" alt=""> {$net.gateway}{/if}<BR>
-			{if $net.wins != ""}<IMG src="img/wins.gif" alt=""> {$net.wins}{/if}&nbsp;
-		</TD>
-		<TD class="nobr">
-			{if $net.dhcpstart}<IMG src="img/dhcpstart.gif" alt=""> {$net.dhcpstart}<BR><IMG src="img/dhcpend.gif" alt=""> {$net.dhcpend}{/if}
-		</TD>
-		<TD class="lms-ui-buttons nobr">
-			<A href="?m=netedit&amp;networkset&amp;id={$net.id}">{if $net.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-			<a class="delete-net" href="?m=netdel&id={$net.id}"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
-			<A href="?m=netedit&amp;id={$net.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A href="?m=netinfo&amp;id={$net.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<tr>
-		<td colspan="6" class="empty-table">
-			{trans("No IP networks found in database.")} <A HREF="?m=netadd">{trans("Click to add.")}</A>
-		</td>
-	</tr>
-	{/foreach}
-	</TBODY>
+	<tbody>
+		{foreach $netlist as $net}
+			<tr class="highlight{if $net.disabled == 1} blend{/if}" data-target-url="?m=netinfo&id={$net.id}" data-name="{$net.name|escape}" data-assigned="{$net.assigned}">
+				<td>
+					<a name="{$net.id}" class="nobr">
+						<img src="img/network.gif">
+						<strong>{$net.name|trunescape:40}</strong>
+						<br>
+						<img src="img/ip.gif">
+						{if $net.hostname}{$net.hostname}{else}{trans("none")}{/if}
+						/ {$net.address}
+						/ {$net.prefix} {if $net.interface}({$net.interface}){/if}
+						{if $net.vlanid}/ {$net.vlanid}{/if}
+					</a>
+				</td>
+				<td class="valign-top text-right nobr">
+					<img src="img/empty.gif" width="1" height="16">
+					({$net.id|string_format:"%04d"})
+					<br>
+					<img src="img/empty.gif" width="1" height="16">
+					{$net.size}/{$net.assigned|string_format:"%01d"}/{$net.online|string_format:"%01d"}
+				</td>
+				<td class="nobr">
+					{if $net.dns != ""}
+						<img src="img/dns.gif">
+						{$net.dns}{if $net.dns2 != ""}, {$net.dns2}{/if}
+					{/if}
+					<br>
+					{if $net.domain != ""}
+						<img src="img/domain.gif">
+						{$net.domain}
+					{/if}&nbsp;
+				</td>
+				<td class="nobr">
+					{if $net.gateway != ""}
+						<img src="img/gateway.gif">
+						{$net.gateway}
+					{/if}
+					<br>
+					{if $net.wins != ""}
+						<img src="img/wins.gif">
+						{$net.wins}
+					{/if}&nbsp;
+				</td>
+				<td class="nobr">
+					{if $net.dhcpstart}
+						<img src="img/dhcpstart.gif">
+						{$net.dhcpstart}
+						<br>
+						<img src="img/dhcpend.gif">
+						{$net.dhcpend}
+					{/if}
+				</td>
+				<td class="lms-ui-buttons nobr">
+					{button
+						type="link"
+						icon="{if $net.disabled}disconnected{else}connected{/if}"
+						tip="{if $net.disabled}Enable{else}Disable{/if}"
+						href="?m=netedit&networkset&id={$net.id}"}
+					{button
+						type="link"
+						class="delete-net"
+						icon="delete"
+						tip="Remove"
+						href="?m=netdel&id={$net.id}"}
+					{button
+						type="link"
+						icon="edit"
+						tip="Edit"
+						href="?m=netedit&id={$net.id}"}
+					{button
+						type="link"
+						icon="info"
+						tip="Info"
+						href="?m=netinfo&id={$net.id}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="6" class="empty-table">
+					{trans("No IP networks found in database.")}
+					<a href="?m=netadd">{trans("Click to add.")}</a>
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
 </table>
 <script>
-	$('.delete-net').click(function() {
-		var name = $(this).closest('tr').attr('data-name');
-		confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function() {
-			location.href = $(this).attr('href');
+
+	$(function() {
+		$('.delete-net').click(function () {
+			var row = $(this).closest('tr');
+			var name = row.attr('data-name');
+			var assigned = parseInt(row.attr('data-assigned'));
+
+			if (assigned) {
+				alertDialog($t("Network has assigned IP addresses!"), this);
+			} else {
+				confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function () {
+					location.href = $(this).attr('href');
+				});
+			}
+
+			return false;
 		});
-		return false;
 	});
+
 </script>
 {/block}

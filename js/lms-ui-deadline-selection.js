@@ -50,7 +50,7 @@ $(function() {
             cdt.setTime(Date.parse(cdate_elem.val()));
             ddt.setTime(Date.parse($(this).val()));
             var diffTime = Math.abs(ddt - cdt);
-            var diffDays = Math.ceil(diffTime / (1000 * 86400));
+            var diffDays = Math.round(diffTime / (1000 * 86400));
             deadline_days_elem.scombobox('val', diffDays);
         }).change();
 

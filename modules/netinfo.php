@@ -28,6 +28,15 @@ if (!$LMS->NetworkExists($_GET['id'])) {
     $SESSION->redirect('?m=netlist');
 }
 
+if (isset($_GET['action'], $_GET['id']) && $_GET['action'] === 'divide' && ConfigHelper::checkPrivilege('network_management')) {
+    try {
+        $LMS->SplitNetworkInHalf(intval($_GET['id']));
+        $SESSION->redirect('?m=netinfo&id=' . intval($_GET['id']));
+    } catch (Throwable $e) {
+        $error['divide'] = trans($e->getMessage());
+    }
+}
+
 $page = $_GET['page'] ?? 1;
 
 if ($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page'])) {

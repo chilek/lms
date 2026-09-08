@@ -6,26 +6,38 @@
 <h1>{trans("Tariff rules")}</h1>
 
 <style>
-    #group_search {
-        width: 210px;
+
+    #tariff-rule-add {
+        margin-top: 0.7em;
+        width: min-content;
     }
 
-    #groups_table tr td:first-child {
+    #tariff-rule-list caption,
+    #tariff-rule-add caption {
+        text-align: left;
+        font-weight: bold;
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+    }
+
+    #tariff-rule-list thead {
+        border-bottom: 1px dotted gray;
+    }
+
+    #tariff-rule-list tr td:first-child,
+    #tariff-rule-add tr td:first-child {
         min-width: 30px;
     }
 
-    #groups_table tr td {
+    #tariff-rule-list tr td {
         min-width: 75px;
         padding-right: 10px;
     }
 
-    #groups_table input {
-        width: 70px;
+    #tariff-rule-list thead {
+        font-weight: bold;
     }
 
-    #groups_table #group_search {
-        width: 200px;
-    }
 </style>
 
 <form name="voiptariffrules" id="voiptariffrules" method="post" action="?m=voiptariffrules{if isset($rule.id)}&id={$rule.id}{/if}">
@@ -43,10 +55,12 @@
                     <table>
                         <tr>
                             <td><img src="img/size.gif" alt=""></td>
-                            <td><b>{trans("Tariff rule:")}</b></td>
                             <td>
-                                <select id="tariff_select" style="width: 200px;">
-                                    <option value="0">--</option>
+                                <strong>{trans("Tariff rule")}</strong>
+                            </td>
+                            <td>
+                                <select id="tariff-rule-select" style="width: 200px;">
+                                    <option value="">--</option>
                                     {if !empty($rule_list)}
                                         {foreach from=$rule_list item=single_rule}
                                         <option value="{$single_rule.id}" {if !empty($rule.id) && $rule.id == $single_rule.id}SELECTED{/if}>
@@ -55,8 +69,13 @@
                                         {/foreach}
                                     {/if}
                                 </select>
-                                &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
-                                &nbsp;&nbsp;<a id="delete-tariffrule" href="javascript:deleteTariff();">{trans("delete")}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td>
+                                {button type="link" label="load<!voip>" icon="save" id="tariff-rule-load"}
+                                {button type="link" label="Delete" icon="delete" id="tariff-rule-delete"}
                             </td>
                         </tr>
                         <tr class="space_row">
@@ -88,28 +107,64 @@
                 </td>
                 <td style="vertical-align: top;">
                     <fieldset style="display: block; min-width: 30%;">
-                        <legend><b>{trans("Prefix groups assigned to tariff rule")}</b></legend>
-                        <table id="groups_table" name="groups_table">
+                        <legend>
+                            <strong>{trans("<!voip>Tariff rule information details")}</strong>
+                        </legend>
+
+                        <table id="tariff-rule-list" class="lmsbox-inner lms-ui-background-cycle">
+                            <caption>
+                                {trans("<!voip>Prefix groups")}
+                            </caption>
+                            <thead>
+                                <tr class="dark">
+                                    <td>{trans("No.")}</td>
+                                    <td style="width: 230px;">{trans("Name")}</td>
+                                    <td {tip text="Price per single unit"}>{trans("Price")}</td>
+                                    <td {tip text="Number of units at a promotion price"}>{trans("Number of units")}</td>
+                                    <td {tip text="Unit size in seconds"}>{trans("Unit size<!voip>")}</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {if !empty($rule)}
+                                    {foreach $rule.group as $group}
+                                        {$row_id = $group.ruleid}
+                                        {$iteration = $group@iteration}
+                                        {include file="voipaccount/voiptarifftablerow.html"}
+                                    {/foreach}
+                                {/if}
+                            </tbody>
+                        </table>
+
+                        <div id="no-tariff-rules" class="lucid" style="text-align: center; padding: 10px; font-weight: bold;{if empty($rule)} display: none;{/if}">
+                            {trans("No prefix groups assigned to tariff rule.")}
+                        </div>
+
+                        <table id="tariff-rule-add" class="lmsbox-inner">
+                            <colgroup>
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                            </colgroup>
+                            <caption>
+                                {trans("<!voip>Add prefix group")}
+                            </caption>
                             <tr>
-                                <td colspan="100%"><b>{trans("Search groups")}</b></td>
-                            </tr>
-                            <tr>
-                                <td colspan="100%">
+                                <td>
                                     <input type="search"
-                                           id="group_search"
-                                           {tip class="autosuggest-bottom" trigger="group_search"}>
-                                    <a href="javascript:add();">{trans("Add")}</a>
+                                        id="prefix-group-search"
+                                        placeholder="{trans("Name")}"
+                                        {tip class="autosuggest-bottom" trigger="prefix-group-search"}>
                                 </td>
-                            </tr>
-                            <tr class="space_row">
-                                <td colspan="2"><b>{trans("Related groups:")}</b></td>
                                 <td>
                                     <input type="text"
                                            id="default_price"
                                            name="rule[default][price]"
                                            value="{if isset($rule.default.price)}{$rule.default.price}{/if}"
                                            placeholder="{trans("default")}"
-                                           {tip text="Enter default price"}>
+                                            {tip text="Enter default price"}>
                                 </td>
                                 <td>
                                     <input type="text"
@@ -117,7 +172,7 @@
                                            name="rule[default][units]"
                                            value="{if isset($rule.default.units)}{$rule.default.units}{/if}"
                                            placeholder="{trans("default")}"
-                                           {tip text="Enter default number of units"}>
+                                            {tip text="Enter default number of units"}>
                                 </td>
                                 <td>
                                     <input type="text"
@@ -125,54 +180,32 @@
                                            name="rule[default][unit_size]"
                                            value="{if isset($rule.default.unit_size)}{$rule.default.unit_size}{/if}"
                                            placeholder="{trans("default")}"
-                                           {tip text="Enter default size of units"}>
+                                            {tip text="Enter default size of units"}>
                                 </td>
-                                <td colspan="100%"></td>
+                                <td>
+                                    {button type="link" href="javascript:add()" icon="add" tip="Add"}
+                                </td>
                             </tr>
-                            <tr>
-                                <td>{trans("Id")}</td>
-                                <td style="width: 230px;">{trans("Group name")}</td>
-                                <td {tip text="Price for one unit"}>{trans("Price")}</td>
-                                <td {tip text="Number of units at a promotion price"}>{trans("Number of units")}</td>
-                                <td {tip text="Unit size in seconds"}>{trans("Unit size<!voip>")}</td>
-                                <td></td>
-                            </tr>
-
-                            {if isset($rule)}
-                            {foreach from=$rule.group item=group}
-                                {assign var=row_id value=$group.ruleid}
-                                {include file="voipaccount/voiptarifftablerow.html"}
-                            {/foreach}
-                            {/if}
                         </table>
-
-                        <div id="groups_table_info" style="text-align: center; padding: 10px; font-weight: bold;">
-                            {trans("No prefix groups assigned to tariff rule.")}
-                        </div>
-
                     </fieldset>
                 </td>
             </tr>
 
             <tr>
-                <td class="text-right" colspan="2">
-                    <a href="javascript:document.voiptariffrules.submit();">
-                        {trans("Submit")} <img src="img/save.gif" alt="">
-                    </a>
-                    <a href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">
-                        {trans("Cancel")} <img src="img/cancel.gif" alt="">
-                    </a>
+                <td class="lms-ui-box-buttons" colspan="2">
+                    {button icon="save" label="Submit" id="tariff-rule-submit-button"}
+                    {button icon="cancel" label="Cancel" href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}"}
                 </td>
             </tr>
         </tbody>
     </table>
 </form>
 
-<SCRIPT type="text/javascript">
-<!--
-    var table = document.getElementById("groups_table");
-    var group_search_input = document.getElementById("group_search");
-    var rule_list = document.getElementById("tariff_select");
+<script>
+
+    var table = $('#tariff-rule-list');
+    var group_search_input = $('#prefix-group-search');
+    var rule_list = $('#tariff-rule-select');
 
     // get default price for new groups
     function getDefaultPrice() {
@@ -196,17 +229,18 @@
 
     // delete table row by id
     function deleteRow( id ) {
-        var row = getGroupRow(id);
+        var row = $('#' + id);
 
-        if (row)
-            row.parentNode.removeChild(row);
+        if (row) {
+            row.remove();
+        }
 
         groupsTableInfoUpdate();
     }
 
     // send add request to xajax
     function add() {
-        var name = group_search_input.value;
+        var name = group_search_input.val();
 
         xajax_getGroupTableRow(name,
                                getDefaultPrice(),
@@ -219,56 +253,65 @@
         var id   = row[0];
         var html = row[1];
 
-        if (!id || getGroupRow(id))
+        if (!id || getGroupRow(id)) {
             return 0;
+        }
 
-        group_search_input.value = '';
+        group_search_input.val('');
 
-        var tr = document.createElement("tr")
-        tr.innerHTML = html;
-        tr.setAttribute("class", "highlight");
-        tr.setAttribute("id"   , id);
-        table.appendChild(tr);
+        var tr = $(html);
+        tr.find('.number').html(table.find('tbody tr').length + 1);
+        table.find('tbody').append(tr);
 
         groupsTableInfoUpdate();
     }
 
     // load tariffs
     function loadTariff() {
-        var id = rule_list.selectedIndex;
+        var id = rule_list.val();
 
-        if (id == 0)
+        if (!id.length) {
             return 0;
+        }
 
-        window.location.href = "?m=voiptariffrules&id=" + rule_list[id].value;
+        window.location.href = "?m=voiptariffrules&id=" + rule_list.val();
     }
 
     // delete tariff
     function deleteTariff() {
-        var id = rule_list.selectedIndex;
+        var id = rule_list.val();
 
-        if (id == 0)
+        if (!id.length) {
             return 0;
+        }
 
-        confirmDialog($t("Are you sure that you want remove tariff rule '$a'?", rule_list[id].text), $('#delete-tariffrule')).done(function() {
-            window.location.href = "?m=voiptariffrules&id=" + rule_list[id].value + "&action=delete";
+        confirmDialog($t("Are you sure that you want remove tariff rule '$a'?", rule_list.find(':selected').text()), $('#tariff-rule-delete')).done(function() {
+            window.location.href = "?m=voiptariffrules&id=" + rule_list.val() + "&action=delete";
         });
         return 0;
     }
 
     // groups table is empty check
     function groupsTableInfoUpdate() {
-        var rows = table.rows.length;
-        var info = document.getElementById("groups_table_info");
-
-        if (rows == 4)
-            info.style.display = "block";
-        else
-            info.style.display = "none";
+        $('#no-tariff-rules').toggle(!table.find('tbody tr').length);
     }
 
     groupsTableInfoUpdate();
-    new AutoSuggest(document.getElementById('voiptariffrules'),group_search_input,'?m=voiptariffrules&ajax=1&mode=group&what=',0);
-//-->
-</SCRIPT>
+    new AutoSuggest(document.getElementById('voiptariffrules'),group_search_input.get(0),'?m=voiptariffrules&ajax=1&mode=group&what=',0);
+
+    $(function() {
+        $('#tariff-rule-submit-button').click(function() {
+            $('#voiptariffrules').submit();
+        });
+
+        $('#tariff-rule-load').click(function() {
+            loadTariff();
+        });
+
+        $('#tariff-rule-delete').click(function() {
+            deleteTariff();
+        });
+    });
+
+</script>
 {/block}

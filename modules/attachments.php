@@ -80,11 +80,11 @@ if (isset($_GET['attachmentaction'])) {
                 die;
             }
 
-            header('Content-Type: ' . $file['contenttype']);
             if (!preg_match('/^text/i', $file['contenttype'])) {
                 $pdf = preg_match('/pdf/i', $file['contenttype']);
                 if (!isset($_GET['save'])) {
                     if ($pdf) {
+                        header('Content-Type: ' . $file['contenttype']);
                         header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
                         header('Content-Transfer-Encoding: binary');
                         header('Content-Length: ' . filesize($file['filepath']));
@@ -93,13 +93,42 @@ if (isset($_GET['attachmentaction'])) {
                             && class_exists('Imagick') && strpos($file['contenttype'], 'image/') === 0) {
                             $imagick = new \Imagick($file['filepath']);
                             $imagick->scaleImage($width, 0);
+                            header('Content-Type: ' . $file['contenttype']);
                             echo $imagick->getImageBlob();
                             die;
                         } else {
-                            header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                            $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
+
+                            if (!empty($office2pdf_command) && !empty($_GET['preview-type']) && $_GET['preview-type'] == 'office') {
+                                $filename = $file['filename'];
+                                $i = strpos($filename, '.');
+                                if ($i !== false) {
+                                    $extension = mb_substr($filename, $i + 1);
+                                    if (preg_match('/^(odt|ods|doc|docx|xls|xlsx|rtf)$/i', $extension)) {
+                                        $extension = 'pdf';
+                                    }
+                                    $filename = mb_substr($filename, 0, $i) . '.' . $extension;
+                                }
+
+                                header('Content-Type: application/pdf');
+                                header('Cache-Control: private');
+                                header('Content-Disposition: inline; filename=' . $filename);
+
+                                echo Utils::office2pdf(array(
+                                    'content' => file_get_contents($file['filepath']),
+                                    'subject' => trans('Document'),
+                                    'doctype' => Utils::docTypeByMimeType($file['contenttype']),
+                                    'dest' => 'S',
+                                ));
+                                die;
+                            } else {
+                                header('Content-Type: ' . $file['contenttype']);
+                                header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                            }
                         }
                     }
                 } else {
+                    header('Content-Type: ' . $file['contenttype']);
                     header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
                 }
                 header('Pragma: public');

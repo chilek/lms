@@ -46,6 +46,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'endtime' => $event['endtime'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'private' => $event['private'],
+            'note' => $event['note'],
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
@@ -56,15 +57,16 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 null : $event['netnodeid'],
             SYSLOG::RES_NETDEV => empty($event['netdevid']) ?
                 null : $event['netdevid'],
+            SYSLOG::RES_DIV => empty($event['divisionid']) || !empty($event['custid']) ? null : $event['divisionid'],
         );
 
         $this->db->BeginTrans();
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
-                endtime, userid, creationdate, private, closed, customerid, type, address_id, nodeid,
-                ticketid, netnodeid, netdevid)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                endtime, userid, creationdate, private, note, closed, customerid, type, address_id, nodeid,
+                ticketid, netnodeid, netdevid, divisionid)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -94,7 +96,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
             $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
             $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-            $messagebody = trans('Assigned event ($a) was created.', $a = $id);
+            $messagebody = trans('Assigned event ($a) has been created.', $a = $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['ticketid'],
@@ -132,6 +134,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 null : $event['netnodeid'],
             SYSLOG::RES_NETDEV => empty($event['netdevid']) ?
                 null : $event['netdevid'],
+            SYSLOG::RES_DIV => empty($event['divisionid']) || !empty($event['custid'])  ? null : $event['divisionid'],
             SYSLOG::RES_EVENT => $event['id'],
         );
 
@@ -140,7 +143,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $this->db->Execute(
             'UPDATE events SET title = ?, description = ?, date = ?, begintime = ?, enddate = ?, endtime = ?, private = ?,
                 note = ?, closed = ?, customerid = ?, type = ?, address_id = ?, nodeid = ?, ticketid = ?, moddate = ?, moduserid = ?,
-                netnodeid = ?, netdevid = ? WHERE id = ?',
+                netnodeid = ?, netdevid = ?, divisionid = ? WHERE id = ?',
             array_values($args)
         );
 
@@ -184,7 +187,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
             $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
             $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-            $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
+            $messagebody = trans('Assigned event ($a) has been modified.', $a = $event['id']);
 
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['helpdesk'],
@@ -228,7 +231,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
                 $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
                 $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-                $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
+                $messagebody = trans('Assigned event ($a) has been deleted.', $a = $id);
 
                 $helpdesk_manager->TicketMessageAdd(array(
                     'ticketid' => $event['ticketid'],
@@ -242,26 +245,59 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function GetEvent($id)
     {
-        $event = $this->db->GetRow('SELECT e.id AS id, title, e.description, note, userid, e.creationdate,
-			e.customerid, date, begintime, enddate, endtime, private, closed, e.type,'
-            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
-			e.netnodeid, nn.name AS netnode_name, vd.address AS netnode_location,
-			e.netdevid, nd.name AS netdevice_name,
-			vusers.name AS username, e.moddate, e.moduserid, e.closeddate, e.closeduserid,
-			e.address_id, va.location, e.nodeid, n.name AS node_name, n.location AS node_location, '
-            . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation,
-			(SELECT name FROM vusers WHERE id=e.moduserid) AS modusername,
-			(SELECT name FROM vusers WHERE id=e.closeduserid) AS closedusername, ticketid
-			FROM events e
-			LEFT JOIN vaddresses va ON va.id = e.address_id
-			LEFT JOIN vnodes n ON (e.nodeid = n.id)
-			LEFT JOIN customerview c ON (c.id = customerid)
-			LEFT JOIN vusers ON (vusers.id = userid)
-			LEFT JOIN rttickets rtt ON (rtt.id = e.ticketid)
-			LEFT JOIN netnodes nn ON (nn.id = e.netnodeid)
-			LEFT JOIN netdevices nd ON (nd.id = e.netdevid)
-			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
-			WHERE e.id = ?', array($id));
+        $event = $this->db->GetRow(
+            'SELECT
+                e.id AS id,
+                e.title,
+                e.description,
+                e.note,
+                e.userid,
+                e.creationdate,
+                e.customerid,
+                e.date,
+                e.begintime,
+                e.enddate,
+                e.endtime,
+                e.private,
+                e.closed,
+                e.type,'
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+                e.netnodeid,
+                nn.name AS netnode_name,
+                vd.address AS netnode_location,
+                e.netdevid,
+                nd.name AS netdevice_name,
+                vusers.name AS username,
+                e.moddate,
+                e.moduserid,
+                e.closeddate,
+                e.closeduserid,
+                e.address_id,
+                va.location,
+                e.nodeid,
+                n.name AS node_name,
+                n.location AS node_location, '
+                . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation,
+                (SELECT name FROM vusers WHERE id = e.moduserid) AS modusername,
+                (SELECT name FROM vusers WHERE id = e.closeduserid) AS closedusername,
+                e.ticketid,
+                e.divisionid,
+                divisions.name AS div_name,
+                divisions.shortname AS div_shortname,
+                divisions.label AS div_label
+            FROM events e
+            LEFT JOIN vaddresses va ON va.id = e.address_id
+            LEFT JOIN vnodes n ON e.nodeid = n.id
+            LEFT JOIN customerview c ON c.id = customerid
+            LEFT JOIN vusers ON vusers.id = userid
+            LEFT JOIN rttickets rtt ON rtt.id = e.ticketid
+            LEFT JOIN netnodes nn ON nn.id = e.netnodeid
+            LEFT JOIN netdevices nd ON nd.id = e.netdevid
+            LEFT JOIN vaddresses vd ON vd.id = nn.address_id
+            LEFT JOIN divisions ON divisions.id = e.divisionid
+            WHERE e.id = ?',
+            array(intval($id))
+        );
 
         if (empty($event)) {
             return array();
@@ -298,7 +334,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             JOIN eventassignments a ON a.userid = u.id
             WHERE a.eventid = ?',
             'id',
-            array($id)
+            array(intval($id))
         );
         if (empty($event['userlist'])) {
             $event['userlist'] = array();
@@ -330,6 +366,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
      *      closed - event close flag (default: '' = any value): single integer value or empty string,
      *      netnodeid - event with assigned network node,
      *      netdevid - event with assigned network device,
+     *      divisionid - division id assigned to events (default: 0 or null = any):
+     *          array() of integer values or single integer value,
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
@@ -417,6 +455,21 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $netdevfilter = empty($netdevid) ? '' : ' AND events.netdevid = ' . intval($netdevid);
         $netnodefilter = empty($netnodeid) ? '' : ' AND events.netnodeid = ' . intval($netnodeid);
 
+        if (!empty($divisionid)) {
+            $divisionid = is_array($divisionid) ? Utils::filterIntegers($divisionid) : intval($divisionid);
+        }
+
+        $divisionfilter = empty($divisionid)
+            ? ''
+            : ' AND (
+                events.divisionid ' . (is_array($divisionid) ? 'IN (' . implode(',', $divisionid) . ')' : '=' . $divisionid)
+                . ' OR c.divisionid ' . (is_array($divisionid) ? 'IN (' . implode(',', $divisionid) . ')' : '=' . $divisionid)
+            . ')';
+
+        if (!empty($userid)) {
+            $userid = is_array($userid) ? Utils::filterIntegers($userid) : intval($userid);
+        }
+
         if (empty($userid)) {
             $userfilter = '';
         } else {
@@ -424,19 +477,22 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 if (!empty($userand)) {
                     $userfilter = ' AND (EXISTS (SELECT COUNT(userid), eventid FROM eventassignments WHERE eventid = events.id AND userid IN ('
                         . implode(',', $userid) . ') GROUP BY eventid HAVING(COUNT(eventid) = ' . count($userid) . '))
-                        ' . (in_array('-1', $userid) ? ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)' : '') . ')';
+                        ' . (in_array(-1, $userid) ? ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)' : '') . ')';
                 } else {
-                    $userfilter = ' AND (EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN (' . implode(',', $userid) . '))
-                        ' . (in_array('-1', $userid) ? ' OR NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)' : '') . ')';
+                    $userfilter = ' AND (EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN (' . implode(', ', $userid) . '))
+                        ' . (in_array(-1, $userid) ? ' OR NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)' : '') . ')';
                 }
             } else {
-                $userid = intval($userid);
                 if ($userid == -1) {
                     $userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
                 } else {
                     $userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid = ' . $userid . ')';
                 }
             }
+        }
+
+        if (!empty($type)) {
+            $type = is_array($type) ? Utils::filterIntegers($type) : intval($type);
         }
 
         if ($count) {
@@ -449,47 +505,82 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				LEFT JOIN vusers ON (userid = vusers.id)
 				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
                 . $privacy_condition
-                . ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
+                . ($customerid ? ' AND events.customerid = ' . intval($customerid) : '')
                 . $userfilter
                 . $netnodefilter
                 . $netdevfilter
                 . $overduefilter
-                . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
+                . (empty($type) ? '' : ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', $type) . ')' : '=' . $type))
+                . $divisionfilter
                 . $closedfilter,
                 array($startdate, $enddate, $enddate, $startdate)
             );
         }
 
         $list = $this->db->GetAll(
-            'SELECT events.id AS id, title, note, events.description, date, begintime, enddate, endtime, events.customerid AS customerid, closed, events.type, '
-                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername, events.netnodeid, nn.name AS netnode_name, vd.address AS netnode_location,
-				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation, closeddate,
-				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid, events.netdevid, nd.name AS netdev_name, cc.customerphone
-			FROM events
-			LEFT JOIN vaddresses va ON va.id = events.address_id
-			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
-			LEFT JOIN customerview c ON (events.customerid = c.id)
-			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN rttickets rtt ON (rtt.id = events.ticketid)
-			LEFT JOIN netnodes nn ON (nn.id = events.netnodeid)
-			LEFT JOIN netdevices nd ON (nd.id = events.netdevid)
-			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
+            'SELECT
+                events.id AS id,
+                events.title,
+                events.note,
+                events.description,
+                events.date,
+                events.begintime,
+                events.enddate,
+                events.endtime,
+                events.customerid AS customerid,
+                events.closed,
+                events.type, '
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+                events.netnodeid,
+                nn.name AS netnode_name,
+                vd.address AS netnode_location,
+                events.userid,
+                vusers.name AS username, '
+                . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation,
+                events.closeddate,
+                events.address_id,
+                va.location,
+                events.nodeid AS nodeid,
+                vn.location AS nodelocation,
+                ticketid,
+                events.netdevid,
+                nd.name AS netdev_name,
+                cc.customerphone,
+                events.divisionid,
+                divisions.name AS div_name,
+                divisions.shortname AS div_shortname,
+                divisions.label AS div_label
+            FROM events
+            LEFT JOIN vaddresses va ON va.id = events.address_id
+            LEFT JOIN vnodes as vn ON nodeid = vn.id
+            LEFT JOIN customerview c ON events.customerid = c.id
+            LEFT JOIN vusers ON userid = vusers.id
+            LEFT JOIN rttickets rtt ON rtt.id = events.ticketid
+            LEFT JOIN netnodes nn ON nn.id = events.netnodeid
+            LEFT JOIN netdevices nd ON nd.id = events.netdevid
+            LEFT JOIN vaddresses vd ON vd.id = nn.address_id
+            LEFT JOIN divisions ON divisions.id = events.divisionid
             LEFT JOIN (
-                SELECT ' . $this->db->GroupConcat('contact', ', ') . ' AS customerphone, customerid
+                SELECT '
+                    . $this->db->GroupConcat('contact', ', ') . ' AS customerphone,
+                    customerid
                 FROM customercontacts
                 WHERE type & ? > 0 AND type & ? = 0
                 GROUP BY customerid
             ) cc ON cc.customerid = c.id
-			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
+            WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
             . $privacy_condition
-            .($customerid ? ' AND events.customerid = '.intval($customerid) : '')
+            . ($customerid ? ' AND events.customerid = ' . intval($customerid) : '')
             . $userfilter
             . $netnodefilter
             . $netdevfilter
             . $overduefilter
-            . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
+            . (empty($type) ? '' : ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', $type) . ')' : '=' . $type))
+            . $divisionfilter
             . $closedfilter
-            .' ORDER BY date, begintime, events.type'
+            . ' ORDER BY events.date,
+                events.begintime,
+                events.type'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array(
@@ -609,7 +700,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
                 . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')
                 . (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%') : '')
-            . $sqlord,
+            . (empty($sqlord) ? '' : $sqlord),
             array(Auth::GetCurrentUser())
         );
 
@@ -689,6 +780,107 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 return $list2;
             }
         }
+    }
+
+    /**
+     * @param array $params associative array of parameters described below:
+     *      id - id of event to close, single integer value,
+     *      ticketid - assigned ticketid of all events to close
+     */
+
+    public function CloseEvent($params)
+    {
+        if (!ConfigHelper::checkPrivilege('timetable_management')) {
+            die(trans('Error: cannot close event - no user permissions'));
+        }
+        if (empty($params)) {
+            die(trans('Error: cannot close event'));
+        }
+
+        if (!empty($params['ticketid'])) {
+            $where = 'closed = 0 AND ticketid = ?';
+            $sqlreplacedata = $params['ticketid'];
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ids = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
+            $ids = $ids ?? $params['id'];
+
+            foreach ($ids as $id) {
+                $helpdesk_manager->TicketMessageAdd(array(
+                    'ticketid' => $params['ticketid'],
+                    'messageid' => '<msg.' . $params['ticketid'] . $id['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                    'body' => trans('Assigned event ($a) has been closed.', $a = $id['id']),
+                    'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+                ));
+            }
+        } else {
+            $where = 'id = ?';
+            $sqlreplacedata = $params['id'];
+            $ids = array($params['id']);
+        }
+
+        if ($this->syslog) {
+            foreach ($ids as $id) {
+                $this->syslog->AddMessage(
+                    SYSLOG::RES_EVENT,
+                    SYSLOG::OPER_UPDATE,
+                    $id,
+                    array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
+                );
+            }
+        }
+
+        return $this->db->Execute(
+            'UPDATE events
+                SET closed = 1, closeduserid = ?, closeddate = ?NOW?
+                WHERE ' . $where,
+            array(Auth::GetCurrentUser(), $sqlreplacedata)
+        );
+    }
+
+    public function OpenEvent($id)
+    {
+        if (!ConfigHelper::checkPrivilege('timetable_management')) {
+            die(trans('Error: cannot open event - no user permissions'));
+        }
+
+        $aee = ConfigHelper::getConfig(
+            'timetable.allow_modify_closed_events_newer_than',
+            ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)
+        );
+        $event = $this->GetEvent($id);
+        if (empty($event['closed'])) {
+            die(trans('Error: cannot open event - event not closed'));
+        }
+        if (!ConfigHelper::checkPrivilege('superuser') && $aee && ((time() - $event['closeddate']) < $aee)) {
+            die(trans('Error: cannot open event - event closed too long ago'));
+        }
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_EVENT,
+                SYSLOG::OPER_UPDATE,
+                $id,
+                array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
+            );
+        }
+
+        if (!empty($event['ticketid'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['ticketid'],
+                'messageid' => '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                'body' => trans('Assigned event ($a) has been opened.', $a = $id),
+                'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+            ));
+        }
+
+        return $this->db->Execute(
+            'UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0
+              WHERE id = ?',
+            array($id)
+        );
     }
 
     public function GetCustomerIdByTicketId($id)

@@ -40,7 +40,14 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 			WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)
 		ORDER BY cash.id DESC LIMIT 1');
 
+if ($SESSION->is_set('addbnotification')) {
+    $notification = $SESSION->get('addbnotification');
+} else {
+    $notification = ConfigHelper::checkConfig('finances.customer_notify', true) ? 1 : 0;
+}
+
 $SMARTY->assign('last', $last);
+$SMARTY->assign('notification', $notification);
 $SMARTY->assign('currency', Localisation::getDefaultCurrency());
 $SMARTY->assign('operation', $SESSION->get('addtype'));
 $SMARTY->assign('servicetype', $SESSION->get('addbst'));

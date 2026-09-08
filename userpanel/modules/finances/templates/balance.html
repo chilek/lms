@@ -8,12 +8,12 @@
     {/if}
 </h1>
 {if $userinfo.balance < 0}
+    {$custom_content}
 	{if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
 	<a href="?m=finances&amp;f=transferform" target="_blank">
 	<span style="color: red;">{trans("Print payment form")}</span>
 	</a>
 	{/if}
-    {$custom_content}
 {else}
 	{trans("All your covenants are settled")}
 {/if}

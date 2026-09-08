@@ -228,13 +228,14 @@
 
 			{box_row icon="queue" icon_class="fa-fw" label="Queue"}
 				<select size="1" name="message[queueid]" id="queue-selection"
-					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select-test"}>
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("— no changes —")}</option>
 					{/if}
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
 							{if $item.newmessagesubject && $item.newmessagebody || $item.newmessagesmsbody} data-newmessage-notify="1"{/if}
+							{if $item.resolveticketsubject && $item.resolveticketbody || $item.resolveticketsmsbody} data-resolveticket-notify="1"{/if}
 							{if $item.id == $message.queueid} selected{/if}>{$item.name}</option>
 					{/foreach}
 				</select>
@@ -242,7 +243,7 @@
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
 				<select size="1" name="message[owner]" id="owner"
-					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+					{tip text="Select user" trigger="owner" class="lms-ui-advanced-select-test"}>
 					<option value="0">{trans("— select user —")}</option>
 					{if $group_action}
 						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("— no changes —")}</option>
@@ -271,7 +272,7 @@
 			{box_row icon="verifier" icon_class="fa-fw" label="Verifier" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<select size="1" name="message[verifierid]"
-						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select-test"}>
 						<option value="0">{trans("— select user —")}</option>
 						{if $group_action}
 							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("— no changes —")}</option>
@@ -337,7 +338,8 @@
 
 		$('[name="message[queueid]"]').change(function() {
 			var newmessage_notify = $(this).find(':selected').attr('data-newmessage-notify');
-			if (newmessage_notify === undefined) {
+			var resolveticket_notify = $(this).find(':selected').attr('data-resolveticket-notify');
+			if (newmessage_notify === undefined && resolveticket_notify === undefined) {
 				$('#customernotify-row').hide();
 				$('#customernotify').attr('checked', false);
 			} else {
@@ -348,7 +350,8 @@
 
 		{if !$group_action}
 		var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
-		if (newmessage_notify === undefined) {
+		var resolveticket_notify = $('[name="message[queueid]"]').find(':selected').attr('data-resolveticket-notify');
+		if (newmessage_notify === undefined && resolveticket_notify === undefined) {
 			$('#customernotify-row').hide();
 		} else {
 			$('#customernotify-row').show();
@@ -379,8 +382,9 @@
 			$('[name="message[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 
 			var message = Base64.decode(selected.attr('data-message'));
-			if (tinyMCE.editors.length) {
-				tinyMCE.editors[0].setContent(message);
+			var editor = tinyMCE.get(0);
+			if (editor) {
+				editor.setContent(message);
 			}
 			$('[name="message[body]"]').val(message);
 		});

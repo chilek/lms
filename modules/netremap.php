@@ -54,7 +54,7 @@ if (!$error) {
         $SMARTY->display('header.html');
         echo '<H1>'.$layout['pagetitle'].'</H1>';
         echo '<P>'.trans('Are you sure, you want to readdress network $a to network $b ?', strtoupper($network['source']['name']).' ('.$network['source']['address'].'/'.$network['source']['prefix'].')', strtoupper($network['dest']['name']).' ('.$network['dest']['address'].'/'.$network['dest']['prefix'].')').'</P>';
-        echo '<A href="?m=netremap&id='.$_GET['id'].'&mapto='.$_GET['mapto'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+        echo '<a href="?m=netremap&id=' . htmlspecialchars($_GET['id']) . '&mapto=' . htmlspecialchars($_GET['mapto']) . '&is_sure=1">' . trans('Yes, I am sure.') . '</a>';
         $SMARTY->display('footer.html');
     }
 } else {

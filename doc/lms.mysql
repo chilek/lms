@@ -41,6 +41,14 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS ksefinvoicetagassignments;
+DROP TABLE IF EXISTS ksefinvoicetags;
+DROP TABLE IF EXISTS ksefinvoicesummaries;
+DROP TABLE IF EXISTS ksefinvoicethirdsubjects;
+DROP TABLE IF EXISTS ksefinvoices;
+DROP TABLE IF EXISTS ksefdocuments;
+DROP TABLE IF EXISTS ksefconfig;
+DROP TABLE IF EXISTS ksefbatchsessions;
 DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
@@ -50,6 +58,7 @@ DROP TABLE IF EXISTS userdivisions;
 DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS rttemplatetypes;
 DROP TABLE IF EXISTS rttemplatequeues;
+DROP TABLE IF EXISTS templateattachments;
 DROP TABLE IF EXISTS templates;
 DROP TABLE IF EXISTS logmessagedata;
 DROP TABLE IF EXISTS logmessagekeys;
@@ -216,9 +225,9 @@ CREATE TABLE users (
   passwdforcechange smallint NOT NULL DEFAULT 0,
   ntype smallint        DEFAULT NULL,
   lastlogindate int(16) NOT NULL DEFAULT 0,
-  lastloginip varchar(16) NOT NULL DEFAULT '',
+  lastloginip varchar(40) NOT NULL DEFAULT '',
   failedlogindate int(16) NOT NULL DEFAULT 0,
-  failedloginip varchar(16) NOT NULL DEFAULT '',
+  failedloginip varchar(40) NOT NULL DEFAULT '',
   deleted tinyint(1)    NOT NULL DEFAULT '0',
   passwdexpiration int(16) NOT NULL DEFAULT 0,
   passwdlastchange int(16) NOT NULL DEFAULT 0,
@@ -446,6 +455,7 @@ CREATE TABLE divisions (
 	bank            varchar(100)    DEFAULT NULL,
 	account         varchar(48) 	NOT NULL DEFAULT '',
 	email varchar(255)              DEFAULT NULL,
+	serviceemail varchar(255)   DEFAULT NULL,
 	phone varchar(255) DEFAULT NULL,
 	servicephone varchar(40) DEFAULT NULL,
 	inv_header      text    	NOT NULL DEFAULT '',
@@ -462,7 +472,7 @@ CREATE TABLE divisions (
 	address_id int(11),
 	office_address_id int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
-	UNIQUE KEY shortname (shortname),
+	UNIQUE KEY divisions_shortname_label_ukey (shortname, label),
 	CONSTRAINT divisions_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT divisions_office_address_id_fkey FOREIGN KEY (office_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -572,7 +582,7 @@ CREATE TABLE customernotes (
     CONSTRAINT customernotes_customerid_fkey
         FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT customernotes_moduserid_fkey
-        FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL
+        FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 # --------------------------------------------------------
@@ -682,6 +692,8 @@ CREATE TABLE customer_addresses (
 	customer_id int(11),
 	address_id  int(11),
 	type        smallint NULL,
+	ten varchar(50) DEFAULT NULL,
+	entity_type smallint DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT `customer_addresses_customer_id_fkey` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -735,6 +747,11 @@ CREATE TABLE documents (
 	comment text DEFAULT NULL,
 	cuserid int(11) DEFAULT NULL,
 	recipient_address_id int(11),
+	recipient_ten varchar(50) DEFAULT NULL,
+	recipient_type smallint DEFAULT NULL,
+	recipient_address_id2 int(11) DEFAULT NULL,
+	recipient_ten2 varchar(50) DEFAULT NULL,
+	recipient_type2 smallint DEFAULT NULL,
 	post_address_id int(11),
 	template varchar(255) DEFAULT NULL,
 	commitflags tinyint(1) NOT NULL DEFAULT 0,
@@ -755,8 +772,11 @@ CREATE TABLE documents (
 	INDEX customerid (customerid),
 	INDEX closed (closed),
 	INDEX reference (reference),
+	KEY documents_type_idx (type),
 	CONSTRAINT documents_recipient_address_id_fkey
 	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_recipient_address_id2_fkey
+		FOREIGN KEY (recipient_address_id2) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_post_address_id_fkey
 		FOREIGN KEY (post_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_customerid_fkey
@@ -985,6 +1005,7 @@ CREATE TABLE voip_cdr (
 	caller              varchar(20)   NOT NULL,
 	callee              varchar(20)   NOT NULL,
 	call_start_time     int(16)       NOT NULL,
+	creationdate        int(16)       DEFAULT NULL,
 	totaltime           bigint        NOT NULL,
 	billedtime          bigint        NOT NULL,
 	price               decimal(12,5) NOT NULL,
@@ -1007,6 +1028,7 @@ CREATE TABLE voip_cdr (
 	KEY voip_cdr_caller_idx (caller),
 	KEY voip_cdr_callee_idx (callee),
 	KEY voip_cdr_call_start_time_idx (call_start_time),
+	KEY voip_cdr_creationdate_idx (creationdate),
 	KEY voip_cdr_direction_idx (direction),
 	KEY voip_cdr_type_idx (type),
 	KEY voip_cdr_incremental_idx (incremental),
@@ -1093,6 +1115,8 @@ CREATE TABLE tariffs (
     flags tinyint(1) DEFAULT 0 NOT NULL,
 	netvalue decimal(9,3) DEFAULT NULL,
     notes text DEFAULT NULL,
+    serviceproviderid int(11) DEFAULT NULL,
+    extid varchar(64) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1101,7 +1125,9 @@ CREATE TABLE tariffs (
 	CONSTRAINT tariffs_voip_tariff_rule_id_fkey
 		FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT tariffs_taxid_fkey
-		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT tariffs_serviceproviderid_fkey
+        FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1257,7 +1283,7 @@ CREATE TABLE assignments (
 	period smallint NOT NULL DEFAULT '0',
     backwardperiod smallint NOT NULL DEFAULT 0,
 	note text DEFAULT NULL,
-    at int(11) NOT NULL DEFAULT '0',
+    at int(16) NOT NULL DEFAULT '0',
 	datefrom int(16) NOT NULL DEFAULT 0,
 	dateto int(16) NOT NULL DEFAULT 0,
 	invoice tinyint(1) NOT NULL DEFAULT '0',
@@ -1270,6 +1296,7 @@ CREATE TABLE assignments (
 	numberplanid int(11) DEFAULT NULL,
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id int(11),
+	recipient_address_id2 int(11) DEFAULT NULL,
 	docid int(11) DEFAULT NULL,
 	commited tinyint(1) NOT NULL DEFAULT '1',
 	separatedocument varchar(100) DEFAULT NULL,
@@ -1286,6 +1313,8 @@ CREATE TABLE assignments (
 		FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT assignments_recipient_address_id_fkey
 		FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT assignments_recipient_address_id2_fkey
+		FOREIGN KEY (recipient_address_id2) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT assignments_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT assignments_tariffid_fkey
@@ -1330,6 +1359,8 @@ CREATE TABLE invoicecontents (
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3,
 	INDEX docid (docid),
+	INDEX invoicecontents_tariffid_idx (tariffid),
+	INDEX invoicecontents_docid_itemid_idx (docid, itemid),
 	CONSTRAINT invoicecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT invoicecontents_taxid_fkey
@@ -1449,6 +1480,7 @@ CREATE TABLE cash (
   linktechnology int(11) DEFAULT NULL,
   currency varchar(3),
   currencyvalue decimal(17,10) DEFAULT 1.0,
+  notification smallint DEFAULT 1,
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
   INDEX docid (docid),
@@ -1456,6 +1488,8 @@ CREATE TABLE cash (
   INDEX importid (importid),
   INDEX sourceid (sourceid),
   INDEX cash_linktechnology_idx (linktechnology),
+  INDEX cash_notification_idx (notification),
+  INDEX cash_docid_itemid_idx (docid, itemid),
   UNIQUE KEY cash_importid_ukey (importid),
   CONSTRAINT cash_customerid_fkey
   	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2153,8 +2187,11 @@ CREATE TABLE netlinks (
   dstport smallint NOT NULL DEFAULT '0',
   routetype smallint DEFAULT NULL,
   linecount smallint DEFAULT NULL,
+  usedlines smallint DEFAULT NULL,
+  availablelines smallint DEFAULT NULL,
   srcradiosector int(11) DEFAULT NULL,
   dstradiosector int(11) DEFAULT NULL,
+  foreignentity varchar(255) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst),
   INDEX srcradiosector (srcradiosector),
@@ -2205,6 +2242,7 @@ CREATE TABLE rtqueues (
   deltime int(16) NOT NULL DEFAULT 0,
   deluserid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
+  uiconfigsection varchar(64) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY name (name),
   CONSTRAINT rtqueues_deluserid_fkey
@@ -2262,6 +2300,8 @@ CREATE TABLE rttickets (
     FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT rttickets_nodeid_fkey
     FOREIGN KEY (nodeid) REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT rttickets_netnodeid_fkey
+    FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT rttickets_customerid_fkey
     FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT rttickets_deluserid_fkey
@@ -2662,10 +2702,12 @@ CREATE TABLE events (
     netdevid int(11) DEFAULT NULL,
     ticketid int(11) DEFAULT NULL,
 	address_id int(11) DEFAULT NULL,
+    divisionid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     INDEX date (date),
     INDEX events_netnodeid_idx (netnodeid),
     INDEX events_netdevid_idx (netdevid),
+    INDEX events_divisionid_idx (divisionid),
     KEY nodeid (nodeid),
 	CONSTRAINT events_nodeid_fkey
 		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2684,7 +2726,9 @@ CREATE TABLE events (
 	CONSTRAINT events_closeduserid_fkey
 		FOREIGN KEY (closeduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_moduserid_fkey
-		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2706,7 +2750,7 @@ CREATE TABLE eventassignments (
 # Structure of table sessions
 #
 CREATE TABLE sessions (
-    id varchar(50) NOT NULL DEFAULT '',
+    id varchar(100) NOT NULL DEFAULT '',
     ctime int(16) NOT NULL DEFAULT 0,
     mtime int(16) NOT NULL DEFAULT 0,
     atime int(16) NOT NULL DEFAULT 0,
@@ -2822,8 +2866,7 @@ CREATE TABLE ewx_pt_config (
 CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL DEFAULT '',
   keyvalue varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY  (keytype),
-  UNIQUE KEY dbinfo_keytype_ukey (keytype)
+  PRIMARY KEY  (keytype)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2910,6 +2953,7 @@ CREATE TABLE messageitems (
 	error 		text		DEFAULT NULL,
 	lastreaddate 	int(16)		DEFAULT 0 NOT NULL,
 	externalmsgid	varchar(64) DEFAULT NULL,
+	subject varchar(255) DEFAULT NULL,
 	body 		text		DEFAULT NULL,
 	attributes text DEFAULT NULL,
 	attempts smallint DEFAULT NULL,
@@ -3018,8 +3062,23 @@ CREATE TABLE templates (
 	name varchar(100)	NOT NULL,
 	subject varchar(255)	DEFAULT '' NOT NULL,
 	message	text		DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (type, name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table templateattachments
+#
+CREATE TABLE templateattachments (
+	id int(11) NOT NULL auto_increment,
+	templateid integer NOT NULL,
+	filename varchar(255) 	DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT templateattachments_templateid_fkey
+		FOREIGN KEY (templateid) REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # ---------------------------------------------------
@@ -3167,6 +3226,209 @@ CREATE TABLE rtticketwatchers (
 	UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
 ) ENGINE=InnoDB;
 
+# ---------------------------------------------------
+#
+# Structure of table ksefbatchsessions
+#
+CREATE TABLE ksefbatchsessions (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksefnumber varchar(40) NOT NULL,
+    cdate int(16) NOT NULL,
+    lastupdate int(16) NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
+    statusdescription text DEFAULT NULL,
+    environment smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    INDEX ksefbatchsessions_ksefnumber_idx (ksefnumber),
+    INDEX ksefbatchsessions_status_idx (status)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefconfig
+#
+CREATE TABLE ksefconfig (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    divisionid int(11) NOT NULL,
+    delay int(11) NOT NULL,
+    allconsumers smallint NOT NULL,
+    boundarydate int(16) NOT NULL,
+    showbalancesummary smallint NOT NULL,
+    xmladdallvalues smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefconfig_divisionid_fkey
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefdocuments
+#
+CREATE TABLE ksefdocuments (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    batchsessionid int(11) NOT NULL,
+    docid integer NOT NULL,
+    ordinalnumber int(11) NOT NULL,
+    ksefnumber varchar(40) DEFAULT NULL,
+    hash varchar(50) NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
+    statusdescription text DEFAULT NULL,
+    statusdetails text DEFAULT NULL,
+    permanent_storage_date datetime(6) DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefbatchsessions_batchsessionid_fkey
+        FOREIGN KEY (batchsessionid) REFERENCES ksefbatchsessions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT ksefdocuments_docid_fkey
+        FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX ksefdocuments_status_idx (status)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoices
+#
+CREATE TABLE ksefinvoices (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    division_id int(11) NOT NULL,
+    issue_date int(16) NOT NULL,
+    from_date int(16) NOT NULL,
+    to_date int(16) DEFAULT NULL,
+    permanent_storage_date datetime(6) NOT NULL,
+    ksef_number varchar(40) NOT NULL,
+    invoice_number varchar(256) NOT NULL,
+    corrected_ksef_number varchar(44) DEFAULT NULL,
+    corrected_invoice_number varchar(256) DEFAULT NULL,
+    corrected_invoice_issue_date int(16) NULL,
+    seller_ten varchar(10) NOT NULL,
+    seller_name varchar(512) NOT NULL,
+    buyer_identifier_type smallint NOT NULL,
+    buyer_identifier_value varchar(50) NOT NULL,
+    buyer_name varchar(512) NOT NULL,
+    net_amount decimal(12,5) NOT NULL,
+    gross_amount decimal(12,5) NOT NULL,
+    vat_amount decimal(12,5) NOT NULL,
+    currency varchar(3) NOT NULL,
+    currency_value numeric(22,6) NOT NULL DEFAULT 1.0,
+    invoicing_mode smallint NOT NULL,
+    invoice_type smallint NOT NULL,
+    form_system_code varchar(15) NOT NULL,
+    form_schema_version varchar(15) NOT NULL,
+    form_value varchar(15) NOT NULL,
+    invoice_hash varchar(44) NOT NULL,
+    corrected_invoice_hash varchar(44) DEFAULT NULL,
+    bank_account varchar(48) DEFAULT NULL,
+    bank_name varchar(256) DEFAULT NULL,
+    paid tinyint(1) NOT NULL DEFAULT 0,
+    pay_date int(11) DEFAULT NULL,
+    pay_type smallint DEFAULT 0,
+    buyer_id varchar(50) DEFAULT NULL,
+    posting smallint DEFAULT 1,
+    settled smallint DEFAULT 0,
+    notes text DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoices_division_id_fkey
+        FOREIGN KEY (division_id) REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    UNIQUE KEY ksefinvoices_ksef_number_ukey (ksef_number),
+    KEY ksefinvoices_issue_date_idx (issue_date),
+    KEY ksefinvoices_permanent_storage_date_idx (permanent_storage_date),
+    KEY ksefinvoices_ksef_number_idx (ksef_number),
+    KEY ksefinvoices_corrected_ksef_number_idx (corrected_ksef_number),
+    KEY ksefinvoices_seller_ten_idx (seller_ten),
+    KEY ksefinvoices_buyer_identifier_value_idx (buyer_identifier_value),
+    KEY ksefinvoices_invoice_type_idx (invoice_type)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicethirdsubjects
+#
+CREATE TABLE ksefinvoicethirdsubjects (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksefinvoiceid int(11) NOT NULL,
+    identifier_type smallint NOT NULL,
+    identifier_value varchar(50) NOT NULL,
+    name varchar(512) NOT NULL,
+    role int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoicethirdsubjects_ksefinvoiceid_fkey
+        FOREIGN KEY (ksefinvoiceid) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY ksefinvoicethirdsubjects_identifier_type_idx (identifier_type),
+    KEY ksefinvoicethirdsubjects_identifier_value_idx (identifier_value),
+    KEY ksefinvoicethirdsubjects_role_idx (role)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicesummaries
+#
+CREATE TABLE ksefinvoicesummaries (
+    ksef_invoice_id int(11) NOT NULL,
+    net_amount numeric(12,5) NOT NULL,
+    gross_amount numeric(12,5) NOT NULL,
+    vat_amount numeric(12,5) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    CONSTRAINT ksefinvoicesummaries_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoiceitems
+#
+CREATE TABLE ksefinvoiceitems (
+    ksef_invoice_id int(11) NOT NULL,
+    item_id smallint NOT NULL,
+    name varchar(512) DEFAULT NULL,
+    prod_id varchar(50) DEFAULT NULL,
+    unit varchar(512) DEFAULT NULL,
+    count numeric(22,6) DEFAULT NULL,
+    net_flag smallint DEFAULT 1,
+    net_price numeric(24,8) NOT NULL,
+    price numeric(24,8) NOT NULL,
+    net_value numeric(16,2) NOT NULL,
+    value numeric(16,2) NOT NULL,
+    tax_rate numeric(4,2),
+    taxed smallint DEFAULT 1,
+    reverse_charge smallint DEFAULT 0,
+    eu smallint DEFAULT 0,
+    export smallint DEFAULT 0,
+    product_service_group smallint DEFAULT 0,
+    before_state smallint DEFAULT 0,
+    order_id text DEFAULT NULL,
+    CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY ksefinvoiceitems_order_id_idx (order_id(255))
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicetags
+#
+CREATE TABLE ksefinvoicetags (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    name text NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table ksefinvoicetagassignments
+#
+CREATE TABLE ksefinvoicetagassignments (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    ksef_invoice_id int(11) NOT NULL,
+    ksef_invoice_tag_id int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoicetagassignments_ksef_invoice_id_fkey
+        FOREIGN KEY (ksef_invoice_id) REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey
+        FOREIGN KEY (ksef_invoice_tag_id) REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 # --------------------------------------------------------
 #
 # Structure of table up_rights (Userpanel)
@@ -3202,9 +3464,9 @@ CREATE TABLE up_customers (
 	id int(11) NOT NULL auto_increment,
 	customerid int(11) DEFAULT NULL,
 	lastlogindate int(16) NOT NULL DEFAULT 0,
-	lastloginip varchar(16) NOT NULL DEFAULT '',
+	lastloginip varchar(40) NOT NULL DEFAULT '',
 	failedlogindate int(16) NOT NULL DEFAULT 0,
-	failedloginip varchar(16) NOT NULL DEFAULT '',
+	failedloginip varchar(40) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	CONSTRAINT up_customers_customerid_fkey
@@ -3245,7 +3507,7 @@ CREATE TABLE up_info_changes (
 # Structure of table up_sessions
 #
 CREATE TABLE up_sessions (
-	id varchar(50) NOT NULL DEFAULT '',
+	id varchar(100) NOT NULL DEFAULT '',
 	customerid int(11) NOT NULL,
 	ctime int(16) NOT NULL DEFAULT 0,
 	mtime int(16) NOT NULL DEFAULT 0,
@@ -3530,12 +3792,19 @@ CREATE VIEW customerview AS
         AND c.type < 2;
 
 CREATE VIEW vusers AS
-    SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
+    SELECT
+        u.*,
+        CONCAT(u.firstname, ' ', u.lastname) AS name,
+        CONCAT(u.lastname, ' ', u.firstname) AS rname
     FROM users u
     LEFT JOIN userdivisions ud ON u.id = ud.userid
-    WHERE lms_current_user() = 0 OR ud.divisionid IN (SELECT ud2.divisionid
-                             FROM userdivisions ud2
-                             WHERE ud2.userid = lms_current_user())
+    WHERE lms_current_user() = 0
+        OR ud.divisionid IN (
+            SELECT ud2.divisionid
+            FROM userdivisions ud2
+            WHERE ud2.userid = lms_current_user()
+        )
+        OR ud.divisionid IS NULL
     GROUP BY u.id;
 
 CREATE VIEW vallusers AS
@@ -3993,6 +4262,7 @@ URL: %url
 ('userpanel','default_categories','1','',0),
 ('userpanel','auth_type','1','',0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
+('userpanel', 'show_unapproved_document_attachments', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
 ('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
 ('userpanel', 'change_notification_mail_sender', '', '', 0),
@@ -4048,7 +4318,44 @@ URL: %url
 ('userpanel', 'allowed_document_types', '', '', 0),
 ('userpanel', 'allowed_customer_status', '', '', 0),
 ('userpanel', 'authentication_customer_extid_service_provider_id', '', '', 0),
-('directories','userpanel_dir','userpanel','',0);
+('directories','userpanel_dir','userpanel','',0),
+('finances', 'debt_interest_percentages', '1997.01.01:35.0
+1998.04.15:33.0
+1999.02.01:24.0
+1999.05.15:21.0
+2000.11.01:30.0
+2001.12.15:20.0
+2002.07.25:16.0
+2003.02.01:13.0
+2003.09.25:12.25
+2005.01.10:13.5
+2005.10.15:11.5
+2008.12.15:13.0
+2014.12.23:8.0
+2016.01.01:7.0
+2020.03.18:6.5
+2020.04.09:6.0
+2020.05.29:5.6
+2021.10.07:6.0
+2021.11.04:6.75
+2021.12.09:7.25
+2022.01.05:7.75
+2022.02.09:8.25
+2022.03.09:9.0
+2022.04.07:10.0
+2022.05.06:10.75
+2022.06.09:11.5
+2022.07.08:12.0
+2022.09.08:12.25
+2023.09.07:11.50
+2023.10.05:11.25
+2025.05.08:10.75
+2025.07.03:10.5
+2025.09.04:10.25
+2025.10.09:10.0
+2025.11.06:9.75
+2025.12.04:9.50
+2026.03.05:9.25','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
 
@@ -4396,4 +4703,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2025012300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026081100');

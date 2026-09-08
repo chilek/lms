@@ -31,8 +31,36 @@ function getMessageTemplate($tmplid, $subjectelem, $messageelem)
     global $DB;
 
     $result = new xajaxResponse();
-    $row = $DB->GetRow('SELECT subject, message FROM templates WHERE id = ?', array($tmplid));
-    $result->call('messageTemplateReceived', $subjectelem, $row['subject'], $messageelem, $row['message']);
+
+    $row = $DB->GetRow('SELECT subject, message, contenttype FROM templates WHERE id = ?', array($tmplid));
+    $attachments = $DB->GetAll(
+        'SELECT ta.*
+        FROM templateattachments ta
+        WHERE templateid = ?',
+        array($tmplid)
+    );
+    if (empty($attachments)) {
+        $attachments = array();
+    } else {
+        $dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'messagetemplates';
+
+        foreach ($attachments as &$attachment) {
+            $attachment['size'] = filesize($dir . DIRECTORY_SEPARATOR . $tmplid . DIRECTORY_SEPARATOR . $attachment['filename']);
+        }
+        unset($attachment);
+    }
+
+    $result->call(
+        'messageTemplateReceived',
+        array(
+            'subjectElem' => $subjectelem,
+            'subject' => $row['subject'],
+            'messageElem' => $messageelem,
+            'message' => $row['message'],
+            'contentType' => $row['contenttype'],
+            'attachments' => $attachments,
+        )
+    );
 
     return $result;
 }
@@ -43,7 +71,10 @@ function getMessageTemplates($tmpltype)
 
     $result = new xajaxResponse();
     $templates = $LMS->GetMessageTemplates($tmpltype);
-    $result->call('messageTemplatesReceived', $templates);
+    if (empty($templates)) {
+        $templates = array();
+    }
+    $result->call('messageTemplatesReceived', array_values($templates));
 
     return $result;
 }
@@ -179,6 +210,19 @@ function GetRecipients($filter, $type = MSG_MAIL)
             $expired_indebted = 1;
             $expired_days = 60;
             break;
+    }
+
+    $customer_status_condition = '';
+
+    if (empty($state) || $state >= 50) {
+        $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+            ConfigHelper::getConfig('messages.allowed_customer_status', ''),
+            -1
+        );
+
+        if (!empty($allowed_customer_status)) {
+            $customer_status_condition = ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')';
+        }
     }
 
     if ($state >= 50) {
@@ -357,7 +401,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .'WHERE deleted = ' . $deleted
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
-        . ($state != 0 ? ' AND c.status = ' . $state : '')
+        . (empty($state) ? '' : ' AND c.status = ' . $state)
+        . $customer_status_condition
         . (empty($division) ? '' : ' AND c.divisionid = ' . $division)
         . $document_condition
         . $network_condition
@@ -463,7 +508,7 @@ function GetCustomers($customers)
     );
 }
 
-function BodyVars(&$body, $data, $format)
+function replaceSymbols(&$content, $data, $format)
 {
     static $use_only_alternative_accounts = null,
         $use_all_accounts = null;
@@ -486,7 +531,7 @@ function BodyVars(&$body, $data, $format)
     }
     $totalamount = -$data['totalbalance'];
 
-    if (strpos($body, '%bankaccount') !== false) {
+    if (strpos($content, '%bankaccount') !== false) {
         if (!isset($use_only_alternative_accounts)) {
             $use_only_alternative_accounts = ConfigHelper::checkConfig('messages.use_only_alternative_accounts');
             $use_all_accounts = ConfigHelper::checkConfig('messages.use_all_accounts');
@@ -512,7 +557,7 @@ function BodyVars(&$body, $data, $format)
 
         $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
 
-        $body = str_replace('%bankaccount', $all_accounts, $body);
+        $content = str_replace('%bankaccount', $all_accounts, $content);
     }
 
     [$now_year, $now_month, $now_day] = explode('/', date('Y/m/d'));
@@ -527,7 +572,7 @@ function BodyVars(&$body, $data, $format)
         $commented_balance = trans('Billing status: $a', moneyf($data['totalbalance'], $currency));
     }
 
-    $body = str_replace(
+    $content = str_replace(
         array(
             '%date-y',
             '%date-m',
@@ -560,7 +605,7 @@ function BodyVars(&$body, $data, $format)
             $data['id'] ?? '',
             $data['pin'] ?? '',
         ),
-        $body
+        $content
     );
 
     if (isset($data['node'])) {
@@ -570,7 +615,7 @@ function BodyVars(&$body, $data, $format)
                 $macs[] = $mac['mac'];
             }
         }
-        $body = str_replace(
+        $content = str_replace(
             array(
                 '%node_name',
                 '%node_login',
@@ -587,21 +632,21 @@ function BodyVars(&$body, $data, $format)
                 $data['node']['ipaddr'] ? $data['node']['ip'] : '-',
                 empty($macs) ? '-' : implode(', ', $macs),
             ),
-            $body
+            $content
         );
     } else {
-        $body = str_replace(
+        $content = str_replace(
             array('%node_name', '%node_password', '%node_ip_pub', '%node_ip', '%node_mac'),
             array('-', '-', '-', '-', '-'),
-            $body
+            $content
         );
     }
 
     if (isset($data['id'])) {
-        $body = $LMS->getLastNInTable($body, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
+        $content = $LMS->getLastNInTable($content, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
     }
 
-    if (strpos($body, '%services') !== false) {
+    if (strpos($content, '%services') !== false) {
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
@@ -613,14 +658,8 @@ function BodyVars(&$body, $data, $format)
                 $lN .= moneyf($row['sumvalue'], $currency) . ($format == 'html' ? '<br>' : PHP_EOL);
             }
         }
-        $body = str_replace('%services', $lN, $body);
+        $content = str_replace('%services', $lN, $content);
     }
-
-    $hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
-        'body' => $body,
-        'data' => $data,
-    ));
-    $body = $hook_data['body'];
 }
 
 function FindNetDeviceUplink($netdevid)
@@ -859,7 +898,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $msgtmplid = intval($message['tmplid']);
     $msgtmploper = intval($message['tmploper']);
     $msgtmplname = $message['tmplname'];
-    if (!isset($_GET['count_recipients']) && $msgtmploper > 1) {
+    if (!isset($_GET['validate']) && $msgtmploper > 1) {
         switch ($message['type']) {
             case MSG_MAIL:
                 $msgtmpltype = TMPL_MAIL;
@@ -883,7 +922,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if (empty($msgtmplid)) {
                     break;
                 }
-                $LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['subject'], null, null, $message['body']);
+                $LMS->UpdateMessageTemplate(
+                    $msgtmplid,
+                    $msgtmpltype,
+                    null,
+                    $message['subject'],
+                    null,
+                    null,
+                    $message['body'],
+                    $html_format ? 'text/html' : 'text/plain'
+                );
                 break;
             case 3:
                 if (!strlen($msgtmplname)) {
@@ -896,7 +944,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $message['subject'],
                         null,
                         null,
-                        $message['body']
+                        $message['body'],
+                        $html_format ? 'text/html' : 'text/plain'
                     );
                 }
                 break;
@@ -916,6 +965,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     if (!$error) {
+        if (!isset($_GET['validate']) && !isset($_GET['fileupload'])) {
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            ob_implicit_flush(true);
+
+            $result = [
+                'message' => trans('Preparing messages...')
+            ];
+            echo json_encode($result) . PHP_EOL;
+            flush();
+        }
+
         $recipients = array();
         if (!isset($message['customermode'])) {
             if ($message['type'] != MSG_ANYSMS) {
@@ -989,15 +1051,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
 
         if (!$recipients) {
-            $error['subject'] = trans('Unable to send message. No recipients selected!');
+            $error['recipients'] = trans('The are no recipients which match filter criteria!');
         }
     }
 
-    if (isset($_GET['count_recipients'])) {
+    if (isset($_GET['validate'])) {
         header('Content-Type: application/json');
-        die(json_encode(array(
-            'recipients' => empty($error) ? count($recipients) : -1,
-        )));
+        $result = [];
+        if (empty($error)) {
+            $result['recipients'] = count($recipients);
+        } else {
+            $result['error'] = $error;
+        }
+        die(json_encode($result));
     }
 
     if ($message['type'] == MSG_MAIL || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
@@ -1061,6 +1127,42 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $file['data'] = file_get_contents($file['name']);
                 }
                 unset($file);
+            } else {
+                $files = [];
+            }
+
+            if (!empty($message['file-container']['files'])) {
+                foreach ($message['file-container']['files'] as $file) {
+                    if (!empty($file['deleted'])) {
+                        continue;
+                    }
+                    $fileData = $LMS->GetFile($file['id']);
+                    unset($file['deleted'], $file['id']);
+                    $file['name'] = $fileData['filename'];
+                    $file['type'] = $fileData['contenttype'];
+                    $file['data'] = file_get_contents($fileData['filepath']);
+                    $files[] = $file;
+                }
+            }
+
+            if (!empty($msgtmplid) && !empty($message['template-attachments'])) {
+                $template_attachments = $LMS->GetMessageTemplateAttachments($msgtmplid);
+                $template_attachments = array_filter(
+                    $template_attachments,
+                    function ($attachment) use ($message) {
+                        return isset($message['template-attachments'][$attachment['id']]);
+                    }
+                );
+                foreach ($template_attachments as $attachment) {
+                    $files[] = array(
+                        'name' => $attachment['filepath'],
+                        'data' => file_get_contents($attachment['filepath']),
+                        'type' => $attachment['contenttype'],
+                    );
+                }
+            }
+
+            if (!empty($files)) {
                 $LMS->AddFileContainer(array(
                     'description' => 'message-' . $msgid,
                     'files' => $files,
@@ -1073,9 +1175,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $DB->CommitTrans();
 
         $message['id'] = $msgid;
-        $SMARTY->assign('message', $message);
-        $SMARTY->assign('backto', '?' . $SESSION->get_history_entry());
-        $SMARTY->display('message/messagesend.html');
 
         if ($message['type'] == MSG_MAIL) {
             $attachments = null;
@@ -1089,14 +1188,20 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 }
 
                 // deletes uploaded files
+/*
                 if (!empty($tmppath)) {
                     rrmdir($tmppath);
                 }
+*/
             }
 
             $debug_email = ConfigHelper::getConfig('mail.debug_email');
             if (!empty($debug_email)) {
-                echo '<B>'.trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
+                $result = [
+                    'logmessage' => '<strong>' . trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')) . '</strong>'
+                ];
+                echo json_encode($result) . PHP_EOL;
+                flush();
             }
 
             $headers['Subject'] = $message['subject'];
@@ -1112,7 +1217,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
-                echo '<B>'.trans('Warning! Debug mode (using phone $a).', $debug_phone).'</B><BR>';
+                $result = [
+                    'logmessage' => '<strong>' . trans('Warning! Debug mode (using phone $a).', $debug_phone) . '</strong>'
+                ];
+                echo json_encode($result) . PHP_EOL;
+                flush();
             }
         }
 
@@ -1122,7 +1231,18 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $permanent_attributes = array(
             'copytosender' => isset($message['copytosender']),
+            'reply' => $message['reply-email'],
+            'cc' => $message['cc-email'],
+            'bcc' => $message['bcc-email'],
         );
+
+        if (!empty($permanent_attributes['cc'])) {
+            $headers['Cc'] = $permanent_attributes['cc'];
+        }
+
+        if (!empty($permanent_attributes['bcc'])) {
+            $headers['Bcc'] = $permanent_attributes['bcc'];
+        }
 
         $divisionid = 0;
         $key = 1;
@@ -1146,7 +1266,12 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     }
 
                     $reply_email = ConfigHelper::getConfig('mail.reply_email');
-                    $headers['Reply-To'] = empty($reply_email) ? $sender_email : $reply_email;
+
+                    if (empty($permanent_attributes['reply'])) {
+                        $headers['Reply-To'] = empty($reply_email) ? $sender_email : $reply_email;
+                    } else {
+                        $headers['Reply-To'] = $permanent_attributes['reply'];
+                    }
 
                     $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
                     $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
@@ -1170,44 +1295,64 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customerid = $row['id'] ?? 0;
 
             if (!empty($customerid) || $message['type'] == MSG_ANYSMS) {
+                $subject = $message['subject'];
                 $plain_body = $body;
 
                 if ($message['type'] == MSG_ANYSMS && isset($customer)) {
-                    BodyVars($body, $customer, $format);
+                    replaceSymbols($body, $customer, $format);
+                    replaceSymbols($subject, $customer, 'text');
+                    $data = $customer;
                 } else {
                     $row['contenttype'] = $message['contenttype'];
-                    BodyVars($body, $row, $format);
+                    replaceSymbols($body, $row, $format);
+                    replaceSymbols($subject, $row, 'text');
+                    $data = $row;
                 }
+
+                $hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
+                    'subject' => $subject,
+                    'body' => $body,
+                    'data' => $data,
+                ));
+                $subject = $hook_data['subject'];
+                $body = $hook_data['body'];
 
                 $LMS->updateMessageItems(array(
                     'messageid' => $msgid,
                     'original_body' => $plain_body,
                     'real_body' => $body,
+                    'original_subject' => $message['subject'],
+                    'real_subject' => $subject,
                     'customerid' => $customerid ?: null,
                 ));
+
+                if ($message['type'] == MSG_MAIL) {
+                    $headers['Subject'] = $subject;
+                }
             }
 
             foreach ($row['destination'] as $destination) {
                 $orig_destination = $destination;
+
+                $result = [];
+
                 if ($message['type'] == MSG_MAIL) {
                     $headers['To'] = '<' . $destination . '>';
-                    echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-mail';
                 } elseif ($message['type'] == MSG_WWW) {
-                    echo '<img src="img/network.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-www';
                 } elseif ($message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
-                    echo '<img src="img/cms.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-userpanel';
                 } else {
                     $destination = preg_replace('/[^0-9]/', '', $destination);
-                    echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
+                    $result['icon'] = 'lms-ui-icon-sms';
                 }
 
-                echo trans(
-                    '$a of $b ($c) $d:',
-                    $key,
-                    count($recipients),
-                    sprintf('%02.1f%%', round((100 / count($recipients)) * $key, 1)),
-                    ($row['customername'] ?? '-') . ' &lt;' . $destination . '&gt;'
-                );
+                $result['item'] = $key;
+                $result['total'] = count($recipients);
+                $result['recipient'] = (isset($row['customername']) ?? '-') . ' &lt;' . $destination . '&gt;';
+
+                echo json_encode($result) . PHP_EOL;
                 flush();
 
                 $attributes = null;
@@ -1296,21 +1441,28 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $status = $result['status'];
                     $errors = $result['errors'] ?? array();
                 }
+
+                $sendResult = $result;
+
+                $result = [];
+
                 switch ($status) {
                     case MSG_ERROR:
-                        echo ' <span class="red">' . implode(', ', $errors) . '</span>';
+                        $result['status'] = '<span class="red">' . implode('<br>', $errors) . '</span>';
                         break;
                     case MSG_SENT:
-                        echo ' [' . trans('sent') . ']';
+                        $result['status'] = '[' . trans('sent') . ']';
                         break;
                     default:
-                        echo ' [' . trans('added') . ']';
+                        $result['status'] = '[' . trans('added') . ']';
                         break;
                 }
 
-                echo "<BR>\n";
+                echo json_encode($result) . PHP_EOL;
 
-                if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
+                $externalMsgId = is_array($sendResult) && !empty($sendResult['id']) ? $sendResult['id'] : null;
+
+                if ($status == MSG_SENT || isset($externalMsgId) || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
                             error = ?, externalmsgid = ?, attributes = ? WHERE messageid = ? AND '
@@ -1319,7 +1471,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         array(
                             $status,
                             empty($errors) ? null : implode(', ', $errors),
-                            !is_array($result) || empty($result['id']) ? null : $result['id'],
+                            $externalMsgId,
                             empty($attributes) ? null : serialize(array_merge($permanent_attributes, $attributes)),
                             $msgid,
                             $orig_destination,
@@ -1342,11 +1494,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $key++;
         }
 
-        echo '<script type="text/javascript">';
-        echo "history.replaceState({}, '', location.href.replace(/&sent=1/gi, '') + '&sent=1');";
-        echo '</script>';
+        echo json_encode([
+            'messageid' => $message['id'],
+        ]);
+        flush();
 
-        $SMARTY->display('footer.html');
         $SESSION->close();
         die;
     } else if (!empty($message['customermode'])) {
@@ -1392,7 +1544,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $emails = $DB->GetAll(
             'SELECT id, customerid, contact, name FROM customercontacts
-		    WHERE customerid IN ? AND (type & ?) = ?',
+            WHERE customerid IN ? AND (type & ?) = ?',
             array($customers, CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL)
         );
 
@@ -1417,7 +1569,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     }
 
-    $SMARTY->assign('error', $error);
+    die(json_encode([
+        'error' => $error,
+    ]));
 } else if (!empty($_GET['customerid']) || isset($_POST['customers'])) {
     if (!empty($_GET['customerid'])) {
         $customers = array($_GET['customerid']);
@@ -1495,10 +1649,24 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
+
+        $fileContainers = $LMS->GetFileContainers('messageid', $msg['id']);
+        if (empty($fileContainers)) {
+            $fileContainer = null;
+        } else {
+            $fileContainer = reset($fileContainers);
+            foreach ($fileContainer['files'] as &$file) {
+                [$size, $unit] = setunits($file['size']);
+                $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+            }
+            unset($file);
+        }
+        $message['file-container'] = $fileContainer;
+    } else {
+        $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
+            : (empty($message['emailcount']) ? (empty($message['phonecount']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
     }
 
-    $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
-        : (empty($message['emailcount']) ? (empty($message['phonecount']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
     $SMARTY->assign('autoload_template', true);
@@ -1512,6 +1680,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
+
+        $fileContainers = $LMS->GetFileContainers('messageid', $msg['id']);
+        if (empty($fileContainers)) {
+            $fileContainer = null;
+        } else {
+            $fileContainer = reset($fileContainers);
+            foreach ($fileContainer['files'] as &$file) {
+                [$size, $unit] = setunits($file['size']);
+                $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+            }
+            unset($file);
+        }
+        $message['file-container'] = $fileContainer;
     }
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
