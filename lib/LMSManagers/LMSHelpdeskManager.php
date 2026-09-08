@@ -785,28 +785,66 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetEventsByTicketId($id)
     {
-        $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
-                . 'userid, customerid, private, closed, closeddate, closeduserid, events.type, ticketid, va.location, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name').' AS customername, '
-                . $this->db->Concat('users.firstname', "' '", 'users.lastname').' AS username, '
-                . $this->db->Concat('u.firstname', "' '", 'u.lastname').' AS closedusername, vn.name AS node_name, '
-                . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation, vn.location AS node_location '
-                . 'FROM events '
-                . 'LEFT JOIN customers ON (customerid = customers.id) '
-                . 'LEFT JOIN users ON (userid = users.id) '
-                . 'LEFT JOIN users u ON (closeduserid = u.id) '
-                . 'LEFT JOIN vaddresses va ON va.id = events.address_id '
-                . 'LEFT JOIN vnodes as vn ON (nodeid = vn.id) '
-                . 'LEFT JOIN customerview c ON (events.customerid = c.id) '
-                . 'WHERE ticketid = ? ORDER BY events.id ASC', array($id));
+        $events = $this->db->GetAll(
+            'SELECT e.id AS id, e.title, e.description, e.note, e.userid, e.creationdate,
+            e.customerid, e.date, e.begintime, e.enddate, e.endtime, e.private, e.closed, e.type,
+            ' . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+            e.netnodeid, nn.name AS netnode_name, vd.address AS netnode_location,
+            e.netdevid, nd.name AS netdevice_name,
+            vusers.name AS username, e.moddate, e.moduserid, e.closeddate, e.closeduserid,
+            e.address_id, va.location, e.nodeid, n.name AS node_name, n.location AS node_location,
+            ' . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation,
+            (SELECT name FROM vusers WHERE id = e.moduserid) AS modusername,
+            (SELECT name FROM vusers WHERE id = e.closeduserid) AS closedusername,
+            e.ticketid,
+            ea.userid AS assignment_userid,
+            eau.rname AS assignment_rname,
+            eau.name AS assignment_name,
+            eau.login AS assignment_login
+        FROM events e
+        LEFT JOIN vaddresses va ON va.id = e.address_id
+        LEFT JOIN vnodes n ON e.nodeid = n.id
+        LEFT JOIN customerview c ON c.id = e.customerid
+        LEFT JOIN vusers ON vusers.id = e.userid
+        LEFT JOIN rttickets rtt ON rtt.id = e.ticketid
+        LEFT JOIN netnodes nn ON nn.id = e.netnodeid
+        LEFT JOIN netdevices nd ON nd.id = e.netdevid
+        LEFT JOIN vaddresses vd ON vd.id = nn.address_id
+        LEFT JOIN eventassignments ea ON ea.eventid = e.id
+        LEFT JOIN vusers eau ON eau.id = ea.userid
+        WHERE e.ticketid = ?
+        ORDER BY e.id ASC',
+            array($id)
+        );
 
-        if (is_array($events)) {
-            foreach ($events as $idx => $row) {
-                $events[$idx]['userlist'] = $this->db->GetAll("SELECT vu.name,userid AS ul FROM eventassignments AS e LEFT JOIN vusers vu ON vu.id = e.userid WHERE eventid = $row[id]");
+        $result = array();
+
+        foreach ($events as $row) {
+            $eventid = $row['id'];
+
+            if (!isset($result[$eventid])) {
+                $result[$eventid] = $row;
+                $result[$eventid]['userlist'] = array();
             }
+
+            if (!empty($row['assignment_userid'])) {
+                $result[$eventid]['userlist'][$row['assignment_userid']] = array(
+                    'id' => $row['assignment_userid'],
+                    'rname' => $row['assignment_rname'],
+                    'name' => $row['assignment_name'],
+                    'login' => $row['assignment_login'],
+                );
+            }
+
+            unset(
+                $result[$eventid]['assignment_userid'],
+                $result[$eventid]['assignment_rname'],
+                $result[$eventid]['assignment_name'],
+                $result[$eventid]['assignment_login']
+            );
         }
 
-        return $events;
+        return array_values($result);
     }
 
     public function GetQueueName($id)
