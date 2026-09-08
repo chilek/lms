@@ -27,6 +27,7 @@
         {/if}
         {if $overdue == 1}
             <br>{$event.date|date_format:"Y-m-d"}
+            {if $show_date_range}- {$event.enddate|date_format:"Y-m-d"}{/if}
         {/if}
         {$imadded=0}
         {$user_row_limit = intval(ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)))}
