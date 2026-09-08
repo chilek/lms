@@ -5872,6 +5872,8 @@ $_LANG['Routed via:'] = 'Trasowana przez:';
 
 $_LANG['$a selected contacts of $b customers'] = '$a wybranych kontaktów spośród $b klientów';
 $_LANG['show customer list'] = 'pokaż listę klientów';
+$_LANG['show assignment names'] = 'pokaż nazwy zobowiązań';
+$_LANG['Assignment names'] = 'Nazwy zobowiązań';
 $_LANG['hide customer list'] = 'ukryj listę klientów';
 
 $_LANG['Error: cannot open event - event closed too long ago'] = 'Błąd: nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno';
