@@ -92,7 +92,7 @@
 											{trans("User")}
 										</td>
 										<td>
-											<strong>{$userinfo.rname} ({$userinfo.login})</strong>
+											<strong>{$userinfo.rname|escape} ({$userinfo.login})</strong>
 											<input type="hidden" name="config[userid]" value="{$config.userid}">
 										</td>
 									</tr>
@@ -108,14 +108,14 @@
 								<td>
 									{if empty($reftype)}
 									<select size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
-											{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
+											{if !in_array($config.section, $sections)} data-value="{$config.section|escape}"{/if}>
 										{foreach $sections as $section}
-											<option value="{$section}"{if $config.section == $section} selected{/if}>{$section}</option>
+											<option value="{$section}"{if $config.section == $section} selected{/if}>{$section|escape}</option>
 										{/foreach}
 									</select>
 									{else}
-										<strong>{$config.section}</strong>
-										<input type="hidden" name="config[section]" value="{$config.section}">
+										<strong>{$config.section|escape}</strong>
+										<input type="hidden" name="config[section]" value="{$config.section|escape}">
 									{/if}&nbsp;
 								</td>
 							</tr>
@@ -128,14 +128,14 @@
 								</td>
 								<td>
 									{if empty($reftype)}
-									<input type="text" name="config[var]" value="{$config.var}"
+									<input type="text" name="config[var]" value="{$config.var|escape}"
 											{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>
 									{else}
-										<strong>{$config.var}</strong>
-										<input type="hidden" name="config[var]" value="{$config.var}">
+										<strong>{$config.var|escape}</strong>
+										<input type="hidden" name="config[var]" value="{$config.var|escape}">
 									{/if}
 									{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
-										data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
+										data_clipboard_text="{$url}?m=configedit&s={$config.section|escape}&v={$config.var|escape}"}
 								</td>
 							</tr>
 						</tbody>
@@ -175,7 +175,7 @@
 										{trans("Comment:")}
 									</td>
 									<td>
-										<textarea rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</textarea>
+										<textarea rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description|escape}</textarea>
 									</td>
 								</tr>
 								<tr>

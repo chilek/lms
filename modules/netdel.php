@@ -24,11 +24,13 @@
  *  $Id$
  */
 
-if (!$LMS->NetworkExists($_GET['id'])) {
-    $SESSION->redirect('?m=netlist');
+$id = intval($_GET['id']);
+
+if (!$id || !$LMS->NetworkExists($id)) {
+    $SESSION->redirect_to_history_entry();
 }
 
-$network = $LMS->GetNetworkRecord($_GET['id']);
+$network = $LMS->GetNetworkRecord($id);
 
 if ($network['assigned']) {
     $error['delete'] = true;

@@ -560,6 +560,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['operatorType'] = strtoupper($search['operatorType']);
         }
 
+        if (empty($search['size_compare_char']) || !in_array($search['size_compare_char'], array('<', '>', '<=', '>=', '=', '<>'), true)) {
+            $search['size_compare_char'] = '=';
+        }
+
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {

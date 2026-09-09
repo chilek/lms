@@ -113,15 +113,15 @@
 											{if !isset($config.section)}
 												data-value=""
 											{elseif !in_array($config.section, $sections)}
-												data-value="{$config.section}"
+												data-value="{$config.section|escape}"
 											{/if}>
 											{foreach $sections as $section}
 												<option value="{$section}"{if $config.section == $section} selected{/if}>{$section}</option>
 											{/foreach}
 										</select>
 									{else}
-										<strong>{$config.section}</strong>
-										<input type="hidden" name="config[section]" value="{$config.section}">
+										<strong>{$config.section|escape}</strong>
+										<input type="hidden" name="config[section]" value="{$config.section|escape}">
 									{/if}&nbsp;
 								</td>
 							</tr>
@@ -134,11 +134,11 @@
 								</td>
 								<td>
 									{if empty($reftype)}
-										<input type="text" name="config[var]" value="{$config.var}" size="30"
+										<input type="text" name="config[var]" value="{$config.var|escape}" size="30"
 												{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>&nbsp;
 									{else}
-										<strong>{$config.var}</strong>
-										<input type="hidden" name="config[var]" value="{$config.var}">
+										<strong>{$config.var|escape}</strong>
+										<input type="hidden" name="config[var]" value="{$config.var|escape}">
 									{/if}&nbsp;
 								</td>
 							</tr>
@@ -179,7 +179,7 @@
 										{trans("Comment:")}
 									</td>
 									<td>
-										<textarea rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</textarea>
+										<textarea rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description|escape}</textarea>
 									</td>
 								</tr>
 								<tr>
@@ -233,7 +233,7 @@
 								</tr>
 								<tr>
 									<td colspan="2" id="documentation">
-										{$config.documentation}
+										{$config.documentation|escape}
 									</td>
 								</tr>
 							</tbody>

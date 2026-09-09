@@ -24,7 +24,13 @@
  *  $Id$
  */
 
-$basename = 'lms-' . $_GET['db'];
+$db = $_GET['db'] ?? '';
+
+if (!preg_match('/^[a-zA-Z0-9_.-]+$/', $db)) {
+    $SESSION->redirect('?m=dblist');
+}
+
+$basename = 'lms-' . $db;
 
 if (@file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/' . $basename . '.sql')) {
     $filename = $basename . '.sql';
