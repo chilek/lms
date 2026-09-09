@@ -1240,6 +1240,7 @@ version 28-git (????-??-??):
   - enhancement: add splitting into equal subnets [interduo]
   - enhancement: added document separation group filter in customer assignment box/panel [chilan]
   - improvement: network devices can be quickly lookup by their ip addresses [interduo]
+  - enhancement: multi node group and logical operator selection in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
