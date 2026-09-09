@@ -239,7 +239,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $nodeidsfilter = ' AND t.nodeid IN (' . implode(',', $nodeids) . ')';
         } else {
             $nodeidsfilter = ' AND t.nodeid = ' . $nodeids;
-
+		}
+			
         if (isset($cause)) {
             $causeFilter = ' AND t.cause = ' . intval($cause);
         } else {
