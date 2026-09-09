@@ -110,7 +110,7 @@
 									<select size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
 											{if !in_array($config.section, $sections)} data-value="{$config.section|escape}"{/if}>
 										{foreach $sections as $section}
-											<option value="{$section}"{if $config.section == $section} selected{/if}>{$section|escape}</option>
+											<option value="{$section|escape}"{if $config.section == $section} selected{/if}>{$section|escape}</option>
 										{/foreach}
 									</select>
 									{else}
