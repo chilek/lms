@@ -57,6 +57,22 @@ if (isset($_GET['devid'])) {
 
 $nodeinfo = $LMS->GetNode($nodeid);
 
+$params = [
+    'nodeids' => $nodeid,
+    'short' => true,
+];
+
+$alltickets = !empty($_GET['alltickets']) ?: ConfigHelper::checkConfig(
+    'rt.default_show_closed_tickets',
+    ConfigHelper::checkConfig('phpui.default_show_closed_tickets')
+);
+
+if (!$alltickets) {
+    $params['state'] = -1;
+}
+
+$nodeticketlist = $LMS->GetQueueContents($params);
+
 $node_empty_mac = ConfigHelper::getConfig('nodes.empty_mac', ConfigHelper::getConfig('phpui.node_empty_mac', '', true));
 if (strlen($node_empty_mac)) {
     $node_empty_mac = Utils::normalizeMac($node_empty_mac);
@@ -183,6 +199,10 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
     $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeinfo['id']));
     $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeinfo['id']));
     $SMARTY->assign('nodeid', $nodeinfo['id']);
+}
+
+if (!isset($resource_tabs['nodetickets']) || $resource_tabs['nodetickets']) {
+    $SMARTY->assign(['nodeticketlist' => $nodeticketlist, 'alltickets' => $alltickets]);
 }
 
 $SMARTY->assign('nodeinfo', $nodeinfo);
