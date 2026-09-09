@@ -1033,14 +1033,30 @@
 				{trans("negation")}
 			</label>
 			&nbsp;
-			<select size="1" name="ng">
-				<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</option>
+			<input type="hidden" name="ng" value="all">
+			<select size="1" name="ng[]" multiple class="lms-ui-multiselect">
+				<option value=""{if !is_array($listdata.nodegroup) && !$listdata.nodegroup} selected{/if}
+					data-exclusive>{trans("— all groups —")}</option>
+				<option value="-1"{if !is_array($listdata.nodegroup) && $listdata.nodegroup == -1} selected{/if}
+					data-exclusive>{trans("— without assigned groups —")}</option>
 				{foreach $nodegroups as $nodegroup}
 					<option value="{$nodegroup.id}"
-						{if $listdata.nodegroup == $nodegroup.id} selected{/if}
+						{if is_array($listdata.nodegroup) && in_array($nodegroup.id, $listdata.nodegroup)}selected{/if}
 						>{$nodegroup.name|trunescape:30}</option>
 				{/foreach}
 			</select>
+			<label>
+				<input type="radio" value="AND" name="ngk"{if $ngk != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<input type="radio" value="OR" name="ngk"{if $ngk == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
+			<label>
+				<input type="radio" value="exact-match" name="ngk"{if $ngk == 'exact-match'} checked{/if}>
+				{trans("exact match")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
