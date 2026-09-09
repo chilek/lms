@@ -25,7 +25,7 @@
 						<label for="queue" class="font-weight-bold">{trans("Queue:")}</label>
 						<select name="helpdesk[queue]" id="queue" {userpaneltip class="form-control" text="Select queue" trigger="queue"}>
 							{foreach $queues as $queue}
-								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</option>
+								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}{if $queue.description != ''} ({$queue.description|truncate:"32":"...":true}){/if}</option>
 							{/foreach}
 						</select>
 					</div>
