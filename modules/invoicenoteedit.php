@@ -349,6 +349,10 @@ switch ($action) {
             }
         }
 
+        if (mb_strlen($cnote['reason']) > 255) {
+            $error['reason'] = trans('Maximum reason length is 255 characters!');
+        }
+
         $cnote = array_merge($oldcnote, $cnote);
         break;
 
@@ -586,6 +590,10 @@ switch ($action) {
 
         if ($numberplans && count($numberplans) && empty($cnote['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
+        }
+
+        if (mb_strlen($cnote['reason']) > 255) {
+            $error['reason'] = trans('Maximum reason length is 255 characters!');
         }
 
         $hook_data = array(

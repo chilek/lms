@@ -6457,3 +6457,5 @@ $_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że
 
 $_LANG['<!uke-income>tariffs'] = 'taryfy';
 $_LANG['<!uke-income>Tariff'] = 'Taryfa';
+
+$_LANG['Maximum reason length is 255 characters!'] = 'Maksymalna długość powodu to 255 znaków!';

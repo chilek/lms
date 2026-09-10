@@ -296,6 +296,10 @@ switch ($action) {
             }
         }
 
+        if (mb_strlen($cnote['reason']) > 255) {
+            $error['reason'] = trans('Maximum reason length is 255 characters!');
+        }
+
         $cnote['currency'] = $oldcurrency;
         $cnote['oldcurrency'] = $oldcurrency;
         $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
@@ -716,6 +720,10 @@ switch ($action) {
 
         if ($numberplans && count($numberplans) && empty($cnote['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
+        }
+
+        if (mb_strlen($cnote['reason']) > 255) {
+            $error['reason'] = trans('Maximum reason length is 255 characters!');
         }
 
         $hook_data = array(
