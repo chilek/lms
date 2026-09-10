@@ -70,13 +70,9 @@ $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 $action = $_GET['action'] ?? null;
 switch ($action) {
     case 'open':
-        if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && ($now - $event['closeddate'] < $aee)) || $superuser) {
-            $LMS->OpenEvent($id);
-            $SESSION->remove_history_entry();
-            $SESSION->redirect($backurl);
-        } else {
-            die(trans('Error: cannot open event - event closed too long ago'));
-        }
+        $LMS->OpenEvent($id);
+        $SESSION->remove_history_entry();
+        $SESSION->redirect($backurl);
         break;
     case 'close':
         $SESSION->remove_history_entry();

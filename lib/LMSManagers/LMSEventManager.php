@@ -851,7 +851,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         if (empty($event['closed'])) {
             die(trans('Error: cannot open event - event not closed'));
         }
-        if (!ConfigHelper::checkPrivilege('superuser') && $aee && ((time() - $event['closeddate']) < $aee)) {
+        if (!ConfigHelper::checkPrivilege('superuser') && $aee && ((time() - $event['closeddate']) >= $aee)) {
             die(trans('Error: cannot open event - event closed too long ago'));
         }
 
