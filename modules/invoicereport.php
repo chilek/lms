@@ -165,6 +165,7 @@ switch ($_POST['datetype']) {
         $wherecol = '(d.cdate + (d.paytime * 86400))';
         break;
     case 'cdate':
+    default:
         $wherecol = 'd.cdate';
         break;
 }
