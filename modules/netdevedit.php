@@ -408,6 +408,10 @@ switch ($action) {
             }
         );
 
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $nodeipdata['macs'][] = '';
+        }
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -563,6 +567,10 @@ switch ($action) {
             }
         );
 
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $error['mac-input-0'] = trans('MAC address is required!');
+        }
+
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
@@ -691,6 +699,10 @@ switch ($action) {
                 return $mac != $netdev_empty_mac;
             }
         );
+
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $error['mac-input-0'] = trans('MAC address is required!');
+        }
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
