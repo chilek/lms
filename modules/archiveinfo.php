@@ -28,7 +28,7 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
     header('Content-Type: text/html');
 
     if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')
-        && isset($_GET['type']) && isset($_GET['id']) && isset($_GET['date'])) {
+        && isset($_GET['type'], $_GET['id'], $_GET['date'])) {
         $trans = $SYSLOG->GetTransactions(
             array(
                 'key' => SYSLOG::getResourceKey(intval($_GET['type'])),

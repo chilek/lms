@@ -227,7 +227,7 @@ if (isset($_POST['document'])) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
         }
@@ -448,7 +448,7 @@ if (isset($_POST['document'])) {
                 $document['number']++;
             }
 
-            if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
+            if (isset($_GET['print'], $docfile) && $docfile['contenttype'] == 'text/html') {
                 print $output;
                 print '<DIV style="page-break-after: always;"></DIV>';
                 flush();
@@ -482,7 +482,7 @@ if (isset($_POST['document'])) {
 
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 

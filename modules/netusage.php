@@ -232,7 +232,7 @@ if (isset($_GET['ajax'])) {
     die($html);
 }
 
-if (isset($_POST['ip']) && isset($_POST['mask'])) {
+if (isset($_POST['ip'], $_POST['mask'])) {
     $ip   = getnetaddr($_POST['ip'], $_POST['mask']);
     $br   = getbraddr($_POST['ip'], $_POST['mask']);
     $host = isset($_POST['host']) ? trim($_POST['host']) : null;

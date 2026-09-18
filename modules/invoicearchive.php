@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
         $ids = array($_GET['id']);
     }
     $ids = Utils::filterIntegers($ids);
-} elseif (isset($_GET['marks']) && isset($_POST['marks'])) {
+} elseif (isset($_GET['marks'], $_POST['marks'])) {
     if ($_GET['marks'] == 'invoice') {
         $marks = $_POST['marks'];
     } else {

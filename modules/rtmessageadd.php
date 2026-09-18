@@ -158,7 +158,7 @@ if (isset($_POST['message'])) {
     $error = $hook_data['error'];
 
     if (!$error) {
-        $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
+        $message['contenttype'] = isset($message['wysiwyg'], $message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
 
         $message['categories'] = isset($message['categories']) && is_array($message['categories']) ? array_flip($message['categories']) : array();

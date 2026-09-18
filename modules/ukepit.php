@@ -1527,13 +1527,13 @@ if ($report_type == 'full') {
                 uasort(
                     $nodes,
                     function ($node1, $node2) {
-                        if (!isset($node1['servicetypes']['INT']) && isset($node2['servicetypes']['INT'])) {
+                        if (!isset($node1['servicetypes']['INT'], $node2['servicetypes']['INT'])) {
                             if (isset($node1['servicetypes']['TV']) || isset($node1['servicetypes']['TEL'])) {
                                 return 1;
                             } else {
                                 return 0;
                             }
-                        } elseif (!isset($node2['servicetypes']['INT']) && isset($node1['servicetypes']['INT'])) {
+                        } elseif (!isset($node2['servicetypes']['INT'], $node1['servicetypes']['INT'])) {
                             if (isset($node2['servicetypes']['TV']) || isset($node2['servicetypes']['TEL'])) {
                                 return -1;
                             } else {
