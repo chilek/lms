@@ -60,7 +60,11 @@
 										<strong>{trans("Type")}</strong>
 									</td>
 									<td>
-										{$_NETELEMENTTYPES[$nodeinfo.type]}
+										{if empty($nodeinfo.type)}
+											{trans("<!netelemtype>— other —")}
+										{else}
+											{$_NETELEMENTTYPES[$nodeinfo.type]}
+										{/if}
 									</td>
 								</tr>
 								<tr>
