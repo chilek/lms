@@ -122,7 +122,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		var location_select = $('#location-select');
 		if (!location_select.val().length && $('option:not([value=""])', location_select).length > 1) {
-			confirm($t('No location has been selected!'));
+			alertDialog($t('No location has been selected!'), location_select);
 			return false;
 		}
 		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
