@@ -368,7 +368,8 @@ function CustomerAssignmentHelper(options) {
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
-			.next().toggleClass('lms-ui-error', validationError)
+			.siblings('.select2').find('.select2-selection')
+			.toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 
 		var schemaId = $('#promotion-select').val();
