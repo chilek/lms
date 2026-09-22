@@ -26,19 +26,27 @@
 
 check_file_uploads();
 
-if (isset($_GET['type'])) {
-    $attachmenttype = $_GET['type'];
-}
-if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
+if (isset($_GET['id'])) {
+    $containerId = intval($_GET['id']);
+} else {
     die;
 }
 
-switch ($attachmenttype) {
+if (isset($_GET['type'])) {
+    $containerType = $_GET['type'];
+} else {
+    die;
+}
+if (!preg_match('/^[a-z0-9_]+$/', $containerType)) {
+    die;
+}
+
+switch ($containerType) {
     case 'netdevid':
     case 'netdevmodelid':
     case 'netnodeid':
         if (!ConfigHelper::checkPrivilege('network_management')) {
-            if (isset($_GET['type'])) {
+            if (!empty($containerType)) {
                 access_denied();
             } else {
                 return;
@@ -47,7 +55,7 @@ switch ($attachmenttype) {
         break;
     case 'messageid':
         if (!ConfigHelper::checkPrivilege('messaging')) {
-            if (isset($_GET['type'])) {
+            if (!empty($containerType)) {
                 access_denied();
             } else {
                 return;
@@ -59,9 +67,13 @@ switch ($attachmenttype) {
 if (isset($_GET['attachmentaction'])) {
     switch ($_GET['attachmentaction']) {
         case 'updatecontainer':
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                die;
+            }
+
             header('Content-Type: application/json');
             if ($LMS->UpdateFileContainer(array(
-                    'id' => $_GET['id'],
+                    'id' => $containerId,
                     'description' => $_POST['description'],
                 ))) {
                 die('[]');
@@ -72,9 +84,17 @@ if (isset($_GET['attachmentaction'])) {
             }
             break;
         case 'deletecontainer':
-            $LMS->DeleteFileContainer($_GET['id']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                access_denied();
+            }
+
+            $LMS->DeleteFileContainer($containerId);
             break;
         case 'viewfile':
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId, intval($_GET['fileid']))) {
+                die;
+            }
+
             $file = $LMS->GetFile($_GET['fileid']);
             if (empty($file)) {
                 die;
@@ -138,7 +158,11 @@ if (isset($_GET['attachmentaction'])) {
             break;
 
         case 'downloadzippedcontainer':
-            $LMS->GetZippedFileContainer($_GET['id']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                access_denied();
+            }
+
+            $LMS->GetZippedFileContainer($containerId);
             die;
             break;
     }

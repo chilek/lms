@@ -5170,6 +5170,12 @@ class LMS
         return $this->file_manager;
     }
 
+    public function checkFileContainerPermission($containerType, $containerId, $fileId = null)
+    {
+        $manager = $this->getFileManager();
+        return $manager->checkFileContainerPermission($containerType, $containerId, $fileId);
+    }
+
     public function GetFileContainers($type, $id)
     {
         $manager = $this->getFileManager();

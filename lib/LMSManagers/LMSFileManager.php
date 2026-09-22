@@ -26,6 +26,40 @@
 
 class LMSFileManager extends LMSManager implements LMSFileManagerInterface
 {
+    public function checkFileContainerPermission($containerType, $containerId, $fileId = null)
+    {
+        if (empty($fileId)) {
+            $result = $this->db->GetOne(
+                'SELECT
+                    c.id
+                FROM filecontainers c
+                WHERE
+                    c.id = ?
+                    AND c.' . $containerType . ' IS NOT NULL',
+                [
+                    $containerId,
+                ]
+            );
+        } else {
+            $result = $this->db->GetOne(
+                'SELECT
+                    f.id
+                FROM filecontainers c
+                JOIN files f ON f.containerid = c.id
+                WHERE
+                    c.id = ?
+                    AND c.' . $containerType . ' IS NOT NULL
+                    AND f.id = ?',
+                [
+                    $containerId,
+                    $fileId,
+                ]
+            );
+        }
+
+        return !empty($result);
+    }
+
     public function GetFileContainers($type, $id)
     {
         if (!preg_match('/^[a-z0-9_]+$/', $type)) {
