@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-// Load autloader
+// Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
@@ -55,17 +55,18 @@ try {
 if (defined('USERPANEL_SETUPMODE')) {
     function module_setup()
     {
-        global $SMARTY, $LMS;
-    
+        global $SMARTY;
+
         $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
         $SMARTY->assign('mail_allowed_domains', ConfigHelper::getConfig('userpanel.mail_allowed_domains'));
 
         $SMARTY->display('module:accounts:setup.html');
     }
-        
+
     function module_submit_setup()
     {
         global $DB;
+
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'mail_limit\'', array($_POST['mail_limit']));
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'mail_allowed_domains\'', array($_POST['mail_allowed_domains']));
 
@@ -75,7 +76,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
 function CheckMail($user, $domain, $mail)
 {
-    global $LMS,$DB_MAIL,$_POST,$SMARTY;
+    global $DB_MAIL;
+
     $mail_err = '';
 
     // długość znaków
@@ -84,8 +86,12 @@ function CheckMail($user, $domain, $mail)
     }
 
     // istnienie konta
-    $query = 'select username from mailbox where username = \''.$mail.'\';';
-    $mailbox = $DB_MAIL->GetOne($query);
+    $mailbox = $DB_MAIL->GetOne(
+        'SELECT username FROM mailbox WHERE username = ?',
+        [
+            $mail,
+        ]
+    );
     if (strcmp($mail, $mailbox) == 0) {
         $mail_err = 'Konto '.$mail.' już istnieje !';
     }
@@ -100,7 +106,6 @@ function CheckMail($user, $domain, $mail)
 
 function CheckPass($password1, $password2)
 {
-    global $_POST;
     $pass_err = '';
 
     //długość hasła
@@ -124,7 +129,7 @@ function CheckPass($password1, $password2)
 
 function module_mailadd()
 {
-    global $SMARTY,$_GET,$SESSION,$DB_MAIL,$LMS,$_POST;
+    global $SMARTY, $SESSION;
 
     $mail_limit = ConfigHelper::getConfig('userpanel.mail_limit');
     $mail_allowed_domains = ConfigHelper::getConfig('userpanel.mail_allowed_domains');
@@ -146,8 +151,9 @@ function module_mailadd()
 
 function module_mailsave()
 {
-    global $SMARTY,$_GET,$_POST,$SESSION,$DB_MAIL;
-    $mail = $_POST['account']['account'].'@'.$_POST['account']['domain'];
+    global $SESSION, $DB_MAIL;
+
+    $mail = $_POST['account']['account'] . '@' . $_POST['account']['domain'];
     $domain = $_POST['account']['domain'];
     $password1 = $_POST['account']['password1'];
     $password2 = $_POST['account']['password2'];
@@ -155,14 +161,22 @@ function module_mailsave()
     CheckMail($_POST['account']['account'], $domain, $mail);
     CheckPass($password1, $password2);
 
- 
     $pw_crypted = md5crypt($password1);
 
-        $query = 'INSERT INTO mailbox (username,password,name,maildir,quota,domain,created,modified,customerid)
-				 values (\''.$mail.'\',\''.$pw_crypted.'\',\'Created from Ebok\',\''.$domain.'/'.$mail.'\',
-				 50000000,\''.$domain.'/\',now(),now(),'.$SESSION->id.');';
-
-    $DB_MAIL->Execute($query);
+    $DB_MAIL->Execute(
+        'INSERT INTO mailbox
+        (username, password, name, maildir, quota, domain, created, modified, customerid)
+        VALUES (?, ?, ?, ?, ?, ?, ?NOW?, ?NOW?, ?)',
+        [
+            $mail,
+            $pw_crypted,
+            'Create from Ebok',
+            $domain . '/' . $mail,
+            50000000,
+            $domain,
+            $SESSION->id,
+        ]
+    );
 
 
     header('Location: ?m=accounts');
@@ -170,17 +184,24 @@ function module_mailsave()
 
 function module_maildelete()
 {
-    global $SMARTY,$_GET,$SESSION,$DB_MAIL;
+    global $SESSION, $DB_MAIL;
 
-    $query = 'delete from mailbox where customerid='.$SESSION->id.' and username=\''.$_GET['account'].'\';';
-    $DB_MAIL->Execute($query);
+    $DB_MAIL->Execute(
+        'DELETE FROM mailbox
+        WHERE customerid = ?
+            AND username = ?',
+        [
+            $SESSION->id,
+            $_GET['account'],
+        ]
+    );
 
     header('Location: ?m=accounts');
 }
 
 function module_mailhpasswd()
 {
-    global $_GET,$SMARTY;
+    global $SMARTY;
 
     $SMARTY->assign('account', $_GET['acount']);
     $SMARTY->display('module:mailboxpasswd.html');
@@ -188,7 +209,7 @@ function module_mailhpasswd()
 
 function module_mailhpasswdsave()
 {
-    global $_POST,$SESSION,$DB_MAIL;
+    global $SESSION, $DB_MAIL;
 
     $mail = $_POST['pwd']['account'];
     $pw1  = $_POST['pwd']['password1'];
@@ -196,18 +217,27 @@ function module_mailhpasswdsave()
 
     if ($password1 == $password2) {
         $pw_crypted = md5crypt($pw1);
-        $query = 'update mailbox set password = \''.$pw_crypted.
-            '\' where username = \''.$mail.'\' and customerid = '.$SESSION->id.';';
 
-        $DB_MAIL->Execute($query);
+        $DB_MAIL->Execute(
+            'UPDATE mailbox
+            SET password = ?
+            WHERE username = ?
+                AND customerid = ?',
+            [
+                $pw_crypted,
+                $mail,
+                $SESSION->id,
+            ]
+        );
     }
+
     header('Location: ?m=accounts');
 }
 
 
 function module_main()
 {
-    global $SMARTY,$_GET,$SESSION,$LMS;
+    global $SMARTY,$SESSION;
 
     $mailboxes = GetCustomerMailBoxes($SESSION->id);
     $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
@@ -221,7 +251,7 @@ function GetCustomerMailBoxes($customerid)
     global $DB_MAIL;
 
     $mailboxes = $DB_MAIL->GetAll(
-        'SELECT username, quota, created, modified, domain, active FROM mailbox WHERE customerid =?',
+        'SELECT username, quota, created, modified, domain, active FROM mailbox WHERE customerid = ?',
         array($customerid)
     );
 

@@ -53,7 +53,7 @@ class authLMS extends AuthPlugin
     {
         $username = strtolower($username);
         $db = $this->getDatabase();
-        $sql = "SELECT login FROM users where LOWER(login) = '".$username."'";
+        $sql = "SELECT login FROM users where LOWER(login) = " . $db->addQuotes(strtolower($username));
         $res = $db->query($sql);
         $val = $db->fetchObject($res);
         $db->close();
@@ -67,7 +67,7 @@ class authLMS extends AuthPlugin
     {
         $username = strtolower($username);
         $db = $this->getDatabase();
-        $sql = "SELECT passwd AS password, access, accessfrom, accessto, hosts FROM users where LOWER(login) = '".$username."' and deleted != 1";
+        $sql = "SELECT passwd AS password, access, accessfrom, accessto, hosts FROM users WHERE LOWER(login) = " . $db->addQuotes(strtolower($username)) . " AND deleted <> 1";
         $res = $db->query($sql);
         $val = $db->fetchObject($res);
         $db->close();
@@ -177,7 +177,7 @@ class authLMS extends AuthPlugin
     public function updateUser(&$user)
     {
         $db = $this->getDatabase();
-        $sql = "SELECT id, login, email, name FROM vusers where LOWER(login) = LOWER('".$user->mName."')";
+        $sql = "SELECT id, login, email, name FROM vusers where LOWER(login) = LOWER(" . $db->addQuotes($user->mName) . ")";
         $res = $db->query($sql);
         $val = $db->fetchObject($res);
         $db->close();

@@ -127,7 +127,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Init database
@@ -136,7 +136,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -371,7 +371,13 @@ function send_message($mode, $id, $message, $msgid, $oplata = 0)
             $message="* ".$message."\n";
         } else {
             if (!$test) {
-                $DB->Execute("UPDATE customers SET message='".$tmpl['message']."' WHERE id=".$customer['id']);
+                $DB->Execute(
+                    "UPDATE customers SET message = ? WHERE id = ?",
+                    [
+                        $tmpl['message'],
+                        $customer['id'],
+                    ]
+                );
                 $LMS->NodeSetWarnU($customer['id'], 1);
             }
             if ($force) {
@@ -398,7 +404,12 @@ if ($mode!='sms' and $mode!='e-mail' and $mode!='warning') {
     exit(0);
 }
 if ($info) {
-    $templates=$DB->GetAll("SELECT * FROM templates WHERE id=$info");
+    $templates = $DB->GetAll(
+        "SELECT * FROM templates WHERE id = ?",
+        [
+            $info,
+        ]
+    );
     if (count($templates)) {
         $tmpl=$templates[0];
     }
@@ -412,13 +423,23 @@ if (!isset($tmpl)) {
     GŁÓWNA PROCEDURA SEGREGACJI I WYSYŁKI
    ****************************************************************** */
 if (isset($group)) {
-    $groups=$DB->GetAll("SELECT * FROM customergroups WHERE name='$group'");
+    $groups = $DB->GetAll(
+        "SELECT * FROM customergroups WHERE name = ?",
+        [
+            $group,
+        ]
+    );
     if (count($groups)!=1) {
         echo "Grupa $group nie istnieje!\n";
         exit(0);
     }
     echo "Wysyłanie powiadomień do grupy '$group' [".$groups[0]['id']."]\n";
-    $customers=$DB->GetALL("SELECT * FROM vcustomerassignments WHERE customergroupid=".$groups[0]['id']);
+    $customers=$DB->GetAll(
+        "SELECT * FROM vcustomerassignments WHERE customergroupid = ?",
+        [
+            $groups[0]['id'],
+        ]
+    );
     foreach ($customers as $customer) {
         $name=$LMS->GetCustomerName($customer['customerid']);
         printf("%4d: %s\n", $customer['customerid'], $name);
@@ -482,4 +503,3 @@ if (isset($group)) {
         $LMS->SendMail($to, $headers, $tresc);
     }
 }
-?>
