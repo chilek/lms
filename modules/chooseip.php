@@ -94,6 +94,9 @@ if (isset($_POST['ip'])) {
 } else {
     $ip = null;
 }
+if (isset($ip) && !check_ip($ip)) {
+    die;
+}
 
 $network = array();
 
@@ -147,6 +150,6 @@ $SMARTY->assign('networks', $networks);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('netid', $netid);
 $SMARTY->assign('privnetid', $privnetid);
-$SMARTY->assign('device', $_GET['device'] ?? null);
+$SMARTY->assign('device', isset($_GET['device']) ? intval($_GET['device']) : null);
 $SMARTY->assign('ip', $ip);
 $SMARTY->display('choose/chooseip.html');
