@@ -173,7 +173,7 @@
 			{icon name="customer"} {trans("First/last or Company name:")}
 		</TD>
 		<TD>
-			<input type="text" name="search[customername]" value="{$search.customername}">
+			<input type="text" name="search[customername]" value="{$search.customername|escape}">
 			<label>
 				<input type="checkbox" name="search[customernamestartingwith]" value="1"
 					{if !empty($search.customernamestartingwith)} checked{/if}>
@@ -186,7 +186,7 @@
 			{icon name="karma"} {trans("Karma:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[karma]" VALUE="{$search.karma}"
+			<INPUT type="text" name="search[karma]" VALUE="{$search.karma|escape}"
 				{tip text="Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified"}>
 		</TD>
 	</TR>
@@ -195,9 +195,9 @@
 			{icon name="home"} {trans("Address:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
-			<span class="bold">{trans("City:")}</span> <INPUT type="text" name="search[city]" VALUE="{$search.city}">
-			<span class="bold">{trans("Postcode:")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip}" SIZE="10">
+			<INPUT type="text" name="search[address]" VALUE="{$search.address|escape}">
+			<span class="bold">{trans("City:")}</span> <INPUT type="text" name="search[city]" VALUE="{$search.city|escape}">
+			<span class="bold">{trans("Postcode:")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip|escape}" SIZE="10">
 			<span class="bold">{trans("Address type:")}</span>
 			<SELECT name="search[addresstype]">
 				<OPTION value="">{trans("— all —")}</OPTION>
@@ -215,7 +215,7 @@
 			</label>
 		</TD>
 		<TD class="nobr">
-			<INPUT type="tel" name="search[phone]" id="phone" VALUE="{$search.phone}">
+			<INPUT type="tel" name="search[phone]" id="phone" VALUE="{$search.phone|escape}">
 			<label>
 				<input type="checkbox" name="search[without-phone]" value="1" class="without-contact">
 				{trans("without phone contact")}
@@ -230,7 +230,7 @@
 			</label>
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[email]" id="email" VALUE="{$search.email}">
+			<INPUT type="text" name="search[email]" id="email" VALUE="{$search.email|escape}">
 			<label>
 				<input type="checkbox" name="search[without-email]" value="1" class="without-contact">
 				{trans("without e-mail contact")}
@@ -243,7 +243,7 @@
 			<IMG src="img/gg.gif" alt=""> {trans("IM:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[im]" VALUE="{$search.im}">
+			<INPUT type="text" name="search[im]" VALUE="{$search.im|escape}">
 		</TD>
 	</TR>
 	*}
@@ -266,7 +266,7 @@
 			</span>
 		</td>
 		<td>
-			<input type="text" name="search[icn]" value="{$search.icn}" data-customer-property="icn">
+			<input type="text" name="search[icn]" value="{$search.icn|escape}" data-customer-property="icn">
 			<span style="display: none;"></span>
 			<label>
 				<input type="radio" name="icn-match-selector" data-controlled-customer-property="icn" value="=" checked>
@@ -310,7 +310,7 @@
 			</span>
 		</td>
 		<td>
-			<input type="text" name="search[ssn]" value="{$search.ssn}" data-customer-property="ssn">
+			<input type="text" name="search[ssn]" value="{$search.ssn|escape}" data-customer-property="ssn">
 			<span style="display: none;"></span>
 			<label>
 				<input type="radio" name="ssn-match-selector" data-controlled-customer-property="ssn" value="=" checked>
@@ -341,7 +341,7 @@
 		</td>
 		<td>
 			<input type="text" name="search[ten]" data-customer-property="ten"
-				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+				{if $search.ten != '*'} value="{$search.ten|escape}"{else} disabled{/if}>
 			<span style="display: none;"></span>
 			<label>
 				<input type="radio" name="ten-match-selector" data-controlled-customer-property="ten" value="=" checked>
@@ -366,7 +366,7 @@
 			{icon name="user-id-number"} {trans("REGON:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[regon]" VALUE="{$search.regon}">
+			<INPUT type="text" name="search[regon]" VALUE="{$search.regon|escape}">
 		</TD>
 	</TR>
 	<TR>
@@ -374,7 +374,7 @@
 			{icon name="user-id-number"} {trans("RBE:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[rbe]" VALUE="{$search.rbe}">
+			<INPUT type="text" name="search[rbe]" VALUE="{$search.rbe|escape}">
 		</TD>
 	</TR>
 	<TR>
@@ -382,7 +382,7 @@
 			{icon name="notes"} {trans("Notes:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[notes]" VALUE="{$search.notes}">
+			<INPUT type="text" name="search[notes]" VALUE="{$search.notes|escape}">
 		</TD>
 	</TR>
 	<TR>
@@ -390,7 +390,7 @@
 			{icon name="optional-info"} {trans("Additional information:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[info]" VALUE="{$search.info}">
+			<INPUT type="text" name="search[info]" VALUE="{$search.info|escape}">
 		</TD>
 	</TR>
 	<TR>
