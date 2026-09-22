@@ -65,7 +65,7 @@
 			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br>
 			&copy; 2001-{$smarty.now|date_format:"Y"} LMS Developers
 		</span>
-		<form method="post" name="loginform" action="{$target}">
+		<form method="post" name="loginform" action="{$target|escape}">
 			<table>
 				<tr>
 					<td class="text-right bold">
