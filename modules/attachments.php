@@ -28,17 +28,13 @@ check_file_uploads();
 
 if (isset($_GET['id'])) {
     $containerId = intval($_GET['id']);
-} else {
-    die;
 }
 
 if (isset($_GET['type'])) {
     $containerType = $_GET['type'];
-} else {
-    die;
-}
-if (!preg_match('/^[a-z0-9_]+$/', $containerType)) {
-    die;
+    if (!preg_match('/^[a-z0-9_]+$/', $containerType)) {
+        die;
+    }
 }
 
 switch ($containerType) {
