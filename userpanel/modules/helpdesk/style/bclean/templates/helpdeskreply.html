@@ -21,7 +21,7 @@
 					{trans("Subject:")}
 				</th>
 				<td>
-					<input type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter message subject" trigger="subject"} />
+					<input type="text" name="helpdesk[subject]" value="{$helpdesk.subject|escape}" {userpaneltip class="form-control" text="Enter message subject" trigger="subject"} />
 				</td>
 			</tr>
 			<tr>

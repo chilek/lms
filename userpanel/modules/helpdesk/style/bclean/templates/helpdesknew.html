@@ -32,7 +32,7 @@
 					{/if}
 					<div class="form-group">
 						<label for="subject" class="font-weight-bold">{trans("Subject:")}</label>
-						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject}"
+						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject|escape}"
 								maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
 								{userpaneltip class="form-control" text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
 					</div>
