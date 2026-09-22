@@ -1241,6 +1241,8 @@ version 28-git (????-??-??):
   - enhancement: added document separation group filter in customer assignment box/panel [chilan]
   - improvement: network devices can be quickly lookup by their ip addresses [interduo]
   - enhancement: multi node group and logical operator selection in customer search form [chilan]
+  - improvement: 'phpui.tooltip_timeout' with default value of '-1' (this value means no time limit) control
+    how long jquery-ui tooltips are visible after mouse cursor is over given element [chilan]
 
 version 27.0 (2021-08-20):
 
