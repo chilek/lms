@@ -309,20 +309,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             continue;
         }
 
-        $mh_from = iconv_mime_decode($headers['from']);
-        $mh_to = iconv_mime_decode($headers['to']);
-        $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
-        $mh_msgid = iconv_mime_decode($headers['message-id']);
-        $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
-        $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']) : '';
+        $mh_from = htmlspecialchars(iconv_mime_decode($headers['from']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $mh_to = htmlspecialchars(iconv_mime_decode($headers['to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $mh_cc = isset($headers['cc']) ? htmlspecialchars(iconv_mime_decode($headers['to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
+        $mh_msgid = htmlspecialchars(iconv_mime_decode($headers['message-id']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $mh_replyto = isset($headers['reply-to']) ? htmlspecialchars(iconv_mime_decode($headers['reply-to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
+        $mh_subject = isset($headers['subject']) ? htmlspecialchars(iconv_mime_decode($headers['subject']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
+        $mh_references = isset($headers['references']) ? htmlspecialchars(iconv_mime_decode($headers['references']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
+
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
-        if (isset($headers['references'])) {
-            $mh_references = iconv_mime_decode($headers['references']);
-        } else {
-            $mh_references = '';
-        }
+
         $files = array();
         $attachments = array();
 
