@@ -311,7 +311,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $mh_from = htmlspecialchars(iconv_mime_decode($headers['from']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $mh_to = htmlspecialchars(iconv_mime_decode($headers['to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $mh_cc = isset($headers['cc']) ? htmlspecialchars(iconv_mime_decode($headers['to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
+        $mh_cc = isset($headers['cc']) ? htmlspecialchars(iconv_mime_decode($headers['cc']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
         $mh_msgid = htmlspecialchars(iconv_mime_decode($headers['message-id']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $mh_replyto = isset($headers['reply-to']) ? htmlspecialchars(iconv_mime_decode($headers['reply-to']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
         $mh_subject = isset($headers['subject']) ? htmlspecialchars(iconv_mime_decode($headers['subject']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '';
