@@ -635,6 +635,10 @@ function module_main()
             if (isset($_GET['msgid']) && intval($_GET['msgid'])) {
                 $reply = $LMS->GetMessage($_GET['msgid']);
 
+                if (empty($reply['ticketid']) || $reply['ticketid'] != $ticketId) {
+                    die('Access denied');
+                }
+
                 $helpdesk['subject'] = $reply['subject'];
                 $helpdesk['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($helpdesk['subject']);
             } else {
