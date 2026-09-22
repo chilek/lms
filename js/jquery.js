@@ -1943,10 +1943,19 @@ $(function() {
 
 	if (tooltipsEnabled) {
 		$(document).on('mouseenter', '[title]:not(.lms-ui-hint-rollover,.lms-ui-hint-toggle)', function () {
+			var that = this;
+
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length ||
 				$(this).prop('disabled') || $(this).is('[disabled]')) {
 				return;
 			}
+
+			if (lms.settings.tooltipTimeout === 0) {
+				$(this).attr('data-tooltip', title).removeAttr('title');
+
+				return;
+			}
+
 			tooltipClass = '';
 			if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
 				tooltipClass += ' lms-ui-error';
@@ -1970,8 +1979,21 @@ $(function() {
 				classes: {
 					'ui-tooltip': tooltipClass
 				},
+				open: function() {
+					if (lms.settings.tooltipTimeout > 0) {
+						setTimeout(() => {
+							$(that).tooltip('close');
+						}, lms.settings.tooltipTimeout * 1000);
+					}
+				},
 				create: function () {
 					$(this).tooltip('open');
+				}
+			});
+
+			$(this).on('click', function() {
+				if ($(this).data('ui-tooltip')) {
+					$(this).tooltip('destroy');
 				}
 			});
 		});
