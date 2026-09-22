@@ -59,6 +59,6 @@ if ($p == 'main') {
     $SMARTY->assign('netdevlist', $list);
 }
 
-$SMARTY->assign('objectid', $_GET['id']);
+$SMARTY->assign('objectid', intval($_GET['id']));
 $SMARTY->assign('part', $p);
 $SMARTY->display('choose/choosenetdevfornetnode.html');
