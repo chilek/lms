@@ -191,20 +191,21 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $SMARTY->assign('netcomplist', $netcomplist);
 
     if (isset($_GET['ip'])) {
-        $nodeipdata = $LMS->GetNodeConnType($_GET['ip']);
+        $ip = intval($_GET['ip']);
+        $nodeipdata = $LMS->GetNodeConnType($ip);
         $netdevauthtype = array();
         $authtype = $nodeipdata;
         if ($authtype != 0) {
             $netdevauthtype['dhcp'] = ($authtype & 2);
             $netdevauthtype['eap'] = ($authtype & 4);
         }
-        $SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
-        $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
+        $SMARTY->assign('nodeipdata', $LMS->GetNode($ip));
+        $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($ip));
         $SMARTY->assign('netdevauthtype', $netdevauthtype);
 
-        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
-        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
-        $SMARTY->assign('nodeid', $_GET['ip']);
+        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($ip));
+        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($ip));
+        $SMARTY->assign('nodeid', $ip);
 
         $SMARTY->display('netdev/netdevipinfo.html');
     } else {
