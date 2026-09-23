@@ -35,7 +35,7 @@
 
 		{box_container id="event"}
 			{box_header icon="timetable" label="Title:" icon_class="fa-fw"}
-				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" required size="50" {tip text="Enter event title" trigger="title"}>
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title|escape}" required size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
 			{box_contents}
@@ -55,7 +55,7 @@
 					{box_row icon="description" label="Description:" icon_class="fa-fw"}
 						<TEXTAREA name="event[description]" id="description" cols="50" rows="5"
 								{tip text="Enter additional information (optional)" class="lms-ui-wysiwyg-editor" trigger="description"}
-								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
+								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description|escape}</TEXTAREA>
 					{/box_row}
 
 					{/block}
@@ -214,12 +214,12 @@
 						{capture name="item_content_result" assign="item_content_result"}
 							{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
 							(#{$item.id})
-							<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+							<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id}">{$item.name|escape}</a>
 						{/capture}
 					{/function}
 
 					{box_row icon="note" icon_class="fa-fw" label="Note:"}
-						<textarea name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</textarea>
+						<textarea name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note|escape}</textarea>
 					{/box_row}
 
 					{if $layout.module == 'eventedit'}
