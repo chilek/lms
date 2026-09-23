@@ -956,24 +956,42 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($owner === '1');
     }
 
-    public function GetCategoryList($stats = true)
+    public function GetCategoryList($stats = true, $owners = true)
     {
-        if ($result = $this->db->GetAll('SELECT id, name, description, style
-				FROM rtcategories ORDER BY name')) {
-            if ($stats) {
-                foreach ($result as $idx => $row) {
-                    foreach ($this->GetCategoryStats($row['id']) as $sidx => $row2) {
-                        $result[$idx][$sidx] = $row2;
-                    }
-                }
-            }
-            foreach ($result as $idx => $category) {
-                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
-				LEFT JOIN vusers u ON cu.userid = u.id
-				WHERE categoryid = ?', array($category['id']));
+        $categories = $this->db->GetAll('
+            SELECT id, name, description, style
+                FROM rtcategories
+            ORDER BY name
+        ');
+
+        if (empty($categories)) {
+            return [];
+        }
+
+        $ownersByCategory = [];
+        if ($owners) {
+            $ownersList = $this->db->GetAll('
+            SELECT cu.categoryid, u.id, u.name, u.deleted,
+                (CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM rtcategoryusers cu
+            LEFT JOIN vusers u ON cu.userid = u.id
+        ');
+
+            foreach ($ownersList as $owner) {
+                $catId = $owner['categoryid'];
+                unset($owner['categoryid']);
+                $ownersByCategory[$catId][] = $owner;
             }
         }
-        return $result;
+
+        foreach ($categories as &$category) {
+            if ($stats) {
+                $category += $this->GetCategoryStats($category['id']);
+            }
+            $category['owners'] = $ownersByCategory[$category['id']] ?? [];
+        }
+
+        return $categories;
     }
 
     public function GetCategoryStats($id)
