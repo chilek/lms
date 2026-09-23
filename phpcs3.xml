@@ -6,6 +6,8 @@
     <arg name="extensions" value="php"/>
     <arg name="parallel" value="100"/>
     <arg name="warning-severity" value="0"/>
+    <config name="testVersion" value="8.2-"/>
+    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility" />
 
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/templates_c/*</exclude-pattern>
@@ -18,4 +20,5 @@
         <exclude name="Squiz.Classes.ValidClassName"/>
     </rule>
 
+    <rule ref="PHPCompatibility"/>
 </ruleset>
