@@ -226,6 +226,29 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
+        $service_type_required = ConfigHelper::getConfig('invoices.service_type_required', 'none');
+        if ($service_type_required != 'none' && empty($itemdata['servicetype'])) {
+            if ($service_type_required == 'error' || $service_type_required == 'true') {
+                $error[str_replace('%variable', 'servicetype', $error_index)] =
+                    trans('Service type selection is required!');
+            } elseif ($service_type_required == 'warning'
+                && !isset($warnings[str_replace(
+                        [
+                            '%variable',
+                            '[',
+                            ']',
+                        ],
+                        [
+                            'servicetype',
+                            '-',
+                            '-',
+                        ],
+                        $error_index
+                    )])) {
+                $warning[str_replace('%variable', 'servicetype', $error_index)] = trans('Service type is not selected!');
+            }
+        }
+
         foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto', 'count') as $key) {
             $itemdata[$key] = f_round($itemdata[$key], 3);
         }
@@ -268,8 +291,11 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
+        if (isset($hook_data['warning']) && is_array($hook_data['warning'])) {
+            $warning = array_merge($warning, $hook_data['warning']);
+        }
 
-        if (!empty($error)) {
+        if (!empty($error) || !empty($warning)) {
             $SMARTY->assign('itemdata', $hook_data['itemdata']);
             if (isset($posuid)) {
                 $error['posuid'] = $posuid;

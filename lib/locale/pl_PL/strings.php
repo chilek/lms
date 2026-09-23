@@ -5730,6 +5730,8 @@ $_LANG['Tax category:'] = 'GTU:';
 $_LANG['Tax category'] = 'GTU';
 $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
+$_LANG['Service type selection is required!'] = 'Wymagany wybór typu usługi!';
+$_LANG['Service type is not selected!'] = 'Brak wyboru typu usługi!';
 
 $_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 $_LANG['TERYT address recommended!'] = 'Zalecany adres zgodny z TERYT!';

@@ -61,6 +61,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $SESSION->remove('cnotecontents', true);
     $SESSION->remove('cnote', true);
     $SESSION->remove('cnoteediterror', true);
+    $SESSION->remove('cnoteeditwarning', true);
 
     $cnotecontents = array();
     foreach ($cnote['content'] as $item) {
@@ -150,6 +151,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 $SESSION->restore('cnotecontents', $contents, true);
 $SESSION->restore('cnote', $cnote, true);
 $SESSION->restore('cnoteediterror', $error, true);
+$SESSION->restore('cnoteeditwarning', $warning, true);
 
 $ntempl = docnumber(array(
     'number' => $cnote['number'],
@@ -402,6 +404,15 @@ switch ($action) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
             }
 
+            $service_type_required = ConfigHelper::getConfig('invoices.service_type_required', 'none');
+            if ($service_type_required != 'none' && empty($newcontents['servicetype'][$idx])) {
+                if ($service_type_required == 'error' || $service_type_required == 'true') {
+                    $error['servicetype[' . $idx . ']'] = trans('Service type selection is required!');
+                } elseif ($service_type_required == 'warning' && !isset($warnings['servicetype-' . $idx . '-'])) {
+                    $warning['servicetype[' . $idx . ']'] = trans('Service type is not selected!');
+                }
+            }
+
             $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
             $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx] ?? $item['taxcategory'];
             $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx] ?? $item['servicetype'];
@@ -604,8 +615,11 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
+        if (isset($hook_data['warning']) && is_array($hook_data['warning'])) {
+            $warning = array_merge($warning, $hook_data['warning']);
+        }
 
-        if (!empty($error)) {
+        if (!empty($error) || !empty($warning)) {
             foreach ($contents as $idx => $item) {
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
                 $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
@@ -885,8 +899,9 @@ switch ($action) {
 $SESSION->save('cnote', $cnote, true);
 $SESSION->save('cnotecontents', $contents, true);
 $SESSION->save('cnoteediterror', $error, true);
+$SESSION->save('cnoteeditwarning', $warning, true);
 
-if ($action && !$error) {
+if ($action && !$error && !$warning) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoicenoteedit');
 }
@@ -919,6 +934,7 @@ if (isset($cnote['recipient_address2'])) {
 $SMARTY->assign('addresses2', $addresses2);
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('warning', $warning);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('refdoc', $cnote);

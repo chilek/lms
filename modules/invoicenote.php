@@ -404,6 +404,29 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
+        $service_type_required = ConfigHelper::getConfig('invoices.service_type_required', 'none');
+        if ($service_type_required != 'none' && empty($itemdata['servicetype'])) {
+            if ($service_type_required == 'error' || $service_type_required == 'true') {
+                $error[str_replace('%variable', 'servicetype', $error_index)] =
+                    trans('Service type selection is required!');
+            } elseif ($service_type_required == 'warning'
+                && !isset($warnings[str_replace(
+                        [
+                            '%variable',
+                            '[',
+                            ']',
+                        ],
+                        [
+                            'servicetype',
+                            '-',
+                            '-',
+                        ],
+                        $error_index
+                    )])) {
+                $warning[str_replace('%variable', 'servicetype', $error_index)] = trans('Service type is not selected!');
+            }
+        }
+
         foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto', 'count') as $key) {
             $itemdata[$key] = f_round($itemdata[$key], 3);
         }
@@ -449,8 +472,11 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
+        if (isset($hook_data['warning']) && is_array($hook_data['warning'])) {
+            $warning = array_merge($warning, $hook_data['warning']);
+        }
 
-        if (!empty($error)) {
+        if (!empty($error) || !empty($warning)) {
             $SMARTY->assign('itemdata', $hook_data['itemdata']);
             if (isset($posuid)) {
                 $error['posuid'] = $posuid;
@@ -496,6 +522,15 @@ switch ($action) {
             if (ConfigHelper::checkConfig('phpui.tax_category_required')
                 && (empty($newcontents['taxcategory'][$idx]))) {
                 $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
+            }
+
+            $service_type_required = ConfigHelper::getConfig('invoices.service_type_required', 'none');
+            if ($service_type_required != 'none' && empty($newcontents['servicetype'][$idx])) {
+                if ($service_type_required == 'error' || $service_type_required == 'true') {
+                    $error['servicetype[' . $idx . ']'] = trans('Service type selection is required!');
+                } elseif ($service_type_required == 'warning' && !isset($warnings['servicetype-' . $idx . '-'])) {
+                    $warning['servicetype[' . $idx . ']'] = trans('Service type is not selected!');
+                }
             }
 
             $contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ?? $item['taxid'];
@@ -734,8 +769,11 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
+        if (isset($hook_data['warning']) && is_array($hook_data['warning'])) {
+            $warning = array_merge($warning, $hook_data['warning']);
+        }
 
-        if (!empty($error)) {
+        if (!empty($error) || !empty($warning)) {
             foreach ($contents as $item) {
                 $idx = $item['itemid'];
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
@@ -1033,7 +1071,7 @@ $SESSION->save('cnoteerror', $error, true);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
-if ($action && !$error) {
+if ($action && !$error && !$warning) {
     // redirect, to not prevent from invoice break with the refresh
     $SESSION->redirect('?m=invoicenote');
 }
@@ -1066,6 +1104,7 @@ if (isset($invoice['recipient_address2'])) {
 $SMARTY->assign('addresses2', $addresses2);
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('warning', $warning);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('invoice', $invoice);
