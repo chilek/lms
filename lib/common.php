@@ -1168,12 +1168,18 @@ function handle_file_uploads($elemid, &$error)
             print json_encode($result);
             die;
         } elseif (isset($fileupload[$elemid])) {
+            $files = array();
             foreach ($fileupload[$elemid] as &$file) {
+                if (empty($file['name'])
+                    || preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $file['name'])) {
+                    continue;
+                }
                 [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+                $files[] = $file;
             }
             unset($file);
-            ${$elemid} = $fileupload[$elemid];
+            ${$elemid} = $files;
         } else {
             ${$elemid} = array();
         }

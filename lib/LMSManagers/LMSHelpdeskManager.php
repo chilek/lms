@@ -1106,7 +1106,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     if ($cleanup) {
                         $dirs_to_be_deleted[] = dirname($file['name']);
                     }
-                    if (!@rename($file['tmp_name'] ?? $file['name'], $dstfile)) {
+                    if (!@rename($file['tmp_name'] ?? '', $dstfile)) {
                         continue;
                     }
                 }
