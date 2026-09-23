@@ -24,11 +24,14 @@
  *  $Id$
  */
 
-if (!$_GET['id']) {
+if (empty($_GET['id']) || !intval($_GET['id'])) {
     $SESSION->redirect('?m=eventlist');
 }
 
 $event = $LMS->GetEvent($_GET['id']);
+if (empty($event))
+    $SESSION->redirect('?m=eventlist');
+}
 
 $layout['pagetitle'] = trans('Event Info');
 
