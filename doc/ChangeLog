@@ -1243,6 +1243,8 @@ version 28-git (????-??-??):
   - enhancement: multi node group and logical operator selection in customer search form [chilan]
   - improvement: 'phpui.tooltip_timeout' with default value of '-1' (this value means no time limit) control
     how long jquery-ui tooltips are visible after mouse cursor is over given element [chilan]
+  - enhancement: configuration variable 'invoices.service_type_required' with default value 'none' controls
+    if service type selection is required or recommended in invoice and invoice note positions [chilan]
 
 version 27.0 (2021-08-20):
 
