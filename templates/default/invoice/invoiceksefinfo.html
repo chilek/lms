@@ -169,7 +169,7 @@
 			<span class="red">
 				{t a=$invoice.ksefstatusdescription b=$invoice.status}<!ksef>$a (error code: $b){/t}
 				<br>
-				({$invoice.ksefstatusdetails})
+				({$invoice.ksefstatusdetails|escape})
 			</span>
 		</span>
 	{/if}

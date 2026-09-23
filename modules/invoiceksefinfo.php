@@ -24,7 +24,109 @@
  *  $Id$
  */
 
-use \Lms\KSeF\KSeF;
+use Lms\KSeF\KSeF;
+use Lms\KSeF\KSeFConfig;
+use Lms\KSeF\KSeFRepository;
+use Lms\KSeF\KSeFSubmissionService;
+use Lms\KSeF\N1ebieskiKSeFGateway;
+
+if (!empty($_GET['action']) && $_GET['action'] == 'send-result') {
+    if (!ConfigHelper::checkPrivileges('finances_management', 'financial_operations')) {
+        die('Access denied.');
+    }
+
+    $resultKey = preg_replace('/[^a-f0-9]/', '', $_GET['key'] ?? '');
+    $result = [];
+    if ($resultKey !== '') {
+        $resultSessionKey = 'invoiceksefresult.' . $resultKey;
+        $SESSION->restore($resultSessionKey, $result);
+        $SESSION->remove($resultSessionKey);
+    }
+
+    if (empty($result) || !is_array($result)) {
+        $result = [
+            'error' => trans('KSeF submission result is not available.'),
+        ];
+    }
+    $result['backurl'] = $result['backurl'] ?? '?m=invoicelist';
+
+    $layout['pagetitle'] = trans('KSeF invoice handling');
+    $SMARTY->assign('result', $result);
+    $SMARTY->display('header.html');
+    $SMARTY->display('invoice/invoiceksefsendresult.html');
+    $SMARTY->display('footer.html');
+    die;
+}
+
+if (!empty($_GET['action']) && $_GET['action'] == 'send') {
+    if (!ConfigHelper::checkPrivileges('finances_management', 'financial_operations')) {
+        die('Access denied.');
+    }
+    if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        die('Invalid request method.');
+    }
+
+    set_time_limit(0);
+
+    if (!empty($_GET['id'])) {
+        $docIds = [
+            $_GET['id'],
+        ];
+    } elseif (isset($_POST['marks']) && is_array($_POST['marks'])) {
+        $docIds = $_POST['marks'];
+    } else {
+        $docIds = [];
+    }
+    $docIds = array_values(array_unique(array_filter(array_map('intval', Utils::filterIntegers($docIds)))));
+    if (empty($docIds)) {
+        die('No invoices selected.');
+    }
+    $backUrl = '?m=invoicelist';
+    if (
+        !empty($_POST['backurl'])
+        && is_string($_POST['backurl'])
+        && preg_match('/^\?m=invoicelist(?:[&#]|$)/', $_POST['backurl'])
+    ) {
+        $backUrl = $_POST['backurl'];
+    }
+
+    $result = [
+        'backurl' => $backUrl,
+    ];
+    try {
+        $repository = new KSeFRepository($DB);
+        $configProvider = function (?int $divisionId = null) {
+            if ($divisionId !== null) {
+                ConfigHelper::setFilter($divisionId);
+            }
+
+            return KSeFConfig::fromConfigHelper();
+        };
+        $config = KSeFConfig::fromConfigHelper(false);
+        $ksef = new KSeF($DB, $LMS);
+        $service = new KSeFSubmissionService(
+            $repository,
+            new N1ebieskiKSeFGateway(),
+            function (array $invoice) use ($LMS, $ksef) {
+                $invoiceContent = $LMS->GetInvoiceContent((int) $invoice['id']);
+                if (empty($invoiceContent)) {
+                    return ['error' => 'Invoice not found.'];
+                }
+
+                return $ksef->getInvoiceXml($invoiceContent);
+            },
+            $configProvider
+        );
+
+        $result['send_result'] = $service->send($config, null, null, $docIds);
+    } catch (\Throwable $e) {
+        $result['error'] = $e->getMessage();
+    }
+
+    $resultKey = bin2hex(random_bytes(8));
+    $SESSION->save('invoiceksefresult.' . $resultKey, $result);
+    $SESSION->redirect('?m=invoiceksefinfo&action=send-result&key=' . $resultKey);
+}
 
 if (!empty($_GET['purchase'])) {
     $doc = $DB->GetRow(
@@ -112,8 +214,9 @@ if (!empty($_GET['purchase'])) {
     die;
 }
 
-if ($doc = $DB->GetRow(
-    'SELECT
+if (
+    $doc = $DB->GetRow(
+        'SELECT
         d.id,
         d.fullnumber,
         d.cdate,
@@ -139,14 +242,17 @@ if ($doc = $DB->GetRow(
     JOIN ksefdocuments kd ON kd.docid = d.id AND (kd.status IN ? OR kd.id = kd2.maxid)
     JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
     WHERE d.id = ?',
-    [
+        [
         [
             0,
             200,
         ],
         $_GET['id'],
-    ]
-)) {
+        ]
+    )
+) {
+    $doc['ksefstatusdetails'] = KSeF::formatStatusDetails($doc['ksefstatusdetails']);
+
     if (!empty($_GET['action'])) {
         $action = $_GET['action'];
         switch ($action) {
