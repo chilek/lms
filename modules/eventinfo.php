@@ -29,7 +29,7 @@ if (empty($_GET['id']) || !intval($_GET['id'])) {
 }
 
 $event = $LMS->GetEvent($_GET['id']);
-if (empty($event))
+if (empty($event)) {
     $SESSION->redirect('?m=eventlist');
 }
 
