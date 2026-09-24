@@ -1245,6 +1245,8 @@ version 28-git (????-??-??):
     how long jquery-ui tooltips are visible after mouse cursor is over given element [chilan]
   - enhancement: configuration variable 'invoices.service_type_required' with default value 'none' controls
     if service type selection is required or recommended in invoice and invoice note positions [chilan]
+  - improvement: mandatory tariff selections are marked in html as required in promotion schema selection
+    subform [chilan]
 
 version 27.0 (2021-08-20):
 
