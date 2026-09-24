@@ -171,6 +171,9 @@ function CustomerAssignmentHelper(options) {
 
 		$("#schema" + schemaId).show();
 
+		$('.schema-tariff-selection[data-mandatory]').prop('required', false);
+		$('#schema' + schemaId).find('.schema-tariff-selection[data-mandatory]').prop('required', true);
+
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
 		var promo_title = selected_option.closest('optgroup').attr('title');
