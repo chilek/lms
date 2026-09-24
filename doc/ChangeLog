@@ -1247,6 +1247,8 @@ version 28-git (????-??-??):
     if service type selection is required or recommended in invoice and invoice note positions [chilan]
   - improvement: mandatory tariff selections are marked in html as required in promotion schema selection
     subform [chilan]
+  - improvement: added 'invoices/note.customer_credentials_format' configuration variable support for html
+    debit notes [chilan]
 
 version 27.0 (2021-08-20):
 
