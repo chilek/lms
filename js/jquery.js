@@ -1825,7 +1825,7 @@ $(function() {
 				$(input).tooltip('disable');
 			}
 			var icon = $(input).next();
-			if (icon.is('[data-tooltip]')) {
+			if (icon.is('[data-tooltip]') && $(this).data('ui-tooltip')) {
 				icon.tooltip('disable');
 			}
 		},
@@ -1834,7 +1834,7 @@ $(function() {
 				$(input).tooltip('enable');
 			}
 			var icon = $(input).next();
-			if (icon.is('[data-tooltip]')) {
+			if (icon.is('[data-tooltip]') && $(this).data('ui-tooltip')) {
 				icon.tooltip('enable');
 			}
 		},
@@ -1982,7 +1982,9 @@ $(function() {
 				open: function() {
 					if (lms.settings.tooltipTimeout > 0) {
 						setTimeout(() => {
-							$(that).tooltip('close');
+							if ($(that).data('ui-tooltip')) {
+								$(that).tooltip('close');
+							}
 						}, lms.settings.tooltipTimeout * 1000);
 					}
 				},
