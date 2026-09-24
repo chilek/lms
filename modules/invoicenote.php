@@ -411,18 +411,18 @@ switch ($action) {
                     trans('Service type selection is required!');
             } elseif ($service_type_required == 'warning'
                 && !isset($warnings[str_replace(
-                        [
-                            '%variable',
-                            '[',
-                            ']',
-                        ],
-                        [
-                            'servicetype',
-                            '-',
-                            '-',
-                        ],
-                        $error_index
-                    )])) {
+                    [
+                        '%variable',
+                        '[',
+                        ']',
+                    ],
+                    [
+                        'servicetype',
+                        '-',
+                        '-',
+                    ],
+                    $error_index
+                )])) {
                 $warning[str_replace('%variable', 'servicetype', $error_index)] = trans('Service type is not selected!');
             }
         }
