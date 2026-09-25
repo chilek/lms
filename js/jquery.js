@@ -171,12 +171,16 @@ function init_datepickers(selector) {
 		changeYear: true,
 		beforeShow: function (input, inst) {
 			if ($(input).is('[data-tooltip]')) {
-				$(input).tooltip('disable');
+				if ($(input).data('ui-tooltip')) {
+					$(input).tooltip('disable');
+				}
 				$(this).data('input-tooltip', input);
 			}
 			var icon = $(input).next().find('[data-tooltip]');
 			if (icon.length) {
-				icon.tooltip('disable');
+				if (icon.data('ui-tooltip')) {
+					icon.tooltip('disable');
+				}
 				$(this).data('icon-tooltip', icon);
 			}
 			setTimeout(function () {
@@ -663,12 +667,18 @@ function init_comboboxes(selector) {
 		// hide tooltip after combo box activation because it can interfere with dropdown list
 		$('.scombobox').scombobox('click', function(e) {
 			if ($(this).is('[data-tooltip]')) {
-				$(this).removeAttr('data-tooltip').tooltip('disable');
+				$(this).removeAttr('data-tooltip')
+				if ($(this).data('ui-tooltip')) {
+					$(this).tooltip('disable');
+				}
 			}
 		}, 'lms-ui');
 		$('.scombobox').scombobox('keypress', function(e) {
 			if ($(this).is('[data-tooltip]')) {
-				$(this).removeAttr('data-tooltip').tooltip('disable');
+				$(this).removeAttr('data-tooltip');
+				if ($(this).data('ui-tooltip')) {
+					$(this).tooltip('disable');
+				}
 			}
 		}, 'lms-ui');
 	}
@@ -1821,20 +1831,20 @@ $(function() {
 		closeOnDateSelect: true,
 		dayOfWeekStart: 1,
 		onShow: function (current_time, input) {
-			if ($(input).is('[data-tooltip]')) {
+			if ($(input).is('[data-tooltip]') && $(input).data('ui-tooltip')) {
 				$(input).tooltip('disable');
 			}
 			var icon = $(input).next();
-			if (icon.is('[data-tooltip]') && $(this).data('ui-tooltip')) {
+			if (icon.is('[data-tooltip]') && icon.data('ui-tooltip')) {
 				icon.tooltip('disable');
 			}
 		},
 		onClose: function (current_time, input) {
-			if ($(input).is('[data-tooltip]')) {
+			if ($(input).is('[data-tooltip]') && $(input).data('ui-tooltip')) {
 				$(input).tooltip('enable');
 			}
 			var icon = $(input).next();
-			if (icon.is('[data-tooltip]') && $(this).data('ui-tooltip')) {
+			if (icon.is('[data-tooltip]') && icon.data('ui-tooltip')) {
 				icon.tooltip('enable');
 			}
 		},
