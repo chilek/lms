@@ -6277,6 +6277,7 @@ $_LANG['Generate new password and copy it to clipboard'] = 'Wygeneruj nowe hasł
 
 $_LANG['<!nodesession-search>IP address'] = 'adres IP';
 $_LANG['<!nodesession-search>MAC address'] = 'adres MAC';
+$_LANG['<!nodesession-search>Producer (from MAC address)'] = 'producent (z adresu MAC)';
 $_LANG['<!nodesession-search>customer'] = 'klient';
 $_LANG['<!nodesession-search>node ID'] = 'id komputera';
 $_LANG['<!nodesession-search>location'] = 'lokalizacja';

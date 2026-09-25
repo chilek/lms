@@ -68,7 +68,7 @@ $SESSION->save('nsldatefrom', $datefrom);
 $SESSION->save('nsldateto', $dateto);
 
 if (isset($_POST['filtertype'])) {
-    if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid', 'location'))) {
+    if (in_array($_POST['filtertype'], array('ip', 'mac', 'producer', 'customer', 'nodeid', 'location'))) {
         $filtertype = $_POST['filtertype'];
     } else {
         $filtertype = '';
@@ -84,7 +84,7 @@ if (isset($_POST['filtervalue'])) {
         $filtervalue = '';
     }
 } else {
-        $SESSION->restore('nslfiltervalue', $filtervalue);
+    $SESSION->restore('nslfiltervalue', $filtervalue);
 }
 
 if (empty($filtervalue)) {
@@ -163,8 +163,19 @@ if (!empty($nodesessions)) {
         [$number, $unit] = setunits($session['upload']);
         $session['upload'] = round($number, 2) . ' ' . $unit;
         $session['duration'] = $session['stop']
-        ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
-        : '-';
+            ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
+            : '-';
+        $session['producer'] = EtherCodes::GetProducer($session['mac']);
+    }
+    unset($session);
+
+    if ($filtertype == 'producer' && !empty($filtervalue)) {
+        $nodesessions = array_values(array_filter($nodesessions, function ($nodesession) use ($filtervalue) {
+            if (empty($nodesession['producer'])) {
+                return false;
+            }
+            return stripos($nodesession['producer'], $filtervalue) !== false;
+        }));
     }
 }
 
