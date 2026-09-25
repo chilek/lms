@@ -817,6 +817,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             array($id)
         );
 
+        if (empty($events)) {
+            return;
+        }
+
         $result = array();
 
         foreach ($events as $row) {
