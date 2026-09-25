@@ -467,6 +467,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'] ?? null;
     $nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
     $nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
+    $nodeinfo['login'] = $nodeedit['login'];
     $nodeinfo['passwd'] = $nodeedit['passwd'];
     $nodeinfo['access'] = $nodeedit['access'];
     $nodeinfo['ownerid'] = $nodeedit['ownerid'];
