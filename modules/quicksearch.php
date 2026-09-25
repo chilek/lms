@@ -719,15 +719,22 @@ switch ($mode) {
                     a.location,
                     no.lastonline,
                     (
-                        SELECT STRING_AGG(
-                            INET_NTOA(
-                                CASE
-                                    WHEN INET_NTOA(nodes.ipaddr) ?LIKE? $sql_search THEN nodes.ipaddr
-                                    ELSE nodes.ipaddr_pub
-                                END
-                            ),
-                        ', '
-                        ) FROM nodes WHERE nodes.ipaddr <> 0
+                        SELECT STRING_AGG(INET_NTOA(ipaddr), ', ')
+                        FROM (
+                            SELECT nodes.ipaddr AS ipaddr
+                            FROM nodes
+                            WHERE
+                                nodes.netdev = d.id
+                                AND nodes.ownerid IS NULL
+                                AND nodes.ipaddr <> 0
+                            UNION
+                            SELECT nodes.ipaddr_pub AS ipaddr
+                            FROM nodes
+                            WHERE
+                                nodes.netdev = d.id
+                                AND nodes.ownerid IS NULL
+                                AND nodes.ipaddr_pub <> 0
+                        ) ips LIMIT 5
                     ) AS ipaddr
                 FROM netdevices d
                 LEFT JOIN (
