@@ -6461,3 +6461,5 @@ $_LANG['<!uke-income>tariffs'] = 'taryfy';
 $_LANG['<!uke-income>Tariff'] = 'Taryfa';
 
 $_LANG['Maximum reason length is 255 characters!'] = 'Maksymalna długość powodu to 255 znaków!';
+
+$_LANG['— select tariff —'] = '— wybierz taryfę —';
