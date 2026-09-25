@@ -75,6 +75,12 @@ if (strlen($node_empty_mac)) {
     }
 }
 
+if (empty($nodeinfo['netdev'])) {
+    $nodeinfo['ports'] = [];
+} else {
+    $nodeinfo['ports'] = $LMS->getNetDevPorts($nodeinfo['netdev']);
+}
+
 $netdevices = $LMS->GetNetDevNames();
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);

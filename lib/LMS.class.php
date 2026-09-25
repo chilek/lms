@@ -2238,6 +2238,12 @@ class LMS
         return $manager->getNetDevOwnerByNodeId($nodeid);
     }
 
+    public function getNetDevPorts($netdevid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevPorts($netdevid);
+    }
+
     public function GetNetNode($id)
     {
         $manager = $this->getNetNodeManager();

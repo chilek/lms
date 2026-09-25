@@ -535,6 +535,12 @@ if (isset($_POST['nodedata'])) {
 */
 }
 
+if (empty($nodedata['netdev'])) {
+    $nodedata['ports'] = [];
+} else {
+    $nodedata['ports'] = $LMS->getNetDevPorts($nodedata['netdev']);
+}
+
 if (!strlen($node_empty_mac) && empty($nodedata['macs'])) {
     $nodedata['macs'][] = '';
 }

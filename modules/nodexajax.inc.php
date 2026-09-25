@@ -317,21 +317,26 @@ function getFirstFreeAddress($netid)
 $session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
 
 if (isset($_GET['action'])) {
-    header('Content-type: text/html');
     switch ($_GET['action']) {
         case 'get_node_stats':
+            header('Content-type: text/html');
+
             if (!isset($_GET['id'])) {
                 die;
             }
             die(getNodeStats($_GET['id']));
             break;
         case 'get_throughput':
+            header('Content-type: text/html');
+
             if (!isset($_GET['ip']) || !isset($_GET['id'])) {
                 die;
             }
             die(getThroughput($_GET['ip']));
             break;
         case 'session_state':
+            header('Content-type: text/html');
+
             $session_state_helper = ConfigHelper::getConfig('nodes.session_state_helper', '', true);
 
             if (!isset($_GET['id']) && empty($nodesessions) || empty($session_state_helper)) {
@@ -387,6 +392,23 @@ if (isset($_GET['action'])) {
             }
 
             die($result);
+
+            break;
+        case 'get_netdev_ports':
+            header('Content-type: application/json');
+
+            if (empty($_GET['netdev'])) {
+                die('[]');
+            }
+
+            $netdev = intval($_GET['netdev']);
+            if (empty($netdev)) {
+                die('[]');
+            }
+
+            $ports = $LMS->GetNetDevPorts($netdev);
+
+            die(json_encode($ports));
 
             break;
     }

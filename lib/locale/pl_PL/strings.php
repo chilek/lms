@@ -4318,6 +4318,7 @@ $_LANG['Link technology:'] = 'Technologia łącza:';
 $_LANG['Link technology'] = 'Technologia łącza';
 $_LANG['<!netrange>Technology'] = 'Technologia';
 $_LANG['— unknown —'] = '— nieznana —';
+$_LANG['<!netdev-port>— unknown —'] = '— nieznany —';
 $_LANG['— without technology —'] = '— bez technologii —';
 $_LANG['Link technology is required!'] = 'Technologia łącza jest wymagana!';
 $_LANG['Link technology is not selected!'] = 'Nie wybrano technologii łącza';
