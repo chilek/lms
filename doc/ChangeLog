@@ -1250,6 +1250,7 @@ version 28-git (????-??-??):
   - improvement: added 'invoices/note.customer_credentials_format' configuration variable support for html
     debit notes [chilan]
   - improvement: allow to select port number from list in network device properties of node forms [chilan]
+  - enhancement: node session list can be filtered by producer taken from MAC address [chilan]
 
 version 27.0 (2021-08-20):
 
