@@ -258,7 +258,6 @@ foreach ($customers as $customer) {
                 $address['teryt'] = !empty($address['location_city']);
                 $address['address_id'] = $customer['address_id'];
                 $LMS->UpdateAddress(
-                    $customer['id'],
                     $address
                 );
                 $args['addresses'] = $address;
