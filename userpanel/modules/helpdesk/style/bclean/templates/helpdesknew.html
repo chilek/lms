@@ -39,7 +39,7 @@
 
 					<div class="form-group">
 						<label for="body" class="font-weight-bold">{trans("Body:")}</label>
-						<textarea name="helpdesk[body]" id="body" {userpaneltip class="form-control" text="Enter request contents" trigger="body"} placeholder="{trans("Enter request contents")}" rows="5" cols="40" required>{$helpdesk.body}</textarea>
+						<textarea name="helpdesk[body]" id="body" {userpaneltip class="form-control" text="Enter request contents" trigger="body"} placeholder="{trans("Enter request contents")}" rows="5" cols="40" required>{$helpdesk.body|escape}</textarea>
 					</div>
 
 					<div class="form-group">
