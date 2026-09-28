@@ -58,6 +58,7 @@ $dry_run = array_key_exists('dry-run', $options);
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 // prepare customergroups in sql query
+$customergroups = '';
 if (isset($options['customergroups'])) {
     $customergroups = $options['customergroups'];
 }
@@ -124,7 +125,7 @@ $customers = $DB->GetAll(
         AND c." . $type . " <> ?
         AND c.status IN ?"
         . ($customerid ? ' AND c.id = ' . $customerid : '')
-        . ($customergroups ?: $customergroups)
+        . $customergroups
     . " ORDER BY c.id",
     array(
         BILLING_ADDRESS,
@@ -257,7 +258,6 @@ foreach ($customers as $customer) {
                 $address['teryt'] = !empty($address['location_city']);
                 $address['address_id'] = $customer['address_id'];
                 $LMS->UpdateAddress(
-                    $customer['id'],
                     $address
                 );
                 $args['addresses'] = $address;
