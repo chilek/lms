@@ -438,6 +438,7 @@ function module_updateusersave()
             }
         }
         header('Location: ?m=info');
+        die;
     }
 }
 
