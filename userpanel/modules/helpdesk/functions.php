@@ -153,8 +153,6 @@ function module_main()
 
         $ticket['queue'] = intval($ticket['queue']);
         $ticket['categories'] = ConfigHelper::getConfig('userpanel.default_categories');
-        $ticket['subject'] = strip_tags($ticket['subject']);
-        $ticket['body'] = strip_tags($ticket['body']);
 
         if (!$ticket['queue']) {
             header('Location: ?m=helpdesk');
@@ -383,8 +381,6 @@ function module_main()
             die;
         }
 
-        $ticket['body'] = strip_tags($ticket['body']);
-        $ticket['subject'] = strip_tags($ticket['subject']);
         $ticket['inreplyto'] = intval($ticket['inreplyto']);
         $ticket['id'] = intval($_GET['id']);
 

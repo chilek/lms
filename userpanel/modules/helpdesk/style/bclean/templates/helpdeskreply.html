@@ -29,7 +29,7 @@
 					{trans("Body:")}
 				</th>
 				<td>
-					<textarea name="helpdesk[body]" {userpaneltip class="form-control" text="Enter message content" trigger="body"} rows="5" cols="40">{$helpdesk.body}</textarea>
+					<textarea name="helpdesk[body]" {userpaneltip class="form-control" text="Enter message content" trigger="body"} rows="5" cols="40">{$helpdesk.body|escape}</textarea>
 				</td>
 			</tr>
 			<tr>
