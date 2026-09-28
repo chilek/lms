@@ -1761,6 +1761,7 @@ $_LANG['No configuration options in database.<br>Click <A href="$a">here</A> to 
 $_LANG['Click $a to create.'] = 'Kliknij $a, aby utworzyć.';
 $_LANG['here'] = 'tutaj';
 $_LANG['Node ID:'] = 'ID komputera:';
+$_LANG['Node ID'] = 'ID komputera';
 $_LANG['Node Info: $a'] = 'Informacje o komputerze: $a';
 $_LANG['Node IP address'] = 'Adres IP komputera';
 $_LANG['Node IP address is required!'] = 'Adres IP komputera jest wymagany!';
@@ -3967,6 +3968,7 @@ $_LANG['<!voip-summary>Incoming cost'] = 'Koszt przychodzących';
 $_LANG['UKE income report ($a) for period $b - $c'] = 'Raport przychodów UKE ($a) za okres $b - $c';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
+$_LANG['Link speed'] = 'Szybkość łącza';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
 
 $_LANG['phone'] = 'telefon';
