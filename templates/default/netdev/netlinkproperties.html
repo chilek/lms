@@ -355,7 +355,7 @@
 	init_comboboxes("#foreign-entity");
 
 	$(function() {
-		{if empty($link.foreignentity)}
+		{if $link.isnetlink && empty($link.foreignentity)}
 			$('[name="foreignentity"][form="netlinkproperties"]').scombobox('val', '');
 		{/if}
 
