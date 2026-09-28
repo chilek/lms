@@ -1251,6 +1251,7 @@ version 28-git (????-??-??):
     debit notes [chilan]
   - improvement: allow to select port number from list in network device properties of node forms [chilan]
   - enhancement: node session list can be filtered by producer taken from MAC address [chilan]
+  - enhancement: allow to change network device node order - 'name' and 'taken-port' properties [chilan]
 
 version 27.0 (2021-08-20):
 
