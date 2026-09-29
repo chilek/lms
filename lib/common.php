@@ -1170,8 +1170,7 @@ function handle_file_uploads($elemid, &$error)
         } elseif (isset($fileupload[$elemid])) {
             $files = array();
             foreach ($fileupload[$elemid] as $fileidx => $file) {
-                if (empty($file['name'])
-                    || preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $file['name'])) {
+                if ($file['name'] === '..' || strpos($file['name'], '/') !== false) {
                     continue;
                 }
                 [$size, $unit] = setunits($file['size']);
