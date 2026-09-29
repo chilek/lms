@@ -1931,6 +1931,7 @@ $_LANG['(please note: it HAVE TO start with http://, otherwise, it will be consi
 $_LANG['Poland'] = 'Polska';
 $_LANG['Ports number:'] = 'Liczba portów:';
 $_LANG['Ports (used):'] = 'Porty (zajęte):';
+$_LANG['Ports (used)'] = 'Porty (zajęte)';
 $_LANG['Ports used:'] = 'Porty zajęte:';
 $_LANG['Ports used'] = 'Zajęte porty';
 $_LANG['Postcode:'] = 'Kod pocztowy:';

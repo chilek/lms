@@ -18,14 +18,19 @@
 		{tab_table}
 
 			{if $netdevlist}
-			<div class="lms-ui-tab-table-row header">
+			<div class="lms-ui-tab-table-row header" data-sort-handle="devicedevices" data-sort-property="name" data-sort-order="asc">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
 						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
 							<div class="lms-ui-tab-table-column name">
-								{icon name="netdev" class="fa-fw"}
+								<a class="order-toggle" data-sort-property="name" data-sort-property-type="string">
+									{icon name="netdev" class="fa-fw"}
+									<strong>{trans("Name")}</strong>
+									<i class="lms-ui-icon-dunno order-icon"></i>
+								</a>
+								/
 								<strong>
-									{trans("Name")} / {trans("Producer")}
+									{trans("Producer")}
 								</strong>
 							</div>
 							<div class="lms-ui-tab-table-column netnode">
@@ -34,33 +39,36 @@
 							</div>
 							<div class="lms-ui-tab-table-column location">
 								{icon name="location" class="fa-fw"}
-								{trans("Location:")}
+								{trans("Location")}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper link col-2">
 							<div class="lms-ui-tab-table-column link-tech">
-								{trans("Link technology:")}
+								{trans("Link technology")}
 							</div>
 							<div class="lms-ui-tab-table-column link-speed">
-								{trans("Link speed:")}
+								{trans("Link speed")}
 							</div>
 						</div>
 					</div>
 					<div class="lms-ui-tab-table-wrapper id-port-taken-ports-used-ports col-4">
 						<div class="lms-ui-tab-table-wrapper id-port col-2">
 							<div class="lms-ui-tab-table-column id">
-								{trans("ID:")}
+								{trans("ID")}
 							</div>
 							<div class="lms-ui-tab-table-column port">
-								{trans("Port")}:
+								{trans("Port")}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								{trans("Dest. port")}:
+								<a class="order-toggle" data-sort-property="taken-ports" data-sort-property-type="integer">
+									{trans("Dest. port")}
+									<i class="lms-ui-icon-dunno order-icon"></i>
+								</a>
 							</div>
 							<div class="lms-ui-tab-table-column used-ports">
-								<i class="lms-ui-icon-plug"></i> {trans("Ports (used):")}
+								<i class="lms-ui-icon-plug"></i> {trans("Ports (used)")}
 							</div>
 						</div>
 					</div>
@@ -73,7 +81,9 @@
 			{/if}
 
 			{foreach $netdevlist as $netdevice}
-			<div class="lms-ui-tab-table-row">
+			<div class="lms-ui-tab-table-row"
+				data-name="{$netdevice.name|escape}"
+				data-taken-ports="{$netdevice.dstport|default:"0"}">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
 						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
@@ -81,7 +91,7 @@
 								{icon name="netdev" class="fa-fw"}
 								<a name="{$netdevice.id}">
 									<strong>
-										{$netdevice.name}
+										{$netdevice.name|escape}
 										{if $netdevice.producer}
 											/ {$netdevice.producer}
 											{if !empty($netdevice.model)}

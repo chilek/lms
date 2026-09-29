@@ -20,13 +20,13 @@
 		{tab_table}
 
 			{if $netcomplist}
-			<div class="lms-ui-tab-table-row header" data-sort-property="name" data-sort-order="asc">
+			<div class="lms-ui-tab-table-row header" data-sort-handle="devicenodes" data-sort-property="name" data-sort-order="asc">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper name-owner-nodeid-ownerid col-4">
 						<div class="lms-ui-tab-table-wrapper name-owner col-2">
 							<div class="lms-ui-tab-table-column name">
-								<a class="order-toggle" data-sort-property="name">
-									<i class="lms-ui-icon-node"></i>
+								<a class="order-toggle" data-sort-property="name" data-sort-property-type="string">
+									{icon name="node" class="fa-fw"}
 									<strong>{trans("Name")}</strong>
 									<i class="lms-ui-icon-dunno order-icon"></i>
 								</a>
@@ -58,7 +58,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-network col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								<a class="order-toggle" data-sort-property="taken-port">
+								<a class="order-toggle" data-sort-property="taken-port" data-sort-property-type="integer">
 									<i class="lms-ui-icon-plug"></i>
 									{trans("Port")}
 									<i class="lms-ui-icon-dunno order-icon"></i>
@@ -79,7 +79,7 @@
 			{/if}
 
 			{foreach $netcomplist as $node}
-			<div class="lms-ui-tab-table-row node-row"
+			<div class="lms-ui-tab-table-row"
 				data-name="{$node.name|escape}"
 				data-taken-port="{$node.port|default:"0"}">
 				<div class="lms-ui-tab-table-wrapper col-8">
@@ -287,42 +287,6 @@
 		xjx.$('devnodesradiosector').disabled = false;
 	}
 
-	function sortNodes(property, order) {
-		var table = $('#devicenodes .lms-ui-tab-table');
-		var nodes = table.find('.node-row');
-
-		nodes.sort(function(a, b) {
-			switch (property) {
-				case 'name':
-					if (order === 'asc') {
-						return $(a).attr('data-name').localeCompare($(b).attr('data-name'));
-					} else {
-						return $(b).attr('data-name').localeCompare($(a).attr('data-name'));
-					}
-					break;
-				case 'taken-port':
-					if (order === 'asc') {
-						return $(a).attr('data-taken-port') - $(b).attr('data-taken-port');
-					} else {
-						return $(b).attr('data-taken-port') - $(a).attr('data-taken-port');
-					}
-					break;
-			}
-		}).appendTo(table);
-
-		var sortInfo = {
-			"data-sort-property": property,
-			"data-sort-order": order
-		}
-
-		table.find('.lms-ui-tab-table-row.header').attr(sortInfo);
-
-		table.find('.order-icon').removeClass("lms-ui-icon-desc-order lms-ui-icon-asc-order");
-		table.find('.order-toggle[data-sort-property="' + property + '"]').find('.order-icon').addClass('lms-ui-icon-' + order + '-order');
-
-		setStorageItem('netdevnodes-sort-info', JSON.stringify(sortInfo), 'local');
-	}
-
 	$(function() {
 		$('.disconnectnode').click(function () {
 			confirmDialog($t("Are you sure, you want to delete that connection?"), this).done(function () {
@@ -330,39 +294,6 @@
 			});
 			return false;
 		});
-
-		$('.order-toggle').click(function() {
-			var header = $('#devicenodes .lms-ui-tab-table .header');
-			var property = header.attr('data-sort-property');
-			var order = header.attr('data-sort-order');
-			var newProperty = $(this).attr('data-sort-property');
-
-			if (newProperty !== property) {
-				order = 'asc';
-			} else {
-				order = order === 'asc' ? 'desc' : 'asc';
-			}
-
-			sortNodes(newProperty, order);
-		});
 	});
-
-	var sortInfo = getStorageItem('netdevnodes-sort-info', 'local')
-	if (sortInfo) {
-		try {
-			sortInfo = JSON.parse(sortInfo);
-		} catch (e) {
-			sortInfo = {};
-		}
-	} else {
-		sortInfo = {};
-	}
-	if (!sortInfo.hasOwnProperty("data-sort-property") || !sortInfo.hasOwnProperty("data-sort-order")) {
-		sortInfo = {
-			"data-sort-property": "name",
-			"data-sort-order": "asc"
-		}
-	}
-	sortNodes(sortInfo["data-sort-property"], sortInfo["data-sort-order"]);
 
 </script>
