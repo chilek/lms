@@ -447,10 +447,10 @@ class LMSSmartyPlugins
                 $result .= '<div class="fileupload-file">
                     <div class="fileupload-file-info">
                         <a href="#" class="file-delete"><i class="fas fa-trash"></i></a>
-                            <span>' . $file['name'] . ' (' . $file['sizestr'] . ')</span>
-                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+                            <span>' . htmlspecialchars($file['name']) . ' (' . htmlspecialchars($file['sizestr']) . ')</span>
+                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . htmlspecialchars($file['name']) . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
                         <input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
-                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . htmlspecialchars($file['type']) . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
                     </div>
                     ' . (isset($item_custom_contents[$fileidx]) ? '<div class="fileupload-file-options">' . $item_custom_contents[$fileidx] . '</div>' : '') . '
                 </div>';
@@ -460,7 +460,7 @@ class LMSSmartyPlugins
 			<div class="fileupload-status lms-ui-error bold">
 			</div>
 			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="'
-            . ($fileupload[$id . '-tmpdir'] ?? '')
+            . htmlspecialchars(($fileupload[$id . '-tmpdir'] ?? ''))
             . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 		</div>';
         $result .= '<script>
