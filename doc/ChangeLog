@@ -1254,6 +1254,8 @@ version 28-git (????-??-??):
   - enhancement: allow to change network device node order - 'name' and 'taken-port' properties [chilan]
   - enhancement: allow to change network device list order in connection box - 'name' and 'taken-ports'
     properties [chilan]
+  - enhancement: replaced text field by select for port selections in network device connection box and node
+    connection box [chilan]
 
 version 27.0 (2021-08-20):
 
