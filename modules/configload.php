@@ -99,4 +99,4 @@ foreach($CONFIG['directories'] as $key => $val)
 
 $DB->CommitTrans();
 
-header('Location: ?m=configlist');
+$SESSION->redirect('?m=configlist');

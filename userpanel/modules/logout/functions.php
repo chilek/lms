@@ -35,6 +35,7 @@ function module_main()
     } else {
         header('Location: ?m=');
     }
+    die;
 }
 
 if (defined('USERPANEL_SETUPMODE')) {
@@ -47,8 +48,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
-        global $SMARTY,$DB;
+        global $SMARTY, $DB, $SESSION;
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'logout_url\'', array($_POST['logouturl']));
-        header('Location: ?m=userpanel&module=logout');
+        $SESSION->redirect('?m=userpanel&module=logout');
     }
 }

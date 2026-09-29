@@ -53,4 +53,5 @@ if ($id) {
     $SMARTY->display('balanceview.html');
 } else {
     header('Location: index.php?error=1');
+    die;
 }

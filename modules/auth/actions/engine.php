@@ -164,6 +164,5 @@ while ([$mod_name, $mod_info] = each($ExecStack->_MODINFO)) {
 // finally...
 
 if ($noaccess) {
-    header('Location: ?m=auth&a=noaccess');
-    die;
+    $SESSION->redirect('?m=auth&a=noaccess');
 }

@@ -37,4 +37,4 @@ if ($id) {
     }
 }
 
-header('Location: ?m=cashsourcelist');
+$SESSION->redirect('?m=cashsourcelist');

@@ -42,7 +42,7 @@ function module_main()
             'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?',
             array(MSG_DELIVERED, $confirm, $SESSION->id)
         );
-        header('Location: ?m=notices');
+        $SESSION->redirect('?m=notices');
     } else {
         $notices = $DB->GetAllByKey(
             'SELECT
@@ -106,7 +106,7 @@ function module_main()
             ));
             return;
         }
-        header('Location: ?m=notices');
+        $SESSION->redirect('?m=notices');
     }
     $SMARTY->display('module:notices.html');
 }
