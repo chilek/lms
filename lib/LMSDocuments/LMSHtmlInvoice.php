@@ -37,6 +37,10 @@ class LMSHtmlInvoice extends LMSHtmlDocument
     {
         parent::Draw($data);
 
+        $this->smarty->clearAssign('ksefurl');
+        $this->smarty->clearAssign('ksefcertificateurl');
+        $this->smarty->clearAssign('ksefnumber');
+
         $ksef_offline_support = ConfigHelper::checkConfig('ksef.offline_support');
 
         if (!empty($this->data['ksefenvironment'])
