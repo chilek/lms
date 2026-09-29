@@ -1169,17 +1169,16 @@ function handle_file_uploads($elemid, &$error)
             die;
         } elseif (isset($fileupload[$elemid])) {
             $files = array();
-            foreach ($fileupload[$elemid] as &$file) {
+            foreach ($fileupload[$elemid] as $fileidx => $file) {
                 if (empty($file['name'])
                     || preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $file['name'])) {
                     continue;
                 }
                 [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
-                $files[] = $file;
+                $files[$fileidx] = $file;
             }
-            unset($file);
-            ${$elemid} = $files;
+            ${$elemid} = $fileupload[$elemid] = $files;
         } else {
             ${$elemid} = array();
         }
