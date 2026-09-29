@@ -536,7 +536,7 @@
 			$('#connboxsrcradiosector,[name="srcport"]').prop('disabled', true);
 
 			$.ajax({
-				url: '?m={$layout.module}&id={$netdev.id}&srcnetdev=' + $(this).val() + '&technology=' + $('#connboxlinktechnology').val() + '&oper=srcnetdevchange',
+				url: '?m={$layout.module}&api=1&id={$netdev.id}&srcnetdev=' + $(this).val() + '&technology=' + $('#connboxlinktechnology').val() + '&oper=srcnetdevchange',
 				method: 'GET',
 				dataType: 'json',
 				success: function (data) {
