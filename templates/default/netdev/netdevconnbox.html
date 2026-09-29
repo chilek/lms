@@ -246,7 +246,7 @@
 								<label>
 									{trans("Device")}
 									<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select-test" trigger="link" text="Select from list device for connection"}
-										onchange="get_radio_sectors_for_netdev()" form="connect-form">
+										form="connect-form">
 										{foreach $restnetdevlist as $dev}
 											{capture assign="netdevname"}{strip}
 												{$dev.name}
@@ -276,9 +276,21 @@
 
 								<label>
 									{trans("Port")}
-									<INPUT type="text" name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2"
+{*
+									<input type="text" name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2"
 										{tip text="Enter port number in device for connection (optional)" trigger="srcport"}
 										form="connect-form">
+*}
+									<select name="srcport"{if empty($srcports)} disabled{/if}
+										{tip text="Enter port number in device for connection (optional)" trigger="srcport"}
+										form="connect-form">
+										<option value="">{trans("<!netdev-port>— unknown —")}</option>
+										{foreach $srcports as $port_number => $port_status}
+											{if empty($port_status) || $port_number == $connect.srcport}
+												<option value="{$port_number}"{if !empty($connect.srcport) && $port_number == $connect.srcport} selected{/if}>{$port_number}</option>
+											{/if}
+										{/foreach}
+									</select>
 								</label>
 
 								<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}
@@ -289,9 +301,21 @@
 
 								<label>
 									{trans("Dest. port")}
-									<INPUT type="text" name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2"
+{*
+									<input type="text" name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2"
 										{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}
 										form="connect-form">
+*}
+									<select name="dstport"{if empty($dstports)} disabled{/if}
+										{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}
+										form="connect-form">
+										<option value="">{trans("<!netdev-port>— unknown —")}</option>
+										{foreach $dstports as $port_number => $port_status}
+											{if empty($port_status) || $port_number == $connect.dstport}
+												<option value="{$port_number}"{if !empty($connect.dstport) && $port_number == $connect.dstport} selected{/if}>{$port_number}</option>
+											{/if}
+										{/foreach}
+									</select>
 								</label>
 
 								<SELECT NAME="dstradiosector" id="connboxdstradiosector" {tip trigger="connboxdstradiosector" text="Select radio sector"}
@@ -455,11 +479,6 @@
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
 	}
 
-	function get_radio_sectors_for_netdev() {
-		xjx.$('connboxsrcradiosector').disabled = true;
-		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
-	}
-
 	function radio_sectors_received_for_srcnetdev(radiosectors) {
 		var options = xjx.$('connboxsrcradiosector').options;
 		var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
@@ -512,6 +531,43 @@
 				foreignEntitySelection.scombobox('val', '');
 			}
 		{/if}
+
+		$('#srcnetdev').change(function () {
+			$('#connboxsrcradiosector,[name="srcport"]').prop('disabled', true);
+
+			$.ajax({
+				url: '?m={$layout.module}&id={$netdev.id}&srcnetdev=' + $(this).val() + '&technology=' + $('#connboxlinktechnology').val() + '&oper=srcnetdevchange',
+				method: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					var oldRadioSector = $('#connboxsrcradiosector').val();
+					var radioSectorOptions = '<option value="0">{trans("none")}</option>';
+					if (data.radiosectors) {
+						$.each(data.radiosectors, function(index, radioSector) {
+							var radioSectorId = parseInt(radioSector.id);
+							radioSectorOptions += '<option value="' + radioSectorId + '"' +
+								(oldRadioSector === radioSectorId ? ' selected' : '') + '>' +
+								radioSector.name + '</option>';
+						});
+					}
+					$('#connboxsrcradiosector').html(radioSectorOptions).prop('disabled', false);
+
+					var srcPortOptions = '<option value="">{trans("<!netdev-port>— unknown —")}</option>';
+					var currentPort = parseInt($('[name="srcport"]').val());
+					var disabled = true;
+					if (data.ports) {
+						$.each(data.ports, function(port, status) {
+							port = parseInt(port);
+							if (!status || port === currentPort) {
+								srcPortOptions += '<option value="' + port + '"' + (port === currentPort ? ' selected' : '') + '>' + port + '</option>';
+								disabled = false;
+							}
+						});
+					}
+					$('[name="srcport"]').html(srcPortOptions).prop('disabled', disabled)
+				}
+			});
+		});
 	});
 
 </script>

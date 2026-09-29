@@ -188,10 +188,22 @@
 					</span>
 
 					<label class="nobr">
-						{trans("Dest. port")}:
-						<INPUT type="text" name="port" id="port"
-								value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}
-								form="connectnode-form">
+						{trans("Dest. port")}
+{*
+						<input type="text" name="port" id="port"
+							value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}
+							form="connectnode-form">
+*}
+						<select name="port" id="port"{if empty($dstports)} disabled{/if}
+							{tip text="Enter port number in device (optional)" trigger="port"}
+							form="connectnode-form">
+							<option value="">{trans("<!netdev-port>— unknown —")}</option>
+							{foreach $dstports as $port_number => $port_status}
+								{if empty($port_status) || $port_number == $connectnode.port}
+									<option value="{$port_number}"{if !empty($connectnode.port) && $port_number == $connectnode.port} selected{/if}>{$port_number}</option>
+								{/if}
+							{/foreach}
+						</select>
 					</label>
 					<SELECT NAME="radiosector" id="devnodesradiosector"
 							{tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}

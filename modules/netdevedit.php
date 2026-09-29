@@ -1037,6 +1037,15 @@ if ($subtitle) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
 
+if (empty($netdevlist)) {
+    $srcPorts = [];
+} else {
+    $srcNetDev = reset($netdevlist);
+    $srcPorts = $LMS->getNetDevPorts($srcNetDev['id']);
+}
+$SMARTY->assign('srcports', $srcPorts);
+$SMARTY->assign('dstports', $LMS->getNetDevPorts($netdev['id']));
+
 $foreign_entities = Utils::getForeignEntities();
 if (!empty($netdevconnected) && !empty($foreign_entities)) {
     foreach ($netdevconnected as &$netdevconn) {
