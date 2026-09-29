@@ -463,6 +463,7 @@ function module_updatepin()
 
     if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata'])) {
         header('Location: ?m=info');
+		die();
     }
 
     $error = null;
