@@ -158,6 +158,7 @@ $sellers = $DB->GetAll(
 
 $divisions = $LMS->GetDivisions();
 
+$SMARTY->assign('tags', $allTags);
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('sellers', $sellers);
 $SMARTY->assign('start_date', $startDate);

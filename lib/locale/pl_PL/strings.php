@@ -4890,6 +4890,7 @@ $_LANG['fixed'] = 'stacjonarna';
 $_LANG['Incorrect pool type!'] = 'Nieprawidłowy typ puli';
 
 $_LANG['Tags:'] = 'Etykiety:';
+$_LANG['Tags'] = 'Etykiety';
 $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 
 $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';

@@ -255,6 +255,10 @@
 					var filter = {};
 					var divisionId = getStorageItem('ksef-purchase-invoices-division-id', 'session');
 					filter.divisionId = divisionId ? divisionId : '';
+					var tags = getStorageItem('ksef-purchase-invoices-tags', 'session');
+					filter.tags = tags && tags.length ? tags.split(',').sort(function(a, b) {
+						return parseInt(a) - parseInt(b);
+					}) : [];
 					var posting = getStorageItem('ksef-purchase-invoices-posting', 'session');
 					filter.posting = posting && posting.length ? posting : '';
 					var settled = getStorageItem('ksef-purchase-invoices-settled', 'session');
@@ -275,6 +279,20 @@
 					}
 				} else {
 					filterSelector.push('[data-division-id]');
+				}
+
+				if (filter.hasOwnProperty('tags')) {
+					if (filter.tags.length) {
+						filterSelector.push('[data-tags="' +
+							filter.tags.sort(function(a, b) {
+								return parseInt(a) - parseInt(b);
+							}).join(',') +
+							'"]');
+					} else {
+						filterSelector.push('[data-tags]');
+					}
+				} else {
+					filterSelector.push('[data-tags]');
 				}
 
 				if (filter.hasOwnProperty('posting')) {
@@ -327,6 +345,7 @@
 				$.each(
 					[
 						'ksef-purchase-invoices-division-id',
+						'ksef-purchase-invoices-tags',
 						'ksef-purchase-invoices-posting',
 						'ksef-purchase-invoices-settled',
 						'ksef-purchase-invoices-seller-ten'
@@ -337,6 +356,9 @@
 				);
 
 				$('#division-id').val('');
+
+				$('#tags').val([]);
+				updateAdvancedSelectsTest('#tags');
 
 				$('#posting').prop('checked', false);
 
@@ -351,6 +373,7 @@
 			$('#division-id').change(function() {
 				var filter = {
 					divisionId: $(this).val(),
+					tags: $('#tags').val(),
 					posting: $('#posting').prop('checked') ? '1' : '',
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
@@ -361,10 +384,25 @@
 				setStorageItem('ksef-purchase-invoices-division-id', filter.divisionId, 'session');
 			});
 
+			$('#tags').change(function() {
+				var filter = {
+					tags: $(this).val(),
+					divisionId: $('#division-id').val(),
+					posting: $('#posting').prop('checked') ? '1' : '',
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $('#seller-ten').val()
+				}
+
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-tags', filter.tags.join(','), 'session');
+			});
+
 			$('#posting').change(function() {
 				var filter = {
 					posting: $(this).prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
 				};
@@ -378,6 +416,7 @@
 				var filter = {
 					posting: $('#posting').prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
 				};
@@ -390,6 +429,7 @@
 			$('#seller-ten').change(function() {
 				var filter = {
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					posting: $('#posting').prop('checked') ? '1' : '',
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $(this).val()
@@ -412,6 +452,11 @@
 
 			if (filter.divisionId) {
 				$('#division-id').val(filter.divisionId);
+			}
+
+			if (filter.tags.length) {
+				$('#tags').val(filter.tags);
+				updateAdvancedSelectsTest('#tags');
 			}
 
 			if (filter.posting.length && filter.posting === '1') {
@@ -599,6 +644,14 @@
 								</label>
 							{/if}
 							<label>
+								<strong>{trans("Tags")}</strong>
+								<select name="tags[]" id="tags" form="ksef-invoices-form" class="lms-ui-advanced-select-test" multiple>
+									{foreach $tags as $tag}
+										<option value="{$tag.id}">{$tag.name|escape}</option>
+									{/foreach}
+								</select>
+							</label>
+							<label>
 								<input type="checkbox" name="posting" id="posting" form="ksef-invoices-form">
 								{trans("<!ksef>posted")}
 							</label>
@@ -681,6 +734,7 @@
 					data-pay-date="{$invoice.pay_date}"
 					data-id="{$invoice.id}"
 					data-division-id="{$invoice.division_id}"
+					data-tags="{implode(',', array_keys($invoice.tags))}"
 					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
 					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
 					data-seller-ten="{$invoice.seller_ten}"
