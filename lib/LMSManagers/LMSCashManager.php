@@ -645,7 +645,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         'operdate' => $operdate,
                         'value' => $value,
                         'customer' => $customer,
-                        SYSLOG::RES_CUST => $id,
+                        SYSLOG::RES_CUST => empty($id) ? null : $id,
                         'comment' => $comment,
                         'hash' => $hash,
                         SYSLOG::RES_CASHSOURCE => $sourceid,
