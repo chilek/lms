@@ -555,7 +555,17 @@ function CustomerAssignmentHelper(options) {
 					options += '</optgroup>';
 				}
 
-				if (data.hasOwnProperty('document-separation-groups')) {
+				// NS (2026-09-29): combobox #separatedocument bywa jeszcze NIEzainicjalizowany,
+				// gdy ta odpowiedz AJAX wraca (helper startuje juz przy parsowaniu strony,
+				// init_comboboxes dopiero przy gotowosci dokumentu) -- scombobox('val') rzucal
+				// wtedy wyjatek i przerywal budowanie list lokalizacji/wezlow: pusty panel
+				// schematow w formularzu dokumentu. Brak inicjalizacji = pomijamy uzupelnianie;
+				// opcje i tak przychodza w HTML-u z serwera. Do zgloszenia chilkowi.
+				var separateDocumentSelect = $('#separatedocument');
+
+				if (data.hasOwnProperty('document-separation-groups') &&
+					separateDocumentSelect.length &&
+					separateDocumentSelect.closest('.scombobox').data('scombobox-init') != null) {
 					var values = [
 						{
 							value: "",
