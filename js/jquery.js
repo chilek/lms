@@ -1319,6 +1319,9 @@ function initMultiChecks(selector) {
 
 		tbody.on('lms:update_check_all', function() {
 			updateCheckAll();
+		}).on('lms:refresh_multi_check', function() {
+			checkboxes = tbody.parent().find('[type="checkbox"]');
+			allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 		});
 	});
 }
