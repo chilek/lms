@@ -32,7 +32,7 @@ if (!isset($_POST['id'], $_POST['action'])) {
     die('[]');
 }
 
-$id = Utils::filterIntegers($_POST['id']);
+$id = is_array($_POST['id']) ? Utils::filterIntegers($_POST['id']) : intval($_POST['id']);
 if (empty($id)) {
     die(json_encode([
         'error' => "'id' parameter validation error!",
@@ -60,13 +60,13 @@ switch ($action) {
             FROM ksefinvoices i
             JOIN divisions d ON d.id = i.division_id
             JOIN userdivisions ud ON ud.divisionid = d.id
-            WHERE i.id IN ?
+            WHERE i.id ' . (is_array($id) ? 'IN' : '=') . ' ?
                 AND ud.userid = ?',
             [
                 $id,
                 Auth::GetCurrentUser(),
             ]
-        ) != count($id)) {
+        ) != (is_array($id) ? count($id) : 1)) {
             die(json_encode(['error' => 'Permission denied!',]));
         }
         break;
