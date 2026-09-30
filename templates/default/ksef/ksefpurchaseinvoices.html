@@ -159,6 +159,27 @@
 			margin-left: 0.5em;
 		}
 
+		#ksef-invoice-button-panel {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: flex-end;
+			flex-grow: 1;
+		}
+
+		.ksef-invoice-buttons {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			flex-wrap: wrap;
+			flex-grow: 1;
+		}
+
+		.ksef-invoice-buttons > * {
+			margin-left: 0.2em;
+			margin-right: 0.2em;
+		}
+
 	</style>
 
 	<script>
@@ -336,6 +357,7 @@
 				$('#empty-table-row').appendTo(emptyTable ? ksefInvoices : temporaryTable);
 
 				restoreSortOrder();
+				ksefInvoices.trigger('lms:refresh_multi_check');
 				recalculateSummary();
 
 				return filter;
@@ -476,8 +498,49 @@
 				var that = $(this);
 				var form = $('#ksef-purchase-invoice-edit-form');
 				var action = $(this).attr('data-action');
+				var id = [];
+
 				form.find('[name="action"]').val(action);
-				form.find('[name="id"]').val($(this).closest('[data-id]').attr('data-id'));
+				form.find('[name="id[]"]').remove();
+
+				if (action.match(/-selected$/)) {
+					var visibleInvoices = $('[data-id]:visible')
+					var checked = visibleInvoices.find(':checked');
+					var selected = checked.closest('[data-id]');
+
+					switch (action) {
+						case 'ignore-selected':
+							selected = selected.filter('[data-posting="1"]');
+							break;
+						case 'restore-selected':
+							selected = selected.filter('[data-posting="0"]');
+							break;
+						case 'settle-selected':
+							selected = selected.filter('[data-settled="0"]');
+							break;
+						case 'unsettle-selected':
+							selected = selected.filter('[data-settled="1"]');
+							break;
+					}
+
+					if (!selected.length) {
+						return;
+					}
+
+					selected.each(function() {
+						id.push($(this).attr('data-id'));
+					});
+				} else {
+					id.push(that.closest('[data-id]').attr('data-id'));
+				}
+
+				if (!id.length) {
+					return;
+				}
+
+				$.each(id, function(index, id) {
+					form.append('<input type="hidden" name="id[]" value="' + id + '">');
+				});
 
 				let formData = new FormData(form.get(0));
 
@@ -493,30 +556,68 @@
 							console.error('Error:', data.error);
 							return;
 						}
-						$(that).hide();
+
+						if (!action.match(/-selected$/)) {
+							$(that).hide();
+						}
 
 						switch (action) {
 							case 'ignore':
 								$(that).siblings('[data-action="restore"]').show();
 								$(that).closest('[data-id]').addClass('cancel').attr('data-posting', '0');
-								applyFilter();
+
 								break;
 							case 'restore':
 								$(that).siblings('[data-action="ignore"]').show();
 								$(that).closest('[data-id]').removeClass('cancel').attr('data-posting', '1');
-								applyFilter();
+
 								break;
 							case 'settle':
 								$(that).siblings('[data-action="unsettle"]').show();
 								$(that).closest('[data-id]').addClass('blend').attr('data-settled', '1');
-								applyFilter();
+
 								break;
 							case 'unsettle':
 								$(that).siblings('[data-action="settle"]').show();
 								$(that).closest('[data-id]').removeClass('blend').attr('data-settled', '0');
-								applyFilter();
+
+								break;
+							case 'ignore-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').addClass('cancel').attr('data-posting', '0')
+										.find('[data-action="restore"]').show()
+										.end().find('[data-action="ignore"]').hide();
+								});
+
+								break;
+							case 'restore-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').removeClass('cancel').attr('data-posting', '1')
+										.find('[data-action="ignore"]').show()
+										.end().find('[data-action="restore"]').hide();
+								});
+
+								break;
+							case 'settle-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').addClass('blend').attr('data-settled', '1')
+										.find('[data-action="unsettle"]').show()
+										.end().find('[data-action="settle"]').hide();
+								});
+
+								break;
+							case 'unsettle-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').removeClass('blend').attr('data-settled', '0')
+										.find('[data-action="settle"]').show()
+										.end().find('[data-action="unsettle"]').hide();
+								});
+
 								break;
 						}
+
+						applyFilter();
+						refreshButtonStates();
 					},
 					error: function(xhr) {
 						console.error('Error:', xhr.responseText);
@@ -573,6 +674,21 @@
 						break;
 				}
 			});
+
+			function refreshButtonStates() {
+				var visibleInvoices = $('[data-id]:visible')
+				var checked = visibleInvoices.find(':checked');
+				$('[data-action="ignore-selected"]').prop('disabled', !checked.length || !checked.closest('[data-posting="1"]').length);
+				$('[data-action="restore-selected"]').prop('disabled', !checked.length || !checked.closest('[data-posting="0"]').length);
+				$('[data-action="settle-selected"]').prop('disabled', !checked.length || !checked.closest('[data-settled="0"]').length);
+				$('[data-action="unsettle-selected"]').prop('disabled', !checked.length || !checked.closest('[data-settled="1"]').length);
+			}
+
+			$('.lms-ui-multi-check:checkbox,input.lms-ui-multi-check-all:checkbox').change(function() {
+				refreshButtonStates();
+			});
+
+			refreshButtonStates();
 		});
 
 	</script>
@@ -583,7 +699,6 @@
 	</form>
 
 	<form name="ksef-purchase-invoice-edit-form" id="ksef-purchase-invoice-edit-form" method="POST">
-		<input type="hidden" name="id">
 		<input type="hidden" name="action">
 	</form>
 
@@ -724,7 +839,7 @@
 				</td>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="lms-ui-multi-check">
 			{foreach $invoices as $invoice}
 				<tr data-issue-date="{$invoice.issue_date}"
 					data-currency-value="{$invoice.currency_value}"
@@ -845,7 +960,7 @@
 						{/if}
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
 					</td>
-					<td class="text-left nobr">
+					<td class="text-right nobr lms-ui-multi-check-ignore">
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button" tip="Invoice textual description"}
 						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button" tip="Invoice tag management"}
 						{if empty($invoice.itemcount)}
@@ -881,6 +996,7 @@
 						{/if}
 						{button type="button" icon="settle" tip="<!ksef>Settle document" data-action="settle" class=$settle_button_class}
 						{button type="button" icon="open" tip="<!ksef>Unsettle document" data-action="unsettle" class=$unsettle_button_class}
+						<input type="checkbox" name="invoice[{$invoice.id}]" value="{$invoice.id}" class="lms-ui-multi-check">
 					</td>
 				</tr>
 			{/foreach}
@@ -902,7 +1018,22 @@
 					<br>
 					<span id="total-gross-value"></span>
 				</td>
-				<td colspan="4"></td>
+				<td colspan="4">
+					<div id="ksef-invoice-button-panel">
+						<div class="ksef-invoice-buttons">
+							<label>
+								{trans("Check All")}
+								<input type="checkbox" class="lms-ui-multi-check-all">
+							</label>
+						</div>
+						<div class="ksef-invoice-buttons">
+							{button type="button" icon="restore" label="<!ksef>Post document" data-action="restore-selected"}
+							{button type="button" icon="ignore" label="<!ksef>Don't post document" data-action="ignore-selected"}
+							{button type="button" icon="settle" label="<!ksef>Settle document" data-action="settle-selected"}
+							{button type="button" icon="open" label="<!ksef>Unsettle document" data-action="unsettle-selected"}
+						</div>
+					</div>
+				</td>
 			</tr>
 		</tfoot>
 	</table>

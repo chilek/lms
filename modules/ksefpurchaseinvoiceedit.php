@@ -32,7 +32,7 @@ if (!isset($_POST['id'], $_POST['action'])) {
     die('[]');
 }
 
-$id = intval($_POST['id']);
+$id = Utils::filterIntegers($_POST['id']);
 if (empty($id)) {
     die(json_encode([
         'error' => "'id' parameter validation error!",
@@ -54,17 +54,19 @@ switch ($action) {
         }
         break;
     default:
-        if (!$DB->GetOne(
-            'SELECT 1 FROM ksefinvoices i
+        if ($DB->GetOne(
+            'SELECT
+                COUNT(*)
+            FROM ksefinvoices i
             JOIN divisions d ON d.id = i.division_id
             JOIN userdivisions ud ON ud.divisionid = d.id
-            WHERE i.id = ?
+            WHERE i.id IN ?
                 AND ud.userid = ?',
             [
                 $id,
                 Auth::GetCurrentUser(),
             ]
-        )) {
+        ) != count($id)) {
             die(json_encode(['error' => 'Permission denied!',]));
         }
         break;
@@ -72,25 +74,29 @@ switch ($action) {
 
 switch ($action) {
     case 'restore':
+    case 'restore-selected':
     case 'ignore':
+    case 'ignore-selected':
         $res = $DB->Execute(
             'UPDATE ksefinvoices
             SET posting = ?
-            WHERE id = ?',
+            WHERE id IN ?',
             [
-                (int)($_POST['action'] == 'restore'),
+                (int)($action == 'restore' || $action == 'restore-selected'),
                 $id,
             ]
         );
         break;
     case 'settle':
+    case 'settle-selected':
     case 'unsettle':
+    case 'unsettle-selected':
         $res = $DB->Execute(
             'UPDATE ksefinvoices
             SET settled = ?
-            WHERE id = ?',
+            WHERE id IN ?',
             [
-                (int)($_POST['action'] == 'settle'),
+                (int)($action == 'settle' || $action == 'settle-selected'),
                 $id,
             ]
         );
