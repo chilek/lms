@@ -1256,6 +1256,7 @@ version 28-git (????-??-??):
     properties [chilan]
   - enhancement: replaced text field by select for port selections in network device connection box and node
     connection box [chilan]
+  - enhancement: KSeF: purchase invoices by can be filtered by tags [chilan]
 
 version 27.0 (2021-08-20):
 
