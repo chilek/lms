@@ -1236,6 +1236,26 @@ version 28-git (????-??-??):
   - security: harden path traversal, session fixation, cookie  flags, brute-force, MD5 magic-hash [djrzulf]
   - enhancement: added service e-mail property to divisions [chilan]
   - enhancement: new customer consent: 'postal_delivery_complaint' [chilan]
+  - enhancement: documents can be cancelled [chilan]
+  - enhancement: add splitting into equal subnets [interduo]
+  - enhancement: added document separation group filter in customer assignment box/panel [chilan]
+  - improvement: network devices can be quickly lookup by their ip addresses [interduo]
+  - enhancement: multi node group and logical operator selection in customer search form [chilan]
+  - improvement: 'phpui.tooltip_timeout' with default value of '-1' (this value means no time limit) control
+    how long jquery-ui tooltips are visible after mouse cursor is over given element [chilan]
+  - enhancement: configuration variable 'invoices.service_type_required' with default value 'none' controls
+    if service type selection is required or recommended in invoice and invoice note positions [chilan]
+  - improvement: mandatory tariff selections are marked in html as required in promotion schema selection
+    subform [chilan]
+  - improvement: added 'invoices/note.customer_credentials_format' configuration variable support for html
+    debit notes [chilan]
+  - improvement: allow to select port number from list in network device properties of node forms [chilan]
+  - enhancement: node session list can be filtered by producer taken from MAC address [chilan]
+  - enhancement: allow to change network device node order - 'name' and 'taken-port' properties [chilan]
+  - enhancement: allow to change network device list order in connection box - 'name' and 'taken-ports'
+    properties [chilan]
+  - enhancement: replaced text field by select for port selections in network device connection box and node
+    connection box [chilan]
 
 version 27.0 (2021-08-20):
 

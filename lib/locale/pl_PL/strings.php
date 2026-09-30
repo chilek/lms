@@ -286,7 +286,7 @@ $_LANG['show average speed'] = 'pokaż prędkość średnią';
 $_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
 
 $_LANG['Positions:'] = 'Pozycje:';
-$_LANG['Positions'] = 'Pozycje';
+$_LANG['positions'] = 'pozycje';
 
 $_LANG['link technologies'] = 'technologie łącza';
 $_LANG['service types'] = 'typy usług';
@@ -634,6 +634,8 @@ $_LANG['Are you sure, you want to delete that message?'] = 'Jesteś pewien, że 
 $_LANG['Are you sure, you want to restore that message?'] = 'Jesteś pewien, że chcesz przywrócić tę wiadomość?';
 $_LANG['Are you sure, you want to delete all selected messages?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane wiadomości?';
 $_LANG['Are you sure, you want to delete that network?'] = 'Jesteś pewien, że chcesz usunąć tę sieć?';
+$_LANG['Are You sure, you want to split network \'$a\' in half?'] = 'Jesteś pewien, że chcesz podzielić sieć \'$a\' na pół?';
+$_LANG['Unable to split network: network address is already assigned to a computer.'] = 'Nie można podzielić sieci: adres sieci jest przypisany do komputera.';
 $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że chcesz usunąć tę płatność?';
 $_LANG['Are you sure, you want to delete payment \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć płatność \'$a\'?';
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';
@@ -714,7 +716,7 @@ $_LANG['Enter some property value and press Enter. Icon on left allows to choose
 $_LANG['Enter phone number and press Enter'] = 'Wprowadź numer telefonu i naciśnij Enter';
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
 $_LANG['Enter netnode ID or name and press Enter'] = 'Wprowadź ID lub nazwę węzła i naciśnij Enter';
-$_LANG['Enter device ID, name or serial number and press Enter'] = 'Wprowadź ID, nazwę urządzenia lub numer seryjny i naciśnij Enter';
+$_LANG['Enter device ID, name, serial number or IP address and press Enter'] = 'Wprowadź ID, nazwę urządzenia, numer seryjny lub adres IP i naciśnij Enter';
 $_LANG['Enter request tracker ID, subject or requestor name and press Enter'] = 'Wprowadź identyfikator zgłoszenia, temat lub nazwisko/nazwę zgłaszającego i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
 $_LANG['Browse'] = 'Przeglądaj';
@@ -1026,6 +1028,13 @@ $_LANG['Network map display'] = 'Wyświetla mapę sieci ';
 $_LANG['network map edit'] = 'edycja mapy sieci';
 $_LANG['Network ranges'] = 'Zasięgi sieciowe';
 $_LANG['Network Ranges'] = 'Zasięgi sieciowe';
+$_LANG['Split into Two Equal Subnets'] = 'Podziel na pół';
+$_LANG['Network is too small to be split.'] = 'Sieć jest zbyt mała, aby ją podzielić.';
+$_LANG['Network does not exist.'] = 'Sieć nie istnieje.';
+$_LANG['Invalid network ID.'] = 'Nieprawidłowy identyfikator sieci.';
+$_LANG['Unable to update original network.'] = 'Nie udało się zaktualizować oryginalnej sieci.';
+$_LANG['Unable to create second network.'] = 'Nie udało się utworzyć drugiej sieci.';
+$_LANG['Unable to move nodes to new network.'] = 'Nie udało się przenieść komputerów do nowej sieci.';
 $_LANG['Display this form again, when this account is saved'] = 'Po utworzeniu konta wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this alias is saved'] = 'Po utworzeniu aliasu wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this customer is saved'] = 'Po dodaniu klienta wyświetl ten formularz ponownie';
@@ -1752,6 +1761,7 @@ $_LANG['No configuration options in database.<br>Click <A href="$a">here</A> to 
 $_LANG['Click $a to create.'] = 'Kliknij $a, aby utworzyć.';
 $_LANG['here'] = 'tutaj';
 $_LANG['Node ID:'] = 'ID komputera:';
+$_LANG['Node ID'] = 'ID komputera';
 $_LANG['Node Info: $a'] = 'Informacje o komputerze: $a';
 $_LANG['Node IP address'] = 'Adres IP komputera';
 $_LANG['Node IP address is required!'] = 'Adres IP komputera jest wymagany!';
@@ -1921,6 +1931,7 @@ $_LANG['(please note: it HAVE TO start with http://, otherwise, it will be consi
 $_LANG['Poland'] = 'Polska';
 $_LANG['Ports number:'] = 'Liczba portów:';
 $_LANG['Ports (used):'] = 'Porty (zajęte):';
+$_LANG['Ports (used)'] = 'Porty (zajęte)';
 $_LANG['Ports used:'] = 'Porty zajęte:';
 $_LANG['Ports used'] = 'Zajęte porty';
 $_LANG['Postcode:'] = 'Kod pocztowy:';
@@ -3354,6 +3365,7 @@ $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
 $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
+$_LANG['<!document>cancelled'] = 'anulowany';
 $_LANG['bounced'] = 'odesłano';
 $_LANG['ready to send'] = 'gotowa do wysłania';
 $_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
@@ -3957,6 +3969,7 @@ $_LANG['<!voip-summary>Incoming cost'] = 'Koszt przychodzących';
 $_LANG['UKE income report ($a) for period $b - $c'] = 'Raport przychodów UKE ($a) za okres $b - $c';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
+$_LANG['Link speed'] = 'Szybkość łącza';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
 
 $_LANG['phone'] = 'telefon';
@@ -4127,6 +4140,7 @@ $_LANG['More'] = 'Więcej';
 $_LANG['transaction logs'] = 'dzienniki transakcji';
 
 $_LANG['user<!syslog>'] = 'użytkownik';
+$_LANG['split into two equal subnets<!syslog>'] = 'podział na pół';
 $_LANG['assignment<!syslog>'] = 'zobowiązanie';
 $_LANG['liability<!syslog>'] = 'zobowiązanie beztaryfowe';
 $_LANG['node assignment<!syslog>'] = 'powiązanie zobowiązania z komputerem';
@@ -4307,6 +4321,7 @@ $_LANG['Link technology:'] = 'Technologia łącza:';
 $_LANG['Link technology'] = 'Technologia łącza';
 $_LANG['<!netrange>Technology'] = 'Technologia';
 $_LANG['— unknown —'] = '— nieznana —';
+$_LANG['<!netdev-port>— unknown —'] = '— nieznany —';
 $_LANG['— without technology —'] = '— bez technologii —';
 $_LANG['Link technology is required!'] = 'Technologia łącza jest wymagana!';
 $_LANG['Link technology is not selected!'] = 'Nie wybrano technologii łącza';
@@ -5025,9 +5040,11 @@ $_LANG['(no subject)'] = '(brak tematu)';
 
 $_LANG['cloud'] = 'chmura';
 
-$_LANG['Assigned event ($a) was created.'] = 'Utworzono przypisane zdarzenie ($a).';
-$_LANG['Assigned event ($a) was modified.'] = 'Zmodyfikowano przypisane zdarzenie ($a).';
-$_LANG['Assigned event ($a) was deleted.'] = 'Usunięto przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been created.'] = 'Utworzono przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been modified.'] = 'Zmodyfikowano przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been deleted.'] = 'Usunięto przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) has been opened.'] = 'Przypisane zdarzenie ($a) zostało otwarte.';
+$_LANG['Assigned event ($a) has been closed.'] = 'Przypisane zdarzenie ($a) zostało zamknięte.';
 
 $_LANG['New ticket body should not be empty if you set new ticket subject!'] = 'Treść powiadomienia o nowym zgłoszeniu nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o nowym zgłoszeniu!';
 $_LANG['New ticket subject should not be empty if you set new ticket body!'] = 'Temat powiadomienia o nowym zgłoszeniu nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o nowym zgłoszeniu!';
@@ -5288,6 +5305,7 @@ $_LANG['<!qs>device id'] = 'identyfikator urządzenia';
 $_LANG['<!qs>device name'] = 'nazwa urządzenia';
 $_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
 $_LANG['<!qs>device mac'] = 'adres MAC urządzenia';
+$_LANG['<!qs>device ip address'] = 'adres IP urządzenia';
 $_LANG['<!qs>device description'] = 'opis urządzenia';
 
 $_LANG['<!qs>network node id'] = 'identyfikator węzła sieciowego';
@@ -5707,11 +5725,17 @@ $_LANG['<!qs>document memo'] = 'notatka na dokumentach';
 $_LANG['Document memo:'] = 'Notatka na dokumentach:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
+$_LANG['Error: cannot close event - no user permissions'] = 'Błąd: nie można zamknąć zdarzenia - brak uprawnień użytkownika';
+$_LANG['Error: cannot close event'] = 'Błąd: nie można zamknąć zdarzenia';
+$_LANG['Error: cannot open event - no user permissions'] = 'Błąd: nie można otworzyć zdarzenia - brak uprawnień użytkownika';
+$_LANG['Error: cannot open event - event not closed'] = 'Nie można otworzyć zdarzenia - zdarzenie nie jest zamknięte';
 
 $_LANG['Tax category:'] = 'GTU:';
 $_LANG['Tax category'] = 'GTU';
 $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
+$_LANG['Service type selection is required!'] = 'Wymagany wybór typu usługi!';
+$_LANG['Service type is not selected!'] = 'Brak wyboru typu usługi!';
 
 $_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 $_LANG['TERYT address recommended!'] = 'Zalecany adres zgodny z TERYT!';
@@ -5856,7 +5880,10 @@ $_LANG['$a selected contacts of $b customers'] = '$a wybranych kontaktów spośr
 $_LANG['show customer list'] = 'pokaż listę klientów';
 $_LANG['hide customer list'] = 'ukryj listę klientów';
 
-$_LANG['Cannot open event - event closed too long ago.'] = 'Nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno.';
+$_LANG['Error: cannot open event - event closed too long ago'] = 'Błąd: nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno';
+$_LANG['Error: cannot unassign from event - event closed too long ago'] = 'Błąd: nie można usunąć przypisania ze zdarzenia - zostało ono zamknięte zbyt dawno';
+$_LANG['Error: cannot assign to event - event closed too long ago'] = 'Błąd: nie można przypisać do zdarzenia - zostało ono zamknięte zbyt dawno';
+
 
 $_LANG['Text label:'] = 'Etykieta tekstowa:';
 $_LANG['Text label'] = 'Etykieta tekstowa';
@@ -6253,6 +6280,7 @@ $_LANG['Generate new password and copy it to clipboard'] = 'Wygeneruj nowe hasł
 
 $_LANG['<!nodesession-search>IP address'] = 'adres IP';
 $_LANG['<!nodesession-search>MAC address'] = 'adres MAC';
+$_LANG['<!nodesession-search>Producer (from MAC address)'] = 'producent (z adresu MAC)';
 $_LANG['<!nodesession-search>customer'] = 'klient';
 $_LANG['<!nodesession-search>node ID'] = 'id komputera';
 $_LANG['<!nodesession-search>location'] = 'lokalizacja';
@@ -6427,3 +6455,16 @@ $_LANG['<!ksef-status>assigned number'] = 'nadany numer';
 $_LANG['Base date'] = 'Data bazowa';
 
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
+
+$_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';
+
+$_LANG['Cancel document'] = 'Anuluj dokument';
+$_LANG['Recover document'] = 'Przywróć dokument';
+$_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';
+
+$_LANG['<!uke-income>tariffs'] = 'taryfy';
+$_LANG['<!uke-income>Tariff'] = 'Taryfa';
+
+$_LANG['Maximum reason length is 255 characters!'] = 'Maksymalna długość powodu to 255 znaków!';
+
+$_LANG['— select tariff —'] = '— wybierz taryfę —';

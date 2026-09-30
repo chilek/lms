@@ -948,6 +948,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
      * @param boolean $nodegroupnegation negate node group assignments
+     * @param string $nodegroupsqlskey Logical conjunction used for nodegroup field
      * @param int $division Division id
      * @param array $document Document parameters
      * @param int $days Days after expiration
@@ -1028,6 +1029,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($customergroupnegation)) {
             $customergroupnegation = false;
+        }
+
+        if (!isset($nodegroupsqlskey) || !preg_match('/^(AND|OR)$/i', $nodegroupsqlskey)) {
+            $nodegroupsqlskey = 'AND';
         }
 
         if (!isset($nodegroupnegation)) {
@@ -1880,8 +1885,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         COUNT(*) AS gcount
                     FROM ' . $customergrouptable . ' WHERE '
                     . (is_array($customergroup) || $customergroup > 0
-                        ? 'customergroupid IN (' . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup))
-                        : intval($customergroup)) . ')' : '1 = 1'
+                        ? 'customergroupid IN (' . (
+                            is_array($customergroup)
+                                ? implode(',', Utils::filterIntegers($customergroup))
+                                : intval($customergroup)
+                            )
+                            . ')' : '1 = 1'
                     ) . ' '
                     . (empty($customergroupwhere) ? '' : ' AND ' . implode(' AND ', $customergroupwhere))
                     . ' GROUP BY ' . $customergrouptable . '.customerid
@@ -1899,12 +1908,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 ) ca2 ON ca2.customerid = c.id '
                 : ''
             )
-            . (!empty($nodegroup) ? 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
-                FROM nodegroupassignments
-                JOIN nodes ON nodes.id = nodeid'
-                . (is_array($nodegroup) || $nodegroup > 0 ? ' WHERE nodegroupid IN ('
-                    . (is_array($nodegroup) ? implode(',', Utils::filterIntegers($nodegroup)) : intval($nodegroup)) . ')' : '') . '
-                GROUP BY ownerid) na ON na.customerid = c.id ' : '')
+            . (!empty($nodegroup)
+                ? 'LEFT JOIN (
+                    SELECT
+                        nodes.ownerid AS customerid,
+                        COUNT(*) AS gcount
+                    FROM nodegroupassignments
+                    JOIN nodes ON nodes.id = nodegroupassignments.nodeid
+                    WHERE '
+                    . (is_array($nodegroup) || $nodegroup > 0
+                        ? 'nodegroupassignments.nodegroupid ' . (is_array($nodegroup) ? ' IN ' : ' = ') . $this->db->Escape($nodegroup)
+                        : '1 = 1')
+                    . ' GROUP BY nodes.ownerid
+                ) na ON na.customerid = c.id'
+                : '')
+            . (!empty($nodegroup) && $nodegroupsqlskey == 'exact-match'
+                ? 'LEFT JOIN (
+                    SELECT
+                        nodes.ownerid AS customerid,
+                        COUNT(*) AS gcount
+                    FROM nodegroupassignments
+                    JOIN nodes ON nodes.id = nodegroupassignments.nodeid
+                    GROUP BY nodes.ownerid
+                ) na2 ON na2.customerid = c.id '
+                : ''
+            )
             . ($count ? '' : '
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
                 FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
@@ -2099,7 +2127,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     : ''
                 )
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
+                . (!empty($nodegroup) && $nodegroup != -1
+                    ? ' AND na.gcount ' . (
+                        $nodegroupnegation
+                            ? ($nodegroupsqlskey == 'AND' ? 'IS NULL' : ' < ' . (is_array($nodegroup) ? count($nodegroup) : 1))
+                            : ($nodegroupsqlskey == 'AND' || $nodegroupsqlskey == 'exact-match'
+                            ? '= ' . (is_array($nodegroup) ? count($nodegroup) : 1)
+                            . ($nodegroupsqlskey == 'exact-match'
+                                ? ' AND na.gcount = na2.gcount'
+                                : ''
+                            )
+                            : '> 0'
+                        )
+                    )
+                    : ''
+                )
+                . (isset($nodegroup) && $nodegroup == -1 ? ' AND na.gcount IS NULL ' : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (empty($sqlsarg) ? '' : ' AND (' . $sqlsarg . ')')
                 . (empty($sqlord) || $count ? '' : $sqlord . ' ' . $direction . ', c.id ASC')

@@ -76,10 +76,32 @@
 			{/if}
 			{if ConfigHelper::checkConfig('invoices.customer_credentials', true)}
 				{if $note.customerpin}
-					<BR>
-					<strong>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}<BR>
-					PIN: {$note.customerpin|string_format:"%04d"}</strong>
-					<BR>
+					{$cid = sprintf('%04d', $note.customerid)}
+					{capture assign="pin"}{strip}
+						{if strlen($note.customerpin) < 4}
+							{$note.customerpin|string_format:"%04d"}
+						{else}
+							{$note.customerpin}
+						{/if}
+					{/strip}{/capture}
+					{capture assign="customer_credentials_format"}{strip}
+						<b>{trans('Customer ID: %cid')}</b><br>
+						<b>{trans('PIN: %pin')}</b><br>
+					{/strip}{/capture}
+					{$cidpin = str_replace(
+						array('%cid', '%pin'),
+						array($cid, $pin),
+						ConfigHelper::getConfig(
+							'notes.customer_credentials_format',
+							ConfigHelper::getConfig(
+								'invoices.customer_credentials_format',
+								$customer_credentials_format
+							)
+						)
+					)}
+					<br>
+					{$cidpin}
+					<br>
 				{/if}
 			{/if}
 		</TD>

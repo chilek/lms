@@ -153,8 +153,6 @@ function module_main()
 
         $ticket['queue'] = intval($ticket['queue']);
         $ticket['categories'] = ConfigHelper::getConfig('userpanel.default_categories');
-        $ticket['subject'] = strip_tags($ticket['subject']);
-        $ticket['body'] = strip_tags($ticket['body']);
 
         if (!$ticket['queue']) {
             header('Location: ?m=helpdesk');
@@ -383,8 +381,6 @@ function module_main()
             die;
         }
 
-        $ticket['body'] = strip_tags($ticket['body']);
-        $ticket['subject'] = strip_tags($ticket['subject']);
         $ticket['inreplyto'] = intval($ticket['inreplyto']);
         $ticket['id'] = intval($_GET['id']);
 
@@ -595,23 +591,23 @@ function module_main()
 
     if (isset($_GET['op']) && $_GET['op'] == 'view') {
         if ($LMS->TicketExists($_GET['id'])) {
-            $ticket = $LMS->GetTicketContents($_GET['id']);
+            $ticketId = intval($_GET['id']);
 
-            $ticket['id'] = $_GET['id'];
+            $ticket = $LMS->GetTicketContents($ticketId);
 
             $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
             $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
             if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
                 && in_array($ticket['source'], $sources)) {
-                if (count($queues)==1) {
+                if (count($queues) == 1) {
                     $SMARTY->assign('title', trans(
                         'Request No. $a',
-                        sprintf('%06d', $ticket['ticketid'])
+                        sprintf('%06d', $ticketId)
                     ));
                 } else {
                     $SMARTY->assign('title', trans(
                         'Request No. $a / Queue: $b',
-                        sprintf('%06d', $ticket['ticketid']),
+                        sprintf('%06d', $ticketId),
                         $ticket['queuename']
                     ));
                 }
@@ -626,7 +622,7 @@ function module_main()
             $ticket = $LMS->GetTicketContents($_GET['id']);
         }
 
-        $ticket['id'] = $_GET['id'];
+        $ticket['id'] = $ticketId = intval($_GET['id']);
 
         $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
         $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
@@ -635,26 +631,30 @@ function module_main()
             if (isset($_GET['msgid']) && intval($_GET['msgid'])) {
                 $reply = $LMS->GetMessage($_GET['msgid']);
 
+                if (empty($reply['ticketid']) || $reply['ticketid'] != $ticketId) {
+                    die('Access denied');
+                }
+
                 $helpdesk['subject'] = $reply['subject'];
                 $helpdesk['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($helpdesk['subject']);
             } else {
-                $reply = $LMS->GetFirstMessage($_GET['id']);
+                $reply = $LMS->GetFirstMessage($ticketId);
             }
             $helpdesk['inreplyto'] = $reply['id'];
             $helpdesk['references'] = implode(' ', $reply['references']);
             $SMARTY->assign('helpdesk', $helpdesk);
 
-            if (count($queues)==1) {
-                            $SMARTY->assign('title', trans(
-                                'Request No. $a',
-                                sprintf('%06d', $ticket['ticketid'])
-                            ));
+            if (count($queues) == 1) {
+                $SMARTY->assign('title', trans(
+                    'Request No. $a',
+                    sprintf('%06d', $ticketId)
+                ));
             } else {
-                    $SMARTY->assign('title', trans(
-                        'Request No. $a / Queue: $b',
-                        sprintf('%06d', $ticket['ticketid']),
-                        $ticket['queuename']
-                    ));
+                $SMARTY->assign('title', trans(
+                    'Request No. $a / Queue: $b',
+                    sprintf('%06d', $ticketId),
+                    $ticket['queuename']
+                ));
             }
 
             if ($ticket['customerid'] == $SESSION->id) {
@@ -669,8 +669,20 @@ function module_main()
 
     $queues = ConfigHelper::getConfig('userpanel.queues');
     if (!empty($queues)) {
-        $queues = $LMS->DB->GetAll('SELECT id, name, description FROM rtqueues WHERE id IN ('
-            . str_replace(';', ',', $queues) . ')');
+        $queueIds = Utils::filterIntegers(explode(';', $queues));
+        if (!empty($queueIds)) {
+            $queues = $LMS->DB->GetAll(
+                'SELECT
+                    id,
+                    name,
+                    description
+                FROM rtqueues
+                WHERE id IN ?',
+                [
+                    $queueIds,
+                ]
+            );
+        }
     } else {
         $queues = array();
     }

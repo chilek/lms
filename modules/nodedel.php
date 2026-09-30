@@ -26,7 +26,7 @@
 
 $nodeid = intval($_GET['id']);
 
-if (!$LMS->NodeExists($nodeid)) {
+if (empty($nodeid) || !$LMS->NodeExists($nodeid)) {
     $SESSION->redirect_to_history_entry();
 } else {
     $owner = $LMS->GetNodeOwner($nodeid);

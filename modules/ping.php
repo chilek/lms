@@ -147,7 +147,7 @@ if (isset($_GET['p'])) {
             if (!isset($_GET['popupid'])) {
                 die;
             }
-            $SMARTY->assign('popupid', $_GET['popupid']);
+            $SMARTY->assign('popupid', preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['popupid']));
             break;
     }
 }

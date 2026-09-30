@@ -1740,4 +1740,62 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             array($nodeid)
         );
     }
+
+    public function getNetDevPorts($netdevid)
+    {
+        $netdevPorts = $this->db->GetCol(
+            'SELECT srcport
+            FROM netlinks
+            WHERE src = ?
+                AND srcport <> 0
+                OR dst = ?
+                AND dstport <> 0',
+            [
+                $netdevid,
+                $netdevid,
+            ]
+        );
+        if (empty($netdevPorts)) {
+            $netdevPorts = [];
+        }
+
+        $nodePorts = $this->db->GetCol(
+            'SELECT port
+            FROM nodes
+            WHERE ownerid IS NOT NULL
+                AND netdev = ?
+                AND port <> 0',
+            [
+                $netdevid
+            ]
+        );
+        if (empty($nodePorts)) {
+            $nodePorts = [];
+        }
+
+        $connectedPorts = array_merge($netdevPorts, $nodePorts);
+        $connectedPorts = array_flip($connectedPorts);
+
+        $ports = $this->db->GetOne(
+            'SELECT ports
+            FROM netdevices
+            WHERE id = ?',
+            [
+                $netdevid,
+            ]
+        );
+
+        if (empty($ports)) {
+            $ports = [];
+        } else {
+            $ports = array_flip(range(1, $ports));
+        }
+
+        foreach ($ports as $portNumber => &$port) {
+            $port = isset($connectedPorts[$portNumber]);
+        }
+        unset($port);
+
+        return $ports;
+    }
 }

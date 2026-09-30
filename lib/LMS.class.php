@@ -1837,6 +1837,13 @@ class LMS
         return $manager->NetworkSet($id, $disabled);
     }
 
+    public function SplitNetworkInHalf(int $netid): int
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->SplitNetworkInHalf($netid);
+    }
+
+
     public function IsIPFree($ip, $netid = 0)
     {
         $manager = $this->getNetworkManager();
@@ -2229,6 +2236,12 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->getNetDevOwnerByNodeId($nodeid);
+    }
+
+    public function getNetDevPorts($netdevid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevPorts($netdevid);
     }
 
     public function GetNetNode($id)
@@ -3579,6 +3592,18 @@ class LMS
     {
         $manager = $this->getEventManager();
         return $manager->GetEventList($params);
+    }
+
+    public function OpenEvent($id)
+    {
+        $manager = $this->getEventManager();
+        return $manager->OpenEvent($id);
+    }
+
+    public function CloseEvent($params)
+    {
+        $manager = $this->getEventManager();
+        return $manager->CloseEvent($params);
     }
 
     public function GetCustomerIdByTicketId($id)
@@ -5149,6 +5174,12 @@ class LMS
             $this->file_manager = new LMSFileManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
         }
         return $this->file_manager;
+    }
+
+    public function checkFileContainerPermission($containerType, $containerId, $fileId = null)
+    {
+        $manager = $this->getFileManager();
+        return $manager->checkFileContainerPermission($containerType, $containerId, $fileId);
     }
 
     public function GetFileContainers($type, $id)

@@ -182,6 +182,12 @@ if (isset($_GET['ajax'])) {
         for ($i=0; $i<=$counter; ++$i) {
             $SMARTY->assign('ip', long_ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
+            $SMARTY->assign('hosts', [
+                [
+                    'host' => htmlspecialchars($host, ENT_QUOTES),
+                    'net_name' => htmlspecialchars($_POST['netname'] ?? '', ENT_QUOTES),
+                ]
+            ]);
 
             $html .= $SMARTY->fetch('net/network_container.html');
         }
@@ -250,6 +256,6 @@ $layout['pagetitle'] = trans('IP Network Search');
 $SMARTY->assign('host_list', $DB->GetAll('SELECT name FROM hosts'));
 $SMARTY->assign('selected_host', $_POST['host'] ?? null);
 $SMARTY->assign('mask', isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24);
-$SMARTY->assign('ip', !empty($ip) ? $ip : ($_POST['ip'] ?? null));
+$SMARTY->assign('ip', !empty($ip) ? $ip : (isset($_POST['ip']) && check_ip($_POST['ip']) ? $_POST['ip'] : null));
 
 $SMARTY->display('net/netusage.html');

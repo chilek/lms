@@ -49,6 +49,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT d.id AS docid, d.number, d.type, c.title, c.fromdate, c.todate,
 				c.description, n.template, d.closed, d.confirmdate,
 				d.archived, d.adate, u3.name AS ausername, d.senddate,
+				d.cancelled,
 				d.cdate, u.name AS username, d.sdate, d.cuserid, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documents d
@@ -217,25 +218,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         switch ($status) {
             case 0:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND (d.confirmdate = 0 OR d.confirmdate > ?NOW?)';
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_OPEN . ' AND (d.confirmdate = 0 OR d.confirmdate > ?NOW?)';
                 break;
             case 1:
-                $status_sql = ' AND d.closed > ' . DOC_OPEN;
+                $status_sql = ' AND d.cancelled = 0 AND d.closed > ' . DOC_OPEN;
                 break;
             case 2:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate = -1';
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate = -1';
                 break;
             case 3:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
                 break;
             case 4:
-                $status_sql = ' AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SMS;
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SMS;
                 break;
             case 5:
-                $status_sql = ' AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SCAN;
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SCAN;
                 break;
             case 6:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate < ?NOW?';
+                $status_sql = ' AND d.cancelled = 0 AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate < ?NOW?';
+                break;
+            case 7:
+                $status_sql = ' AND d.cancelled = 1';
                 break;
             default:
                 $status_sql = '';
@@ -285,6 +289,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
 				u.name AS username, u.lastname, fromdate, todate, description,
 				numberplans.template, d.closed, d.confirmdate, d.senddate,
+				d.cancelled,
 				d.archived, d.adate, d.auserid, u3.name AS ausername,
 				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
 				u2.lastname AS clastname, d.reference, i.senddocuments

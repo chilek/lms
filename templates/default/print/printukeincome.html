@@ -20,8 +20,10 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
-			{if isset($linktechnologies)}
+			{if $type == '$linktechnologies'}
 				{trans("<!uke-income>Link technology")}
+			{elseif $type == 'tariffs'}
+				{trans("<!uke-income>Tariff")}
 			{else}
 				{trans("<!uke-income>Service type")}
 			{/if}
@@ -69,8 +71,10 @@
 		</TD>
 		<TD ALIGN="CENTER">
 			{if $row.type}
-				{if isset($linktechnologies)}
+				{if $type == 'linktechnologies'}
 					{$linktechnologies[$row.type]}
+				{elseif $type == 'tariffs'}
+					{$row.type}
 				{else}
 					{$_SERVICETYPES[$row.type]}
 				{/if}

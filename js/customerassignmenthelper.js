@@ -122,7 +122,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		var location_select = $('#location-select');
 		if (!location_select.val().length && $('option:not([value=""])', location_select).length > 1) {
-			confirm($t('No location has been selected!'));
+			alertDialog($t('No location has been selected!'), location_select);
 			return false;
 		}
 		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
@@ -170,6 +170,9 @@ function CustomerAssignmentHelper(options) {
 		$('.promotion-table').hide();
 
 		$("#schema" + schemaId).show();
+
+		$('.schema-tariff-selection[data-mandatory]').prop('required', false);
+		$('#schema' + schemaId).find('.schema-tariff-selection[data-mandatory]').prop('required', true);
 
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
@@ -368,7 +371,8 @@ function CustomerAssignmentHelper(options) {
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
-			.next().toggleClass('lms-ui-error', validationError)
+			.siblings('.select2').find('.select2-selection')
+			.toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 
 		var schemaId = $('#promotion-select').val();

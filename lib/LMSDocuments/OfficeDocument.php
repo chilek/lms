@@ -95,7 +95,7 @@ class OfficeDocument
         }
 
         $this->za = new \ZipArchive();
-        if ($this->za->open($fileName) === false) {
+        if ($this->za->open($this->fileName) === false) {
             throw new \Exception('Could not open archived office file!');
         }
 
@@ -181,7 +181,7 @@ class OfficeDocument
             file_put_contents($this->fileName, $this->mainDocumentContent);
         } else {
             $this->za->deleteIndex($this->archivedFiles[$this->mainDocumentName]['index']);
-            $this->za->addFromString($this->mainDocumentName, $this->mainDocumentContent, ZipArchive::FL_OVERWRITE);
+            $this->za->addFromString($this->mainDocumentName, $this->mainDocumentContent, \ZipArchive::FL_OVERWRITE);
 
             $this->za->close();
         }

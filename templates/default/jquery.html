@@ -53,7 +53,8 @@
 		discountPercentage: {$smarty.const.DISCOUNT_PERCENTAGE},
 		discountAmount: {$smarty.const.DISCOUNT_AMOUNT},
 		office2pdfCommand: '{ConfigHelper::getConfig('documents.office2pdf_command', '', true)}',
-		mapCreateNewPointAfterLinkEditStart: {if ConfigHelper::checkConfig('map.create_new_point_after_link_edit_start', ConfigHelper::checkConfig('phpui.map_create_new_point_after_link_edit_start'))}true{else}false{/if}
+		mapCreateNewPointAfterLinkEditStart: {if ConfigHelper::checkConfig('map.create_new_point_after_link_edit_start', ConfigHelper::checkConfig('phpui.map_create_new_point_after_link_edit_start'))}true{else}false{/if},
+		tooltipTimeout: {intval(ConfigHelper::getConfig('phpui.tooltip_timeout', '-1'))}
 	};
 
 	var lms = {
@@ -86,7 +87,8 @@
 		permissions: {
 			fullAccess: {if ConfigHelper::checkPrivilege('superuser')}true{else}false{/if},
 			networkMapEdit: {if ConfigHelper::checkPrivilege('network_map_edit', false)}true{else}false{/if}
-		}
+		},
+		settings: lmsSettings
 	}
 
 	var tooltipsEnabled = true;

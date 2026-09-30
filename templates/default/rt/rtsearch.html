@@ -25,7 +25,7 @@
 				{icon name="subject" label="Subject"}
 			</td>
 			<td>
-				<input type="search" size="50" name="search[subject]" value="{$search.subject}"
+				<input type="search" size="50" name="search[subject]" value="{$search.subject|escape}"
 					form="search" {tip text="Enter subject"}>
 			</td>
 		</tr>
@@ -34,7 +34,7 @@
 				{icon name="message" label="<!rt>Content"}
 			</td>
 			<td>
-				<input type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}"
+				<input type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern|escape}"
 					form="search" {tip text="Enter body fragment"}>
 				<label>
 					<input type="checkbox" name="search[body][regexp]" value="1"
@@ -66,7 +66,7 @@
 							{trans("First/last or Company name")}
 						</td>
 						<td>
-							<input type="text" name="search[name]" value="{$search.name}" form="search"
+							<input type="text" name="search[name]" value="{$search.name|escape}" form="search"
 								{tip text="Select customer from list or enter his data if is not a customer"}>
 						</td>
 					</tr>
@@ -75,7 +75,7 @@
 							{trans("E-mail")}
 						</td>
 						<td>
-							<input type="email" name="search[email]" value="{$search.email}" form="search"
+							<input type="email" name="search[email]" value="{$search.email|escape}" form="search"
 								{tip text="Select customer from list or enter his data if is not a customer"}>
 						</td>
 					</tr>
@@ -84,7 +84,7 @@
 							{trans("Phone")}
 						</td>
 						<td>
-							<input type="tel" name="search[phone]" value="{$search.phone}" form="search"
+							<input type="tel" name="search[phone]" value="{$search.phone|escape}" form="search"
 								{tip text="Select customer from list or enter his data if is not a customer"}>
 						</td>
 					</tr>
@@ -96,11 +96,11 @@
 				{icon name="home" label="Address"}
 			</td>
 			<td class="nobr">
-				<input type="text" name="search[address]" value="{$search.address}" form="search">
+				<input type="text" name="search[address]" value="{$search.address|escape}" form="search">
 				<strong>{trans("City")}</strong>
-				<input type="text" name="search[city]" value="{$search.city}" form="search">
+				<input type="text" name="search[city]" value="{$search.city|escape}" form="search">
 				<strong>{trans("Postcode")}</strong>
-				<input type="text" name="search[zip]" value="{$search.zip}" size="10" form="search">
+				<input type="text" name="search[zip]" value="{$search.zip|escape}" size="10" form="search">
 			</td>
 		</tr>
 		<tr>

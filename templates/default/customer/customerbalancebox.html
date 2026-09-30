@@ -14,6 +14,7 @@
 <FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance"
 	target="_blank">
 	<input type="hidden" name="customer" value="{$balancelist.customerid}">
+	<input type="hidden" name="aggregate_documents" value="0">
 </FORM>
 
 {tab_container id="customerbalancebox" label="Customer Account"}
@@ -33,7 +34,7 @@
 			{strip}
 				<label id="aggregate_document_label">
 					<input type="checkbox" name="aggregate_documents" value="1"
-							{if $aggregate_documents} checked{/if}>
+						{if $aggregate_documents} checked{/if}>
 					{trans("aggregate documents")}
 				</label>
 			{/strip}
@@ -55,7 +56,7 @@
 						{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
 						form="printcustomerbalance">
 				</label>
-				<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
+				<a href="javascript:printCustomerBalance()">{trans("Customer Balance Sheet")}</a>
 			{/if}
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -670,6 +671,11 @@
 		if (typeof(with_receipt) == 'boolean' && with_receipt)
 			document.addbalance.action += '&receipt=1';
 		document.addbalance.submit();
+	}
+
+	function printCustomerBalance() {
+		$('#printcustomerbalance [name="aggregate_documents"]').val($('#customerbalancebox [name="aggregate_documents"]').prop('checked') ? 1 : 0);
+		document.printcustomerbalance.submit();
 	}
 
 	$('#print-receipts').click(function() {
