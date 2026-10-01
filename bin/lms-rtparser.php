@@ -309,6 +309,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             continue;
         }
 
+        $customCreateTime = isset($headers['date']) ? strtotime($headers['date']) : null;
         $mh_from = iconv_mime_decode($headers['from']);
         $mh_to = iconv_mime_decode($headers['to']);
         $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
@@ -748,6 +749,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         $subject_template
                     ),
                 'createtime' => $timestamp,
+                'customcreatetime' => $customCreateTime,
                 'source' => RT_SOURCE_EMAIL,
                 'mailfrom' => $mh_from,
                 'replyto' => $mh_replyto,
