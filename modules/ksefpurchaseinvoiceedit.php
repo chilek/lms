@@ -317,7 +317,7 @@ switch ($action) {
 
         $encoding = $_POST['encoding'] ?? 'UTF-8';
 
-        $fileName = trans('transfers-$1.csv', date('Ymd-His'));
+        $fileName = trans('transfers-$a.csv', date('Ymd-His'));
 
         $output = iconv(
             'UTF-8',
