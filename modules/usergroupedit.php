@@ -66,9 +66,13 @@ if (isset($_POST['usergroup'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('usergroup', $usergroup);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('users', $users);
-$SMARTY->assign('userscount', count($users));
-$SMARTY->assign('usergroups', $LMS->getAllUserGroups());
+$SMARTY->assign(
+    array(
+        'usergroup' => $usergroup,
+        'error' => $error,
+        'users' => $users,
+        'userscount' => count($users),
+        'usergroups' => $LMS->getAllUserGroups(),
+    )
+);
 $SMARTY->display('user/usergroupedit.html');

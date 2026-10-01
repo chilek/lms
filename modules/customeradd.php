@@ -659,14 +659,18 @@ foreach (array(BILLING_ADDRESS, POSTAL_ADDRESS, LOCATION_ADDRESS) as $addressTyp
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign($LMS->getCustomerPinRequirements());
 
-$SMARTY->assign('default_states', $default_states);
-$SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
-$SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
-$SMARTY->assign('legal_person_required_property_validation_error', $legal_person_required_property_validation_error);
-$SMARTY->assign('natural_person_required_property_validation_error', $natural_person_required_property_validation_error);
-$SMARTY->assign('legal_person_required_property_validation_customer_statuses', $legal_person_required_property_validation_customer_statuses);
-$SMARTY->assign('natural_person_required_property_validation_customer_statuses', $natural_person_required_property_validation_customer_statuses);
-$SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
-$SMARTY->assign('customeradd', $customeradd);
+$SMARTY->assign(
+    array(
+        'default_states' => $default_states,
+        'legal_person_required_properties' => $legal_person_required_properties,
+        'natural_person_required_properties' => $natural_person_required_properties,
+        'legal_person_required_property_validation_error' => $legal_person_required_property_validation_error,
+        'natural_person_required_property_validation_error' => $natural_person_required_property_validation_error,
+        'legal_person_required_property_validation_customer_statuses' => $legal_person_required_property_validation_customer_statuses,
+        'natural_person_required_property_validation_customer_statuses' => $natural_person_required_property_validation_customer_statuses,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+        'customeradd' => $customeradd,
+    )
+);
 
 $SMARTY->display('customer/customeradd.html');

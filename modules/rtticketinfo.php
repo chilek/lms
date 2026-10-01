@@ -55,6 +55,10 @@ $ticket = array_merge(
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('aet', $aet);
+$SMARTY->assign(
+    array(
+        'ticket' => $ticket,
+        'aet' => $aet,
+    )
+);
 $SMARTY->display('rt/rtticketinfoshort.html');

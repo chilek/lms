@@ -54,6 +54,10 @@ $layout['pagetitle'] = trans('Timetable');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('eventlist', $eventlist);
-$SMARTY->assign('date', $date);
+$SMARTY->assign(
+    array(
+        'eventlist' => $eventlist,
+        'date' => $date,
+    )
+);
 $SMARTY->display('event/eventprint.html');

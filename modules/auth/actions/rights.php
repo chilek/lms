@@ -70,8 +70,12 @@ if ($handle = opendir($ExecStack->modules_dir)) {
     closedir($handle);
 }
 
-$SMARTY->assign('rights', $AUTH_MODULES);
-$SMARTY->assign('modinfo', $AUTH_MODINFO);
+$SMARTY->assign(
+    array(
+        'rights' => $AUTH_MODULES,
+        'modinfo' => $AUTH_MODINFO,
+    )
+);
 
 register_plugin('users-add-beforetableend', '../modules/auth/templates/rightsedit.html');
 register_plugin('users-edit-beforetableend', '../modules/auth/templates/rightsedit.html');

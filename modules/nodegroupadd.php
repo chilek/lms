@@ -70,8 +70,12 @@ if (isset($_POST['nodegroupadd'])) {
         $SESSION->redirect('?m=nodegrouplist&id='.$id);
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('nodegroupadd', $nodegroupadd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'nodegroupadd' => $nodegroupadd,
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('New Group');

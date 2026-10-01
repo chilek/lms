@@ -218,9 +218,13 @@ $layout['pagetitle'] = trans('Balance Sheet');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('balancelist', $balancelist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
-$SMARTY->assign('sourcelist', $LMS->getCashSources());
+$SMARTY->assign(
+    array(
+        'balancelist' => $balancelist,
+        'listdata' => $listdata,
+        'pagination' => $pagination,
+        'grouplist' => $LMS->CustomergroupGetAll(),
+        'sourcelist' => $LMS->getCashSources(),
+    )
+);
 $SMARTY->display('balance/balancelist.html');

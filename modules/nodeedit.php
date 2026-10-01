@@ -567,25 +567,41 @@ $SMARTY->assign('NNprojects', $nprojects);
 if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
     $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 }
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('netdevices', $netdevices);
+$SMARTY->assign(
+    array(
+        'networks' => $LMS->GetNetworks(),
+        'netdevices' => $netdevices,
+    )
+);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
-    $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
-    $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
+    $SMARTY->assign(
+        array(
+            'nodegroups' => $LMS->GetNodeGroupNamesByNode($nodeid),
+            'othernodegroups' => $LMS->GetNodeGroupNamesWithoutNode($nodeid),
+        )
+    );
 }
 if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
     $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeid));
 }
 
 if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
-    $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeid));
-    $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeid));
-    $SMARTY->assign('nodeid', $nodeid);
+    $SMARTY->assign(
+        array(
+            'routednetworks' => $LMS->getNodeRoutedNetworks($nodeid),
+            'notroutednetworks' => $LMS->getNodeNotRoutedNetworks($nodeid),
+            'nodeid' => $nodeid,
+        )
+    );
 }
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('node_empty_mac', $node_empty_mac);
-$SMARTY->assign('nodeinfo', $nodeinfo);
-$SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->assign('nodeedit_sortable_order', $SESSION->get_persistent_setting('nodeedit-sortable-order'));
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'node_empty_mac' => $node_empty_mac,
+        'nodeinfo' => $nodeinfo,
+        'objectid' => $nodeinfo['id'],
+        'nodeedit_sortable_order' => $SESSION->get_persistent_setting('nodeedit-sortable-order'),
+    )
+);
 $SMARTY->display('node/nodeedit.html');

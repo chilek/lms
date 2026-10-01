@@ -1724,11 +1724,15 @@ if (isset($message['type'])) {
     $msgtmpltype = TMPL_MAIL;
 }
 
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
+$SMARTY->assign(
+    array(
+        'divisions' => $LMS->GetDivisions(),
+        'messagetemplates' => $LMS->GetMessageTemplates($msgtmpltype),
+        'networks' => $LMS->GetNetworks(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'nodegroups' => $LMS->GetNodeGroupNames(),
+    )
+);
 
 if (empty($message['sender'])) {
     $message['sender'] = ConfigHelper::getConfig(
@@ -1737,10 +1741,13 @@ if (empty($message['sender'])) {
     );
 }
 
-$SMARTY->assign('message', $message);
-$SMARTY->assign('userinfo', $userinfo);
-
-$SMARTY->assign('users', $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')));
+$SMARTY->assign(
+    array(
+        'message' => $message,
+        'userinfo' => $userinfo,
+        'users' => $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')),
+    )
+);
 
 $usergroups = $LMS->UsergroupGetList();
 unset($usergroups['total'], $usergroups['totalcount']);

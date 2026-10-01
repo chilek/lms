@@ -189,8 +189,12 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $data = $_POST['form'];
     $data['aid'] = $assignmentid ?: null;
 
-    $SMARTY->assign('formdata', $data);
-    $SMARTY->assign('error', $error);
+    $SMARTY->assign(
+        array(
+            'formdata' => $data,
+            'error' => $error,
+        )
+    );
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'promotionschemainfo.php');
     die;
 } else if ($action == 'tariffdel') {
@@ -518,7 +522,11 @@ $schema['selection'] = array(1,3,6,9,12,18,24,30,36,42,48,60);
 
 $layout['pagetitle'] = trans('Schema Edit: $a', $oldschema['name']);
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('warning', $warning);
-$SMARTY->assign('schema', $schema);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'warning' => $warning,
+        'schema' => $schema,
+    )
+);
 $SMARTY->display('promotion/promotionschemaedit.html');

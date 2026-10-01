@@ -39,15 +39,23 @@ switch ($bar) {
         break;
 
     default: // set filter window
-        $SMARTY->assign('netlist', $LMS->GetNetworks());
-        $SMARTY->assign('nodelist', $LMS->GetNodeList());
+        $SMARTY->assign(
+            array(
+                'netlist' => $LMS->GetNetworks(),
+                'nodelist' => $LMS->GetNodeList(),
+            )
+        );
         $bars = 0;
         break;
 }
 
 if (isset($traffic)) {
-    $SMARTY->assign('download', $traffic['download']);
-    $SMARTY->assign('upload', $traffic['upload']);
+    $SMARTY->assign(
+        array(
+            'download' => $traffic['download'],
+            'upload' => $traffic['upload'],
+        )
+    );
 }
 
 // fuck this anyway... Maybe i write function in LMS:: for this, but not now
@@ -59,10 +67,14 @@ $endtime = $endtime ?: time();
 $startyear = date('Y', $starttime);
 $endyear = date('Y', $endtime);
 
-$SMARTY->assign('starttime', $starttime);
-$SMARTY->assign('startyear', $startyear);
-$SMARTY->assign('endtime', $endtime);
-$SMARTY->assign('endyear', $endyear);
-$SMARTY->assign('showips', isset($_POST['showips']));
-$SMARTY->assign('bars', $bars);
-$SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
+$SMARTY->assign(
+    array(
+        'starttime' => $starttime,
+        'startyear' => $startyear,
+        'endtime' => $endtime,
+        'endyear' => $endyear,
+        'showips' => isset($_POST['showips']),
+        'bars' => $bars,
+        'trafficorder' => $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download',
+    )
+);

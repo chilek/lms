@@ -48,8 +48,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     }
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
-    $SMARTY->assign('attachmenttype', $attachmenttype);
-    $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+    $SMARTY->assign(
+        array(
+            'attachmenttype' => $attachmenttype,
+            'attachmentresourceid' => $attachmentresourceid,
+        )
+    );
 
     $filecontainers = array(
         'netdevid' => array(
@@ -113,20 +117,24 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total'] ?? null)
     );
 
-    $SMARTY->assign('netdev', $netdev);
-    $SMARTY->assign('start', $start);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('queue', $queue);
-    $SMARTY->assign('queue_netdevid', $id);
-    $SMARTY->assign('objectid', $netdev['id']);
-    $SMARTY->assign('restnetdevlist', $netdevlist);
-    $SMARTY->assign('netdevips', $netdevips);
-    $SMARTY->assign('nodelist', $nodelist);
-    $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $id));
-    $SMARTY->assign('radiosectors', $LMS->GetRadioSectors($id));
-    $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
-    $SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
-    $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
+    $SMARTY->assign(
+        array(
+            'netdev' => $netdev,
+            'start' => $start,
+            'pagelimit' => $pagelimit,
+            'queue' => $queue,
+            'queue_netdevid' => $id,
+            'objectid' => $netdev['id'],
+            'restnetdevlist' => $netdevlist,
+            'netdevips' => $netdevips,
+            'nodelist' => $nodelist,
+            'mgmurls' => $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $id),
+            'radiosectors' => $LMS->GetRadioSectors($id),
+            'devlinktype' => $SESSION->get('devlinktype'),
+            'devlinktechnology' => $SESSION->get('devlinktechnology'),
+            'devlinkspeed' => $SESSION->get('devlinkspeed'),
+        )
+    );
 
     if ($SESSION->is_set('nodelinktype')) {
         $nodelinktype = $SESSION->get('nodelinktype');
@@ -147,19 +155,20 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     } else {
         $nodelinkspeed = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
     }
-    $SMARTY->assign('nodelinkspeed', $nodelinkspeed);
-
-    $SMARTY->assign('macs', $LMS->GetNetdevMacs($netdev['id']));
-    $SMARTY->assign('maclabels', $LMS->GetNetdevsMacLabels());
-
     $SMARTY->assign(
-        'targetnetdevs',
-        $DB->GetAll(
-            'SELECT n.name, n.id, n.producer, n.model, va.location, n.ports
+        array(
+            'nodelinkspeed' => $nodelinkspeed,
+            'macs' => $LMS->GetNetdevMacs($netdev['id']),
+            'maclabels' => $LMS->GetNetdevsMacLabels(),
+            'targetnetdevs' =>
+                $DB->GetAll(
+                    'SELECT n.name, n.id, n.producer, n.model, va.location, n.ports
             FROM netdevices n
             LEFT JOIN vaddresses va ON va.id = n.address_id
             WHERE n.id <> ' . intval($id)
-            . ' ORDER BY name'
+                    . ' ORDER BY name'
+                )
+,
         )
     );
 
@@ -169,8 +178,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         $srcNetDev = reset($netdevlist);
         $srcPorts = $LMS->getNetDevPorts($srcNetDev['id']);
     }
-    $SMARTY->assign('srcports', $srcPorts);
-    $SMARTY->assign('dstports', $LMS->getNetDevPorts($netdev['id']));
+    $SMARTY->assign(
+        array(
+            'srcports' => $srcPorts,
+            'dstports' => $LMS->getNetDevPorts($netdev['id']),
+        )
+    );
 
     $foreign_entities = Utils::getForeignEntities();
     if (!empty($netdevconnected) && !empty($foreign_entities)) {
@@ -196,8 +209,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     );
     $netdevconnected = $hook_data['netdevconnected'];
     $netcomplist = $hook_data['netcomplist'];
-    $SMARTY->assign('netdevlist', $netdevconnected);
-    $SMARTY->assign('netcomplist', $netcomplist);
+    $SMARTY->assign(
+        array(
+            'netdevlist' => $netdevconnected,
+            'netcomplist' => $netcomplist,
+        )
+    );
 
     if (isset($_GET['ip'])) {
         $ip = intval($_GET['ip']);
@@ -208,13 +225,16 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
             $netdevauthtype['dhcp'] = ($authtype & 2);
             $netdevauthtype['eap'] = ($authtype & 4);
         }
-        $SMARTY->assign('nodeipdata', $LMS->GetNode($ip));
-        $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($ip));
-        $SMARTY->assign('netdevauthtype', $netdevauthtype);
-
-        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($ip));
-        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($ip));
-        $SMARTY->assign('nodeid', $ip);
+        $SMARTY->assign(
+            array(
+                'nodeipdata' => $LMS->GetNode($ip),
+                'nodesessions' => $LMS->GetNodeSessions($ip),
+                'netdevauthtype' => $netdevauthtype,
+                'routednetworks' => $LMS->getNodeRoutedNetworks($ip),
+                'notroutednetworks' => $LMS->getNodeNotRoutedNetworks($ip),
+                'nodeid' => $ip,
+            )
+        );
 
         $SMARTY->display('netdev/netdevipinfo.html');
     } else {

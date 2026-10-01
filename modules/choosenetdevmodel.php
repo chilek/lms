@@ -131,7 +131,11 @@ if (isset($data['producerid'])) {
 $data['varname'] = $_GET['name'];
 $data['formname'] = $_GET['form'];
 
-$SMARTY->assign('data', $data);
-$SMARTY->assign('producers', $producers);
-$SMARTY->assign('models', $models);
+$SMARTY->assign(
+    array(
+        'data' => $data,
+        'producers' => $producers,
+        'models' => $models,
+    )
+);
 $SMARTY->display('choose/choosenetdevmodel.html');

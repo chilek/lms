@@ -192,9 +192,12 @@ if (!empty($link['foreignentity'])) {
         $link['foreign_entity'] = $foreign_entities[$link['foreignentity']];
     }
 }
-$SMARTY->assign('foreign_entities', $foreign_entities);
-
-$SMARTY->assign('link', $link);
+$SMARTY->assign(
+    array(
+        'foreign_entities' => $foreign_entities,
+        'link' => $link,
+    )
+);
 
 $radiosectors = $link['radiosectors'] ?? array();
 

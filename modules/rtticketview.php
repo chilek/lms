@@ -108,9 +108,13 @@ if ($ticket['customerid'] && $notification_customerinfo) {
     $customernodes = $LMS->GetCustomerNodes($ticket['customerid']);
     $allnodegroups = $LMS->GetNodeGroupNames();
 
-    $SMARTY->assign('customerinfo', $customer);
-    $SMARTY->assign('customernodes', $customernodes);
-    $SMARTY->assign('allnodegroups', $allnodegroups);
+    $SMARTY->assign(
+        array(
+            'customerinfo' => $customer,
+            'customernodes' => $customernodes,
+            'allnodegroups' => $allnodegroups,
+        )
+    );
 }
 
 $iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc',

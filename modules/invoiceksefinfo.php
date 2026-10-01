@@ -95,17 +95,19 @@ if (!empty($_GET['purchase'])) {
     }
 
     $SMARTY->assign(
-        'url',
-        KSeF::getQrCodeUrl([
-            'environment' => $doc['environment'],
-            'ten' => $doc['div_ten'],
-            'date' => $doc['cdate'],
-            'hash' => $doc['hash'],
-        ])
+        array(
+            'url' =>
+                KSeF::getQrCodeUrl([
+                    'environment' => $doc['environment'],
+                    'ten' => $doc['div_ten'],
+                    'date' => $doc['cdate'],
+                    'hash' => $doc['hash'],
+                ])
+,
+            'invoice' => $doc,
+            'invoice_file_exists' => KSeF::invoiceFileExists($doc['div_buyer'], $doc['ksefnumber']),
+        )
     );
-
-    $SMARTY->assign('invoice', $doc);
-    $SMARTY->assign('invoice_file_exists', KSeF::invoiceFileExists($doc['div_buyer'], $doc['ksefnumber']));
     $SMARTY->display('invoice/invoiceksefinfo.html');
 
     $SESSION->close();
@@ -211,7 +213,11 @@ if ($doc = $DB->GetRow(
         }
     }
 
-    $SMARTY->assign('invoice', $doc);
-    $SMARTY->assign('upo_file_exists', KSeF::upoFileExists($doc['ksefnumber']));
+    $SMARTY->assign(
+        array(
+            'invoice' => $doc,
+            'upo_file_exists' => KSeF::upoFileExists($doc['ksefnumber']),
+        )
+    );
     $SMARTY->display('invoice/invoiceksefinfo.html');
 }

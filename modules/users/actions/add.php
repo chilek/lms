@@ -69,5 +69,9 @@ if (count($useradd)) {
 
 $layout['pagetitle'] = trans('New User');
 
-$SMARTY->assign('useradd', $useradd);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'useradd' => $useradd,
+        'error' => $error,
+    )
+);

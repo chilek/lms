@@ -337,7 +337,11 @@ $data['allow_empty_streets'] = !empty($_GET['allow_empty_streets']);
 $data['allow_empty_building_numbers'] = !empty($_GET['allow_empty_building_numbers']);
 $data['countries'] = $DB->GetAll('SELECT id, name FROM countries');
 
-$SMARTY->assign('data', $data);
-$SMARTY->assign('states', $states);
+$SMARTY->assign(
+    array(
+        'data' => $data,
+        'states' => $states,
+    )
+);
 
 $SMARTY->display('file:choose/chooselocation.html');

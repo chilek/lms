@@ -180,14 +180,18 @@ if (isset($_GET['ajax'])) {
 
         $counter = 2 * 2 ** (24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
-            $SMARTY->assign('ip', long_ip(ip_long($ip) + $i * 256));
-            $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
-            $SMARTY->assign('hosts', [
-                [
-                    'host' => htmlspecialchars($host, ENT_QUOTES),
-                    'net_name' => htmlspecialchars($_POST['netname'] ?? '', ENT_QUOTES),
-                ]
-            ]);
+            $SMARTY->assign(
+                array(
+                    'ip' => long_ip(ip_long($ip) + $i * 256),
+                    'hosts' => array(array('host'=>$host, 'net_name'=>$_POST['netname'])),
+                    'hosts' => [
+                        [
+                            'host' => htmlspecialchars($host, ENT_QUOTES),
+                            'net_name' => htmlspecialchars($_POST['netname'] ?? '', ENT_QUOTES),
+                        ]
+                    ],
+                )
+            );
 
             $html .= $SMARTY->fetch('net/network_container.html');
         }
@@ -226,11 +230,15 @@ if (isset($_GET['ajax'])) {
             );
         }
 
-        $SMARTY->assign('used_ips', $used_ips);
-        $SMARTY->assign('pool', array('start'=>$ip_start, 'end'=>$ip_end));
-        $SMARTY->assign('network', $mask < 31 && $ip_start == $full_network['address'] ? 1 : 0);
-        $SMARTY->assign('broadcast', $mask < 31 && long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0);
-        $SMARTY->assign('hostid', $full_network['id']);
+        $SMARTY->assign(
+            array(
+                'used_ips' => $used_ips,
+                'pool' => array('start'=>$ip_start, 'end'=>$ip_end),
+                'network' => $mask < 31 && $ip_start == $full_network['address'] ? 1 : 0,
+                'broadcast' => $mask < 31 && long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0,
+                'hostid' => $full_network['id'],
+            )
+        );
 
         $html .= $SMARTY->fetch('net/network_container.html');
     }
@@ -253,9 +261,13 @@ if (isset($_POST['ip'], $_POST['mask'])) {
 
 $layout['pagetitle'] = trans('IP Network Search');
 
-$SMARTY->assign('host_list', $DB->GetAll('SELECT name FROM hosts'));
-$SMARTY->assign('selected_host', $_POST['host'] ?? null);
-$SMARTY->assign('mask', isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24);
-$SMARTY->assign('ip', !empty($ip) ? $ip : (isset($_POST['ip']) && check_ip($_POST['ip']) ? $_POST['ip'] : null));
+$SMARTY->assign(
+    array(
+        'host_list' => $DB->GetAll('SELECT name FROM hosts'),
+        'selected_host' => $_POST['host'] ?? null,
+        'mask' => isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24,
+        'ip' => !empty($ip) ? $ip : (isset($_POST['ip']) && check_ip($_POST['ip']) ? $_POST['ip'] : null),
+    )
+);
 
 $SMARTY->display('net/netusage.html');

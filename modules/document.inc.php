@@ -234,8 +234,12 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
     $document['type'] = $doctype;
-    $SMARTY->assign('docengines', $docengines);
-    $SMARTY->assign('document', $document);
+    $SMARTY->assign(
+        array(
+            'docengines' => $docengines,
+            'document' => $document,
+        )
+    );
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
@@ -290,8 +294,12 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 {
     global $SMARTY, $LMS, $documents_dirs;
 
-    $SMARTY->assign('cid', $customerid);
-    $SMARTY->assign('document', array('reference' => ''));
+    $SMARTY->assign(
+        array(
+            'cid' => $customerid,
+            'document' => array('reference' => ''),
+        )
+    );
 
     $references = $LMS->GetDocuments($customerid, null, isset($doctemplate));
 
@@ -427,8 +435,12 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
         );
     }
 
-    $SMARTY->assign('variable_prefix', 'document');
-    $SMARTY->assign('variables', $document);
+    $SMARTY->assign(
+        array(
+            'variable_prefix' => 'document',
+            'variables' => $document,
+        )
+    );
 
     $template = $SMARTY->fetch('customer/customerconsents.html');
 

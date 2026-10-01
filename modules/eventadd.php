@@ -589,8 +589,12 @@ if (!empty($event['customerid'])) {
     } else {
         $nodes = $LMS->GetNodeLocations($event['customerid'], $address_id);
     }
-    $SMARTY->assign('addresses', $addresses);
-    $SMARTY->assign('nodes', $nodes);
+    $SMARTY->assign(
+        array(
+            'addresses' => $addresses,
+            'nodes' => $nodes,
+        )
+    );
 }
 
 if (isset($_GET['day'], $_GET['month'], $_GET['year'])) {

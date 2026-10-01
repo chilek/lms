@@ -281,13 +281,17 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $layout['pagetitle'] = trans('Network Edit: $a', $network['name']);
 
-$SMARTY->assign('vlanlist', $LMS->GetVlanList(array('orderby' => 'vlanid')));
-$SMARTY->assign('unlockedit', true);
-$SMARTY->assign('network', $network);
-$SMARTY->assign('networks', $networks);
-$SMARTY->assign('netlistsize', count($networks));
-$SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
-$SMARTY->assign('warning', $warning);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'vlanlist' => $LMS->GetVlanList(array('orderby' => 'vlanid')),
+        'unlockedit' => true,
+        'network' => $network,
+        'networks' => $networks,
+        'netlistsize' => count($networks),
+        'prefixlist' => $LMS->GetPrefixList(),
+        'hostlist' => $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'),
+        'warning' => $warning,
+        'error' => $error,
+    )
+);
 $SMARTY->display('net/netinfo.html');

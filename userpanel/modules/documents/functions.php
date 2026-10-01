@@ -498,11 +498,15 @@ function module_main()
         $SMARTY->assign($var, $val);
     }
 
-    $SMARTY->assign('documents', $documents);
-    $SMARTY->assign('documentid', $documentid);
-    $SMARTY->assign('sms_active', $sms_active);
-    $SMARTY->assign('scan_active', $scan_active);
-    $SMARTY->assign('op', $op);
+    $SMARTY->assign(
+        array(
+            'documents' => $documents,
+            'documentid' => $documentid,
+            'sms_active' => $sms_active,
+            'scan_active' => $scan_active,
+            'op' => $op,
+        )
+    );
     $SMARTY->display('module:documents.html');
 }
 

@@ -57,8 +57,12 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $SMARTY;
 
-        $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
-        $SMARTY->assign('mail_allowed_domains', ConfigHelper::getConfig('userpanel.mail_allowed_domains'));
+        $SMARTY->assign(
+            array(
+                'mail_limit' => ConfigHelper::getConfig('userpanel.mail_limit'),
+                'mail_allowed_domains' => ConfigHelper::getConfig('userpanel.mail_allowed_domains'),
+            )
+        );
 
         $SMARTY->display('module:accounts:setup.html');
     }
@@ -140,9 +144,13 @@ function module_mailadd()
     asort($mail_allowed_domains_array);
 
     if ($mailboxes['total'] < $mail_limit) {
-        $SMARTY->assign('mail_err', $_GET['mail_err']);
-        $SMARTY->assign('pass_err', $_GET['pass_err']);
-        $SMARTY->assign('mail_allowed_domains_array', $mail_allowed_domains_array);
+        $SMARTY->assign(
+            array(
+                'mail_err' => $_GET['mail_err'],
+                'pass_err' => $_GET['pass_err'],
+                'mail_allowed_domains_array' => $mail_allowed_domains_array,
+            )
+        );
         $SMARTY->display('module:mailboxnew.html');
     } else {
         header('Location: ?m=accounts');
@@ -240,8 +248,12 @@ function module_main()
     global $SMARTY,$SESSION;
 
     $mailboxes = GetCustomerMailBoxes($SESSION->id);
-    $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
-    $SMARTY->assign('mailboxes', $mailboxes);
+    $SMARTY->assign(
+        array(
+            'mail_limit' => ConfigHelper::getConfig('userpanel.mail_limit'),
+            'mailboxes' => $mailboxes,
+        )
+    );
     $SMARTY->display('module:accounts.html');
 }
 

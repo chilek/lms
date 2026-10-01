@@ -31,6 +31,10 @@ for ($i=1; $i<13; $i++) {
     $months[] = date('F', mktime(0, 0, 0, $i, 1, 1970));
 }
 
-$SMARTY->assign('months', $months);
-$SMARTY->assign('weekdays', $weekdays);
+$SMARTY->assign(
+    array(
+        'months' => $months,
+        'weekdays' => $weekdays,
+    )
+);
 $SMARTY->display('calendar.html');

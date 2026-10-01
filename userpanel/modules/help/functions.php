@@ -98,8 +98,12 @@ function module_main()
     $solution = get_solution($problem);
     $questions = get_questions($problem);
 
-    $SMARTY->assign('solution', $solution);
-    $SMARTY->assign('questions', $questions);
+    $SMARTY->assign(
+        array(
+            'solution' => $solution,
+            'questions' => $questions,
+        )
+    );
     $SMARTY->display('module:help.html');
 }
 
@@ -109,8 +113,12 @@ if (defined('USERPANEL_SETUPMODE')) {
         global $SMARTY,$LMS;
         $questions = fetch_questions(0);
         $treefile = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/help/templates/tree.html';
-        $SMARTY->assign('tree', $questions);
-        $SMARTY->assign('treefile', $treefile);
+        $SMARTY->assign(
+            array(
+                'tree' => $questions,
+                'treefile' => $treefile,
+            )
+        );
         $oldDefaultResourceType = $SMARTY->default_resource_type;
         $SMARTY->setDefaultResourceType('file');
         $SMARTY->display('module:help:setup.html');
@@ -141,8 +149,12 @@ if (defined('USERPANEL_SETUPMODE')) {
             $solution['id'] = $_POST['id'];
             $solution['title'] = $_POST['title'];
             $solution['body'] = $_POST['body'];
-            $SMARTY->assign('solution', $solution);
-            $SMARTY->assign('error', $error);
+            $SMARTY->assign(
+                array(
+                    'solution' => $solution,
+                    'error' => $error,
+                )
+            );
             $SMARTY->display('module:help:edit.html');
         }
     }
@@ -181,8 +193,12 @@ if (defined('USERPANEL_SETUPMODE')) {
             $solution['refid'] = $_POST['refid'];
             $solution['title'] = $_POST['title'];
             $solution['body'] = $_POST['body'];
-            $SMARTY->assign('solution', $solution);
-            $SMARTY->assign('error', $error);
+            $SMARTY->assign(
+                array(
+                    'solution' => $solution,
+                    'error' => $error,
+                )
+            );
             $SMARTY->display('module:help:add.html');
         }
     }

@@ -103,8 +103,12 @@ $SESSION->add_history_entry();
 $divisions = $LMS->GetDivisions(array('status' => 0));
 $users = getUsers($divisions, $numberplanadd['divisions'] ?? array());
 
-$SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('users', $users);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'numberplanadd' => $numberplanadd,
+        'divisions' => $divisions,
+        'users' => $users,
+        'error' => $error,
+    )
+);
 $SMARTY->display('numberplan/numberplanadd.html');
