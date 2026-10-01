@@ -482,18 +482,16 @@
 																					>{strip}
 																						{if ($item.flags & $smarty.const.TARIFF_FLAG_NET_ACCOUNT) > 0}
 																							{if $promotion_show_period_values}
-																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency) c=trans("net") d=implode(' / ', $item.periodvalues)}$a (default: $b $c; $d){/t}
 																							{else}
-																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency)}$a (default: $b){/t}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.netvalue, $item.currency) c=trans("net")}$a (default: $b $c){/t}
 																							{/if}
-																							{trans("(net)")}
 																						{else}
 																							{if $promotion_show_period_values}
-																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=trans("gross") d=implode(' / ', $item.periodvalues)}$a (default: $b $c; $d){/t}
 																							{else}
-																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency)}$a (default: $b){/t}
+																								{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=trans("gross")}$a (default: $b $c){/t}
 																							{/if}
-																							{trans("(gross)")}
 																						{/if}
 																				{/strip}</option>
 																				{/foreach}
