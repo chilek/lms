@@ -1259,6 +1259,7 @@ version 28-git (????-??-??):
   - enhancement: KSeF: purchase invoices by can be filtered by tags [chilan]
   - enhancement: KSeF: support bulk changes of 'posting' and 'settled' purchase invoices statuses [chilan]
   - enhancement: added main bank account property to divisions [chilan]
+  - enhancement: KSeF: export purchase invoices to transfer file which can be loaded in bank service [chilan]
 
 version 27.0 (2021-08-20):
 
