@@ -1744,13 +1744,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function getNetDevPorts($netdevid)
     {
         $netdevPorts = $this->db->GetCol(
-            'SELECT srcport
+            'SELECT
+                (CASE WHEN src = ? THEN srcport ELSE dstport END)
             FROM netlinks
             WHERE src = ?
                 AND srcport <> 0
                 OR dst = ?
                 AND dstport <> 0',
             [
+                $netdevid,
                 $netdevid,
                 $netdevid,
             ]
