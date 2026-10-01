@@ -6381,6 +6381,10 @@ $_LANG['<!ksef>Post document'] = 'Księguj dokument';
 $_LANG['<!ksef>Settle document'] = 'Rozlicz dokument';
 $_LANG['<!ksef>Unsettle document'] = 'Cofnij rozliczenie dokumentu';
 $_LANG['<!ksef>Document details'] = 'Szczegóły dokumentu';
+$_LANG['<!ksef>Transfer file'] = 'Plik z przelewami';
+$_LANG['Character encoding'] = 'Kodowanie znaków';
+$_LANG['<!ksef>invoice no. $a'] = 'faktura nr $a';
+$_LANG['transfers-$1.csv'] = 'przelewy-$1.csv';
 
 $_LANG['KSeF Purchase Invoices'] = 'Faktury zakupu KSeF';
 $_LANG['KSeF purchase invoice management'] = 'Zarządzanie fakturami zakupu KSeF';

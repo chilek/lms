@@ -26,14 +26,16 @@
 
 use \Lms\KSeF\KSeF;
 
-header('Content-type: application/json');
+define('TRANSFER_FILE_EOL', "\r\n");
 
 if (!isset($_POST['id'], $_POST['action'])) {
+    header('Content-type: application/json');
     die('[]');
 }
 
 $id = is_array($_POST['id']) ? Utils::filterIntegers($_POST['id']) : intval($_POST['id']);
 if (empty($id)) {
+    header('Content-type: application/json');
     die(json_encode([
         'error' => "'id' parameter validation error!",
     ]));
@@ -50,6 +52,7 @@ switch ($action) {
                 $id,
             ]
         )) {
+            header('Content-type: application/json');
             die(json_encode(['error' => 'Tag with given \'id\' does not exist!',]));
         }
         break;
@@ -67,6 +70,7 @@ switch ($action) {
                 Auth::GetCurrentUser(),
             ]
         ) != (is_array($id) ? count($id) : 1)) {
+            header('Content-type: application/json');
             die(json_encode(['error' => 'Permission denied!',]));
         }
         break;
@@ -258,11 +262,91 @@ switch ($action) {
         );
 
         break;
+    case 'transfer-file':
+        $invoices = $DB->GetAll(
+            'SELECT
+                i.*,
+                (CASE WHEN EXISTS (SELECT 1 FROM ksefinvoiceitems ii WHERE ii.ksef_invoice_id = i.id) THEN 1 ELSE 0 END) AS itemcount,
+                d.name AS division_name,
+                d.shortname AS division_shortname,
+                d.label AS division_label,
+                d.mainaccount AS division_mainaccount
+            FROM ksefinvoices i
+            JOIN divisions d ON d.id = i.division_id
+            WHERE i.id IN ?',
+            [
+                $id,
+            ]
+        );
+        if (empty($invoices)) {
+            $invoices = [];
+        }
+
+        $lines = [];
+        foreach ($invoices as $invoice) {
+            if ($invoice['gross_amount'] <= 0) {
+                continue;
+            }
+
+            $buyerBankAccount = preg_replace('/[^0-9a-z]/i', '', $invoice['division_mainaccount']);
+            $sellerBankAccount = preg_replace('/[^0-9a-z]/i', '', $invoice['bank_account']);
+
+            if (empty($sellerBankAccount)) {
+                continue;
+            }
+
+            $lines[] = [
+                110,
+                date('Ymd'),
+                round($invoice['gross_amount'] * 100),
+                substr($buyerBankAccount, 2, 8),
+                0,
+                '"' . $buyerBankAccount . '"',
+                '"' . $sellerBankAccount . '"',
+                '"' . str_replace('"', '""', $invoice['division_name']) . '"',
+                '"' . str_replace('"', '""', $invoice['seller_name']) . '"',
+                0,
+                substr($sellerBankAccount, 2, 8),
+                '"' . trans('<!ksef>invoice no. $a', $invoice['invoice_number']) . '"',
+                '""',
+                '""',
+                '"51"',
+                '"' . $invoice['id'] . '"',
+            ];
+        }
+
+        $encoding = $_POST['encoding'] ?? 'UTF-8';
+
+        $fileName = trans('transfers-$1.csv', date('Ymd-His'));
+
+        $output = iconv(
+            'UTF-8',
+            $encoding,
+            implode(
+                TRANSFER_FILE_EOL,
+                array_map(
+                    function ($line) {
+                        return implode(',', $line);
+                    },
+                    $lines
+                )
+            )
+        ) . TRANSFER_FILE_EOL;
+
+        header('Content-Type: text/csv; charset="' . $encoding . '"');
+        header('Content-Disposition: attachment; filename="' . $fileName . '" filename*=UTF-8\'\'' . rawurlencode($fileName));
+        header('Content-Length: ' . strlen($output));
+
+        die($output);
+
+        break;
     default:
         die(json_encode([
             'error' => 'Unsupported action!',
         ]));
 }
+
+header('Content-type: application/json');
 
 if (empty($res)) {
     die(json_encode([
