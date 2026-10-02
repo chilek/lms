@@ -43,10 +43,14 @@ $layout['pagetitle'] = trans('Investment projects list');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'invprojectlist' => $invprojectlist,
+        'divisions' => $LMS->GetDivisions(),
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('invproject/invprojectlist.html');

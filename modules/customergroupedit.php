@@ -84,12 +84,16 @@ if (isset($_POST['customergroup'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('customergroup', $customergroup);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('customers', $customers);
-$SMARTY->assign('customerscount', count($customers));
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('membersnetid', $membersnetid ?? 0);
-$SMARTY->assign('othersnetid', $othersnetid ?? 0);
+$SMARTY->assign(
+    array(
+        'customergroup' => $customergroup,
+        'error' => $error,
+        'customers' => $customers,
+        'customerscount' => count($customers),
+        'networks' => $LMS->GetNetworks(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'membersnetid' => $membersnetid ?? 0,
+        'othersnetid' => $othersnetid ?? 0,
+    )
+);
 $SMARTY->display('customer/customergroupedit.html');

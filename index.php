@@ -326,9 +326,13 @@ if ($AUTH->islogged) {
     $layout['division'] = $tabDivisionContext;
 
     if (!$api) {
-        $SMARTY->assign('division_context', $tabDivisionContext);
-        $SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
-        $SMARTY->assign('qs_properties', $qs_properties);
+        $SMARTY->assign(
+            array(
+                'division_context' => $tabDivisionContext,
+                'main_menu_sortable_order' => $SESSION->get_persistent_setting('main-menu-order'),
+                'qs_properties' => $qs_properties,
+            )
+        );
 
         $qs_fields = $SESSION->get_persistent_setting('qs-fields');
         if (empty($qs_fields)) {
@@ -493,7 +497,7 @@ if ($AUTH->islogged) {
                 }
             } else {
                 // persistent filter ajax management
-                if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
+                if (isset($_GET['persistent-filter'], $_GET['action'])) {
                     $filterId = $_POST['filter-id'] ?? null;
                     switch ($_GET['action']) {
                         case 'update':
@@ -564,8 +568,12 @@ if ($AUTH->islogged) {
         $layout['pagetitle'] = trans('Error!');
 
         if (!$api) {
-            $SMARTY->assign('layout', $layout);
-            $SMARTY->assign('server', $_SERVER);
+            $SMARTY->assign(
+                array(
+                    'layout' => $layout,
+                    'server' => $_SERVER,
+                )
+            );
             $SMARTY->display('notfound.html');
         }
     }
@@ -582,8 +590,12 @@ if ($AUTH->islogged) {
             'error' => empty($AUTH->error) ? trans('No authentication data?') : $AUTH->error,
         )));
     } else {
-        $SMARTY->assign('error', $AUTH->error);
-        $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
+        $SMARTY->assign(
+            array(
+                'error' => $AUTH->error,
+                'target' => '?'.$_SERVER['QUERY_STRING'],
+            )
+        );
         if ($AUTH->authCodeRequired()) {
             $SMARTY->display('twofactorauth/twofactorauthcode.html');
         } else {

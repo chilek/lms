@@ -74,11 +74,15 @@ if ($LMS->UserExists($id)) {
     }
     $layout['pagetitle'] = trans('Password Change');
 
-    $SMARTY->assign('passwd', $passwd);
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('target', '?m=chpasswd');
-    $SMARTY->assign('current_password_required', true);
-    $SMARTY->assign('net', $net);
+    $SMARTY->assign(
+        array(
+            'passwd' => $passwd,
+            'error' => $error,
+            'target' => '?m=chpasswd',
+            'current_password_required' => true,
+            'net' => $net,
+        )
+    );
     $SMARTY->display('user/userpasswd.html');
 } else {
     $SESSION->redirect('?m=' . $SESSION->get('lastmodule'));

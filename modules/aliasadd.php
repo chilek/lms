@@ -172,8 +172,12 @@ $SESSION->add_history_entry();
 $SESSION->save('aliasaccounts', empty($alias['accounts']) ? null : $alias['accounts']);
 $SESSION->save('aliasmailforwards', empty($alias['mailforwards']) ? null : $alias['mailforwards']);
 
-$SMARTY->assign('alias', $alias);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('accountlist', $accountlist);
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'alias' => $alias,
+        'error' => $error,
+        'accountlist' => $accountlist,
+        'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+    )
+);
 $SMARTY->display('alias/aliasadd.html');

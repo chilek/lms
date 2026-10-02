@@ -70,7 +70,11 @@ if ($list = $DB->GetAll(
     [$listdata['download'], $listdata['downloadunit']] = setunits($listdata['download']);
 }
 
-$SMARTY->assign('stats', $stats);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'stats' => $stats,
+        'listdata' => $listdata,
+    )
+);
 
 clearheader();

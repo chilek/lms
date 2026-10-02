@@ -187,8 +187,12 @@ $layout['pagetitle'] = trans('Message Template List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('type', $type);
-$SMARTY->assign('templates', $LMS->GetMessageTemplates($type));
-$SMARTY->assign('queues', $LMS->GetQueueList(array('only_accessible' => true, 'stats' => false)));
+$SMARTY->assign(
+    array(
+        'type' => $type,
+        'templates' => $LMS->GetMessageTemplates($type),
+        'queues' => $LMS->GetQueueList(array('only_accessible' => true, 'stats' => false)),
+    )
+);
 
 $SMARTY->display('message/messagetemplatelist.html');

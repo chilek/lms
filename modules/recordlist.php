@@ -70,11 +70,15 @@ $layout['pagetitle'] = trans('DNS Records List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('recordslist', $recordslist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('showaddedit', $showAddEdit);
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'recordslist' => $recordslist,
+        'listdata' => $listdata,
+        'showaddedit' => $showAddEdit,
+        'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+    )
+);
 $SMARTY->display('record/recordlist.html');

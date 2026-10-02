@@ -253,11 +253,11 @@ if (isset($_POST['document'])) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 
-            if (!isset($document['archive-reference']) && isset($engine['archive-reference-document'])) {
+            if (!isset($document['archive-reference'], $engine['archive-reference-document'])) {
                 $document['archive-reference'] = false;
             }
 
@@ -277,13 +277,17 @@ if (isset($_POST['document'])) {
             }
 
             // get plugin content
-            $SMARTY->assign('plugin_result', $result);
-            $SMARTY->assign('script_result', $script_result);
-            $SMARTY->assign('attachment_result', GenerateAttachmentHTML(
-                $template_dir,
-                $engine,
-                $document['attachments'] ?? array()
-            ));
+            $SMARTY->assign(
+                array(
+                    'plugin_result' => $result,
+                    'script_result' => $script_result,
+                    'attachment_result' => GenerateAttachmentHTML(
+                        $template_dir,
+                        $engine,
+                        $document['attachments'] ?? array()
+                    ),
+                )
+            );
 
             if (empty($error) && empty($warning)) {
                 // prepare some useful customer properties to use in document templates
@@ -877,8 +881,12 @@ if (isset($_POST['document'])) {
             }
         }
         // get plugin content
-        $SMARTY->assign('plugin_result', $result);
-        $SMARTY->assign('script_result', $script_result);
+        $SMARTY->assign(
+            array(
+                'plugin_result' => $result,
+                'script_result' => $script_result,
+            )
+        );
     }
 
     $default_document_type = ConfigHelper::getConfig(
@@ -989,8 +997,12 @@ if (isset($document['type'])) {
 } else {
     $numberplans = array();
 }
-$SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', $document['type'] ?? null);
+$SMARTY->assign(
+    array(
+        'numberplans' => $numberplans,
+        'planDocumentType' => $document['type'] ?? null,
+    )
+);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
@@ -1057,10 +1069,13 @@ foreach ($promotions as $promotionid => $promotion) {
         );
     }
 }
-$SMARTY->assign('promotionattachments', $promotionattachments);
-
-$SMARTY->assign('promotions', $promotions);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign(
+    array(
+        'promotionattachments' => $promotionattachments,
+        'promotions' => $promotions,
+        'tariffs' => $LMS->GetTariffs(),
+    )
+);
 $defaultTaxIds = $LMS->GetTaxes(null, null, true);
 if (is_array($defaultTaxIds)) {
     $defaultTaxId = reset($defaultTaxIds);
@@ -1068,8 +1083,12 @@ if (is_array($defaultTaxIds)) {
 } else {
     $defaultTaxId = 0;
 }
-$SMARTY->assign('defaultTaxId', $defaultTaxId);
-$SMARTY->assign('numberplanlist', $numberplans);
+$SMARTY->assign(
+    array(
+        'defaultTaxId' => $defaultTaxId,
+        'numberplanlist' => $numberplans,
+    )
+);
 // --- promotion support
 
 $hook_data = array(
@@ -1078,8 +1097,12 @@ $hook_data = array(
 $hook_data = $LMS->ExecuteHook('documentadd_init', $hook_data);
 $document = $hook_data['document'];
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('docrights', $rights);
-$SMARTY->assign('docengines', $docengines);
-$SMARTY->assign('document', $document);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'docrights' => $rights,
+        'docengines' => $docengines,
+        'document' => $document,
+    )
+);
 $SMARTY->display('document/documentadd.html');

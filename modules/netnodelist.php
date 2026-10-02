@@ -147,11 +147,15 @@ if ($api) {
 
     $SESSION->add_history_entry();
 
-    $SMARTY->assign('nlist', $nlist);
-    $SMARTY->assign('pagination', $pagination);
-    $SMARTY->assign('listdata', $listdata);
-    $SMARTY->assign('divisions', $LMS->GetDivisions());
-    $SMARTY->assign('NNprojects', $LMS->GetProjects());
+    $SMARTY->assign(
+        array(
+            'nlist' => $nlist,
+            'pagination' => $pagination,
+            'listdata' => $listdata,
+            'divisions' => $LMS->GetDivisions(),
+            'NNprojects' => $LMS->GetProjects(),
+        )
+    );
 
     $SMARTY->display('netnode/netnodelist.html');
 }

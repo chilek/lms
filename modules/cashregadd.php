@@ -102,9 +102,13 @@ $layout['pagetitle'] = trans('New Cash Registry');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('registry', $registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_RECEIPT,
-)));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'registry' => $registry,
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_RECEIPT,
+        )),
+        'error' => $error,
+    )
+);
 $SMARTY->display('cash/cashregadd.html');

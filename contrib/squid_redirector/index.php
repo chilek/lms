@@ -114,8 +114,12 @@ if (isset($_GET['readed'])) {
 } else {
     $customerinfo = $LMS->GetCustomer($customerid);
     $layout['oldurl'] = $_GET['oldurl'];
-    $SMARTY->assign('customerinfo', $customerinfo);
-    $SMARTY->assign('nodeinfo', $nodeinfo);
-    $SMARTY->assign('layout', $layout);
+    $SMARTY->assign(
+        array(
+            'customerinfo' => $customerinfo,
+            'nodeinfo' => $nodeinfo,
+            'layout' => $layout,
+        )
+    );
     $SMARTY->display('message.html');
 }

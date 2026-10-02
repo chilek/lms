@@ -40,8 +40,12 @@ if ($query = $_POST['query']) {
 
     if (sizeof($DB->GetErrors())) {
         $error['query'] = trans('Query is not correct!');
-        $SMARTY->assign('error', $error);
-        $SMARTY->assign('query', $query);
+        $SMARTY->assign(
+            array(
+                'error' => $error,
+                'query' => $query,
+            )
+        );
         $SMARTY->display('sql.html');
         die;
     }
@@ -95,14 +99,18 @@ if ($query = $_POST['query']) {
         $nrows = $i;
     }
 
-    $SMARTY->assign('start', $start);
-    $SMARTY->assign('page', $page);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('nrows', $nrows);
-    $SMARTY->assign('ncols', $cols+1);
-    $SMARTY->assign('colnames', $colnames);
-    $SMARTY->assign('executetime', $duration);
-    $SMARTY->assign('result', $result);
+    $SMARTY->assign(
+        array(
+            'start' => $start,
+            'page' => $page,
+            'pagelimit' => $pagelimit,
+            'nrows' => $nrows,
+            'ncols' => $cols+1,
+            'colnames' => $colnames,
+            'executetime' => $duration,
+            'result' => $result,
+        )
+    );
     $layout['pagetitle'] = trans('SQL - Query Results');
 }
 

@@ -41,8 +41,12 @@ if (!$error) {
     $SESSION->redirect('?m=' . $SESSION->get('lastmodule') . '&id=' . $_GET['id']);
 } else {
     $layout['pagetitle'] = trans('Info Network: $a', $network['name']);
-    $SMARTY->assign('network', $network);
-    $SMARTY->assign('networks', $LMS->GetNetworks());
-    $SMARTY->assign('error', $error);
+    $SMARTY->assign(
+        array(
+            'network' => $network,
+            'networks' => $LMS->GetNetworks(),
+            'error' => $error,
+        )
+    );
     $SMARTY->display('net/netinfo.html');
 }

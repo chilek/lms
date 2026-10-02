@@ -37,7 +37,7 @@ if (isset($_GET['action'])) {
             }
             break;
         case 'get-property-values':
-            if (isset($_GET['resource-type']) && isset($_GET['property-name'])) {
+            if (isset($_GET['resource-type'], $_GET['property-name'])) {
                 $values = $SYSLOG->GetResourcePropertyValues($_GET['resource-type'], $_GET['property-name']);
                 if (!empty($values)) {
                     foreach ($values as $value) {

@@ -815,9 +815,13 @@ if ($newinvoice = $SESSION->get('invoiceprint', true)) {
     $SESSION->remove('invoiceprint', true);
 }
 
-$SMARTY->assign('covenantlist', $covenantlist);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign(
+    array(
+        'covenantlist' => $covenantlist,
+        'error' => $error,
+        'tariffs' => $LMS->GetTariffs(),
+    )
+);
 
 $args = array(
     'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
@@ -835,9 +839,12 @@ $numberplanlist = $LMS->GetNumberPlans($args);
 if (!$numberplanlist) {
     $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
 }
-$SMARTY->assign('numberplanlist', $numberplanlist);
-
-$SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign(
+    array(
+        'numberplanlist' => $numberplanlist,
+        'taxeslist' => $taxeslist,
+    )
+);
 
 if (!empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
@@ -862,10 +869,14 @@ if (isset($customer)) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
+$SMARTY->assign(
+    array(
+        'customer' => $customer,
+        'contents' => $contents,
+        'invoice' => $invoice,
+        'planDocumentType' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+    )
+);
 
 $total_value = 0;
 if (!empty($contents)) {

@@ -32,6 +32,10 @@ $traffic = Traffic(
     $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download'
 );
 
-$SMARTY->assign('download', $traffic['download']);
-$SMARTY->assign('upload', $traffic['upload']);
-$SMARTY->assign('bars', true);
+$SMARTY->assign(
+    array(
+        'download' => $traffic['download'],
+        'upload' => $traffic['upload'],
+        'bars' => true,
+    )
+);
