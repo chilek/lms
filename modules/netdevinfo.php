@@ -168,7 +168,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
             WHERE n.id <> ' . intval($id)
                     . ' ORDER BY name'
                 )
-,
+        ,
         )
     );
 

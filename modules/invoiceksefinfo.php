@@ -103,7 +103,7 @@ if (!empty($_GET['purchase'])) {
                     'date' => $doc['cdate'],
                     'hash' => $doc['hash'],
                 ])
-,
+        ,
             'invoice' => $doc,
             'invoice_file_exists' => KSeF::invoiceFileExists($doc['div_buyer'], $doc['ksefnumber']),
         )

@@ -60,7 +60,7 @@ $SMARTY->assign(
                     0,
                 ]
             )
-,
+    ,
         'userinfo' => $userinfo,
         'balancelist' => $balance,
         'aggregate_documents' => $aggregate_documents,
