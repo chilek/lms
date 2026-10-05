@@ -553,10 +553,20 @@ class Session
                                 $authinfo['lastlogindate'] = 0;
                                 $authinfo['lastloginip'] = '';
                             }
+                            if (!isset($authinfo['failedlogindate'])) {
+                                $authinfo['failedlogindate'] = 0;
+                            }
+
+                            if (time() - $authinfo['failedlogindate'] < 600) {
+                                if (isset($authinfo['enabled']) && $authinfo['enabled'] > 0) {
+                                    $authinfo['enabled'] -= 1;
+                                }
+                            } else {
+                                $authinfo['enabled'] = 2;
+                            }
 
                             $authinfo['failedlogindate'] = time();
                             $authinfo['failedloginip'] = $this->ip;
-                            $authinfo['enabled'] = 2;
 
                             $this->SetCustomerAuthInfo($authinfo);
 
@@ -567,29 +577,6 @@ class Session
                     $this->islogged = false;
 
                     writesyslog("Bad password for customer ID: " . $this->login, LOG_WARNING);
-
-                    if ($authdata != null && $authdata['passwd'] == null) {
-                        $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
-                        if ($authinfo == null) {
-                            $authinfo['lastlogindate'] = 0;
-                            $authinfo['lastloginip'] = '';
-                            $authinfo['failedlogindate'] = 0;
-                        }
-
-                        if (time() - $authinfo['failedlogindate'] < 600) {
-                            if (isset($authinfo['enabled']) && $authinfo['enabled'] > 0) {
-                                $authinfo['enabled'] -= 1;
-                            }
-                        } else {
-                            $authinfo['enabled'] = 2;
-                        }
-
-                        $authinfo['id'] = $authdata['id'];
-                        $authinfo['failedlogindate'] = time();
-                        $authinfo['failedloginip'] = $this->ip;
-
-                        $this->SetCustomerAuthInfo($authinfo);
-                    }
 
                     if (empty($this->error)) {
                         $this->error = trans('Access denied!');
