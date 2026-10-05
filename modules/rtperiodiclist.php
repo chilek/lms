@@ -26,7 +26,7 @@ $params = [
 ];
 
 if (!empty($filtered_queues)) {
-	$params['ids'] = $filtered_queues;
+    $params['ids'] = $filtered_queues;
 };
 
 $rows = $LMS->GetQueueContents($params);
@@ -79,7 +79,7 @@ $EVENT_PERIODICITY = array_filter($EVENT_PERIODICITY, function ($key) use ($even
 }, ARRAY_FILTER_USE_KEY);
 
 $SMARTY->assign(array(
-    'queuelist'		=> $queuelist,
+    'queuelist'     => $queuelist,
     'events'            => $events,
     'EVENT_PERIODICITY' => $EVENT_PERIODICITY,
     'filter'         => [ 'queueids' => $filtered_queues ],

@@ -137,10 +137,10 @@ try {
             $last_opened_ticket_event = getLastTicketEvent($ticket['ticketid']) ?? [];
             $timestamp = ($last_opened_ticket_event['date'] ?? $ticket['createtime']) + ($last_opened_ticket_event['begintime'] ?? 0);
 
-	    // Dane do nowego zdarzenia w zależności od tego czy ticket ma zaplanowane otwarte zdarzenie
-	    // (jeśli nie ma planuje na następny dzień)
+        // Dane do nowego zdarzenia w zależności od tego czy ticket ma zaplanowane otwarte zdarzenie
+        // (jeśli nie ma planuje na następny dzień)
             if ($last_opened_ticket_event) {
-	        $new_event_details = CalculateNextOccurrenceInFuture(
+                $new_event_details = CalculateNextOccurrenceInFuture(
                     $last_opened_ticket_event['date'] ?? $ticket['createtime'],
                     $last_opened_ticket_event['begintime'] ?? 0,
                     $last_opened_ticket_event['endtime'] ?? 0,
@@ -163,7 +163,7 @@ try {
                 'enddate' => $new_event_details['enddate'] ?? 0,
                 'title' => $ticket['messages'][0]['subject'] ?? null,
                 'description' => $last_opened_ticket_event['description'] ?? ($ticket['messages'][0]['body'] ?? null),
-				'note' => $last_opened_ticket_event['note'] ?? null,
+                'note' => $last_opened_ticket_event['note'] ?? null,
                 'userlist' => isset($ticket['owner']) ? [$ticket['owner']] : null,
                 'custid' => $ticket['customerid'] ?? null,
                 'address_id' => $ticket['address_id'] ?? null,
@@ -176,7 +176,7 @@ try {
 
             if ($debug) {
                 echo print_r($params, true) . PHP_EOL;
-	    }
+            }
             $LMS->EventAdd($params);
             // aktualizacja "ostatniego eventu"
             $last_opened_ticket_event = array_merge($last_opened_ticket_event, $new_event_details);
