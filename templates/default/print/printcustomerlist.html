@@ -45,6 +45,11 @@
 			{trans("Balance")}
 		</TD>
 		{/if}
+		{if !empty($listdata.showassignments)}
+		<td class="text-right">
+			{trans("Assignment names")}
+		</td>
+		{/if}
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach $customerlist as $customer}
@@ -105,6 +110,11 @@
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				<td class="text-right nobr">
 					{$customer.balance|money_format}
+				</td>
+				{/if}
+				{if !empty($listdata.showassignments)}
+				<td class="text-right">
+					{$customer['assignmentsnames']}
 				</td>
 				{/if}
 			</tr>
