@@ -38,7 +38,7 @@ $(function() {
             }
 
             const ddt = new Date($(this).val().replaceAll('/', '-') + 'T00:00:00');
-            ddt.setDate(ddt.getDate() + deadline);
+            ddt.setDate(ddt.getDate() + parseInt(deadline));
 
             deadline_date_elem.val(sprintf("%04d/%02d/%02d", ddt.getFullYear(), ddt.getMonth() + 1, ddt.getDate()));
         });
