@@ -379,6 +379,7 @@ CREATE TABLE customerextids (
         CONSTRAINT customerextids_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT customerextids_customerid_extid_serviceproviderid_ukey UNIQUE (customerid, extid, serviceproviderid)
 );
+CREATE INDEX customerextids_extid_serviceproviderid_idx ON customerextids (extid, serviceproviderid);
 
 /* --------------------------------------------------------
   Structure of table "customernotes" (customernotes)
@@ -2783,6 +2784,7 @@ CREATE TABLE customercontacts (
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
 CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
+CREATE INDEX customercontacts_contact_type_idx ON customercontacts (contact, type);
 
 /* ---------------------------------------------------
  Structure of table "customercontactproperties"
@@ -3381,6 +3383,8 @@ CREATE TABLE up_customers (
 	enabled smallint 	    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX up_customers_customerid_idx ON up_customers (customerid);
+CREATE INDEX up_customers_failedlogindate_idx ON up_customers (failedlogindate);
 
 /* ---------------------------------------------------
  Structure of table "up_help" (Userpanel)
@@ -4743,6 +4747,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
 
 COMMIT;

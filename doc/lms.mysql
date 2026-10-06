@@ -562,7 +562,8 @@ CREATE TABLE customerextids (
         FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT customerextids_serviceproviderid_fkey
         FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE KEY customerextids_customerid_extid_serviceproviderid_ukey (customerid, extid, serviceproviderid)
+    UNIQUE KEY customerextids_customerid_extid_serviceproviderid_ukey (customerid, extid, serviceproviderid),
+    KEY customerextids_extid_serviceproviderid_idx (extid, serviceproviderid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2883,6 +2884,7 @@ CREATE TABLE customercontacts (
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX contact (contact),
+	INDEX customercontacts_contact_type_idx (contact, type),
 	CONSTRAINT customercontacts_customerid_fkey
 		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -3470,6 +3472,8 @@ CREATE TABLE up_customers (
 	failedloginip varchar(40) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
+	KEY up_customers_customerid_idx (customerid),
+	KEY up_customers_failedlogindate_idx (failedlogindate),
 	CONSTRAINT up_customers_customerid_fkey
 	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -4704,4 +4708,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
