@@ -37,27 +37,14 @@ if (isset($_GET['type'])) {
     }
 }
 
-switch ($containerType) {
-    case 'netdevid':
-    case 'netdevmodelid':
-    case 'netnodeid':
-        if (!ConfigHelper::checkPrivilege('network_management')) {
-            if (!empty($containerType)) {
-                access_denied();
-            } else {
-                return;
-            }
-        }
-        break;
-    case 'messageid':
-        if (!ConfigHelper::checkPrivilege('messaging')) {
-            if (!empty($containerType)) {
-                access_denied();
-            } else {
-                return;
-            }
-        }
-        break;
+$containerType = $containerType ?? null;
+$containerId = $containerId ?? null;
+
+if ((string) $containerType !== '') {
+    if (!array_key_exists($containerType, FILE_CONTAINER_TYPE_PRIVILEGES)
+        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])) {
+        access_denied();
+    }
 }
 
 if (isset($_GET['attachmentaction'])) {
@@ -87,11 +74,12 @@ if (isset($_GET['attachmentaction'])) {
             $LMS->DeleteFileContainer($containerId);
             break;
         case 'viewfile':
-            if (!$LMS->checkFileContainerPermission($containerType, $containerId, intval($_GET['fileid']))) {
+            $fileId = intval($_GET['fileid']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId, $fileId)) {
                 die;
             }
 
-            $file = $LMS->GetFile($_GET['fileid']);
+            $file = $LMS->GetFile($fileId);
             if (empty($file)) {
                 die;
             }
@@ -177,7 +165,12 @@ if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
 }
 
 if (isset($_POST['upload'])) {
-    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'];
+    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'] ?? null;
+    if (!is_string($uploaded_attachmenttype)
+        || !array_key_exists($uploaded_attachmenttype, FILE_CONTAINER_TYPE_PRIVILEGES)
+        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$uploaded_attachmenttype])) {
+        access_denied();
+    }
     $files = 'files-' . $uploaded_attachmenttype;
     $result = handle_file_uploads($files, $error);
     extract($result);
