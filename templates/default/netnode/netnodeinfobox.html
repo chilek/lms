@@ -1,14 +1,7 @@
 <!--// $Id$ //-->
-<style>
 
-	#netnodeinfo-services {
-		margin-block-start: 0;
-		margin-block-end: 0;
-		padding-inline-start: 0;
-		list-style-type: none;
-	}
+{css}
 
-</style>
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -307,17 +300,87 @@
 										{/if}
 									</td>
 								</tr>
-								<tr>
-									<td>
-										{icon name="phone"}
-									</td>
-									<td>
-										<strong>{trans('Administrative contact')}</strong>
-									</td>
-									<td>
-										{$nodeinfo.admcontact}
-									</td>
-								</tr>
+								{$contact_name_limit = 40}
+								{$phone_contacts = []}
+								{$email_contacts = []}
+								{foreach $nodeinfo.contacts as $contact}
+									{if $contact.type & $smarty.const.CONTACT_EMAIL}
+										{$email_contacts[] = $contact}
+									{else}
+										{$phone_contacts[] = $contact}
+									{/if}
+								{/foreach}
+								{if !empty($phone_contacts)}
+									<tr>
+										<td></td>
+										<td colspan="2" class="netnode-info-contact">
+											<fieldset style="width: auto;">
+												<legend class="bold nobr">
+													{icon name="phone" label="Contact phones"}
+												</legend>
+												<table>
+													{foreach $phone_contacts as $contact}
+														<tr>
+															<td class="netnode-info-contact">
+																<div class="nobr">
+																	{capture assign=contact_content}
+																		{strip}
+																			<a class="phone_number" href="tel:{$contact.contact|escape}">{$contact.contact|escape}</a>
+																			{Utils::createCallPhoneUrl($contact.contact)}
+																		{/strip}
+																	{/capture}
+																	{contact type=$contact.type content=$contact_content text=$contact.contact
+																		clipboard_button=true qrcode_button=true}
+																	{if $contact.name}
+																		({$contact.name|trunescape:$contact_name_limit})
+																		{if $contact.name|mb_strlen > $contact_name_limit}
+																			{hint text=$contact.name}
+																		{/if}
+																	{/if}
+																</div>
+															</td>
+														</tr>
+													{/foreach}
+												</table>
+											</fieldset>
+										</td>
+									</tr>
+								{/if}
+								{if !empty($email_contacts)}
+									<tr>
+										<td></td>
+										<td colspan="2" class="netnode-info-contact">
+											<fieldset style="width: auto;">
+												<legend class="bold nobr">
+													{icon name="mail" label="Email addresses"}
+												</legend>
+												<table>
+													{foreach $email_contacts as $contact}
+														<tr>
+															<td class="netnode-info-contact">
+																<div class="nobr">
+																	{capture assign=contact_content}
+																		{strip}
+																			<a href="mailto:{$contact.contact|escape}">{$contact.contact|escape}</a>
+																		{/strip}
+																	{/capture}
+																	{contact type=$contact.type content=$contact_content text=$contact.contact
+																		clipboard_button=true qrcode_button=true}
+																	{if $contact.name}
+																		({$contact.name|trunescape:$contact_name_limit})
+																		{if $contact.name|mb_strlen > $contact_name_limit}
+																			{hint text=$contact.name}
+																		{/if}
+																	{/if}
+																</div>
+															</td>
+														</tr>
+													{/foreach}
+												</table>
+											</fieldset>
+										</td>
+									</tr>
+								{/if}
 							</table>
 						</td>
 					</tr>
