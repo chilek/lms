@@ -1480,7 +1480,6 @@ CREATE TABLE netnodes (
 	miar smallint DEFAULT 0,
 	createtime bigint,
 	lastinspectiontime bigint DEFAULT NULL,
-	admcontact text DEFAULT NULL,
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
@@ -1492,6 +1491,24 @@ CREATE TABLE netnodes (
 	services varchar(100) NOT NULL DEFAULT '',
 	PRIMARY KEY(id)
 );
+
+/* --------------------------------------------------------
+Structure of table "netnodecontacts"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS netnodecontacts_id_seq;
+CREATE SEQUENCE netnodecontacts_id_seq;
+DROP TABLE IF EXISTS netnodecontacts CASCADE;
+CREATE TABLE netnodecontacts (
+    id integer DEFAULT nextval('netnodecontacts_id_seq'::text) NOT NULL,
+    netnodeid integer NOT NULL
+        CONSTRAINT netnodecontacts_netnodeid_fkey REFERENCES netnodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    contact varchar(255) NOT NULL DEFAULT '',
+    name text NOT NULL,
+    type integer DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX netnodecontacts_netnodeid_idx ON netnodecontacts (netnodeid);
+CREATE INDEX netnodecontacts_contact_idx ON netnodecontacts (contact);
 
 /* --------------------------------------------------------
 Structure of table "vlans"
@@ -4747,6 +4764,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100700');
 
 COMMIT;
