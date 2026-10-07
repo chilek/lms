@@ -2162,6 +2162,7 @@ $_LANG['Serial number:'] = 'Numer seryjny:';
 $_LANG['Serial number'] = 'Numer seryjny';
 $_LANG['Service:'] = 'Usługa:';
 $_LANG['Services:'] = 'Usługi:';
+$_LANG['Services'] = 'Usługi';
 $_LANG['Settlement date:'] = 'Data wystawienia:';
 $_LANG['shell'] = 'powłoka';
 $_LANG['Show closed'] = 'Pokaż zamknięte';
