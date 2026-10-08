@@ -28,7 +28,16 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
 {
     public function checkFileContainerPermission($containerType, $containerId, $fileId = null)
     {
-        if (empty($fileId)) {
+        if (!isset(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])) {
+            return false;
+        }
+
+        $containerId = intval($containerId);
+        if ($containerId <= 0) {
+            return false;
+        }
+
+        if ($fileId === null) {
             $result = $this->db->GetOne(
                 'SELECT
                     c.id
@@ -41,6 +50,11 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
                 ]
             );
         } else {
+            $fileId = intval($fileId);
+            if ($fileId <= 0) {
+                return false;
+            }
+
             $result = $this->db->GetOne(
                 'SELECT
                     f.id
@@ -126,8 +140,8 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
                 ];
 
                 if (strpos($containerFile['contenttype'], 'image') === 0) {
-                    $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&fileid='
-                        . $containerFile['fileid'] . '&api=1';
+                    $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&id='
+                        . $containerFile['containerid'] . '&fileid=' . $containerFile['fileid'] . '&api=1';
                     $result[$containerFile[$type]][$containerFile['containerid']]['images'][] = [
                         'image' => $url,
                         'thumb' => $url . '&thumbnail=200',
@@ -172,8 +186,8 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
                     $file['size'] = filesize($filepath);
 
                     if (strpos($file['contenttype'], 'image') === 0) {
-                        $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&fileid='
-                            . $file['id'] . '&api=1';
+                        $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&id='
+                            . $container['id'] . '&fileid=' . $file['id'] . '&api=1';
                         $container['images'][] = array(
                             'image' => $url,
                             'thumb' => $url . '&thumbnail=200',
@@ -261,8 +275,8 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
      */
     public function AddFileContainer(array $params)
     {
-        if (!isset($params['type']) || !preg_match('/^[a-z0-9_]+$/', $params['type'])
-            || !isset($params['resourceid']) || !preg_match('/^[0-9]+$/', $params['resourceid'])) {
+        if (!isset($params['type'],  $params['resourceid'], FILE_CONTAINER_TYPE_PRIVILEGES[$params['type']])
+            || !preg_match('/^[0-9]+$/', $params['resourceid'])) {
             return null;
         }
 
