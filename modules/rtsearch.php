@@ -254,7 +254,7 @@ function RTSearch($search, $order = 'createtime,desc')
         . ($sqlord !='' ? $sqlord . ' ' . $direction : '')
         . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
         . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''));
-
+/*
     if ($result) {
         foreach ($result as &$ticket) {
             if (!isset($ticket['custid']) || !$ticket['custid']) {
@@ -273,7 +273,7 @@ function RTSearch($search, $order = 'createtime,desc')
         }
         unset($ticket);
     }
-
+*/
     $result['order'] = $order;
     $result['direction'] = $direction;
 
