@@ -28,7 +28,7 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
 {
     public function checkFileContainerPermission($containerType, $containerId, $fileId = null)
     {
-        if (!in_array($containerType, array_keys(FILE_CONTAINER_TYPE_PRIVILEGES), true)) {
+        if (!isset(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])) {
             return false;
         }
 
