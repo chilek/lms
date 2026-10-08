@@ -275,9 +275,8 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
      */
     public function AddFileContainer(array $params)
     {
-        if (!isset($params['type']) || !is_string($params['type'])
-            || !array_key_exists($params['type'], FILE_CONTAINER_TYPE_PRIVILEGES)
-            || !isset($params['resourceid']) || !preg_match('/^[0-9]+$/', $params['resourceid'])) {
+        if (!isset($params['type'],  $params['resourceid'], FILE_CONTAINER_TYPE_PRIVILEGES[$params['type']])
+            || !preg_match('/^[0-9]+$/', $params['resourceid'])) {
             return null;
         }
 
