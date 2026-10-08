@@ -40,11 +40,10 @@ if (isset($_GET['type'])) {
 $containerType = $containerType ?? null;
 $containerId = $containerId ?? null;
 
-if ((string) $containerType !== '') {
-    if (!array_key_exists($containerType, FILE_CONTAINER_TYPE_PRIVILEGES)
-        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])) {
-        access_denied();
-    }
+if ((string) $containerType !== ''
+    && (!isset(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])
+        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType]))) {
+    access_denied();
 }
 
 if (isset($_GET['attachmentaction'])) {
@@ -167,7 +166,7 @@ if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
 if (isset($_POST['upload'])) {
     $uploaded_attachmenttype = $_POST['upload']['attachmenttype'] ?? null;
     if (!is_string($uploaded_attachmenttype)
-        || !array_key_exists($uploaded_attachmenttype, FILE_CONTAINER_TYPE_PRIVILEGES)
+        || !isset(FILE_CONTAINER_TYPE_PRIVILEGES[$uploaded_attachmenttype])
         || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$uploaded_attachmenttype])) {
         access_denied();
     }
