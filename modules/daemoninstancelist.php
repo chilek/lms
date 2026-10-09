@@ -50,7 +50,11 @@ $instancelist = GetInstanceList($hostid);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('instancelist', $instancelist);
-$SMARTY->assign('hostid', $hostid);
-$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'instancelist' => $instancelist,
+        'hostid' => $hostid,
+        'hosts' => $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'),
+    )
+);
 $SMARTY->display('daemon/daemoninstancelist.html');

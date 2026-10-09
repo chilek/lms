@@ -66,9 +66,13 @@ if (isset($_POST['tarifftag'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('tarifftag', $tarifftag);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('tariffscount', $tariffscount);
-$SMARTY->assign('tarifftags', $LMS->TarifftagGetAll());
+$SMARTY->assign(
+    array(
+        'tarifftag' => $tarifftag,
+        'error' => $error,
+        'tariffs' => $tariffs,
+        'tariffscount' => $tariffscount,
+        'tarifftags' => $LMS->TarifftagGetAll(),
+    )
+);
 $SMARTY->display('tariff/tarifftagedit.html');

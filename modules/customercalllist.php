@@ -197,8 +197,12 @@ $SMARTY->assign('users', $LMS->getUserNames());
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-$SMARTY->assign('uid', $uid);
-$SMARTY->assign('cid', $cid);
+$SMARTY->assign(
+    array(
+        'uid' => $uid,
+        'cid' => $cid,
+    )
+);
 
 if ($cid) {
     $SESSION->save('customer_call_list_customerid', $cid);
@@ -236,9 +240,12 @@ if (!empty($dateto)) {
     $SESSION->remove('customer_call_list_dateto');
 }
 
-$SMARTY->assign('assigned', $assigned);
-
-$SMARTY->assign('customercalls', $customercalls);
+$SMARTY->assign(
+    array(
+        'assigned' => $assigned,
+        'customercalls' => $customercalls,
+    )
+);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

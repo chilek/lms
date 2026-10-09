@@ -81,7 +81,11 @@ $layout['pagetitle'] = trans('New Option for Instance: $a/$b', $instance['name']
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('instanceid', $id);
-$SMARTY->assign('config', $config);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'instanceid' => $id,
+        'config' => $config,
+    )
+);
 $SMARTY->display('daemon/daemonconfigadd.html');

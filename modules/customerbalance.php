@@ -41,9 +41,13 @@ if (isset($_GET['aggregate_documents'])) {
     $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
 }
 
-$SMARTY->assign('aggregate_documents', $aggregate_documents);
-$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, 'ASC', $aggregate_documents));
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('customername', $customername);
-$SMARTY->assign('objectid', $id);
+$SMARTY->assign(
+    array(
+        'aggregate_documents' => $aggregate_documents,
+        'balancelist' => $LMS->GetCustomerBalanceList($_GET['id'], null, 'ASC', $aggregate_documents),
+        'taxeslist' => $LMS->GetTaxes(),
+        'customername' => $customername,
+        'objectid' => $id,
+    )
+);
 $SMARTY->display('customer/customerbalance.html');

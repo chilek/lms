@@ -93,6 +93,10 @@ $layout['pagetitle'] = trans('Option Edit: $a/$b/$c', $config['var'], $instance[
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('config', $config);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'config' => $config,
+    )
+);
 $SMARTY->display('daemon/daemonconfigedit.html');

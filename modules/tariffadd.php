@@ -320,13 +320,17 @@ if (isset($_POST['tariff'])) {
 
 $layout['pagetitle'] = trans('New Subscription');
 
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('tariff', $tariff);
-$SMARTY->assign('tarifftags', $LMS->TarifftagGetAll());
-$SMARTY->assign('voip_tariffs', $LMS->getVoipTariffs());
-$SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_INVOICE,
-    'next' => false,
-)));
+$SMARTY->assign(
+    array(
+        'taxeslist' => $LMS->GetTaxes(),
+        'tariff' => $tariff,
+        'tarifftags' => $LMS->TarifftagGetAll(),
+        'voip_tariffs' => $LMS->getVoipTariffs(),
+        'voip_tariffrules' => $LMS->getVoipTariffRuleGroups(),
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_INVOICE,
+            'next' => false,
+        )),
+    )
+);
 $SMARTY->display('tariff/tariffadd.html');

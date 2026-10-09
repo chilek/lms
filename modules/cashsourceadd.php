@@ -77,6 +77,10 @@ $layout['pagetitle'] = trans('Cash Import Source New');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('sourceadd', $sourceadd);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'sourceadd' => $sourceadd,
+    )
+);
 $SMARTY->display('cash/cashsourceadd.html');

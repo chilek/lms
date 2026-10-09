@@ -197,8 +197,12 @@ function module_main()
     }
 
     if (isset($traffic)) {
-        $SMARTY->assign('download', $traffic['download']);
-        $SMARTY->assign('upload', $traffic['upload']);
+        $SMARTY->assign(
+            array(
+                'download' => $traffic['download'],
+                'upload' => $traffic['upload'],
+            )
+        );
     }
 
     $layout['pagetitle'] = trans('Network Statistics');

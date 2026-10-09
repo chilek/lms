@@ -134,6 +134,10 @@ if ($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR']
 
 $LMS->executeHook('customer_before_display', array('smarty' => $SMARTY, 'customerid' => $customerid));
 
-$SMARTY->assign('customerinfo', $customerinfo);
-$SMARTY->assign('balance', $balance);
+$SMARTY->assign(
+    array(
+        'customerinfo' => $customerinfo,
+        'balance' => $balance,
+    )
+);
 $SMARTY->display('customer.html');

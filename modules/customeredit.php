@@ -610,8 +610,12 @@ $customerinfo = $hook_data['customerinfo'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign($LMS->getCustomerPinRequirements());
-$SMARTY->assign('customerinfo', $customerinfo);
-$SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
-$SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));
-$SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
+$SMARTY->assign(
+    array(
+        'customerinfo' => $customerinfo,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+        'recover' => ($action == 'recover' ? 1 : 0),
+        'customeredit_sortable_order' => $SESSION->get_persistent_setting('customeredit-sortable-order'),
+    )
+);
 $SMARTY->display('customer/customeredit.html');

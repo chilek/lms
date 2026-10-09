@@ -184,7 +184,11 @@ unset($usersList['total']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('division', $division);
-$SMARTY->assign('userslist', $usersList);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'division' => $division,
+        'userslist' => $usersList,
+        'error' => $error,
+    )
+);
 $SMARTY->display('division/divisionadd.html');

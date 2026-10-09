@@ -105,8 +105,12 @@ if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['custome
 }
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
-    $SMARTY->assign('resourceid', $customerid);
+    $SMARTY->assign(
+        array(
+            'resourcetype' => SYSLOG::RES_CUST,
+            'resourceid' => $customerid,
+        )
+    );
 }
 
 if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {

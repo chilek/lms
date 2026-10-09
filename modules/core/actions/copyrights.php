@@ -116,5 +116,9 @@ $others = array(
             ),
         );
                 
-$SMARTY->assign('authors', $authors);
-$SMARTY->assign('others', $others);
+$SMARTY->assign(
+    array(
+        'authors' => $authors,
+        'others' => $others,
+    )
+);

@@ -128,13 +128,17 @@ if (count($search) || isset($_GET['s'])) {
 
         $layout['pagetitle'] = trans('Domain Search Results');
 
-        $SMARTY->assign('listdata', $listdata);
-        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-        $SMARTY->assign('pagelimit', $pagelimit);
-        $SMARTY->assign('page', $page);
-        $SMARTY->assign('start', $start);
-        $SMARTY->assign('search', $search);
-        $SMARTY->assign('domainlist', $domainlist);
+        $SMARTY->assign(
+            array(
+                'listdata' => $listdata,
+                'customerlist' => $LMS->GetAllCustomerNames(),
+                'pagelimit' => $pagelimit,
+                'page' => $page,
+                'start' => $start,
+                'search' => $search,
+                'domainlist' => $domainlist,
+            )
+        );
         $SMARTY->display('domain/domainlist.html');
         $SESSION->close();
         die;
@@ -143,6 +147,10 @@ if (count($search) || isset($_GET['s'])) {
 
 $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', $search ?? $SESSION->get('domainsearch'));
+$SMARTY->assign(
+    array(
+        'customerlist' => $LMS->GetAllCustomerNames(),
+        'search' => $search ?? $SESSION->get('domainsearch'),
+    )
+);
 $SMARTY->display('account/accountsearch.html');

@@ -200,11 +200,15 @@ if (!empty($netnodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netnode', $netnodedata);
-$SMARTY->assign('objectid', $netnodedata['id']);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
-$SMARTY->assign('foreign_entities', Utils::getForeignEntities());
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'netnode' => $netnodedata,
+        'objectid' => $netnodedata['id'],
+        'divisions' => $LMS->GetDivisions(),
+        'NNprojects' => $LMS->GetProjects(),
+        'foreign_entities' => Utils::getForeignEntities(),
+    )
+);
 
 $SMARTY->display('netnode/netnodemodify.html');

@@ -125,7 +125,11 @@ if (isset($_POST['domain'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('domain', $domain);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'domain' => $domain,
+        'customers' => $LMS->GetCustomerNames(),
+    )
+);
 $SMARTY->display('domain/domainedit.html');

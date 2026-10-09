@@ -143,10 +143,14 @@ unset($customerlist['below']);
 unset($customerlist['over']);
 unset($customerlist['direction']);
 
-$SMARTY->assign('customerlist', $customerlist);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('pagination', $pagination);
+$SMARTY->assign(
+    array(
+        'customerlist' => $customerlist,
+        'networks' => $LMS->GetNetworks(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'nodegroups' => $LMS->GetNodeGroupNames(),
+        'pagination' => $pagination,
+    )
+);
 
 $SMARTY->display('customer/customerlist.html');
