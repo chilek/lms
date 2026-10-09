@@ -219,7 +219,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 } else if ($action == 'tariff-reorder') {
     header('Content-Type: application/json');
 
-    if (!isset($_GET['id']) || !isset($_POST['assignments'])) {
+    if (!isset($_GET['id'], $_POST['assignments'])) {
         $result = 'ERROR';
     } else {
         $assignments = array_flip($DB->GetCol('SELECT id FROM promotionassignments

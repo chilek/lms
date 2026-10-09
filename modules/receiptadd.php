@@ -191,7 +191,7 @@ function additem(&$content, $item)
         $content = array();
     }
 
-    if (isset($i) && isset($x) && $i == $x) {
+    if (isset($i, $x) && $i == $x) {
         $content[] = $item;
     }
 }

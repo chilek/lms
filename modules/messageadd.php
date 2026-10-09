@@ -821,7 +821,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $error['state'] = trans('Incorrect recipient group!');
     }
 
-    $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
+    $html_format = isset($message['wysiwyg'], $message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
 
     $startdate = $attempts = null;
 

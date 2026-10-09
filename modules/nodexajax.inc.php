@@ -329,7 +329,7 @@ if (isset($_GET['action'])) {
         case 'get_throughput':
             header('Content-type: text/html');
 
-            if (!isset($_GET['ip']) || !isset($_GET['id'])) {
+            if (!isset($_GET['ip'], $_GET['id'])) {
                 die;
             }
             die(getThroughput($_GET['ip']));
