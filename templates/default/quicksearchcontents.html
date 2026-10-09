@@ -88,7 +88,7 @@
 
 {if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+6">
-	<i class="lms-ui-quick-search-icon lms-ui-icon-netdev" {tip text="Enter device ID, name or serial number and press Enter"}></i>
+	<i class="lms-ui-quick-search-icon lms-ui-icon-netdev" {tip text="Enter device ID, name, serial number or IP address and press Enter"}></i>
     <input type="text" name="qs[netdevice]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
 	<i class="fa-fw lms-ui-icon-customisation"></i>
 	<select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which network device properties should be used during search")}">
@@ -96,6 +96,7 @@
 		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
 		<option value="mac"{if !isset($qs_properties.mac) || isset($qs_properties.netdevice.mac)} selected{/if}>{trans("<!qs>device mac")}</option>
+		<option value="ipaddr"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.ip)} selected{/if}>{trans("<!qs>device ip address")}</option>
 		<option value="location_address"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
 		<option value="description"{if !isset($qs_properties.description) || isset($qs_properties.netdevice.description)} selected{/if}>{trans("<!qs>device description")}</option>
 	</select>

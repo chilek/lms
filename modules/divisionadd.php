@@ -108,6 +108,11 @@ if (!empty($_POST['division'])) {
         $error['regon'] = trans('Incorrect Business Registration Number!');
     }
 
+    $mainaccount = preg_replace('/\s/', '', $division['mainaccount']);
+    if ($mainaccount != '' && (strlen($mainaccount) > 48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $mainaccount))) {
+        $error['mainaccount'] = trans('Wrong account number!');
+    }
+
     if ($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $division['account']))) {
         $error['account'] = trans('Wrong account number!');
     }
@@ -151,6 +156,8 @@ if (!empty($_POST['division'])) {
     }
 
     if (!$error) {
+        $division['mainaccount'] = $mainaccount;
+
         $LMS->AddDivision($division);
 
         if (!isset($division['reuse'])) {

@@ -26,42 +26,36 @@
 
 check_file_uploads();
 
-if (isset($_GET['type'])) {
-    $attachmenttype = $_GET['type'];
-}
-if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
-    die;
+if (isset($_GET['id'])) {
+    $containerId = intval($_GET['id']);
 }
 
-switch ($attachmenttype) {
-    case 'netdevid':
-    case 'netdevmodelid':
-    case 'netnodeid':
-        if (!ConfigHelper::checkPrivilege('network_management')) {
-            if (isset($_GET['type'])) {
-                access_denied();
-            } else {
-                return;
-            }
-        }
-        break;
-    case 'messageid':
-        if (!ConfigHelper::checkPrivilege('messaging')) {
-            if (isset($_GET['type'])) {
-                access_denied();
-            } else {
-                return;
-            }
-        }
-        break;
+if (isset($_GET['type'])) {
+    $containerType = $_GET['type'];
+    if (!preg_match('/^[a-z0-9_]+$/', $containerType)) {
+        die;
+    }
+}
+
+$containerType = $containerType ?? null;
+$containerId = $containerId ?? null;
+
+if ((string) $containerType !== ''
+    && (!isset(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType])
+        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$containerType]))) {
+    access_denied();
 }
 
 if (isset($_GET['attachmentaction'])) {
     switch ($_GET['attachmentaction']) {
         case 'updatecontainer':
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                die;
+            }
+
             header('Content-Type: application/json');
             if ($LMS->UpdateFileContainer(array(
-                    'id' => $_GET['id'],
+                    'id' => $containerId,
                     'description' => $_POST['description'],
                 ))) {
                 die('[]');
@@ -72,10 +66,19 @@ if (isset($_GET['attachmentaction'])) {
             }
             break;
         case 'deletecontainer':
-            $LMS->DeleteFileContainer($_GET['id']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                access_denied();
+            }
+
+            $LMS->DeleteFileContainer($containerId);
             break;
         case 'viewfile':
-            $file = $LMS->GetFile($_GET['fileid']);
+            $fileId = intval($_GET['fileid']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId, $fileId)) {
+                die;
+            }
+
+            $file = $LMS->GetFile($fileId);
             if (empty($file)) {
                 die;
             }
@@ -138,7 +141,11 @@ if (isset($_GET['attachmentaction'])) {
             break;
 
         case 'downloadzippedcontainer':
-            $LMS->GetZippedFileContainer($_GET['id']);
+            if (!$LMS->checkFileContainerPermission($containerType, $containerId)) {
+                access_denied();
+            }
+
+            $LMS->GetZippedFileContainer($containerId);
             die;
             break;
     }
@@ -157,7 +164,12 @@ if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
 }
 
 if (isset($_POST['upload'])) {
-    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'];
+    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'] ?? null;
+    if (!is_string($uploaded_attachmenttype)
+        || !isset(FILE_CONTAINER_TYPE_PRIVILEGES[$uploaded_attachmenttype])
+        || !ConfigHelper::checkPrivilege(FILE_CONTAINER_TYPE_PRIVILEGES[$uploaded_attachmenttype])) {
+        access_denied();
+    }
     $files = 'files-' . $uploaded_attachmenttype;
     $result = handle_file_uploads($files, $error);
     extract($result);

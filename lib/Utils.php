@@ -891,6 +891,27 @@ class Utils
 
     public static function strftime($format, $date)
     {
+        static $intlDayFullNameFormatter, $intlDayNameFormatter;
+
+        if (empty($intlDayFullNameFormatter)) {
+            $intlDayFullNameFormatter = IntlDateFormatter::create(
+                Localisation::getCurrentUiLanguage(),
+                IntlDateFormatter::FULL,
+                IntlDateFormatter::NONE,
+                null,
+                null,
+                'EEEE'
+            );
+            $intlDayNameFormatter = IntlDateFormatter::create(
+                Localisation::getCurrentUiLanguage(),
+                IntlDateFormatter::FULL,
+                IntlDateFormatter::NONE,
+                null,
+                null,
+                'EEE'
+            );
+        }
+
         return str_replace(
             array(
                 '%Y',
@@ -898,9 +919,9 @@ class Utils
                 '%d',
                 '%e',
                 '%u',
+                '%w',
                 '%a',
                 '%A',
-                '%w',
                 '%b',
                 '%B',
                 '%y',
@@ -922,8 +943,10 @@ class Utils
             ),
             explode(
                 '|',
-                date('Y|m|d|j|N|D|l|w|', $date)
-                . trans('<!month-name-short>' . date('M', $date))
+                date('Y|m|d|j|N|w|', $date)
+                . $intlDayNameFormatter->format($date)
+                . '|' . $intlDayFullNameFormatter->format($date)
+                . '|' . trans('<!month-name-short>' . date('M', $date))
                 . '|'
                 . trans('<!month-name-full>' . date('F', $date))
                 . date('|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|W|', $date)

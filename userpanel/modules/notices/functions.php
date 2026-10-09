@@ -39,8 +39,8 @@ function module_main()
     if (isset($_GET['confirm'])) {
         $confirm = $_GET['confirm'];
         $DB->Execute(
-            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
-            array(MSG_DELIVERED, $confirm)
+            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?',
+            array(MSG_DELIVERED, $confirm, $SESSION->id)
         );
         header('Location: ?m=notices');
     } else {

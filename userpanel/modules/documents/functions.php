@@ -62,7 +62,7 @@ function module_main()
         $documentid = intval($_POST['documentid']);
         if ($documentid && $DB->GetOne(
             'SELECT id FROM documents
-            WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > ?NOW?',
+            WHERE id = ? AND customerid = ? AND closed = 0 AND cancelled = 0 AND confirmdate > ?NOW?',
             array($documentid, $SESSION->id)
         )) {
             if (isset($_GET['smsauth'])) {
@@ -404,7 +404,8 @@ function module_main()
         FROM documentcontents c
         JOIN documents d ON c.docid = d.id
         LEFT JOIN numberplans n ON d.numberplanid = n.id
-        WHERE d.customerid = ?'
+        WHERE d.customerid = ?
+            AND d.cancelled = 0'
             . (
                 ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
                     ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)'

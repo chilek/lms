@@ -269,6 +269,7 @@ CREATE TABLE divisions (
 	rbename		varchar(255)	NOT NULL DEFAULT '',
 	telecomnumber varchar(255)    NOT NULL DEFAULT '',
 	bank        varchar(100)    DEFAULT NULL,
+	mainaccount varchar(48)     DEFAULT NULL,
 	account		varchar(48) 	NOT NULL DEFAULT '',
 	email varchar(255)          DEFAULT NULL,
 	serviceemail varchar(255)   DEFAULT NULL,
@@ -378,6 +379,7 @@ CREATE TABLE customerextids (
         CONSTRAINT customerextids_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT customerextids_customerid_extid_serviceproviderid_ukey UNIQUE (customerid, extid, serviceproviderid)
 );
+CREATE INDEX customerextids_extid_serviceproviderid_idx ON customerextids (extid, serviceproviderid);
 
 /* --------------------------------------------------------
   Structure of table "customernotes" (customernotes)
@@ -2782,6 +2784,7 @@ CREATE TABLE customercontacts (
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
 CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
+CREATE INDEX customercontacts_contact_type_idx ON customercontacts (contact, type);
 
 /* ---------------------------------------------------
  Structure of table "customercontactproperties"
@@ -3380,6 +3383,8 @@ CREATE TABLE up_customers (
 	enabled smallint 	    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX up_customers_customerid_idx ON up_customers (customerid);
+CREATE INDEX up_customers_failedlogindate_idx ON up_customers (failedlogindate);
 
 /* ---------------------------------------------------
  Structure of table "up_help" (Userpanel)
@@ -3980,47 +3985,47 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
             ELSE 0
         END AS netflag,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value, 3)
-            ELSE round(ic.value / (1 + t.value / 100), 3)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value, 3)
+            ELSE ROUND(ic.value / (1 + t.value / 100), 3)
         END AS netprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 3)
-            ELSE round(ic.value, 3)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value * (1 + t.value / 100), 3)
+            ELSE ROUND(ic.value, 3)
         END AS grossprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * abs(ic.count), 2)
-            ELSE round(ic.value * abs(ic.count), 2) - round(round(ic.value * abs(ic.count), 2) * t.value / (100 + t.value), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value * ABS(ic.count), 2)
+            ELSE ROUND(ic.value * ABS(ic.count), 2) - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
         END AS netvalue,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(round(ic.value * abs(ic.count), 2) * t.value / 100, 2)
-            ELSE round(round(ic.value * abs(ic.count), 2) * t.value / (100 + t.value), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2)
+            ELSE ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
         END AS taxvalue,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(round(ic.value * abs(ic.count), 2) * (1 + t.value / 100), 2)
-            ELSE round(ic.value * abs(ic.count), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + t.value / 100), 2)
+            ELSE ROUND(ic.value * ABS(ic.count), 2)
         END AS grossvalue,
-        ic.count - ic2.count AS diff_count,
-        ic.pdiscount - ic2.pdiscount AS diff_pdiscount,
-        ic.vdiscount - ic2.vdiscount AS diff_vdiscount,
+        ic.count - COALESCE(ic2.count, 0) AS diff_count,
+        ic.pdiscount - COALESCE(ic2.pdiscount, 0) AS diff_pdiscount,
+        ic.vdiscount - COALESCE(ic2.vdiscount, 0) AS diff_vdiscount,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value, 3) - round(ic2.value, 3)
-            ELSE round(ic.value / (1 + t.value / 100), 3) - round(ic2.value / (1 + t.value / 100), 3)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value, 3) - ROUND(COALESCE(ic2.value, 0), 3)
+            ELSE ROUND(ic.value / (1 + t.value / 100), 3) - ROUND(COALESCE(ic2.value, 0) / (1 + t.value / 100), 3)
             END AS diff_netprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 3) - round(ic2.value * (1 + t.value / 100), 3)
-            ELSE round(ic.value, 3) - round(ic2.value, 3)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value * (1 + t.value / 100), 3) - ROUND(COALESCE(ic2.value, 0) * (1 + t.value / 100), 3)
+            ELSE ROUND(ic.value, 3) - ROUND(COALESCE(ic2.value, 0), 3)
         END AS diff_grossprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * abs(ic.count), 2) - round(ic2.value * abs(ic2.count), 2)
-            ELSE round(ic.value * abs(ic.count), 2) - round(round(ic.value * abs(ic.count), 2) * t.value / (100 + t.value), 2) - round(ic2.value * abs(ic2.count), 2) + round(round(ic2.value * abs(ic2.count), 2) * t.value / (100 + t.value), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ic.value * ABS(ic.count), 2) - ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2)
+            ELSE ROUND(ic.value * ABS(ic.count), 2) - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2) - ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2) + ROUND(ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2) * t.value / (100 + t.value), 2)
         END AS diff_netvalue,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(round(ic.value * abs(ic.count), 2) * t.value / 100, 2) - round(round(ic2.value * abs(ic2.count), 2) * t.value / 100, 2)
-            ELSE round(round(ic.value * abs(ic.count), 2) * t.value / (100 + t.value), 2) - round(round(ic2.value * abs(ic2.count), 2) * t.value / (100 + t.value), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2) - ROUND(ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2) * t.value / 100, 2)
+            ELSE ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2) - ROUND(ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2) * t.value / (100 + t.value), 2)
         END AS diff_taxvalue,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(round(ic.value * abs(ic.count), 2) * (1 + t.value / 100), 2) - round(round(ic2.value * abs(ic2.count), 2) * (1 + t.value / 100), 2)
-            ELSE round(ic.value * abs(ic.count), 2) - round(ic2.value * abs(ic2.count), 2)
+            WHEN (d.flags & 16) > 0 THEN ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + t.value / 100), 2) - ROUND(ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2) * (1 + t.value / 100), 2)
+            ELSE ROUND(ic.value * ABS(ic.count), 2) - ROUND(COALESCE(ic2.value, 0) * ABS(COALESCE(ic2.count, 0)), 2)
             END AS diff_grossvalue,
         CASE
             WHEN t.reversecharge = 1 THEN -2
@@ -4742,6 +4747,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026081100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
 
 COMMIT;

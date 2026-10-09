@@ -117,4 +117,6 @@ interface LMSNetDevManagerInterface
     public function getNetDevCustomerAssignments($netdevid, $assignments);
 
     public function getNetDevOwnerByNodeId($nodeid);
+
+    public function getNetDevPorts($netdevid);
 }

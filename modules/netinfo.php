@@ -24,19 +24,29 @@
  *  $Id$
  */
 
-if (!$LMS->NetworkExists($_GET['id'])) {
+$id = intval($_GET['id']);
+$page = max(0, intval($_GET['page'] ?? 0));
+
+if (!$LMS->NetworkExists($id)) {
     $SESSION->redirect('?m=netlist');
 }
 
-$page = $_GET['page'] ?? 1;
-
-if ($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page'])) {
-    $SESSION->restore('ntlp.'.$_GET['id'], $page);
+if (isset($_GET['action'], $_GET['id']) && $_GET['action'] === 'divide' && ConfigHelper::checkPrivilege('network_management')) {
+    try {
+        $LMS->SplitNetworkInHalf(intval($_GET['id']));
+        $SESSION->redirect('?m=netinfo&id=' . intval($_GET['id']));
+    } catch (Throwable $e) {
+        $error['divide'] = trans($e->getMessage());
+    }
 }
 
-$SESSION->save('ntlp.'.$_GET['id'], $page);
+if ($SESSION->is_set('ntlp.' . $id) && !isset($_GET['page'])) {
+    $SESSION->restore('ntlp.' . $id, $page);
+}
 
-$network = $LMS->GetNetworkRecord($_GET['id'], $page, ConfigHelper::getConfig('phpui.networkhosts_pagelimit'));
+$SESSION->save('ntlp.' . $id, $page);
+
+$network = $LMS->GetNetworkRecord($id, $page, ConfigHelper::getConfig('phpui.networkhosts_pagelimit'));
 
 $layout['pagetitle'] = trans('Info Network: $a', $network['name']);
 

@@ -545,7 +545,7 @@ if (isset($_POST['message'])) {
                         array_filter(
                             $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL),
                             function ($contact) {
-                                return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                                return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
                             }
                         )
                     );

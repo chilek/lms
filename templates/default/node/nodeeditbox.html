@@ -246,9 +246,20 @@
 														onClick="return netdevfrommapchoosewin(document.editnode.elements['nodeedit[netdev]']);"
 														tip="Click to select network device from map"}
 
+{*
 													<input type="text" name="nodeedit[port]"
 														value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2"
 														{tip text="Enter port number in device (optional)" trigger="port"}>
+*}
+													<select name="nodeedit[port]"{if empty($nodeinfo.ports)} disabled{/if}
+														{tip text="Enter port number in device (optional)" trigger="port"}>
+														<option value="">{trans("<!netdev-port>— unknown —")}</option>
+														{foreach $nodeinfo.ports as $port_number => $port_status}
+															{if empty($port_status) || $port_number == $nodeinfo.port}
+																<option value="{$port_number}"{if $port_number == $nodeinfo.port} selected{/if}>{$port_number}</option>
+															{/if}
+														{/foreach}
+													</select>
 													<br>
 
 													<select name="nodeedit[linktype]" id="linktype"
@@ -641,6 +652,26 @@
 				$('#linktype,#radiosector,#linktechnology,#linkspeed').prop('disabled', true);
 				xajax_getRadioSectors($(this).val(), $('#linktechnology').val());
 			}
+
+			$.ajax({
+				url: '?m={$layout.module}&id={$nodeinfo.id}&action=get_netdev_ports&netdev=' + $(this).val(),
+				method: 'GET',
+				dataType: 'json',
+				success: function(data) {
+					var options = '<option value="">{trans("<!netdev-port>— unknown —")}</option>';
+					var currentPort = parseInt($('[name="nodeedit[port]"]').val());
+					var disabled = true;
+
+					$.each(data, function(port, status) {
+						if (!status || port === currentPort) {
+							options += '<option value="' + port + '"' + (port === currentPort ? ' selected' : '') + '>' + port + '</option>';
+							disabled = false;
+						}
+					});
+
+					$('[name="nodeedit[port]"]').html(options).prop('disabled', disabled);
+				}
+			});
 		});
 
 		$('#linktype').change(function() {

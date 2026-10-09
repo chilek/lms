@@ -1424,7 +1424,9 @@ if (empty($types) || in_array('documents', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND d.type IN (?, ?) AND d.closed = 0
+            . " AND d.type IN (?, ?)
+            AND d.closed = 0
+            AND d.cancelled = 0
             AND d.confirmdate >= ?
             AND d.confirmdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')

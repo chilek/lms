@@ -717,7 +717,18 @@ switch ($mode) {
                     d.serialnumber,
                     d.description,
                     a.location,
-                    no.lastonline
+                    no.lastonline,
+                    (
+                        SELECT STRING_AGG(
+                            INET_NTOA(
+                                CASE
+                                    WHEN INET_NTOA(nodes.ipaddr) ?LIKE? $sql_search THEN nodes.ipaddr
+                                    ELSE nodes.ipaddr_pub
+                                END
+                            ),
+                        ', '
+                        ) FROM nodes WHERE nodes.ipaddr <> 0
+                    ) AS ipaddr
                 FROM netdevices d
                 LEFT JOIN (
                     SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
@@ -733,6 +744,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(d.serialnumber) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['description']) ? " OR LOWER(d.description) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = d.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
+                . (empty($properties) || isset($properties['ipaddr']) ? " OR EXISTS (SELECT 1 FROM nodes WHERE nodes.netdev = d.id AND nodes.ownerid IS NULL AND (INET_NTOA(nodes.ipaddr) ?LIKE? $sql_search OR INET_NTOA(nodes.ipaddr_pub) ?LIKE? $sql_search))" : '')
                 . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(a.location) ?LIKE? LOWER($sql_search)" : '')
                 . ' ORDER by name
                 LIMIT ?',
@@ -767,6 +779,8 @@ switch ($mode) {
                         $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                    } else if ((empty($properties) || isset($properties['ipaddr'])) && preg_match("~$search~i", $row['ipaddr'])) {
+                        $description = trans('IP:') . ' ' . $row['ipaddr'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
                         $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['description'])) && preg_match("~$search~i", $row['description'])) {
@@ -805,6 +819,9 @@ switch ($mode) {
         }
         if (empty($properties) || isset($properties['serial'])) {
             $s['serialnumber'] = $search;
+        }
+        if (empty($properties) || isset($properties['ip'])) {
+            $s['ipaddr'] = $search;
         }
         if (empty($properties) || isset($properties['location_address'])) {
             $s['location'] = $search;

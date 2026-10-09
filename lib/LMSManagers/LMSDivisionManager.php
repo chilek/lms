@@ -149,6 +149,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'rbename'         => $division['rbename'] ?: '',
             'telecomnumber'   => $division['telecomnumber'] ?: '',
             'bank'            => empty($division['bank']) ? null : $division['bank'],
+            'mainaccount'     => empty($division['mainaccount']) ? null : $division['mainaccount'],
             'account'         => $division['account'],
             'inv_header'      => $division['inv_header'],
             'inv_footer'      => $division['inv_footer'],
@@ -169,9 +170,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         );
 
         $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname, birthdate,
-			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
+			ten, regon, rbe, rbename, telecomnumber, bank, mainaccount, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, email, serviceemail, phone, servicephone, description, tax_office_code, url, userpanel_url, address_id, office_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -276,6 +277,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'rbename'     => $division['rbename'] ?: '',
             'telecomnumber'     => $division['telecomnumber'] ?: '',
             'bank'            => empty($division['bank']) ? null : $division['bank'],
+            'mainaccount' => empty($division['mainaccount']) ? null : $division['mainaccount'],
             'account'     => $division['account'],
             'inv_header'  => $division['inv_header'],
             'inv_footer'  => $division['inv_footer'],
@@ -299,7 +301,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $this->db->Execute(
             'UPDATE divisions SET name=?, shortname=?, label = ?,
                 firstname = ?, lastname = ?, birthdate = ?,
-                ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
+                ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, mainaccount = ?, account=?, inv_header=?,
                 inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
                 inv_paytype=?, email=?, serviceemail = ?, phone = ?, servicephone = ?, description=?, status=?, tax_office_code = ?,
                 url = ?, userpanel_url = ?, office_address_id = ?

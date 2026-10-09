@@ -122,7 +122,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		var location_select = $('#location-select');
 		if (!location_select.val().length && $('option:not([value=""])', location_select).length > 1) {
-			confirm($t('No location has been selected!'));
+			alertDialog($t('No location has been selected!'), location_select);
 			return false;
 		}
 		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
@@ -170,6 +170,9 @@ function CustomerAssignmentHelper(options) {
 		$('.promotion-table').hide();
 
 		$("#schema" + schemaId).show();
+
+		$('.schema-tariff-selection[data-mandatory]').prop('required', false);
+		$('#schema' + schemaId).find('.schema-tariff-selection[data-mandatory]').prop('required', true);
 
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
@@ -368,7 +371,8 @@ function CustomerAssignmentHelper(options) {
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
-			.next().toggleClass('lms-ui-error', validationError)
+			.siblings('.select2').find('.select2-selection')
+			.toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 
 		var schemaId = $('#promotion-select').val();
@@ -551,7 +555,17 @@ function CustomerAssignmentHelper(options) {
 					options += '</optgroup>';
 				}
 
-				if (data.hasOwnProperty('document-separation-groups')) {
+				// NS (2026-09-29): combobox #separatedocument bywa jeszcze NIEzainicjalizowany,
+				// gdy ta odpowiedz AJAX wraca (helper startuje juz przy parsowaniu strony,
+				// init_comboboxes dopiero przy gotowosci dokumentu) -- scombobox('val') rzucal
+				// wtedy wyjatek i przerywal budowanie list lokalizacji/wezlow: pusty panel
+				// schematow w formularzu dokumentu. Brak inicjalizacji = pomijamy uzupelnianie;
+				// opcje i tak przychodza w HTML-u z serwera. Do zgloszenia chilkowi.
+				var separateDocumentSelect = $('#separatedocument');
+
+				if (data.hasOwnProperty('document-separation-groups') &&
+					separateDocumentSelect.length &&
+					separateDocumentSelect.closest('.scombobox').data('scombobox-init') != null) {
 					var values = [
 						{
 							value: "",

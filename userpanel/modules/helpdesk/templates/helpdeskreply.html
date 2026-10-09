@@ -19,7 +19,7 @@
 			<strong>{trans("Subject:")}</strong>
 		</td>
 		<td width="98%">
-			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter message subject" trigger="subject"} />
+			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject|escape}" {userpaneltip text="Enter message subject" trigger="subject"} />
 		</td>
 	</tr>
 	<tr class="light">
@@ -30,7 +30,7 @@
 			<strong>{trans("Body:")}</strong>
 		</td>
 		<td width="98%">
-			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
+			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body|escape}</textarea>
 		</td>
 	</tr>
 	<tr class="light">

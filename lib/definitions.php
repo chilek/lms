@@ -2194,3 +2194,10 @@ const POSTAL_ADDRESS = 0,
     LOCATION_ADDRESS = 2,
     DEFAULT_LOCATION_ADDRESS = 3,
     RECIPIENT_ADDRESS = 4;
+
+const FILE_CONTAINER_TYPE_PRIVILEGES = [
+    'netdevid'      => 'network_management',
+    'netdevmodelid' => 'network_management',
+    'netnodeid'     => 'network_management',
+    'messageid'     => 'messaging',
+];

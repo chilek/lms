@@ -408,6 +408,10 @@ switch ($action) {
             }
         );
 
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $nodeipdata['macs'][] = '';
+        }
+
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -415,7 +419,7 @@ switch ($action) {
     case 'editip':
         $nodeipdata = $LMS->GetNode($_GET['ip']);
         $nodeipdata['ipaddr'] = $nodeipdata['ip'];
-        $nodeipdata['ipaddr_pub'] = $nodeipdata['ip_pub'];
+        $nodeipdata['ipaddr_pub'] = empty($nodeipdata['ip_pub']) ? '' : $nodeipdata['ip_pub'];
         $subtitle = trans('IP address edit');
 
         $nodeipdata['macs'] = array_filter(
@@ -563,6 +567,10 @@ switch ($action) {
             }
         );
 
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $error['mac-input-0'] = trans('MAC address is required!');
+        }
+
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
@@ -691,6 +699,10 @@ switch ($action) {
                 return $mac != $netdev_empty_mac;
             }
         );
+
+        if (!strlen($netdev_empty_mac) && empty($nodeipdata['macs'])) {
+            $error['mac-input-0'] = trans('MAC address is required!');
+        }
 
         if (strlen($nodeipdata['passwd']) > 32) {
             $error['passwd'] = trans('Password is too long (max. 32 characters)!');
@@ -946,11 +958,10 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
-    if (isset($netdev['producer'])) {
-        $netdev['pagetitle'] = trans('Device Edit: $a ($b)', $netdev['name'], $netdev['producer'] . ($netdev['model'] ? ' ' . $netdev['model'] : ''));
-    } else {
-        $netdev['pagetitle'] = trans('Device Edit: $a', $netdev['name']);
-    }
+    $producerModel = trim(str_replace('-', '', ($netdev['producer'] ?? '') . ' ' . ($netdev['model'] ?? '')));
+    $netdev['pagetitle'] = $producerModel
+        ? trans('Device Edit: $a ($b)', $netdev['name'], $producerModel)
+        : trans('Device Edit: $a', $netdev['name']);
 
     if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
         && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
@@ -1025,6 +1036,15 @@ $netdev = $hook_data['netdevdata'];
 if ($subtitle) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
+
+if (empty($netdevlist)) {
+    $srcPorts = [];
+} else {
+    $srcNetDev = reset($netdevlist);
+    $srcPorts = $LMS->getNetDevPorts($srcNetDev['id']);
+}
+$SMARTY->assign('srcports', $srcPorts);
+$SMARTY->assign('dstports', $LMS->getNetDevPorts($netdev['id']));
 
 $foreign_entities = Utils::getForeignEntities();
 if (!empty($netdevconnected) && !empty($foreign_entities)) {

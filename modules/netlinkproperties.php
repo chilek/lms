@@ -38,6 +38,7 @@ function update_netlink_properties($id, $devid, $link)
             foreach ($res as $name => $error) {
                 $result->script("$('[name=\"" . $name . "\"]').addClass('lms-ui-error').removeAttr('data-tooltip').attr('title', '" . $error . "');");
             }
+            $result->script("$('#netlink-properties-submit').prop('disabled', false);");
             return $result;
         }
         $LMS->SetNetDevLinkType($id, $devid, $link);
@@ -45,6 +46,7 @@ function update_netlink_properties($id, $devid, $link)
         $res = $LMS->ValidateNodeLink($devid, $link);
         if (is_string($res)) {
             $result->script("$('[name=\"port\"]').addClass('lms-ui-error').removeAttr('data-tooltip').attr('title', '" . $res . "');");
+            $result->script("$('#netlink-properties-submit').prop('disabled', false);");
             return $result;
         }
         $LMS->SetNodeLinkType($devid, $link);

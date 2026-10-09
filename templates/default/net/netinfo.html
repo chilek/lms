@@ -4,6 +4,12 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 
+{if !empty($error.divide)}
+<script>
+	alertDialog("{$error.divide}");
+</script>
+{/if}
+
 {if $unlockedit}
 	<form name="remap" id="remap" action="" method="get">
 		<input type="submit" class="hiddenbtn">
@@ -379,6 +385,7 @@
 					{button id="delete-net" type="link-button" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" data_assigned="{$network.assigned}" icon="delete" label="Remove"}
 					{button href="?m=netinfo&id={$network.id}" icon="cancel" label="Cancel"}
 				{else}
+					{button id="divide-net" data_href="?m=netinfo&id={$network.id}&action=divide" data_name="{$network.name}" icon="administration" label="Split into Two Equal Subnets"}
 					{button href="?m=netedit&id={$network.id}" accesskey="E" icon="edit" label="Edit"}
 					{button id="delete-net" data_href="?m=netdel&id={$network.id}" data_name="{$network.name}" data_assigned="{$network.assigned}" icon="delete" label="Remove"}
 				{/if}
@@ -486,6 +493,12 @@
 <script>
 
 	$(function() {
+		$('#divide-net').click(function() {
+		    confirmDialog($t("Are You sure, you want to split network '$a' in half?", $(this).data('name')), this)
+		        .done(() => { location.href = $(this).data('href'); });
+		    return false;
+		});
+
 		$('#delete-net').click(function() {
 			var name = $(this).attr('data-name');
 			var assigned = parseInt($(this).attr('data-assigned'));

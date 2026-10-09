@@ -635,9 +635,29 @@
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 		updateTariffs();
+
+		const promotionSchemaDataPanel = $('#promotionschemadata');
+
+		let wasVisible = promotionSchemaDataPanel.is(':visible');
+
+		const observer = new MutationObserver(function() {
+			const isVisible = promotionSchemaDataPanel.is(':visible');
+
+			if (!wasVisible && isVisible) {
+				init_multiselects('select.lms-ui-multiselect-deferred:visible');
+				observer.disconnect();
+			}
+
+			//wasVisible = isVisible;
+		});
+
+		observer.observe(promotionSchemaDataPanel.get(0), {
+			attributes: true,
+			attributeFilter: ['style']
+		});
 	});
 
-	if (getCookie('promotionschemadata') == '1') {
+	if (getCookie('promotionschemadata') === '1') {
 		$('#promotionschemadata').show();
 	}
 

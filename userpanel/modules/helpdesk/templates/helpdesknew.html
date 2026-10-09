@@ -29,7 +29,7 @@
 			<strong>{trans("Subject:")}</strong>
 		</td>
 		<td width="98%">
-			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}"
+			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject|escape}"
 					maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
 					{userpaneltip text="Enter request subject" trigger="subject"} />
 		</td>
@@ -42,7 +42,7 @@
 			<strong>{trans("Body:")}</strong>
 		</td>
 		<td width="98%">
-			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter request contents" trigger="body"} rows="5" cols="40">{$helpdesk.body}</textarea>
+			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter request contents" trigger="body"} rows="5" cols="40">{$helpdesk.body|escape}</textarea>
 		</td>
 	</tr>
 	<tr class="light">

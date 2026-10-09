@@ -355,6 +355,7 @@
 					action = '?m=customergroup&oper=removefromgroups';
 					break;
 				case 2:
+					$('#newcustomergroup').prop('disabled', true);
 					var selectedCustomerGroups = $('#customergroups').val();
 					if (!selectedCustomerGroups.length) {
 						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
@@ -363,6 +364,7 @@
 					action = '?m=customergroup&oper=changegroups';
 					break;
 				case 3:
+					$('#customergroups').prop('disabled', true);
 					var newgroup = $('#newcustomergroup').val();
 					if (!newgroup.length) {
 						alertDialog($t("<!customersearch>New customer group name cannot be empty!"), $('#newcustomergroup'));

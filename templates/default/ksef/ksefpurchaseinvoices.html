@@ -159,6 +159,37 @@
 			margin-left: 0.5em;
 		}
 
+		#ksef-invoice-button-panel {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: flex-end;
+			flex-grow: 1;
+		}
+
+		.ksef-invoice-buttons {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			flex-wrap: wrap;
+			flex-grow: 1;
+		}
+
+		.ksef-invoice-buttons > * {
+			margin-left: 0.2em;
+			margin-right: 0.2em;
+		}
+
+		.ksef-invoice-buttons fieldset {
+			display: flex;
+			align-items: center;
+		}
+
+		.ksef-invoice-buttons fieldset > * {
+			margin-left: 0.2em;
+			margin-right: 0.2em;
+		}
+
 	</style>
 
 	<script>
@@ -255,6 +286,10 @@
 					var filter = {};
 					var divisionId = getStorageItem('ksef-purchase-invoices-division-id', 'session');
 					filter.divisionId = divisionId ? divisionId : '';
+					var tags = getStorageItem('ksef-purchase-invoices-tags', 'session');
+					filter.tags = tags && tags.length ? tags.split(',').sort(function(a, b) {
+						return parseInt(a) - parseInt(b);
+					}) : [];
 					var posting = getStorageItem('ksef-purchase-invoices-posting', 'session');
 					filter.posting = posting && posting.length ? posting : '';
 					var settled = getStorageItem('ksef-purchase-invoices-settled', 'session');
@@ -275,6 +310,20 @@
 					}
 				} else {
 					filterSelector.push('[data-division-id]');
+				}
+
+				if (filter.hasOwnProperty('tags')) {
+					if (filter.tags.length) {
+						filterSelector.push('[data-tags="' +
+							filter.tags.sort(function(a, b) {
+								return parseInt(a) - parseInt(b);
+							}).join(',') +
+							'"]');
+					} else {
+						filterSelector.push('[data-tags]');
+					}
+				} else {
+					filterSelector.push('[data-tags]');
 				}
 
 				if (filter.hasOwnProperty('posting')) {
@@ -318,6 +367,7 @@
 				$('#empty-table-row').appendTo(emptyTable ? ksefInvoices : temporaryTable);
 
 				restoreSortOrder();
+				ksefInvoices.trigger('lms:refresh_multi_check');
 				recalculateSummary();
 
 				return filter;
@@ -327,6 +377,7 @@
 				$.each(
 					[
 						'ksef-purchase-invoices-division-id',
+						'ksef-purchase-invoices-tags',
 						'ksef-purchase-invoices-posting',
 						'ksef-purchase-invoices-settled',
 						'ksef-purchase-invoices-seller-ten'
@@ -337,6 +388,9 @@
 				);
 
 				$('#division-id').val('');
+
+				$('#tags').val([]);
+				updateAdvancedSelectsTest('#tags');
 
 				$('#posting').prop('checked', false);
 
@@ -351,6 +405,7 @@
 			$('#division-id').change(function() {
 				var filter = {
 					divisionId: $(this).val(),
+					tags: $('#tags').val(),
 					posting: $('#posting').prop('checked') ? '1' : '',
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
@@ -361,10 +416,25 @@
 				setStorageItem('ksef-purchase-invoices-division-id', filter.divisionId, 'session');
 			});
 
+			$('#tags').change(function() {
+				var filter = {
+					tags: $(this).val(),
+					divisionId: $('#division-id').val(),
+					posting: $('#posting').prop('checked') ? '1' : '',
+					settled: $('#unsettled').prop('checked') ? '0' : '',
+					sellerTen: $('#seller-ten').val()
+				}
+
+				applyFilter(filter);
+
+				setStorageItem('ksef-purchase-invoices-tags', filter.tags.join(','), 'session');
+			});
+
 			$('#posting').change(function() {
 				var filter = {
 					posting: $(this).prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
 				};
@@ -378,6 +448,7 @@
 				var filter = {
 					posting: $('#posting').prop('checked') ? '1' : '',
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $('#seller-ten').val()
 				};
@@ -390,6 +461,7 @@
 			$('#seller-ten').change(function() {
 				var filter = {
 					divisionId: $('#division-id').val(),
+					tags: $('#tags').val(),
 					posting: $('#posting').prop('checked') ? '1' : '',
 					settled: $('#unsettled').prop('checked') ? '0' : '',
 					sellerTen: $(this).val()
@@ -414,6 +486,11 @@
 				$('#division-id').val(filter.divisionId);
 			}
 
+			if (filter.tags.length) {
+				$('#tags').val(filter.tags);
+				updateAdvancedSelectsTest('#tags');
+			}
+
 			if (filter.posting.length && filter.posting === '1') {
 				$('#posting').prop('checked', true);
 			}
@@ -431,52 +508,203 @@
 				var that = $(this);
 				var form = $('#ksef-purchase-invoice-edit-form');
 				var action = $(this).attr('data-action');
+				var id = [];
+
 				form.find('[name="action"]').val(action);
-				form.find('[name="id"]').val($(this).closest('[data-id]').attr('data-id'));
+				form.find('[name="id[]"]').remove();
+
+				if (action.match(/^(.+-selected|transfer-file)$/)) {
+					var visibleInvoices = $('[data-id]:visible')
+					var checked = visibleInvoices.find(':checked');
+					var selected = checked.closest('[data-id]');
+
+					switch (action) {
+						case 'ignore-selected':
+							selected = selected.filter('[data-posting="1"]');
+							break;
+						case 'restore-selected':
+							selected = selected.filter('[data-posting="0"]');
+							break;
+						case 'settle-selected':
+							selected = selected.filter('[data-settled="0"]');
+							break;
+						case 'unsettle-selected':
+							selected = selected.filter('[data-settled="1"]');
+							break;
+					}
+
+					if (!selected.length) {
+						return;
+					}
+
+					selected.each(function() {
+						id.push($(this).attr('data-id'));
+					});
+				} else {
+					id.push(that.closest('[data-id]').attr('data-id'));
+				}
+
+				if (!id.length) {
+					return;
+				}
+
+				$.each(id, function(index, id) {
+					form.append('<input type="hidden" name="id[]" value="' + id + '">');
+				});
 
 				let formData = new FormData(form.get(0));
 
-				$.ajax({
+				var options = {
 					url: '?m=ksefpurchaseinvoiceedit&api=1',
 					type: 'POST',
 					data: formData,
 					processData: false,
 					contentType: false,
-					dataType: "json",
-					success: function(data) {
+					success: function(data, status, xhr) {
+						if (action === 'transfer-file') {
+							const contentType = xhr.getResponseHeader('Content-Type') || '';
+
+							if (contentType.startsWith('text/csv')) {
+								let filename = 'transfer-file.csv';
+
+								const disposition = xhr.getResponseHeader('Content-Disposition');
+
+								if (disposition) {
+									// RFC 5987 / RFC 6266, np.:
+									// filename*=UTF-8''raport%C4%85.csv
+									const utf8Match = disposition.match(
+										/filename\*\s*=\s*UTF-8''([^;]+)/i
+									);
+
+									if (utf8Match) {
+										filename = decodeURIComponent(utf8Match[1].trim());
+									} else {
+										const match = disposition.match(
+											/filename\s*=\s*(?:"([^"]+)"|([^;]+))/i
+										);
+
+										if (match) {
+											filename = (match[1] || match[2]).trim();
+										}
+									}
+								}
+
+								const blob = new Blob([data], {
+									type: contentType
+								});
+
+								const url = URL.createObjectURL(blob);
+
+								const a = document.createElement('a');
+								a.href = url;
+								a.download = filename;
+
+								document.body.appendChild(a);
+								a.click();
+								a.remove();
+
+								URL.revokeObjectURL(url);
+
+								that.prop('disabled', false);
+
+								return;
+							} else if (contentType.startsWith('application/json')) {
+								const text = new TextDecoder('utf-8').decode(data);
+								const response = JSON.parse(text);
+
+								data = response;
+							}
+						}
+
 						if (data.hasOwnProperty('error')) {
 							console.error('Error:', data.error);
+
+							that.prop('disabled', false);
+
 							return;
 						}
-						$(that).hide();
+
+						if (!action.match(/-selected$/)) {
+							$(that).hide();
+						}
 
 						switch (action) {
 							case 'ignore':
 								$(that).siblings('[data-action="restore"]').show();
 								$(that).closest('[data-id]').addClass('cancel').attr('data-posting', '0');
-								applyFilter();
+
 								break;
 							case 'restore':
 								$(that).siblings('[data-action="ignore"]').show();
 								$(that).closest('[data-id]').removeClass('cancel').attr('data-posting', '1');
-								applyFilter();
+
 								break;
 							case 'settle':
 								$(that).siblings('[data-action="unsettle"]').show();
 								$(that).closest('[data-id]').addClass('blend').attr('data-settled', '1');
-								applyFilter();
+
 								break;
 							case 'unsettle':
 								$(that).siblings('[data-action="settle"]').show();
 								$(that).closest('[data-id]').removeClass('blend').attr('data-settled', '0');
-								applyFilter();
+
+								break;
+							case 'ignore-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').addClass('cancel').attr('data-posting', '0')
+										.find('[data-action="restore"]').show()
+										.end().find('[data-action="ignore"]').hide();
+								});
+
+								break;
+							case 'restore-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').removeClass('cancel').attr('data-posting', '1')
+										.find('[data-action="ignore"]').show()
+										.end().find('[data-action="restore"]').hide();
+								});
+
+								break;
+							case 'settle-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').addClass('blend').attr('data-settled', '1')
+										.find('[data-action="unsettle"]').show()
+										.end().find('[data-action="settle"]').hide();
+								});
+
+								break;
+							case 'unsettle-selected':
+								$.each(id, function(index, id) {
+									$('[data-id="' + id + '"]').removeClass('blend').attr('data-settled', '0')
+										.find('[data-action="settle"]').show()
+										.end().find('[data-action="unsettle"]').hide();
+								});
+
 								break;
 						}
+
+						applyFilter();
+						refreshButtonStates();
 					},
 					error: function(xhr) {
 						console.error('Error:', xhr.responseText);
 					}
-				});
+				}
+
+				if (action === 'transfer-file') {
+					options.xhr = function() {
+						const xhr = new XMLHttpRequest();
+						xhr.responseType = 'arraybuffer';
+
+						return xhr;
+					};
+
+					that.prop('disabled', true);
+				} else {
+					options.dataType = 'json';
+				}
+
+				$.ajax(options);
 			});
 
 			$(document).click(function(e) {
@@ -528,6 +756,22 @@
 						break;
 				}
 			});
+
+			function refreshButtonStates() {
+				var visibleInvoices = $('[data-id]:visible')
+				var checked = visibleInvoices.find(':checked');
+				$('[data-action="ignore-selected"]').prop('disabled', !checked.length || !checked.closest('[data-posting="1"]').length);
+				$('[data-action="restore-selected"]').prop('disabled', !checked.length || !checked.closest('[data-posting="0"]').length);
+				$('[data-action="settle-selected"]').prop('disabled', !checked.length || !checked.closest('[data-settled="0"]').length);
+				$('[data-action="unsettle-selected"]').prop('disabled', !checked.length || !checked.closest('[data-settled="1"]').length);
+				$('[data-action="transfer-file"]').prop('disabled', !checked.length);
+			}
+
+			$('.lms-ui-multi-check:checkbox,input.lms-ui-multi-check-all:checkbox').change(function() {
+				refreshButtonStates();
+			});
+
+			refreshButtonStates();
 		});
 
 	</script>
@@ -538,7 +782,6 @@
 	</form>
 
 	<form name="ksef-purchase-invoice-edit-form" id="ksef-purchase-invoice-edit-form" method="POST">
-		<input type="hidden" name="id">
 		<input type="hidden" name="action">
 	</form>
 
@@ -598,6 +841,14 @@
 									</select>
 								</label>
 							{/if}
+							<label>
+								<strong>{trans("Tags")}</strong>
+								<select name="tags[]" id="tags" form="ksef-invoices-form" class="lms-ui-advanced-select-test" multiple>
+									{foreach $tags as $tag}
+										<option value="{$tag.id}">{$tag.name|escape}</option>
+									{/foreach}
+								</select>
+							</label>
 							<label>
 								<input type="checkbox" name="posting" id="posting" form="ksef-invoices-form">
 								{trans("<!ksef>posted")}
@@ -671,7 +922,7 @@
 				</td>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="lms-ui-multi-check">
 			{foreach $invoices as $invoice}
 				<tr data-issue-date="{$invoice.issue_date}"
 					data-currency-value="{$invoice.currency_value}"
@@ -681,6 +932,7 @@
 					data-pay-date="{$invoice.pay_date}"
 					data-id="{$invoice.id}"
 					data-division-id="{$invoice.division_id}"
+					data-tags="{implode(',', array_keys($invoice.tags))}"
 					data-posting="{if empty($invoice.posting)}0{else}1{/if}"
 					data-settled="{if empty($invoice.settled)}0{else}1{/if}"
 					data-seller-ten="{$invoice.seller_ten}"
@@ -791,7 +1043,7 @@
 						{/if}
 						{hint mode=LMSSmartyPlugins::HINT_TYPE_ROLLOVER icon="more-info" text=$invoice.notes|nl2br class=$class}
 					</td>
-					<td class="text-left nobr">
+					<td class="text-right nobr lms-ui-multi-check-ignore">
 						{hint url="?m=ksefpurchaseinvoicenotes&id={$invoice.id}" icon="info" class="lms-ui-link-button notes-button" tip="Invoice textual description"}
 						{hint url="?m=ksefpurchaseinvoicetags&id={$invoice.id}" icon="tags" class="lms-ui-link-button tag-button" tip="Invoice tag management"}
 						{if empty($invoice.itemcount)}
@@ -827,6 +1079,7 @@
 						{/if}
 						{button type="button" icon="settle" tip="<!ksef>Settle document" data-action="settle" class=$settle_button_class}
 						{button type="button" icon="open" tip="<!ksef>Unsettle document" data-action="unsettle" class=$unsettle_button_class}
+						<input type="checkbox" name="invoice[{$invoice.id}]" value="{$invoice.id}" class="lms-ui-multi-check">
 					</td>
 				</tr>
 			{/foreach}
@@ -848,7 +1101,41 @@
 					<br>
 					<span id="total-gross-value"></span>
 				</td>
-				<td colspan="4"></td>
+				<td colspan="4">
+					<div id="ksef-invoice-button-panel">
+						<div class="ksef-invoice-buttons">
+							<label>
+								{trans("Check All")}
+								<input type="checkbox" class="lms-ui-multi-check-all">
+							</label>
+						</div>
+						<div class="ksef-invoice-buttons">
+							{button type="button" icon="restore" label="<!ksef>Post document" data-action="restore-selected"}
+							{button type="button" icon="ignore" label="<!ksef>Don't post document" data-action="ignore-selected"}
+							{button type="button" icon="settle" label="<!ksef>Settle document" data-action="settle-selected"}
+							{button type="button" icon="open" label="<!ksef>Unsettle document" data-action="unsettle-selected"}
+						</div>
+						<div class="ksef-invoice-buttons">
+							<fieldset>
+								<legend>
+									<strong>{trans("<!ksef>Transfer file")}</strong>
+								</legend>
+								<label>
+									<strong>
+										{trans("Character encoding")}
+									</strong>
+									<select name="encoding" form="ksef-purchase-invoice-edit-form">
+										<option value="UTF-8">UTF-8</option>
+										<option value="WINDOWS-1250">WINDOWS-1250</option>
+										<option value="ISO-8859-2">ISO-8559-2</option>
+										<option value="CP852">CP852</option>
+									</select>
+								</label>
+								{button type="button" icon="csv" label="Generate" data-action="transfer-file"}
+							</fieldset>
+						</div>
+					</div>
+				</td>
 			</tr>
 		</tfoot>
 	</table>

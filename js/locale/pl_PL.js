@@ -285,7 +285,7 @@ $_LANG['show average speed'] = 'pokaż prędkość średnią';
 $_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
 
 $_LANG['Positions:'] = 'Pozycje:';
-$_LANG['Positions'] = 'Pozycje';
+$_LANG['positions'] = 'pozycje';
 
 $_LANG['link technologies'] = 'technologie łącza';
 $_LANG['service types'] = 'typy usług';
@@ -634,6 +634,7 @@ $_LANG['Are you sure, you want to restore that message?'] = 'Jesteś pewien, że
 $_LANG['Are you sure, you want to delete all selected messages?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane wiadomości?';
 $_LANG['Are you sure, you want to delete that network?'] = 'Jesteś pewien, że chcesz usunąć tę sieć?';
 $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że chcesz usunąć tę płatność?';
+$_LANG['Are You sure, you want to split network \'$a\' in half?'] = 'Jesteś pewien, że chcesz podzielić sieć \'$a\' na pół?';
 $_LANG['Are you sure, you want to delete payment \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć płatność \'$a\'?';
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';
 $_LANG['Are you sure, you want to delete tariff \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć taryfę \'$a\'?';
@@ -3353,6 +3354,7 @@ $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
 $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
 $_LANG['cancelled'] = 'anulowano';
+$_LANG['<!document>cancelled'] = 'anulowany';
 $_LANG['bounced'] = 'odesłano';
 $_LANG['ready to send'] = 'gotowa do wysłania';
 $_LANG['ready to send<!plural>'] = 'gotowe do wysłania';
@@ -6428,3 +6430,7 @@ $_LANG['Base date'] = 'Data bazowa';
 $_LANG['Incorrect snat IP address!'] = 'Niepoprawny adres IP snat!';
 
 $_LANG['Network has assigned IP addresses!'] = 'Sieć posiada przypisane adresy IP!';
+
+$_LANG['Cancel document'] = 'Anuluj dokument';
+$_LANG['Recover document'] = 'Przywróć dokument';
+$_LANG['Are you sure, you want to cancel that document?'] = 'Jesteś pewien, że chcesz anulować ten dokument?';

@@ -49,6 +49,7 @@
 									<OPTION value="">{trans("— none —")}</OPTION>
 									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("<!nodesession-search>IP address")}</OPTION>
 									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("<!nodesession-search>MAC address")}</OPTION>
+									<option value="producer"{if $filtertype == 'producer'} selected{/if}>{trans("<!nodesession-search>Producer (from MAC address)")}</option>
 									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("<!nodesession-search>customer")}</OPTION>
 									<OPTION value="nodeid"{if $filtertype == 'nodeid'} selected{/if}>{trans("<!nodesession-search>node ID")}</OPTION>
 									<option value="location"{if $filtertype == 'location'} selected{/if}>{trans("<!nodesession-search>location")}</option>
@@ -141,10 +142,9 @@
 			</td>
 			<td>
 				{$session.mac}
-				{$producer = EtherCodes::GetProducer($session.mac)}
-				{if $producer}
+				{if !empty($session.producer)}
 					<span class="lms-ui-font-smaller">
-						({$producer})
+						({$session.producer})
 					</span>
 				{/if}
 			</td>

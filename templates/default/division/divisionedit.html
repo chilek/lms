@@ -233,6 +233,18 @@
 				{icon name="account-number"}
 			</td>
 			<td class="nobr valign-top">
+				<strong>{trans("Main bank account")}</strong>
+			</td>
+			<td>
+				<input type="text" name="division[mainaccount]" value="{$division.mainaccount|escape}" size="45"
+					{tip text="Enter main bank account (optional)" trigger="mainaccount"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="account-number"}
+			</td>
+			<td class="nobr valign-top">
 				<strong>{trans("Bank account:")}</strong>
 			</td>
 			<td>
