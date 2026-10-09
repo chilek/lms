@@ -1418,6 +1418,31 @@ class LMSSmartyPlugins
             . '</select>';
     }
 
+    public static function userCompactListFunction(array $params, $template)
+    {
+        $limit = isset($params['limit']) && $params['limit'] !== '' ? intval($params['limit']) : 4;
+        $userlist = $params['userlist'] ?? array();
+        if (!is_array($userlist)) {
+            $userlist = array();
+        }
+
+        $ul = '';
+        foreach ($userlist as $item) {
+            $ul .= '<a href="?m=userinfo&id=' . $item['id'] . '" class="'
+                . (empty($item['deleted']) ? '' : 'crossed disabled')
+                . (empty($item['access']) ? ' blend' : '')
+                . '" style="font-weight: normal">'
+                . htmlspecialchars(mb_substr((string) ($item['name'] ?? ''), 0, 40), ENT_QUOTES)
+                . '</a><br>';
+        }
+
+        return '<div>'
+            . ($limit <= 0 || count($userlist) <= $limit
+                ? $ul
+                : self::hintFunction(array('content' => $ul, 'icon' => 'user'), $template) . count($userlist))
+            . '</div>';
+    }
+
     public static function userSelectionFunction(array $params, $template)
     {
         static $userlist = array();

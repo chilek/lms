@@ -329,7 +329,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $event['helpdesk'] = !empty($event['ticketid']);
 
         $event['userlist'] = $this->db->GetAllByKey(
-            'SELECT u.id, u.rname, u.name, u.login
+            'SELECT u.id, u.rname, u.name, u.login, u.deleted, u.access
             FROM vusers u
             JOIN eventassignments a ON a.userid = u.id
             WHERE a.eventid = ?',

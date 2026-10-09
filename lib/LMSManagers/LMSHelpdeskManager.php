@@ -972,7 +972,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 }
             }
             foreach ($result as $idx => $category) {
-                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
+                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name, u.deleted,
+				(CASE WHEN u.access = 1 AND u.accessfrom <= ?NOW? AND (u.accessto >= ?NOW? OR u.accessto = 0) THEN 1 ELSE 0 END) AS access
+				FROM rtcategoryusers cu
 				LEFT JOIN vusers u ON cu.userid = u.id
 				WHERE categoryid = ?', array($category['id']));
             }
