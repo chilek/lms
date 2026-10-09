@@ -165,9 +165,13 @@ unset($nodelist['direction']);
 unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
 
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_WARNING));
-$SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
-$SMARTY->assign('warnon', $SESSION->get('warnon'));
-$SMARTY->assign('warnoff', $SESSION->get('warnoff'));
-$SMARTY->assign('nodelist', $nodelist);
+$SMARTY->assign(
+    array(
+        'messagetemplates' => $LMS->GetMessageTemplates(TMPL_WARNING),
+        'warnmessage' => $SESSION->get('warnmessage'),
+        'warnon' => $SESSION->get('warnon'),
+        'warnoff' => $SESSION->get('warnoff'),
+        'nodelist' => $nodelist,
+    )
+);
 $SMARTY->display('node/nodewarnings.html');

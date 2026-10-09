@@ -91,11 +91,14 @@ $voipaccountlist = $hook_data['voipaccountlist'];
 $listdata = $hook_data['listdata'];
 
 $LMS->InitXajax();
-$SMARTY->assign('xajax', $LMS->RunXajax());
-
-$SMARTY->assign('page', $page);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('voipaccountlist', $voipaccountlist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'xajax' => $LMS->RunXajax(),
+        'page' => $page,
+        'pagelimit' => $pagelimit,
+        'start' => $start,
+        'voipaccountlist' => $voipaccountlist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('voipaccount/voipaccountlist.html');

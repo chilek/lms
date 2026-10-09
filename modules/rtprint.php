@@ -316,8 +316,12 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('List of Requests');
 
-        $SMARTY->assign('list', $list);
-        $SMARTY->assign('comment_details', $comment_details);
+        $SMARTY->assign(
+            array(
+                'list' => $list,
+                'comment_details' => $comment_details,
+            )
+        );
 
         $SMARTY->display($extended ? 'rt/rtprinttickets-ext.html' : 'rt/rtprinttickets.html');
         break;
@@ -330,8 +334,12 @@ switch ($type) {
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {
             $SMARTY->assign('customers', $LMS->GetCustomerNames());
         }
-        $SMARTY->assign('queues', $LMS->GetQueueList(array('stats' => false)));
-        $SMARTY->assign('categories', $categories);
+        $SMARTY->assign(
+            array(
+                'queues' => $LMS->GetQueueList(array('stats' => false)),
+                'categories' => $categories,
+            )
+        );
         $SMARTY->display('rt/rtprintindex.html');
         break;
 }

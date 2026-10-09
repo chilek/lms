@@ -36,6 +36,10 @@ if (empty($customergrouplist)) {
     unset($customergrouplist['total'], $customergrouplist['totalcount']);
 }
 
-$SMARTY->assign('customergrouplist', $customergrouplist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'customergrouplist' => $customergrouplist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('customer/customergrouplist.html');

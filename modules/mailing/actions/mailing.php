@@ -209,7 +209,11 @@ if (isset($_POST['mailing'])) {
     $SMARTY->assign('mailing', $mailing);
 }
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'networks' => $LMS->GetNetworks(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'userinfo' => $LMS->GetUserInfo(Auth::GetCurrentUser()),
+    )
+);

@@ -376,9 +376,13 @@ if (isset($search) || isset($_GET['s'])) {
         $SESSION->save('rtp', $page ?? 0);
         $SESSION->save('rtsearch', $search);
 
-        $SMARTY->assign('pagination', $pagination);
-        $SMARTY->assign('queue', $queue);
-        $SMARTY->assign('filter', $search);
+        $SMARTY->assign(
+            array(
+                'pagination' => $pagination,
+                'queue' => $queue,
+                'filter' => $search,
+            )
+        );
         $SMARTY->display('rt/rtsearchresults.html');
         $SESSION->close();
         die;
@@ -406,9 +410,13 @@ function netnode_changed($netnodeid, $netdevid)
     $netdevlist = $LMS->GetNetDevList('name', $search);
     unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
-    $SMARTY->assign('netdevlist', $netdevlist);
-    $SMARTY->assign('ticket', array('netdevid' => $netdevid));
-    $SMARTY->assign('form', 'search');
+    $SMARTY->assign(
+        array(
+            'netdevlist' => $netdevlist,
+            'ticket' => array('netdevid' => $netdevid),
+            'form' => 'search',
+        )
+    );
     $content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
     $JSResponse->assign('rtnetdevs', 'innerHTML', $content);
 
@@ -427,12 +435,16 @@ unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 $netdevlist = $LMS->GetNetDevList();
 unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
-$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', $search ?? null);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'queuelist' => $LMS->GetQueueList(array('stats' => false)),
+        'categories' => $categories,
+        'netnodelist' => $netnodelist,
+        'netdevlist' => $netdevlist,
+        'userlist' => $LMS->GetUserNames(),
+        'customerlist' => $LMS->GetAllCustomerNames(),
+        'search' => $search ?? null,
+        'error' => $error,
+    )
+);
 $SMARTY->display('rt/rtsearch.html');

@@ -52,7 +52,11 @@ $SESSION->save('uldiv', $selectedDivision, true);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('userslist', $userslist);
-$SMARTY->assign('selectedDivision', $selectedDivision);
-$SMARTY->assign('superuser', $superuser);
+$SMARTY->assign(
+    array(
+        'userslist' => $userslist,
+        'selectedDivision' => $selectedDivision,
+        'superuser' => $superuser,
+    )
+);
 $SMARTY->display('user/userlist.html');

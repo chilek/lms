@@ -97,6 +97,10 @@ $layout['pagetitle'] = trans('New Cash History Entry');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('reglog', $reglog);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'reglog' => $reglog,
+        'error' => $error,
+    )
+);
 $SMARTY->display('cash/cashreglogadd.html');

@@ -73,6 +73,10 @@ $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('unlockedit', true);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'userinfo' => $userinfo,
+        'unlockedit' => true,
+        'error' => $error,
+    )
+);

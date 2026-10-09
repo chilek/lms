@@ -45,7 +45,7 @@ if (empty($ticket)) {
 }
 $LMS->getTicketImageGalleries($ticket);
 
-if (isset($_GET['ajax']) && isset($_GET['op'])) {
+if (isset($_GET['ajax'], $_GET['op'])) {
     header('Content-Type: application/json');
     if ($_GET['op'] = 'get-image-gallery') {
         echo json_encode($ticket['images']);
@@ -108,9 +108,13 @@ if ($ticket['customerid'] && $notification_customerinfo) {
     $customernodes = $LMS->GetCustomerNodes($ticket['customerid']);
     $allnodegroups = $LMS->GetNodeGroupNames();
 
-    $SMARTY->assign('customerinfo', $customer);
-    $SMARTY->assign('customernodes', $customernodes);
-    $SMARTY->assign('allnodegroups', $allnodegroups);
+    $SMARTY->assign(
+        array(
+            'customerinfo' => $customer,
+            'customernodes' => $customernodes,
+            'allnodegroups' => $allnodegroups,
+        )
+    );
 }
 
 $iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc',

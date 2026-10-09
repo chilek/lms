@@ -227,7 +227,7 @@ if (isset($_POST['document'])) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
         }
@@ -448,7 +448,7 @@ if (isset($_POST['document'])) {
                 $document['number']++;
             }
 
-            if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
+            if (isset($_GET['print'], $docfile) && $docfile['contenttype'] == 'text/html') {
                 print $output;
                 print '<DIV style="page-break-after: always;"></DIV>';
                 flush();
@@ -482,7 +482,7 @@ if (isset($_POST['document'])) {
 
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
-            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                 $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
             }
 
@@ -505,13 +505,17 @@ if (isset($_POST['document'])) {
             }
 
             // get plugin content
-            $SMARTY->assign('plugin_result', $result);
-            $SMARTY->assign('script_result', $script_result);
-            $SMARTY->assign('attachment_result', GenerateAttachmentHTML(
-                $template_dir,
-                $engine,
-                $document['attachments'] ?? array()
-            ));
+            $SMARTY->assign(
+                array(
+                    'plugin_result' => $result,
+                    'script_result' => $script_result,
+                    'attachment_result' => GenerateAttachmentHTML(
+                        $template_dir,
+                        $engine,
+                        $document['attachments'] ?? array()
+                    ),
+                )
+            );
         }
     }
 } else {
@@ -565,8 +569,12 @@ if (isset($document['type'])) {
     }
 }
 
-$SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', $document['type'] ?? null);
+$SMARTY->assign(
+    array(
+        'numberplans' => $numberplans,
+        'planDocumentType' => $document['type'] ?? null,
+    )
+);
 
 $docengines = GetDocumentTemplates($rights, $document['type'] ?? null);
 
@@ -583,11 +591,15 @@ if (isset($document['type']) && !empty($docengines)) {
     }
 }
 
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('error', $error);
-$SMARTY->assign('docrights', $rights);
-$SMARTY->assign('allnumberplans', $allnumberplans);
-$SMARTY->assign('docengines', $docengines);
-$SMARTY->assign('document', $document);
+$SMARTY->assign(
+    array(
+        'networks' => $LMS->GetNetworks(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'error' => $error,
+        'docrights' => $rights,
+        'allnumberplans' => $allnumberplans,
+        'docengines' => $docengines,
+        'document' => $document,
+    )
+);
 $SMARTY->display('document/documentgen.html');

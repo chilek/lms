@@ -92,6 +92,10 @@ $hook_data = $LMS->executeHook(
 );
 $customerinfo = $hook_data['customerinfo'];
 
-$SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign('customerinfo_sortable_order', $SESSION->get_persistent_setting('customerinfo-sortable-order'));
+$SMARTY->assign(
+    array(
+        'xajax' => $LMS->RunXajax(),
+        'customerinfo_sortable_order' => $SESSION->get_persistent_setting('customerinfo-sortable-order'),
+    )
+);
 $SMARTY->display('customer/customerinfo.html');

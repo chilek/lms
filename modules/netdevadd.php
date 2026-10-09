@@ -119,7 +119,7 @@ if (isset($netdev)) {
         }
     }
 
-    if (isset($netdev['terc']) && isset($netdev['simc']) && isset($netdev['ulic'])) {
+    if (isset($netdev['terc'], $netdev['simc'], $netdev['ulic'])) {
         $teryt = $LMS->TerytToLocation($netdev['terc'], $netdev['simc'], $netdev['ulic']);
         $netdev['teryt'] = 1;
         $netdev['location_state'] = $teryt['location_state'];
@@ -270,8 +270,12 @@ if (isset($netdev)) {
         $netdev['address_id'] = $netdev['customer_address_id'];
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('netdev', $netdev);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'netdev' => $netdev,
+        )
+    );
 } elseif (isset($_GET['id'])) {
     $netdev = $LMS->GetNetDev($_GET['id']);
 
@@ -299,12 +303,15 @@ if (isset($netdev)) {
 
 $layout['pagetitle'] = trans('New Device');
 
-$SMARTY->assign('nastypes', $LMS->GetNAStypes());
-
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
-$SMARTY->assign('NNnodes', $LMS->GetNetNodes());
-$SMARTY->assign('producers', $LMS->GetProducers());
-$SMARTY->assign('models', $LMS->GetModels());
+$SMARTY->assign(
+    array(
+        'nastypes' => $LMS->GetNAStypes(),
+        'NNprojects' => $LMS->GetProjects(),
+        'NNnodes' => $LMS->GetNetNodes(),
+        'producers' => $LMS->GetProducers(),
+        'models' => $LMS->GetModels(),
+    )
+);
 
 if (!empty($netdev['ownerid'])) {
     $addresses = $LMS->getCustomerAddresses($netdev['ownerid']);

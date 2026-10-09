@@ -204,10 +204,14 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountinfo = $hook_data['voipaccountinfo'];
 
-$SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
-$SMARTY->assign('customervoipaccounts', $customervoipaccounts);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('voipaccountinfo', $voipaccountinfo);
-$SMARTY->assign('customer_addresses', empty($voipaccountinfo['ownerid']) ? array() : $LMS->getCustomerAddresses($voipaccountinfo['ownerid']));
+$SMARTY->assign(
+    array(
+        'pool_list' => $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"),
+        'customervoipaccounts' => $customervoipaccounts,
+        'error' => $error,
+        'voipaccountinfo' => $voipaccountinfo,
+        'customer_addresses' => empty($voipaccountinfo['ownerid']) ? array() : $LMS->getCustomerAddresses($voipaccountinfo['ownerid']),
+    )
+);
 
 $SMARTY->display('voipaccount/voipaccountedit.html');

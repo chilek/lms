@@ -293,8 +293,12 @@ if ($pool_list) {
 
 $layout['pagetitle'] = trans('Pool numbers');
 
-$SMARTY->assign('pooltypes', $VOIP_POOL_NUMBER_TYPES);
-$SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('pool_list', $pool_list);
-$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'pooltypes' => $VOIP_POOL_NUMBER_TYPES,
+        'prefixlist' => $LMS->GetPrefixList(),
+        'pool_list' => $pool_list,
+        'hostlist' => $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'),
+    )
+);
 $SMARTY->display('voipaccount/voippoolnumberlist.html');

@@ -52,7 +52,11 @@ $layout['pagetitle'] = trans('New investment project');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('invprojectadd', $invproject);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'invprojectadd' => $invproject,
+        'divisions' => $LMS->GetDivisions(),
+        'error' => $error,
+    )
+);
 $SMARTY->display('invproject/invprojectadd.html');

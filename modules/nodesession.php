@@ -26,7 +26,7 @@
 
 header('Content-type: application/json');
 
-if (!isset($_GET['action']) || !isset($_GET['id'])) {
+if (!isset($_GET['action'], $_GET['id'])) {
     die('[]');
 }
 

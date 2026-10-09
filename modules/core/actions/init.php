@@ -54,8 +54,12 @@ $layout['dberrors'] =& $DB->GetErrors();
 $layout['popup'] = isset($_GET['popup']);
 
 $SMARTY->assignByRef('layout', $layout);
-$SMARTY->assign('_module', $ExecStack->module);
-$SMARTY->assign('_action', $ExecStack->action);
+$SMARTY->assign(
+    array(
+        '_module' => $ExecStack->module,
+        '_action' => $ExecStack->action,
+    )
+);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 

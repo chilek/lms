@@ -42,7 +42,7 @@ switch ($action) {
         break;
 }
 
-if (isset($_GET['s']) && isset($_GET['v'])) {
+if (isset($_GET['s'], $_GET['v'])) {
     $params = array(
         'section' => $_GET['s'],
         'variable' => $_GET['v'],
@@ -264,12 +264,16 @@ if (!empty($reftype)) {
 
 $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 
-$SMARTY->assign('reftype', $reftype);
-$SMARTY->assign('refconfigid', $refconfigid);
-$SMARTY->assign('divisioninfo', $divisioninfo);
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('sections', $LMS->GetConfigSections());
-$SMARTY->assign('error', $error);
-$SMARTY->assign('config', $config);
-$SMARTY->assign('relatedoptions', $relatedOptions);
+$SMARTY->assign(
+    array(
+        'reftype' => $reftype,
+        'refconfigid' => $refconfigid,
+        'divisioninfo' => $divisioninfo,
+        'userinfo' => $userinfo,
+        'sections' => $LMS->GetConfigSections(),
+        'error' => $error,
+        'config' => $config,
+        'relatedoptions' => $relatedOptions,
+    )
+);
 $SMARTY->display('config/configedit.html');

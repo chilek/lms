@@ -57,6 +57,10 @@ if ($reglist) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('reglist', $reglist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'reglist' => $reglist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('cash/cashreglist.html');

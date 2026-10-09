@@ -280,11 +280,15 @@ if (isset($_GET['search'])) {
 
     $SESSION->save('cslp', $page);
 
-    $SMARTY->assign('customerlist', $customerlist);
-    $SMARTY->assign('listdata', $listdata);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('page', $page);
-    $SMARTY->assign('start', $start);
+    $SMARTY->assign(
+        array(
+            'customerlist' => $customerlist,
+            'listdata' => $listdata,
+            'pagelimit' => $pagelimit,
+            'page' => $page,
+            'start' => $start,
+        )
+    );
 
     if (isset($_GET['print'])) {
         $SMARTY->display('print/printcustomerlist.html');
@@ -322,8 +326,12 @@ if (isset($_GET['search'])) {
             $allowed_customer_status = array_combine($allowed_customer_status, $allowed_customer_status);
         }
 
-        $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
-        $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+        $SMARTY->assign(
+            array(
+                'allowed_customer_status' => $allowed_customer_status,
+                'customergroups' => $LMS->CustomergroupGetAll(),
+            )
+        );
         $SMARTY->display('customer/customersearchresults.html');
     }
 } else {
@@ -342,23 +350,27 @@ if (isset($_GET['search'])) {
 
     $SESSION->remove('cslp');
 
-    $SMARTY->assign('networks', $LMS->GetNetworks());
-    $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-    $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-    $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-    $SMARTY->assign('tariffs', $LMS->GetTariffs());
-    $SMARTY->assign('promotions', $LMS->GetPromotions());
-    $SMARTY->assign('divisions', $LMS->GetDivisions());
-    $SMARTY->assign('k', $sqlskey);
-    $SMARTY->assign('sk', $statesqlskey);
-    $SMARTY->assign('cgk', $customergroupsqlskey);
-    $SMARTY->assign('cgnot', $customergroupnegation);
-    $SMARTY->assign('customergroupdate', $customergroupdate);
-    $SMARTY->assign('fk', $flagsqlskey);
-    $SMARTY->assign('ngk', $nodegroupsqlskey);
-    $SMARTY->assign('ngnot', $nodegroupnegation);
-    $SMARTY->assign('karma', $karma);
-    $SMARTY->assign('netdevicetypes', $DB->GetAllByKey('SELECT * FROM netdevicetypes', 'id'));
+    $SMARTY->assign(
+        array(
+            'networks' => $LMS->GetNetworks(),
+            'customergroups' => $LMS->CustomergroupGetAll(),
+            'nodegroups' => $LMS->GetNodeGroupNames(),
+            'cstateslist' => $LMS->GetCountryStates(),
+            'tariffs' => $LMS->GetTariffs(),
+            'promotions' => $LMS->GetPromotions(),
+            'divisions' => $LMS->GetDivisions(),
+            'k' => $sqlskey,
+            'sk' => $statesqlskey,
+            'cgk' => $customergroupsqlskey,
+            'cgnot' => $customergroupnegation,
+            'customergroupdate' => $customergroupdate,
+            'fk' => $flagsqlskey,
+            'ngk' => $nodegroupsqlskey,
+            'ngnot' => $nodegroupnegation,
+            'karma' => $karma,
+            'netdevicetypes' => $DB->GetAllByKey('SELECT * FROM netdevicetypes', 'id'),
+        )
+    );
 
     $hook_data = $LMS->executeHook(
         'customersearch_before_display',

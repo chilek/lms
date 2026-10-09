@@ -45,11 +45,15 @@ if ($id) {
     $LMS->executeHook('customer_otherip_before_display', array('smarty' => $SMARTY, 'customerid' => $id));
 
     $customerinfo = $LMS->GetCustomer($id);
-    $SMARTY->assign('customerinfo', $customerinfo);
-    $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($id));
-    $SMARTY->assign('limit', 15);
-    $SMARTY->assign('account_no', ConfigHelper::getConfig('finances.account'));
-    $SMARTY->assign('bank_name', ConfigHelper::getConfig('finances.bank'));
+    $SMARTY->assign(
+        array(
+            'customerinfo' => $customerinfo,
+            'balancelist' => $LMS->GetCustomerBalanceList($id),
+            'limit' => 15,
+            'account_no' => ConfigHelper::getConfig('finances.account'),
+            'bank_name' => ConfigHelper::getConfig('finances.bank'),
+        )
+    );
     $SMARTY->display('balanceview.html');
 } else {
     header('Location: index.php?error=1');

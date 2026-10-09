@@ -153,11 +153,15 @@ $SESSION->save('alp', $page);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('accountlist', $accountlist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'accountlist' => $accountlist,
+        'listdata' => $listdata,
+        'customerlist' => $LMS->GetAllCustomerNames(),
+        'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+    )
+);
 $SMARTY->display('account/accountlist.html');

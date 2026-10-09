@@ -219,10 +219,14 @@ switch ($bar) {
             $to = strtotime($to);
         }
 
-        $SMARTY->assign('datefrom', $from);
-        $SMARTY->assign('dateto', $to);
-        $SMARTY->assign('net', $net);
-        $SMARTY->assign('customer', $customer);
+        $SMARTY->assign(
+            array(
+                'datefrom' => $from,
+                'dateto' => $to,
+                'net' => $net,
+                'customer' => $customer,
+            )
+        );
 
         $traffic = Traffic(
             $from,
@@ -235,8 +239,12 @@ switch ($bar) {
         break;
 
     default: // set filter window
-        $SMARTY->assign('netlist', $LMS->GetNetworks());
-        $SMARTY->assign('nodelist', $LMS->GetNodeList());
+        $SMARTY->assign(
+            array(
+                'netlist' => $LMS->GetNetworks(),
+                'nodelist' => $LMS->GetNodeList(),
+            )
+        );
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {
             $SMARTY->assign('customers', $LMS->GetCustomerNames());
         }
@@ -245,8 +253,12 @@ switch ($bar) {
 }
 
 if (isset($traffic)) {
-    $SMARTY->assign('download', $traffic['download']);
-    $SMARTY->assign('upload', $traffic['upload']);
+    $SMARTY->assign(
+        array(
+            'download' => $traffic['download'],
+            'upload' => $traffic['upload'],
+        )
+    );
 }
 
 // fuck this anyway... Maybe i write function in LMS:: for this, but not now
@@ -264,13 +276,17 @@ if (empty($starttime)) {
 }
 $endyear = date('Y', $endtime);
 
-$SMARTY->assign('starttime', $starttime);
-$SMARTY->assign('startyear', $startyear);
-$SMARTY->assign('endtime', $endtime);
-$SMARTY->assign('endyear', $endyear);
-$SMARTY->assign('showips', isset($_POST['showips']));
-$SMARTY->assign('bars', $bars);
-$SMARTY->assign('bar', $bar);
-$SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
-$SMARTY->assign('trafficnet', $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0);
+$SMARTY->assign(
+    array(
+        'starttime' => $starttime,
+        'startyear' => $startyear,
+        'endtime' => $endtime,
+        'endyear' => $endyear,
+        'showips' => isset($_POST['showips']),
+        'bars' => $bars,
+        'bar' => $bar,
+        'trafficorder' => $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download',
+        'trafficnet' => $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
+    )
+);
 $SMARTY->display('traffic/traffic.html');

@@ -35,8 +35,12 @@ for ($i=1; $i<13; $i++) {
     $months[$i] = date('F', mktime(0, 0, 0, $i, 1));
 }
 
-$SMARTY->assign('currmonth', date('n'));
-$SMARTY->assign('curryear', date('Y'));
-$SMARTY->assign('statyears', $statyears);
-$SMARTY->assign('months', $months);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign(
+    array(
+        'currmonth' => date('n'),
+        'curryear' => date('Y'),
+        'statyears' => $statyears,
+        'months' => $months,
+        'customers' => $LMS->GetCustomerNames(),
+    )
+);
