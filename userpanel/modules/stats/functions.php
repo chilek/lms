@@ -166,7 +166,7 @@ function module_main()
     global $SMARTY, $SESSION;
     $bars = 1;
 
-    if (isset($_GET['bar']) && isset($_POST['order'])) {
+    if (isset($_GET['bar'], $_POST['order'])) {
         $SESSION->save('trafficorder', $_POST['order']);
     }
 

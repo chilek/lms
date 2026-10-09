@@ -26,7 +26,7 @@
 
 function smarty_function_js(array $params, Smarty_Internal_Template $template)
 {
-    if (isset($params['plugin']) && isset($params['filename'])) {
+    if (isset($params['plugin'], $params['filename'])) {
         $filename = PLUGIN_DIR . DIRECTORY_SEPARATOR . $params['plugin'] . DIRECTORY_SEPARATOR
             . 'js' . DIRECTORY_SEPARATOR . $params['filename'];
         if (file_exists($filename)) {

@@ -416,7 +416,7 @@ function module_submit_rights()
     }
 
     $setrights=$_POST['setrights'];
-    if (isset($setrights) && isset($setrights['mcustomerid'])) {
+    if (isset($setrights, $setrights['mcustomerid'])) {
         $newrights=$setrights['rights'];
         foreach ($setrights['mcustomerid'] as $customer) {
             $oldrights=$DB->GetAll(

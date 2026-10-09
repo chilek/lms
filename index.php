@@ -493,7 +493,7 @@ if ($AUTH->islogged) {
                 }
             } else {
                 // persistent filter ajax management
-                if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
+                if (isset($_GET['persistent-filter'], $_GET['action'])) {
                     $filterId = $_POST['filter-id'] ?? null;
                     switch ($_GET['action']) {
                         case 'update':

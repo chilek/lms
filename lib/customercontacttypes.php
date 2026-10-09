@@ -443,7 +443,7 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
     );
     if (!empty($flags)) {
         foreach ($type['ui']['flags'] as $flagvalue => $flag) {
-            if (isset($flag['alias']) && isset($flags[$flag['alias']])) {
+            if (isset($flag['alias'], $flags[$flag['alias']])) {
                 $contact_default_flags[$ctype][$flagvalue] = $flagvalue;
             }
         }

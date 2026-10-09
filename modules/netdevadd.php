@@ -119,7 +119,7 @@ if (isset($netdev)) {
         }
     }
 
-    if (isset($netdev['terc']) && isset($netdev['simc']) && isset($netdev['ulic'])) {
+    if (isset($netdev['terc'], $netdev['simc'], $netdev['ulic'])) {
         $teryt = $LMS->TerytToLocation($netdev['terc'], $netdev['simc'], $netdev['ulic']);
         $netdev['teryt'] = 1;
         $netdev['location_state'] = $teryt['location_state'];

@@ -199,7 +199,7 @@ switch ($action) {
             $contents = changeContents($contents, $itemdata['invoice-contents']);
         }
         if ($action == 'savepos') {
-            if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']])) {
+            if (!isset($_GET['posuid'], $contents[$_GET['posuid']])) {
                 die;
             }
             $posuid = $_GET['posuid'];

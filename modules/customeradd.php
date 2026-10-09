@@ -314,7 +314,7 @@ if (isset($_POST['customeradd'])) {
 
     if (isset($customeradd['ssn'])) {
         if ($customeradd['ssn'] != '') {
-            if (isset($customeradd['ssnwarning']) && isset($customeradd['oldssn']) && $customeradd['oldssn'] != $customeradd['ssn']) {
+            if (isset($customeradd['ssnwarning'], $customeradd['oldssn']) && $customeradd['oldssn'] != $customeradd['ssn']) {
                 unset($customeradd['ssnwarning']);
             }
             if (!isset($customeradd['ssnwarning'])) {

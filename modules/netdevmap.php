@@ -463,7 +463,7 @@ if ($type == 'openlayers') {
     $links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
     if ($links) {
         foreach ($links as $link) {
-            if (!isset($devicemap[$link['src']]['x']) || !isset($devicemap[$link['dst']]['x'])) {
+            if (!isset($devicemap[$link['src']]['x'], $devicemap[$link['dst']]['x'])) {
                 continue;
             }
             $src_celx = $devicemap[$link['src']]['x'];
