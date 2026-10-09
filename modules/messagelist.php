@@ -139,7 +139,11 @@ $SESSION->save('mlp', $page);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('messagelist', $messagelist);
+$SMARTY->assign(
+    array(
+        'listdata' => $listdata,
+        'pagination' => $pagination,
+        'messagelist' => $messagelist,
+    )
+);
 $SMARTY->display('message/messagelist.html');

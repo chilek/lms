@@ -330,14 +330,18 @@ if (isset($_POST['tariff'])) {
 
 $layout['pagetitle'] = trans('Subscription Edit: $a', $tariff['name']);
 
-$SMARTY->assign('voip_tariffs', $LMS->getVoipTariffs());
-$SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
-$SMARTY->assign('tariff', $tariff);
-$SMARTY->assign('tarifftags', $LMS->TarifftagGetAll());
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_INVOICE,
-    'next' => false,
-)));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'voip_tariffs' => $LMS->getVoipTariffs(),
+        'voip_tariffrules' => $LMS->getVoipTariffRuleGroups(),
+        'tariff' => $tariff,
+        'tarifftags' => $LMS->TarifftagGetAll(),
+        'taxeslist' => $LMS->GetTaxes(),
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_INVOICE,
+            'next' => false,
+        )),
+        'error' => $error,
+    )
+);
 $SMARTY->display('tariff/tariffedit.html');

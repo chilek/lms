@@ -381,11 +381,15 @@ if (isset($_GET['search'])) {
         $start = ($page - 1) * $pagelimit;
         $SESSION->save('nslp', $page);
 
-        $SMARTY->assign('page', $page);
-        $SMARTY->assign('pagelimit', $pagelimit);
-        $SMARTY->assign('start', $start);
-        $SMARTY->assign('nodelist', $nodelist);
-        $SMARTY->assign('listdata', $listdata);
+        $SMARTY->assign(
+            array(
+                'page' => $page,
+                'pagelimit' => $pagelimit,
+                'start' => $start,
+                'nodelist' => $nodelist,
+                'listdata' => $listdata,
+            )
+        );
 
         $netdevlist = $LMS->GetNetDevList();
         unset($netdevlist['total']);
@@ -398,15 +402,23 @@ if (isset($_GET['search'])) {
         } elseif ($listdata['total'] == 1) {
             $SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
         } else {
-            $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-            $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+            $SMARTY->assign(
+                array(
+                    'nodegroups' => $LMS->GetNodeGroupNames(),
+                    'customergroups' => $LMS->CustomergroupGetAll(),
+                )
+            );
             $SMARTY->display('node/nodesearchresults.html');
         }
         $SESSION->close();
         die;
     } else {
-        $SMARTY->assign('error', $error);
-        $SMARTY->assign('nodesearch', $nodesearch);
+        $SMARTY->assign(
+            array(
+                'error' => $error,
+                'nodesearch' => $nodesearch,
+            )
+        );
     }
 }
 
@@ -417,7 +429,11 @@ $layout['pagetitle'] = trans('Nodes Search');
 
 $SESSION->remove('nslp');
 
-$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
-$SMARTY->assign('k', $k);
+$SMARTY->assign(
+    array(
+        'states' => $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'),
+        'k' => $k,
+    )
+);
 
 $SMARTY->display('node/nodesearch.html');

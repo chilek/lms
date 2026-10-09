@@ -150,8 +150,12 @@ function GetCashRegistriesXajax($cid, $regid)
     $result = new xajaxResponse();
 
     $cashreglist = $LMS->GetCashRegistries($cid);
-    $SMARTY->assign('cashreglist', $cashreglist);
-    $SMARTY->assign('regid', $regid);
+    $SMARTY->assign(
+        array(
+            'cashreglist' => $cashreglist,
+            'regid' => $regid,
+        )
+    );
     $contents = $SMARTY->fetch('receipt/receiptcashregistries.html');
     $result->assign('cashregistries', 'innerHTML', $contents);
 
@@ -1012,12 +1016,16 @@ if (empty($cashreglist)) {
     $cashreglist = array();
 }
 
-$SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])));
-$SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', count($cashreglist));
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('receipt', $receipt);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'invoicelist' => $invoicelist,
+        'rights' => $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])),
+        'cashreglist' => $cashreglist,
+        'cashregcount' => count($cashreglist),
+        'contents' => $contents,
+        'customer' => $customer,
+        'receipt' => $receipt,
+        'error' => $error,
+    )
+);
 $SMARTY->display('receipt/receiptadd.html');

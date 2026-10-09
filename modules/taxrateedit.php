@@ -125,6 +125,10 @@ $layout['pagetitle'] = trans('Tax Rate Edit: $a', $label);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('taxrateedit', $taxrate);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'taxrateedit' => $taxrate,
+        'error' => $error,
+    )
+);
 $SMARTY->display('taxrate/taxrateedit.html');

@@ -931,14 +931,17 @@ if (isset($cnote['recipient_address2'])) {
         $addresses2
     );
 }
-$SMARTY->assign('addresses2', $addresses2);
-
-$SMARTY->assign('error', $error);
-$SMARTY->assign('warning', $warning);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('cnote', $cnote);
-$SMARTY->assign('refdoc', $cnote);
-$SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign(
+    array(
+        'addresses2' => $addresses2,
+        'error' => $error,
+        'warning' => $warning,
+        'contents' => $contents,
+        'cnote' => $cnote,
+        'refdoc' => $cnote,
+        'taxeslist' => $taxeslist,
+    )
+);
 
 $args = array(
     'doctype' => DOC_CNOTE,
@@ -952,9 +955,13 @@ if (!$numberplanlist) {
     $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
 }
 
-$SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->assign('planDocumentType', DOC_CNOTE);
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
+$SMARTY->assign(
+    array(
+        'numberplanlist' => $numberplanlist,
+        'planDocumentType' => DOC_CNOTE,
+        'messagetemplates' => $LMS->GetMessageTemplates(TMPL_CNOTE_REASON),
+    )
+);
 
 $total_value = 0;
 if (!empty($contents)) {

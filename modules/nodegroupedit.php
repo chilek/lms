@@ -77,12 +77,16 @@ if (isset($_POST['nodegroup'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('nodegroup', $nodegroup);
-$SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodescount', count($nodes));
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('membersnetid', $membersnetid ?? 0);
-$SMARTY->assign('othersnetid', $othersnetid ?? 0);
+$SMARTY->assign(
+    array(
+        'nodegroup' => $nodegroup,
+        'nodes' => $nodes,
+        'nodescount' => count($nodes),
+        'networks' => $LMS->GetNetworks(),
+        'nodegroups' => $LMS->GetNodeGroupNames(),
+        'membersnetid' => $membersnetid ?? 0,
+        'othersnetid' => $othersnetid ?? 0,
+    )
+);
 
 $SMARTY->display('node/nodegroupedit.html');

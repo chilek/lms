@@ -453,6 +453,10 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
 global $SMARTY;
 
 if (isset($SMARTY)) {
-    $SMARTY->assign('_CUSTOMERCONTACTTYPES', $CUSTOMERCONTACTTYPES);
-    $SMARTY->assign('contact_default_flags', $contact_default_flags);
+    $SMARTY->assign(
+        array(
+            '_CUSTOMERCONTACTTYPES' => $CUSTOMERCONTACTTYPES,
+            'contact_default_flags' => $contact_default_flags,
+        )
+    );
 }

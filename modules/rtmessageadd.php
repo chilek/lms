@@ -1212,16 +1212,28 @@ if (!is_array($message['ticketid'])) {
         $message['smsnotify'] = !empty($contacts['phones']);
     }
 
-    $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
-    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($message['queueid'], RTMESSAGE_REGULAR));
+    $SMARTY->assign(
+        array(
+            'queuelist' => $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']),
+            'messagetemplates' => $LMS->GetMessageTemplatesByQueueAndType($message['queueid'], RTMESSAGE_REGULAR),
+        )
+    );
 } else {
-    $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
-    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
+    $SMARTY->assign(
+        array(
+            'queuelist' => $LMS->GetQueueList(array('stats' => false)),
+            'messagetemplates' => $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR),
+        )
+    );
 }
-$SMARTY->assign('citing', isset($_GET['citing']) || $quote_body);
-$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('contacts', $contacts);
-$SMARTY->assign('message', $message);
+$SMARTY->assign(
+    array(
+        'citing' => isset($_GET['citing']) || $quote_body,
+        'userlist' => $LMS->GetUserNames(array('withDeleted' => 1)),
+        'categories' => $categories,
+        'contacts' => $contacts,
+        'message' => $message,
+    )
+);
 
 $SMARTY->display('rt/rtmessageadd.html');

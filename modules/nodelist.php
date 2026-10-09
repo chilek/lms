@@ -116,11 +116,15 @@ if ($api) {
     die;
 }
 
-$SMARTY->assign('nodelist', $nodelist);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
+$SMARTY->assign(
+    array(
+        'nodelist' => $nodelist,
+        'pagination' => $pagination,
+        'networks' => $LMS->GetNetworks(),
+        'nodegroups' => $LMS->GetNodeGroupNames(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+        'NNprojects' => $LMS->GetProjects(),
+    )
+);
 
 $SMARTY->display('node/nodelist.html');

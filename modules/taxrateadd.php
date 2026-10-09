@@ -105,6 +105,10 @@ $layout['pagetitle'] = trans('New Tax Rate');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('taxrateadd', $taxrateadd);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'taxrateadd' => $taxrateadd,
+        'error' => $error,
+    )
+);
 $SMARTY->display('taxrate/taxrateadd.html');

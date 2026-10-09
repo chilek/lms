@@ -112,9 +112,13 @@ if (isset($_POST['fileupload'])) {
     }
 }
 
-$SMARTY->assign('users', $lms->getUsers(array('superuser' => 1)));
-$SMARTY->assign('sections', $lms->GetConfigSections());
-$SMARTY->assign('divisions', $lms->GetDivisions());
-$SMARTY->assign('error', $error);
-$SMARTY->assign('config', $config);
+$SMARTY->assign(
+    array(
+        'users' => $lms->getUsers(array('superuser' => 1)),
+        'sections' => $lms->GetConfigSections(),
+        'divisions' => $lms->GetDivisions(),
+        'error' => $error,
+        'config' => $config,
+    )
+);
 $SMARTY->display('config/configimport.html');

@@ -29,20 +29,24 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         global $SMARTY,$LMS;
 
-        $SMARTY->assign('disable_transferform', ConfigHelper::getConfig('userpanel.disable_transferform'));
-        $SMARTY->assign('disable_invoices', ConfigHelper::getConfig('userpanel.disable_invoices'));
-        $SMARTY->assign('invoice_duplicate', ConfigHelper::getConfig('userpanel.invoice_duplicate'));
-        $SMARTY->assign('show_tariffname', ConfigHelper::getConfig('userpanel.show_tariffname'));
-        $SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
-        $SMARTY->assign('show_period', ConfigHelper::getConfig('userpanel.show_period'));
-        $SMARTY->assign('show_discount', ConfigHelper::getConfig('userpanel.show_discount'));
-        $SMARTY->assign('show_discounted_value', ConfigHelper::getConfig('userpanel.show_discounted_value'));
-        $SMARTY->assign('show_invoice_flag', ConfigHelper::getConfig('userpanel.show_invoice_flag'));
-        $SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
-        $SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
-        $SMARTY->assign('show_all_assignments', ConfigHelper::checkConfig('userpanel.show_all_assignments'));
-        $SMARTY->assign('speed_unit_type', ConfigHelper::getConfig('userpanel.speed_unit_type'));
-        $SMARTY->assign('speed_unit_aggregation_threshold', ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold'));
+        $SMARTY->assign(
+            array(
+                'disable_transferform' => ConfigHelper::getConfig('userpanel.disable_transferform'),
+                'disable_invoices' => ConfigHelper::getConfig('userpanel.disable_invoices'),
+                'invoice_duplicate' => ConfigHelper::getConfig('userpanel.invoice_duplicate'),
+                'show_tariffname' => ConfigHelper::getConfig('userpanel.show_tariffname'),
+                'show_speeds' => ConfigHelper::getConfig('userpanel.show_speeds'),
+                'show_period' => ConfigHelper::getConfig('userpanel.show_period'),
+                'show_discount' => ConfigHelper::getConfig('userpanel.show_discount'),
+                'show_discounted_value' => ConfigHelper::getConfig('userpanel.show_discounted_value'),
+                'show_invoice_flag' => ConfigHelper::getConfig('userpanel.show_invoice_flag'),
+                'show_last_years' => ConfigHelper::getConfig('userpanel.show_last_years'),
+                'aggregate_documents' => ConfigHelper::checkConfig('userpanel.aggregate_documents'),
+                'show_all_assignments' => ConfigHelper::checkConfig('userpanel.show_all_assignments'),
+                'speed_unit_type' => ConfigHelper::getConfig('userpanel.speed_unit_type'),
+                'speed_unit_aggregation_threshold' => ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold'),
+            )
+        );
         $SMARTY->display('module:finances:setup.html');
     }
 

@@ -31,6 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $layout['pagetitle'] = trans('Register your installation today! ;-)');
 
-$SMARTY->assign('uiid', $LMS->GetUniqueInstallationID());
-$SMARTY->assign('regdata', $LMS->GetRegisterData());
+$SMARTY->assign(
+    array(
+        'uiid' => $LMS->GetUniqueInstallationID(),
+        'regdata' => $LMS->GetRegisterData(),
+    )
+);
 $SMARTY->display('register.html');

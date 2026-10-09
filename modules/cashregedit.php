@@ -156,9 +156,13 @@ $layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('registry', $current_registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_RECEIPT,
-)));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'registry' => $current_registry,
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_RECEIPT,
+        )),
+        'error' => $error,
+    )
+);
 $SMARTY->display('cash/cashregedit.html');

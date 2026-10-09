@@ -330,16 +330,24 @@ switch ($type) {
 
             $listdata['total'] = $listdata['income'] - $listdata['expense'];
 
-            $SMARTY->assign('listdata', $listdata);
-            $SMARTY->assign('balancelist', $list);
+            $SMARTY->assign(
+                array(
+                    'listdata' => $listdata,
+                    'balancelist' => $list,
+                )
+            );
         }
 
         if ($net) {
             $SMARTY->assign('net', $net['name']);
         }
 
-        $SMARTY->assign('types', array_flip(empty($types) ? array(1, 2, 3) : $types));
-        $SMARTY->assign('typetxt', implode(', ', $typetxt));
+        $SMARTY->assign(
+            array(
+                'types' => array_flip(empty($types) ? array(1, 2, 3) : $types),
+                'typetxt' => implode(', ', $typetxt),
+            )
+        );
 
         if (!empty($group)) {
             $SMARTY->assign('groups', $DB->GetCol('SELECT name FROM customergroups WHERE id IN ? ORDER BY name', array($group)));
@@ -810,10 +818,14 @@ switch ($type) {
                     break;
             }
 
-            $SMARTY->assign('reportlist', $reportlist);
-            $SMARTY->assign('total', $total);
-            $SMARTY->assign('taxes', $taxes);
-            $SMARTY->assign('taxescount', count($taxes));
+            $SMARTY->assign(
+                array(
+                    'reportlist' => $reportlist,
+                    'total' => $total,
+                    'taxes' => $taxes,
+                    'taxescount' => count($taxes),
+                )
+            );
         }
 
         if (strtolower($report_type) == 'pdf') {
@@ -981,8 +993,12 @@ switch ($type) {
                 $layout['group'] = trans('Group: $a', $groupname);
             }
         }
-        $SMARTY->assign('receiptlist', $list);
-        $SMARTY->assign('listdata', $listdata);
+        $SMARTY->assign(
+            array(
+                'receiptlist' => $list,
+                'listdata' => $listdata,
+            )
+        );
 
         $csv = !empty($_POST['csv']);
 
@@ -1052,10 +1068,14 @@ switch ($type) {
                 $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 
-            $SMARTY->assign('pages', $pages);
-            $SMARTY->assign('totals', $totals);
-            $SMARTY->assign('pagescount', count($pages));
-            $SMARTY->assign('reccount', empty($list) ? 0 : count($list));
+            $SMARTY->assign(
+                array(
+                    'pages' => $pages,
+                    'totals' => $totals,
+                    'pagescount' => count($pages),
+                    'reccount' => empty($list) ? 0 : count($list),
+                )
+            );
             if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
                 Utils::html2pdf(array(
@@ -1088,20 +1108,22 @@ switch ($type) {
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {
             $SMARTY->assign('customers', $LMS->GetCustomerNames());
         }
-        $SMARTY->assign('users', $LMS->GetUserNames());
-        $SMARTY->assign('networks', $LMS->GetNetworks());
-        $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-        $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
-            'doctype' => array(DOC_INVOICE, DOC_CNOTE),
-        )));
-        $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
-        $SMARTY->assign('divisions', $LMS->GetDivisions());
-        $SMARTY->assign('sourcelist', $LMS->getCashSources());
-        $SMARTY->assign('printmenu', 'finances');
-
-        $SMARTY->assign('invprojects', $LMS->GetProjects());
-
-        $SMARTY->assign('promotions', $LMS->GetPromotions());
+        $SMARTY->assign(
+            array(
+                'users' => $LMS->GetUserNames(),
+                'networks' => $LMS->GetNetworks(),
+                'customergroups' => $LMS->CustomergroupGetAll(),
+                'numberplans' => $LMS->GetNumberPlans(array(
+                    'doctype' => array(DOC_INVOICE, DOC_CNOTE),
+                )),
+                'cashreglist' => $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'),
+                'divisions' => $LMS->GetDivisions(),
+                'sourcelist' => $LMS->getCashSources(),
+                'printmenu' => 'finances',
+                'invprojects' => $LMS->GetProjects(),
+                'promotions' => $LMS->GetPromotions(),
+            )
+        );
 
         $SMARTY->display('print/printindex.html');
 

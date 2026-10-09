@@ -553,11 +553,15 @@ if (empty($_GET['popup'])) {
     die;
 }
 
-$SMARTY->assign('nodeid', $nodeid);
-$SMARTY->assign('bar', $bar);
-$SMARTY->assign('to', $to);
-$SMARTY->assign('from', $from);
-$SMARTY->assign('add', $add);
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('net', $net);
+$SMARTY->assign(
+    array(
+        'nodeid' => $nodeid,
+        'bar' => $bar,
+        'to' => $to,
+        'from' => $from,
+        'add' => $add,
+        'customer' => $customer,
+        'net' => $net,
+    )
+);
 $SMARTY->display('traffic/trafficgraph.html');
