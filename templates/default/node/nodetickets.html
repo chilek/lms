@@ -72,7 +72,7 @@
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column title" {tip text="{$ticket.subject}"}>
+							<div class="lms-ui-tab-table-column title" {tip text="{$ticket.subject|escape}"}>
 								{$ticket.subject|escape}
 							</div>
 							{if ConfigHelper::checkConfig('rt.show_ticket_categories')}
