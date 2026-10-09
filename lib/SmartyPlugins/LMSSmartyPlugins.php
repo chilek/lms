@@ -1401,6 +1401,44 @@ class LMSSmartyPlugins
             . '</select>';
     }
 
+    public static function userCompactListFunction(array $params, $template)
+    {
+        $default_user_row_limit = 4;
+
+        $elemid = $params['elemid'] ?? false;
+        $elemname = $params['elemname'] ?? false;
+        $class = $params['class'] ?? false;
+        if (!isset($params['limit']) || $params['limit'] === '' || $params['limit'] === null) {
+            $limit = $default_user_row_limit;
+        } else {
+            $limit = intval($params['limit']);
+        }
+        $userlist = $params['userlist'] ?? [];
+        if (!is_array($userlist)) {
+            $userlist = [];
+        }
+        $usercount = count($userlist);
+        $ul = '';
+
+        foreach ($userlist as $item) {
+            $name = mb_substr((string) ($item['name'] ?? ''), 0, 40);
+            $ul .= '<a href="?m=userinfo&id=' . $item['id'] . '" class="'
+                . (empty($item['deleted']) ? '' : 'crossed disabled')
+                . (empty($item['access']) ? ' blend' : '')
+                . (empty($class) ? '' : ' ' . $class)
+                . '" style="font-weight: normal">'
+                . htmlspecialchars($name, ENT_QUOTES)
+                . '</a><br>';
+        }
+
+        return '<div '
+            . ($elemname ? ' name="' . $elemname . '"' : '')
+            . ($elemid ? ' id="' . $elemid . '"' : '') . '>'
+            . ($limit <= 0 || $usercount <= $limit ?
+                $ul : self::hintFunction(array('content' => $ul, 'icon' => 'user'), $template) . $usercount)
+            . '</div>';
+    }
+
     public static function userSelectionFunction(array $params, $template)
     {
         static $userlist = array();
