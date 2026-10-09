@@ -1,6 +1,6 @@
 <?php
 
-use PragmaRX\Google2FA\Google2FA;
+use Lms\Google2FA\Google2FA;
 use Com\Tecnick\Barcode\Barcode;
 
 /*

@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
+{$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
@@ -20,37 +21,52 @@
 		{$ldate = 0}
 	{/if}
 	{section name=balancelist loop=$balancelist.list step=-1}
-	{$item=$balancelist.list[balancelist]}
-	{if $item.time >= $ldate}
-		<tr class="dark">
-		<td width="1%" class="nobr">{$item.date}</td>
-		<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{moneyf($item.value, $item.currency)}</td>
-		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right" class="nobr">{if $item.after < 0}<span style="color: red;">{/if}{moneyf($item.after)}{if $item.after < 0}</span>{/if}</td>
-		<td width="95%">{$item.comment}</td>
-		{if !$disable_invoices}
-		<td width="1%" class="nobr">
-			{foreach $item.customlinks as $link}
-			<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
-			{if isset($link.extra)}{$link.extra}{/if}
-			{/foreach}
-			{if $item.doctype == 1 || $item.doctype == 3}
-			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" onclick="reset_login_timeout();" target="_blank">{img src="print.gif" alt="Print" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
-			{else}
-			&nbsp;
-			{/if}
-		</td>
+		{$item = $balancelist.list[balancelist]}
+		{if $item.time >= $ldate}
+			<tr class="dark">
+				<td width="1%" class="nobr">{$item.date}</td>
+				<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{moneyf($item.value, $item.currency)}</td>
+				<td width="1%" align="center">&raquo;</td>
+				<td width="1%" align="right" class="nobr">{if $item.after < 0}<span style="color: red;">{/if}{moneyf($item.after)}{if $item.after < 0}</span>{/if}</td>
+				<td width="95%">{$item.comment}</td>
+				{if !$disable_invoices}
+					<td width="1%" class="nobr">
+						{foreach $item.customlinks as $link}
+							<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>
+								{if isset($link.icon)}
+									{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}
+								{else}
+									{$link.label}
+								{/if}
+							</a>
+							{if isset($link.extra)}
+								{$link.extra}
+							{/if}
+						{/foreach}
+						{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
+							{if empty($ksef_enabled) || empty($item.ksefsubmission) || $item.ksefstatus == 200 || $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
+								<a href="?m=finances&f=invoice&id={$item.docid}"
+									onclick="reset_login_timeout();"
+									target="_blank">
+									{img src="print.gif" alt="Print" text=$item.number}
+								</a>
+								<input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
+							{/if}
+						{else}
+						&nbsp;
+						{/if}
+					</td>
+				{/if}
+			</tr>
 		{/if}
-	</tr>
-	{/if}
 	{sectionelse}
-	<tr>
-		<td align="center" width="100%" colspan="6">
-			<p>&nbsp;</p>
-			<p><strong>{trans("No such transactions on your account.")}</strong></p>
-			<p>&nbsp;</p>
-		</td>
-	</tr>
+		<tr>
+			<td align="center" width="100%" colspan="6">
+				<p>&nbsp;</p>
+				<p><strong>{trans("No such transactions on your account.")}</strong></p>
+				<p>&nbsp;</p>
+			</td>
+		</tr>
 	{/section}
 	{if !$disable_invoices}
 	<tr class="darkest">

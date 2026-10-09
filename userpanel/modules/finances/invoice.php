@@ -171,8 +171,16 @@ if (!empty($_POST['inv'])) {
     $count = count($_POST['inv']);
     $i = 0;
     foreach (array_keys($_POST['inv']) as $key) {
-        $invoice = $LMS->GetInvoiceContent(intval($key));
+        $docId = intval($key);
+
         $i++;
+
+        if (!$LMS->isKsefDocument($docId)) {
+            continue;
+        }
+
+        $invoice = $LMS->GetInvoiceContent($docId);
+
         if ($invoice['customerid'] != $SESSION->id) {
             continue;
         }
@@ -204,6 +212,10 @@ if (!empty($_POST['inv'])) {
     }
     Localisation::resetUiLanguage();
 } elseif (isset($_GET['id'])) {
+    if (!$LMS->isKsefDocument($_GET['id'])) {
+        die;
+    }
+
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if ($invoice['customerid'] != $SESSION->id) {
@@ -255,8 +267,9 @@ if (!empty($_POST['inv'])) {
 if (!is_null($attachment_name) && isset($docnumber)) {
     $attachment_name = str_replace('%number', $docnumber, $attachment_name);
     $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 } else {
-    $attachment_name = 'invoices.pdf';
+    $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 }
 
 $document->WriteToBrowser($attachment_name);

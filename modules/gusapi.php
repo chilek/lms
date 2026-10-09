@@ -46,9 +46,9 @@ header('Content-Type: application/json');
 if (is_int($result)) {
     switch ($result) {
         case Utils::GUS_REGON_API_RESULT_BAD_KEY:
-            die(json_encode(array('error' => trans('Bad REGON API user key'))));
+            die(json_encode(array('error' => trans('Bad REGON API key!'))));
         case Utils::GUS_REGON_API_RESULT_NO_DATA:
-            die(json_encode(array('warning' => trans("No data found in REGON database"))));
+            die(json_encode(array('warning' => trans("No data found in REGON database!"))));
     }
 } elseif (is_string($result)) {
     die(json_encode(array('error' => $result)));

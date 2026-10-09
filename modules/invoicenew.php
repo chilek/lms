@@ -79,7 +79,7 @@ function changeContents($contents, $newcontents)
 
     foreach ($newcontents as $posuid => &$newposition) {
         if (isset($contents[$posuid])) {
-            $result[] = $contents[$posuid];
+            $result[$posuid] = $contents[$posuid];
         }
     }
     unset($newposition);
@@ -171,7 +171,9 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        if (!isset($_GET['clone'])) {
+        if (isset($_GET['clone'])) {
+            $invoice['closed'] = 0;
+        } else {
             $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
                 $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
                 empty($customer) ? null : $customer['divisionid']
@@ -251,6 +253,29 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
+        $service_type_required = ConfigHelper::getConfig('invoices.service_type_required', 'none');
+        if ($service_type_required != 'none' && empty($itemdata['servicetype'])) {
+            if ($service_type_required == 'error' || $service_type_required == 'true') {
+                $error[str_replace('%variable', 'servicetype', $error_index)] =
+                    trans('Service type selection is required!');
+            } elseif ($service_type_required == 'warning'
+                && !isset($warnings[str_replace(
+                    [
+                        '%variable',
+                        '[',
+                        ']',
+                    ],
+                    [
+                        'servicetype',
+                        '-',
+                        '-',
+                    ],
+                    $error_index
+                )])) {
+                $warning[str_replace('%variable', 'servicetype', $error_index)] = trans('Service type is not selected!');
+            }
+        }
+
         foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto', 'count') as $key) {
             $itemdata[$key] = f_round($itemdata[$key], 3);
         }
@@ -294,8 +319,11 @@ switch ($action) {
         if (isset($hook_data['error']) && is_array($hook_data['error'])) {
             $error = array_merge($error, $hook_data['error']);
         }
+        if (isset($hook_data['warning']) && is_array($hook_data['warning'])) {
+            $warning = array_merge($warning, $hook_data['warning']);
+        }
 
-        if (!empty($error)) {
+        if (!empty($error) || !empty($warning)) {
             $SMARTY->assign('itemdata', $hook_data['itemdata']);
             if (isset($posuid)) {
                 $error['posuid'] = $posuid;
@@ -599,6 +627,8 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
+
+/*
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
             'addresses', 'customers', 'customer_addresses');
         if (ConfigHelper::getConfig('database.type') != 'postgres') {
@@ -608,7 +638,6 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
         }
-
         $hook_data = array(
             'tables' => array(),
         );
@@ -618,6 +647,9 @@ switch ($action) {
         }
 
         $DB->LockTables($tables);
+*/
+
+        $DB->LockByHandle(LOCK_INVOICE_NUMBER);
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
@@ -712,7 +744,10 @@ switch ($action) {
             }
         }
 
-        $DB->UnLockTables();
+//        $DB->UnLockTables();
+
+        $DB->UnLockByHandle(LOCK_INVOICE_NUMBER);
+
         $DB->CommitTrans();
 
         $SESSION->remove('invoicecontents', true);

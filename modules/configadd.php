@@ -67,7 +67,7 @@ if (!empty($config)) {
     $section = $config['section'];
     if (empty($section)) {
         $error['section'] = trans('Section name can\'t be empty!');
-    } elseif (!preg_match('/^[a-z0-9_-]+$/', $section)) {
+    } elseif (!preg_match('/^[a-z0-9_-]+(-[a-z0-9_]+:[a-z0-9_-]+)?$/', $section)) {
         $error['section'] = trans('Section name contains forbidden characters!');
     }
 
@@ -144,6 +144,19 @@ if (!empty($config)) {
         $configid = $LMS->addConfigOption($args);
         $DB->CommitTrans();
 
+        if ($args['section'] == 'ksef') {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+
+            switch ($args['var']) {
+                case 'delay':
+                case 'all_consumers':
+                case 'boundary_date':
+                case 'show_balance_summary':
+                    $ksef->updateConfig();
+                    break;
+            }
+        }
+
         if (isset($config['reuse'])) {
             $SESSION->redirect_to_history_entry($_SERVER['HTTP_REFERER']);
         } else if (!empty($config['reftype'])) {
@@ -212,7 +225,7 @@ if (!empty($reftype)) {
         case 'division':
             $layout['pagetitle'] = trans('Overriding config option for division');
 
-            $params['exludedDivisions'] = implode(',', array_keys($LMS->getRelatedDivisions($refconfigid) ?: array()));
+            $params['excludedDivisions'] = array_keys($LMS->getRelatedDivisions($refconfigid) ?: array());
             $divisionslist = $LMS->getDivisionList($params);
             $SMARTY->assign('divisionslist', $divisionslist);
             break;
@@ -222,7 +235,7 @@ if (!empty($reftype)) {
             $divisioninfo = $LMS->GetDivision($divisionid);
             $SMARTY->assign('divisioninfo', $divisioninfo);
 
-            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid, $divisionid) ?: array()));
+            $params['excludedUsers'] = array_keys($LMS->getRelatedUsers($refconfigid, $divisionid) ?: array());
             $params['divisions'] = $divisionid;
             $userslist = $LMS->GetUsers($params);
             $SMARTY->assign('userslist', $userslist);
@@ -230,7 +243,7 @@ if (!empty($reftype)) {
         case 'user':
             $layout['pagetitle'] = trans('Overriding config option for user');
 
-            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid) ?: array()));
+            $params['excludedUsers'] = array_keys($LMS->getRelatedUsers($refconfigid) ?: array());
             $userslist = $LMS->GetUsers($params);
             $SMARTY->assign('userslist', $userslist);
             break;

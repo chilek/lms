@@ -177,7 +177,9 @@
             });
         }).on('click', '.edit-note-button', function() {
             var row = $(this).closest('tr');
-            row.find('.note-edit-mode').show();
+            row.find('.note-edit-mode').show().filter('textarea.lms-ui-autogrow:visible').each(function() {
+                initAutoGrow(this);
+            });
             row.find('.note-view-mode').hide();
             addBtn.prop('disabled', true);
             var val = row.find('.note .note-view-mode').html();

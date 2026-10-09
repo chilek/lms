@@ -32,12 +32,14 @@ $(function() {
         var deadline_days_elem = $(this).find('.lms-ui-deadline-selection-days');
 
         $(cdate_elem).change(function() {
-            var ddt = new Date();
             var deadline = deadline_days_elem.scombobox('val');
             if (!deadline.match(/^[0-9]+$/)) {
                 return;
             }
-            ddt.setTime(Date.parse($(this).val()) + deadline * 86400 * 1000);
+
+            const ddt = new Date($(this).val().replaceAll('/', '-') + 'T00:00:00');
+            ddt.setDate(ddt.getDate() + parseInt(deadline));
+
             deadline_date_elem.val(sprintf("%04d/%02d/%02d", ddt.getFullYear(), ddt.getMonth() + 1, ddt.getDate()));
         });
 
@@ -50,23 +52,20 @@ $(function() {
             cdt.setTime(Date.parse(cdate_elem.val()));
             ddt.setTime(Date.parse($(this).val()));
             var diffTime = Math.abs(ddt - cdt);
-            var diffDays = Math.ceil(diffTime / (1000 * 86400));
+            var diffDays = Math.round(diffTime / (1000 * 86400));
             deadline_days_elem.scombobox('val', diffDays);
         }).change();
 
         deadline_days_elem.scombobox('change', function () {
-            var cdt = new Date();
-            if (cdate_elem.val().length) {
-                cdt.setTime(Date.parse(cdate_elem.val()));
-            } else {
+            if (!cdate_elem.val().length) {
                 cdate_elem.val(sprintf("%04d/%02d/%02d", cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()));
             }
+            const ddt = new Date(cdate_elem.val().replaceAll('/', '-') + 'T00:00:00');
             var diffDays = deadline_days_elem.scombobox('val');
             if (!diffDays.match(/^[0-9]+$/)) {
                 return;
             }
-            var ddt = new Date();
-            ddt.setTime(cdt.getTime() + parseInt(diffDays) * 86400 * 1000);
+            ddt.setDate(ddt.getDate() + parseInt(diffDays));
             deadline_date_elem.val(sprintf("%04d/%02d/%02d", ddt.getFullYear(), ddt.getMonth() + 1, ddt.getDate()));
         });
     });

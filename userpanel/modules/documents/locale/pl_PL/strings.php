@@ -36,6 +36,7 @@ $_LANG['No such documents on your account.'] = 'Nie ma żadnych dokumentów na T
 $_LANG['not approved'] = 'niezatwierdzony';
 $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
+$_LANG['Show unapproved document attachments'] = 'Pokaż załączniki niezatwierdzonych dokumentów';
 $_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
 $_LANG['Visible document types'] = 'Widoczne typy dokumentów';
 $_LANG['Hide archived documents:'] = 'Ukryj dokumenty zarchiwizowane:';

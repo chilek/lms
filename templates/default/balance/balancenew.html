@@ -197,6 +197,25 @@
 					{/if}
 					<tr>
 						<td>
+							<label for="notification">
+								{icon name="notification"}
+							</label>
+						</td>
+						<td>
+							<label for="notification">
+								<strong>{trans("Notify customer")}</strong>
+							</label>
+						</td>
+						<td>
+							<label>
+								<input type="hidden" form="addbalance" name="addbalance[notification]" value="0">
+								<input type="checkbox" form="addbalance" id="notification"
+									name="addbalance[notification]" value="1"{if !empty($notification)} checked{/if}>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							{icon name="info"}
 						</td>
 						<td class="bold">

@@ -61,4 +61,6 @@ interface LMSConfigManagerInterface
     public function getParentOption($id);
 
     public function toggleConfigOption($id);
+
+    public function getConfigSectionsByPattern($sectionNamePattern);
 }

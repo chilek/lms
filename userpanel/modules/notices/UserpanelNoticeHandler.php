@@ -109,16 +109,23 @@ class UserpanelNoticeHandler
     public function markNoticeAsRead($id)
     {
         $this->db->Execute(
-            'UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?',
-            array($id)
+            'UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ? AND customerid = ?',
+            array(
+                $id,
+                $this->customerid,
+            )
         );
     }
 
     public function markNoticeAsDelivered($id)
     {
         $this->db->Execute(
-            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
-            array(MSG_DELIVERED, $id)
+            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?',
+            array(
+                MSG_DELIVERED,
+                $id,
+                $this->customerid,
+            )
         );
     }
 }

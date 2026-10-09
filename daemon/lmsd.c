@@ -113,8 +113,8 @@ int main(int argc, char *argv[], char **envp)
         str_replace(&driver, "postgres", "pgsql"); // postgres in ini file is pgsql
         str_replace(&driver, "mysqli", "mysql");   // mysqli in ini file is mysql
 
-        char dbdrv_path[strlen(LMS_LIB_DIR) + strlen(driver) + 4];
-        sprintf(dbdrv_path, LMS_LIB_DIR "/%s.so", driver);
+        char dbdrv_path[strlen(LMS_LIB_DIR) + strlen(driver) + 5];
+	snprintf(dbdrv_path, sizeof(dbdrv_path), "%s/%s.so", LMS_LIB_DIR, driver);
 
         if( !file_exists(dbdrv_path))
         {

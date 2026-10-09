@@ -24,25 +24,54 @@
  *  $Id$
  */
 
-if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
-    header('Content-Type: text/html');
+if (isset($_GET['oper'])) {
+    switch ($_GET['oper']) {
+        case 'loadtransactionlist':
+            header('Content-Type: text/html');
 
-    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
-        $trans = $SYSLOG->GetTransactions(
-            array(
-                'key' => SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-                'value' => $id,
-                'limit' => 300,
-                'details' => true,
-            )
-        );
-        $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('resourcetype', SYSLOG::RES_NETDEV);
-        $SMARTY->assign('resourceid', $id);
-        die($SMARTY->fetch('transactionlist.html'));
+            if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+                $trans = $SYSLOG->GetTransactions(
+                    array(
+                        'key' => SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                        'value' => $id,
+                        'limit' => 300,
+                        'details' => true,
+                    )
+                );
+                $SMARTY->assign('transactions', $trans);
+                $SMARTY->assign('resourcetype', SYSLOG::RES_NETDEV);
+                $SMARTY->assign('resourceid', $id);
+                die($SMARTY->fetch('transactionlist.html'));
+            }
+
+            die();
+
+            break;
+        case 'srcnetdevchange':
+            header('Content-type: application/json');
+
+            if (empty($_GET['id'])) {
+                die('[]');
+            }
+
+            $srcnetdev = intval($_GET['srcnetdev']);
+            if (empty($srcnetdev)) {
+                die('[]');
+            }
+
+            if (empty($_GET['technology'])) {
+                $technology = 0;
+            } else {
+                $technology = intval($_GET['technology']);
+            }
+
+            $ports = $LMS->GetNetDevPorts($srcnetdev);
+            $radiosectors = $LMS->GetRadioSectors($srcnetdev, $technology);
+
+            die(json_encode(compact('ports', 'radiosectors')));
+
+            break;
     }
-
-    die();
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
@@ -253,16 +282,15 @@ function getRadioSectorsForNetdev($callback_name, $devid, $technology = 0)
     return $result;
 }
 
-function getFirstFreeAddress($netid, $elemid)
+function getFirstFreeAddress($netid)
 {
     global $LMS;
 
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != false) {
-        $result->assign($elemid, 'value', $ip);
-    }
+
+    $result->call('first_free_address_received', $ip);
 
     return $result;
 }
@@ -270,8 +298,9 @@ function getFirstFreeAddress($netid, $elemid)
 function getThroughput($ip)
 {
     $result = new xajaxResponse();
+
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
-    if (empty($cmd)) {
+    if (empty($cmd) || !check_ip($ip)) {
         return $result;
     }
 

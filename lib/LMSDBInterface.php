@@ -38,23 +38,23 @@ interface LMSDBInterface
 
     public function Destroy();
 
-    public function Execute($query, array $inputarray = null);
+    public function Execute($query, ?array $inputarray = null);
 
-    public function MultiExecute($query, array $inputarray = null);
+    public function MultiExecute($query, ?array $inputarray = null);
 
-    public function GetAll($query = null, array $inputarray = null);
+    public function getSqlQueryTime();
 
-    public function GetAllByKey($query = null, $key = null, array $inputarray = null);
+    public function GetAll($query = null, ?array $inputarray = null);
 
-    public function GetRow($query = null, array $inputarray = null);
+    public function GetAllByKey($query = null, $key = null, ?array $inputarray = null);
 
-    public function GetCol($query = null, array $inputarray = null);
+    public function GetRow($query = null, ?array $inputarray = null);
 
-    public function GetOne($query = null, array $inputarray = null);
+    public function GetCol($query = null, ?array $inputarray = null);
 
-    public function Exec($query, array $inputarray = null);
+    public function GetOne($query = null, ?array $inputarray = null);
 
-    public function FetchRow($result);
+    public function Exec($query, ?array $inputarray = null);
 
     public function Concat();
 
@@ -84,6 +84,10 @@ interface LMSDBInterface
 
     public function UnLockTables();
 
+    public function LockByHandle($handle): mixed;
+
+    public function UnLockByHandle($handle): mixed;
+
     public function GetDBVersion();
 
     public function SetEncoding($name);
@@ -111,6 +115,8 @@ interface LMSDBInterface
     public function SetErrors(array $errors = array());
 
     public function SetDebug($debug = true);
+
+    public function GetDebug();
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
 

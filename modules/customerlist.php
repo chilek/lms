@@ -39,6 +39,7 @@ if ($api) {
     }
     header('Content-Type: application/json');
     echo json_encode(array_values($customerlist));
+    $SESSION->close();
     die;
 } else {
     $SESSION->add_history_entry();
@@ -61,10 +62,14 @@ if ($api) {
 
     if (isset($_GET['s'])) {
         $filter['state'] = $_GET['s'];
+    } elseif (!isset($filter['state'])) {
+        $filter['state'] = array();
+    } elseif (!is_array($filter['state'])) {
+        $filter['state'] = array($filter['state']);
     }
 
     if (isset($_GET['n'])) {
-        $filter['network'] = $_GET['n'];
+        $filter['network'] = intval($_GET['n']);
     }
 
     if (isset($_GET['gop'])) {
@@ -81,6 +86,10 @@ if ($api) {
 
     if (isset($_GET['d'])) {
         $filter['division'] = $_GET['d'];
+    }
+
+    if (isset($_GET['type'])) {
+        $filter['type'] = intval($_GET['type']);
     }
 
     if (isset($_GET['assignments'])) {
@@ -103,6 +112,9 @@ if ($api) {
     $SESSION->saveFilter($filter);
 
     $filter['search'] = array();
+    if (isset($filter['type']) && $filter['type'] !== -1) {
+        $filter['search']['type'] = $filter['type'];
+    }
     $filter['sqlskey'] = 'AND';
     $filter['count'] = true;
     $summary = $LMS->GetCustomerList($filter);

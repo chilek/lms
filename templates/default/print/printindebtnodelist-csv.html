@@ -12,6 +12,10 @@
 {trans("Customer type")}
 |
 {trans("Owner")}
+{if !empty($options['customer-id'])}
+	|
+	{trans("Customer ID")}
+{/if}
 |
 TERC
 |
@@ -28,9 +32,28 @@ ULIC
 {trans("Apartment")}
 |
 {trans("Zip")}
-|
-{trans("Description")}
+{if !empty($options.description)}
+	|
+	{trans("Description")}
+{/if}
+{if !empty($options['gps-coordinates'])}
+	|
+	{trans("GPS longitude")}
+	|
+	{trans("GPS latitude")}
+{/if}
+{if !empty($options['assigned-bandwidth'])}
+	|
+	{trans("Min. download")}
+	|
+	{trans("Max. download")}
+	|
+	{trans("Min. upload")}
+	|
+	{trans("Max. upload")}
+{/if}
 {/strip}
+
 {foreach $nodelist as $node}{strip}
 {$node.id}
 |
@@ -49,6 +72,10 @@ ULIC
 {/if}
 |
 {$node.owner}
+{if !empty($options['customer-id'])}
+	|
+	{$node.ownerid}
+{/if}
 |
 {$node.state_ident}{$node.district_ident}{$node.borough_ident}{$node.borough_type}
 |
@@ -65,7 +92,26 @@ ULIC
 {$node.location_flat}
 |
 {$node.zip}
-|
-{$node.info}
+{if !empty($options.description)}
+	|
+	{$node.info|regexp_replace:"/\r?\n/":";"}
+{/if}
+{if !empty($options['gps-coordinates'])}
+	|
+	{$node.longitude}
+	|
+	{$node.latitude}
+{/if}
+{if !empty($options['assigned-bandwidth'])}
+	|
+	{$node.downrate}
+	|
+	{$node.downceil}
+	|
+	{$node.uprate}
+	|
+	{$node.upceil}
+{/if}
 {/strip}
+
 {/foreach}

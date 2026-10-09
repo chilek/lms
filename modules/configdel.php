@@ -30,6 +30,20 @@ if (isset($_GET['id'])) {
         $DB->BeginTrans();
         $LMS->DeleteConfigOption($id);
         $DB->CommitTrans();
+
+        $configVariable = $LMS->GetConfigVariable($id);
+        if ($configVariable['section'] == 'ksef') {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+
+            switch ($configVariable['var']) {
+                case 'delay':
+                case 'all_consumers':
+                case 'boundary_date':
+                case 'show_balance_summary':
+                    $ksef->updateConfig();
+                    break;
+            }
+        }
     }
 } elseif (isset($_POST['marks'])) {
     $options = Utils::filterIntegers($_POST['marks']);
@@ -39,6 +53,25 @@ if (isset($_GET['id'])) {
             $LMS->DeleteConfigOption($option);
         }
         $DB->CommitTrans();
+
+        $ksefConfigUpdateRequired = false;
+        foreach ($options as $option) {
+            $configVariable = $LMS->GetConfigVariable($option);
+            if ($configVariable['section'] == 'ksef') {
+                switch ($configVariable['var']) {
+                    case 'delay':
+                    case 'all_consumers':
+                    case 'boundary_date':
+                    case 'show_balance_summary':
+                        $ksefConfigUpdateRequired = true;
+                        break;
+                }
+            }
+        }
+        if ($ksefConfigUpdateRequired) {
+            $ksef = new \Lms\KSeF\KSeF($DB, $LMS);
+            $ksef->updateConfig();
+        }
     }
 }
 

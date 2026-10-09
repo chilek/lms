@@ -90,9 +90,11 @@ function CustomerAssignmentHelper(options) {
 				return $(this).is(':visible');
 			});
 
+/*
 			if ($(this)[0].form.checkValidity()) {
 				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
+*/
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -120,7 +122,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		var location_select = $('#location-select');
 		if (!location_select.val().length && $('option:not([value=""])', location_select).length > 1) {
-			confirm($t('No location has been selected!'));
+			alertDialog($t('No location has been selected!'), location_select);
 			return false;
 		}
 		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
@@ -143,7 +145,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
+//			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;
@@ -169,6 +171,9 @@ function CustomerAssignmentHelper(options) {
 
 		$("#schema" + schemaId).show();
 
+		$('.schema-tariff-selection[data-mandatory]').prop('required', false);
+		$('#schema' + schemaId).find('.schema-tariff-selection[data-mandatory]').prop('required', true);
+
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
 		var promo_title = selected_option.closest('optgroup').attr('title');
@@ -191,7 +196,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
@@ -223,7 +228,7 @@ function CustomerAssignmentHelper(options) {
 				var checked = helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
 					helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
 					!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
-					attachment.checked;
+					parseInt(attachment.checked);
 				if (checked) {
 					allCheckedAttachments++;
 				}
@@ -366,7 +371,8 @@ function CustomerAssignmentHelper(options) {
 		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
 		var errorMessage = location_select.attr('title');
 		location_select.toggleClass('lms-ui-error', validationError)
-			.next().toggleClass('lms-ui-error', validationError)
+			.siblings('.select2').find('.select2-selection')
+			.toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 
 		var schemaId = $('#promotion-select').val();
@@ -425,7 +431,7 @@ function CustomerAssignmentHelper(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
-					var options;
+					var options, options2;
 
 					if (data.nodes) {
 						html += '<div class="nodes"><img src="img/node.gif"> ' +
@@ -549,38 +555,85 @@ function CustomerAssignmentHelper(options) {
 					options += '</optgroup>';
 				}
 
-				if (data.hasOwnProperty('document-separation-groups')) {
+				// NS (2026-09-29): combobox #separatedocument bywa jeszcze NIEzainicjalizowany,
+				// gdy ta odpowiedz AJAX wraca (helper startuje juz przy parsowaniu strony,
+				// init_comboboxes dopiero przy gotowosci dokumentu) -- scombobox('val') rzucal
+				// wtedy wyjatek i przerywal budowanie list lokalizacji/wezlow: pusty panel
+				// schematow w formularzu dokumentu. Brak inicjalizacji = pomijamy uzupelnianie;
+				// opcje i tak przychodza w HTML-u z serwera. Do zgloszenia chilkowi.
+				var separateDocumentSelect = $('#separatedocument');
+
+				if (data.hasOwnProperty('document-separation-groups') &&
+					separateDocumentSelect.length &&
+					separateDocumentSelect.closest('.scombobox').data('scombobox-init') != null) {
 					var values = [
 						{
 							value: "",
 							text: ""
 						}
 					];
+					var separateDocumentValue = $('#separatedocument').scombobox('val');
+					var newSeparateDocumentValue = '';
 					$.each(data['document-separation-groups'], function (key, item) {
+						var value = escapeHtml(item);
 						values.push({
-							value: escapeHtml(item),
-							text: escapeHtml(item)
+							value: value,
+							text: value
 						});
+						if (separateDocumentValue == value) {
+							newSeparateDocumentValue = separateDocumentValue;
+						}
 					});
 					$('#separatedocument').scombobox('fill', values);
-					$('#separatedocument').scombobox('val', '');
+					$('#separatedocument').scombobox('val', newSeparateDocumentValue);
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
-				initAdvancedSelects('#location-select');
-				$('#location-select').chosen().change(function() {
+				initAdvancedSelectsTest('#location-select');
+				$('#location-select').change(function() {
 					helper.locationSelectionHandler();
 				});
 
-				options = '<option value="-1">' + $t('none') + '</option>';
+				options = '<option value="0">—</option>';
+				options2 = options;
+
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
+						var icon = "";
+						if (value.location_address_type == "0") {
+							icon = "lms-ui-icon-message fa-fw";
+						} else if (value.location_address_type == "1") {
+							icon = "lms-ui-icon-home fa-fw";
+						} else if (value.location_address_type == "2") {
+							icon = "lms-ui-icon-customer-location fa-fw";
+						} else if (value.location_address_type == "3") {
+							icon = "lms-ui-icon-default-customer-location fa-fw";
+						} else if (value.location_address_type == "4") {
+							icon = "lms-ui-icon-document fa-fw";
+						}
+
 						options += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
 							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
-							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') + (value.location ? escapeHtml(value.location) : '') + '</option>';
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
+
+						options2 += '<option value="' + value.address_id + '"' +
+							(icon.length ? ' data-icon="' + icon + '"' : '') +
+							(("recipient_address_id2" in selected) && selected.recipient_address_id2 == value.address_id ? ' selected' : '') + '>' +
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') +
+							(value.location_ten ? $t("NIP $a", value.location_ten) + ', ' : '') +
+							(value.location ? escapeHtml(value.location) : '') +
+							'</option>';
 					});
 				}
 				$('#recipient-select').html(options);
+				initAdvancedSelectsTest('#recipient-select');
+
+				$('#recipient-select2').html(options2);
+				initAdvancedSelectsTest('#recipient-select2');
 
 				$('#a_align_periods').show();
 
@@ -682,7 +735,7 @@ function tariffSelectionHandler() {
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 		}
 
-		$('#a_attribute').hide();
+		$('#a_attribute').show();
 	} else {
 		let tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
 		let tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
@@ -750,10 +803,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
-		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day').show();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_address2,#a_day').show();
 		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();

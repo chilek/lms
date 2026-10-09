@@ -93,6 +93,10 @@ function initCustomerList(selector)
                     }
 
                     elem.attr('data-prev-value', elem.val());
+
+                    if (elem.val().length) {
+                        suggestionInput.prop('required', false);
+                    }
                 }
             });
             select.on('change', function() {
@@ -130,7 +134,16 @@ function initCustomerList(selector)
 
         if (version === 2) {
             input.on('invalid', function() {
+                if (!select.length) {
+                    suggestionInput.prop('required', true);
+                }
                 return false;
+            }).on('change', function() {
+                if (!select.length) {
+                    if ($(this).val().length) {
+                        suggestionInput.prop('required', false);
+                    }
+                }
             });
 
             suggestionInput.one('focus', function() {

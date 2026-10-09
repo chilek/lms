@@ -1,7 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$document_confirm_date_required = intval(ConfigHelper::getConfig('phpui.document_confirm_date_required'))}
+{$document_confirm_date_required = intval(ConfigHelper::getConfig('documents.confirm_date_required', ConfigHelper::getConfig('phpui.document_confirm_date_required')))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
@@ -56,15 +56,46 @@
 		margin-top: 0.3em;
 	}
 
+	#document-period > div {
+		display: flex;
+	}
+
+	#document-period > div > div:first-child {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#document-period > div > div:first-child > :not(:first-child) {
+		margin-top: 0.3em;
+	}
+
+	#document-period > div > div:not(:first-child) {
+		display: flex;
+		align-items: center;
+		margin-left: 0.5em;
+	}
+
+	#dynamic-period-option {
+		display: flex;
+		align-items: center;
+	}
+
 </style>
 
 <script>
 
 	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+		var consents = {};
+		$("[data-consent-type]").each(function() {
+			consents[$(this).attr('data-consent-type')] = $(this).prop('checked');
+		});
+		xajax_DocTemplateChanged(
+			$('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-            $('[name="customerid"]').val());
+			$('[name="customerid"]').val(),
+			consents
+		);
 	}
 
 	function DocTypeChanged() {
@@ -113,7 +144,7 @@
 			</td>
 			<td>
 				<select size="1" name="document[type]" id="doctype" onchange="DocTypeChanged();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+						{tip class="lms-ui-advanced-select-test" text="Select document type" trigger="type"} required>
 					<option value="0">{trans("— select type —")}</option>
 					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
@@ -222,30 +253,41 @@
 			</td>
 			<td>
 				<div id="document-period">
-					<label>
-						<input type="checkbox" name="document[dynamicperiod]" value="1"
-							{if !empty($document.dynamicperiod)} checked{/if}>
-						{trans("<!document-period>dynamic")}
-					</label>
+					{capture assign="hint"}{strip}
+						The validity date range of the document is determined upon its approval.
+					{/strip}{/capture}
+					<div id="dynamic-period-option">
+						<label>
+							<input type="checkbox" name="document[dynamicperiod]" value="1"
+								{if !empty($document.dynamicperiod)} checked{/if}>
+							{trans("<!document-period>dynamic")}
+						</label>
+						{hint content=$hint}
+					</div>
 					{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
-					<label>
-						{trans("from")}
-						<input type="text" name="document[fromdate]" id="fromdate"
-							value="{if $document.fromdate}{$document.fromdate}{/if}"
-							placeholder="{trans("yyyy/mm/dd")}"
-							{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
-							{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-							size="10">&nbsp;
-					</label>
-					<label>
-						{trans("to")}
-						<input type="text" name="document[todate]" id="todate"
-							value="{if $document.todate}{$document.todate}{/if}"
-							placeholder="{trans("yyyy/mm/dd")}"
-							{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
-							{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
-							size="10">
-					</label>
+					<div>
+						<div>
+							<label>
+								{trans("from")}
+								<input type="text" name="document[fromdate]" id="fromdate"
+									value="{if $document.fromdate}{$document.fromdate}{/if}"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+									{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+									size="10">&nbsp;
+							</label>
+							<label>
+								{trans("to")}
+								<input type="text" name="document[todate]" id="todate"
+									value="{if $document.todate}{$document.todate}{/if}"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+									{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+									size="10">
+							</label>
+						</div>
+						{date_period_preset from="#fromdate" to="#todate" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+					</div>
 				</div>
 			</td>
 		</tr>
@@ -318,7 +360,7 @@
 				{$attachment_result}
 			</td>
 		</tr>
-		<tr>
+		<tr id="confirm-row"{if empty($confirm_permission)} style="display: none;"{/if}>
 			<td>
 				{icon name="confirm"}
 			</td>
@@ -360,6 +402,14 @@
 							<label>
 								<input type="checkbox" name="document[sendmail]" value="1"{if !empty($document.sendmail)} checked{/if}>
 								{trans("send to customer email")}
+							</label>
+							<label>
+								<input type="checkbox" name="document[sendmail-with-reference-document]" value="1"
+									{if !empty($document['sendmail-with-reference-document'])} checked{/if}
+									{if empty($document.sendmail)} disabled{/if}>
+								<span class="lms-ui-label">
+									{trans("with reference document")}
+								</span>
 							</label>
 						</div>
 					</div>
@@ -433,6 +483,10 @@
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
 		});
 
+		$('[name="document[sendmail]"]').change(function() {
+			$('[name="document[sendmail-with-reference-document]"]').prop('disabled', !$(this).prop('checked'));
+		});
+
 		var documentConfirmDateRequired = parseInt({$document_confirm_date_required});
 
 		function confirmDateRequired() {
@@ -453,6 +507,10 @@
 		if (documentConfirmDateRequired) {
 			$('#fromdate').change(confirmDateRequired).change();
 		}
+
+		{if !empty($defaultDocEngine)}
+			DocTemplateChanged();
+		{/if}
 	});
 	//setnumberplans();
 

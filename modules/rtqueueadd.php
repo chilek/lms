@@ -90,9 +90,9 @@ if (isset($_POST['queue'])) {
         $DB->Execute(
             'INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody,
-				verifierticketsubject, verifierticketbody, verifierid,
+				verifierticketsubject, verifierticketbody, verifierid, uiconfigsection,
 				newticketsmsbody, newmessagesmsbody, resolveticketsmsbody)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 trim($queue['name']), $queue['email'], $queue['description'],
                 $queue['newticketsubject'], $queue['newticketbody'],
@@ -100,6 +100,7 @@ if (isset($_POST['queue'])) {
                 $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'],
                 $queue['verifierticketbody'],
                 !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['uiconfigsection']) ? null : $queue['uiconfigsection'],
                 empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
                 empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
                 empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],
@@ -147,5 +148,6 @@ $SESSION->add_history_entry();
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('userlist', $userlist);
+$SMARTY->assign('configsections', $LMS->getConfigSectionsByPattern('rt-%'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueuemodify.html');

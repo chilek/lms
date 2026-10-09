@@ -60,6 +60,34 @@
 		{/if}
 		</TD>
 	</TR>
+	{if !empty($queue.categories)}
+		<TR>
+			<TD>
+				{icon name="queue"}
+			</TD>
+			<TD class="bold nobr">
+				{trans("Default categories:")}
+			</TD>
+			<TD>
+				<FIELDSET>
+					{foreach $queue.categories as $category}{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>{/foreach}
+				</FIELDSET>
+			</TD>
+		</TR>
+	{/if}
+	{if !empty($queue.uiconfigsection)}
+		<tr>
+			<td>
+				{icon name="configuration"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("<!rt>Configuration section")}</strong>
+			</td>
+			<td>
+				{$queue.uiconfigsection}
+			</td>
+		</tr>
+	{/if}
 	<TR>
 	    <TD>
 		{icon name="user"}
@@ -111,21 +139,6 @@
 			</table>
 	    </TD>
 	</TR>
-	{if !empty($queue.categories)}
-	<TR>
-		<TD>
-			{icon name="queue"}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Default categories:")}
-		</TD>
-		<TD>
-			<FIELDSET>
-				{foreach $queue.categories as $category}{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>{/foreach}
-			</FIELDSET>
-		 </TD>
-	</TR>
-	{/if}
 	{if $queue.newticketsubject}
 	<TR>
 		<TD>

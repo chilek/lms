@@ -86,10 +86,12 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
     $filter['userid'] = $_POST['userid'] ?? array();
+    $filter['usergroups'] = $_POST['usergroups'] ?? null;
     $filter['customerid'] = $_POST['customerid'] ?? null;
     $filter['type'] = $_POST['type'] ?? null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = $_POST['closed'] ?? null;
+    $filter['divisionid'] = isset($_POST['divisionid']) ? Utils::filterIntegers($_POST['divisionid']) : array();
 
     if (isset($_POST['switchToTimetable'])) {
         $SESSION->save('schedulerFiler', $filter, true);
@@ -127,6 +129,10 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     if (isset($_GET['userid'])) {
         $filter['userid'] = $_GET['userid'];
+    }
+
+    if (isset($_GET['usergroups'])) {
+        $filter['usergroups'] = $_GET['usergroups'];
     }
 
     if (isset($_GET['customerid'])) {
@@ -379,6 +385,24 @@ $SESSION->add_history_entry();
 $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+
+$visible_users = null;
+$usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
+if (!empty($usergroups)) {
+    if (!empty($filter['usergroups'])) {
+        $visible_users = array();
+        foreach ($usergroups as $usergroup) {
+            if (!empty($usergroup['users']) && in_array($usergroup['id'], $filter['usergroups'])) {
+                $visible_users = array_merge($visible_users, explode(',', $usergroup['users']));
+            }
+        }
+        $visible_users = array_unique($visible_users);
+        $visible_users = array_combine($visible_users, $visible_users);
+    }
+    unset($usergroups['total'], $usergroups['totalcount']);
+}
+
 $SMARTY->assign(array(
     'today' => $today,
     'period' => $LMS->GetTimetableRange(),
@@ -388,11 +412,14 @@ $SMARTY->assign(array(
     'userlistcount' => $userlistcount,
     'usereventlistdates' => $usereventlistdates,
     'usereventlistgrid' => $usereventlistgrid,
+    'visible_users' => $visible_users,
+    'usergroups' => $usergroups,
     'days' => $days,
     'daylist' => $daylist,
     'date' => $date,
     'error' => $error,
     'customerlist' => ($big_networks ? null : $LMS->GetCustomerNames()),
+    'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
     'getHolidays' => getHolidays($year ?? null)
 ));
 $SMARTY->display('event/eventschedule.html');

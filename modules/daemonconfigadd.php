@@ -26,12 +26,16 @@
 
 $config = $_POST['config'] ?? null;
 
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+}
+
 if ($config) {
     foreach ($config as $idx => $key) {
         $config[$idx] = trim($key);
     }
 
-    $config['instanceid'] = $_GET['id'];
+    $config['instanceid'] = $id;
 
     if ($config['var']=='' && $config['description']=='' && $config['value']=='') {
         $SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
@@ -71,13 +75,13 @@ if ($config) {
     }
 }
 
-$instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($id));
 
 $layout['pagetitle'] = trans('New Option for Instance: $a/$b', $instance['name'], $instance['hostname']);
 
 $SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('instanceid', $_GET['id']);
+$SMARTY->assign('instanceid', $id);
 $SMARTY->assign('config', $config);
 $SMARTY->display('daemon/daemonconfigadd.html');

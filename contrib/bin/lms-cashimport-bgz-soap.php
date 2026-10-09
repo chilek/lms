@@ -82,6 +82,7 @@ try {
 class My_SoapClient extends SoapClient
 {
 //source http://www.victorstanciu.ro/php-soapclient-port-bug-workaround/ +modification
+    #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
             $location='https'.substr($location, 4);

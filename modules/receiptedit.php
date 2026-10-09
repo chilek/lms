@@ -390,8 +390,12 @@ switch ($action) {
 
         if ($contents && $customer) {
             $DB->BeginTrans();
+
+/*
             $tables = array('documents', 'numberplans', 'logtransactions');
             $DB->LockTables($tables);
+*/
+            $DB->LockByHandle(LOCK_RECEIPT_NUMBER);
 
             // delete old receipt
             $DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
@@ -432,7 +436,9 @@ switch ($action) {
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
 					fullnumber, currency, currencyvalue)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-            $DB->UnLockTables();
+
+//          $DB->UnLockTables();
+            $DB->UnLockByHandle(LOCK_RECEIPT_NUMBER);
 
             $rid = $DB->GetLastInsertId('documents');
 
@@ -515,8 +521,12 @@ switch ($action) {
             $DB->CommitTrans();
         } elseif ($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance')) {
             $DB->BeginTrans();
+
+/*
             $tables = array('documents', 'numberplans', 'logtransactions');
             $DB->LockTables($tables);
+*/
+            $DB->LockByHandle(LOCK_RECEIPT_NUMBER);
 
             // delete old receipt
             $DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
@@ -548,7 +558,9 @@ switch ($action) {
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed,
 					fullnumber, currency, currencyvalue)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-            $DB->UnLockTables();
+
+//            $DB->UnLockTables();
+            $DB->UnLockByHandle(LOCK_RECEIPT_NUMBER);
 
             $rid = $DB->GetLastInsertId('documents');
 

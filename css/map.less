@@ -23,6 +23,9 @@
  */
 
 @import "less/lms-variables";
+@import "less/generic";
+@import "less/fontawesome";
+@import "less/icons";
 
 div.map {
 	position: absolute;
@@ -210,45 +213,93 @@ div.olControlLayerSwitcher {
 	padding: 0;
 }
 
-div.olControlPanel {
-	position: absolute;
-	left: 60px;
-	top: 5px;
+.olControlPanel {
+  display: flex;
+  position: absolute;
+  left: 60px;
+  top: 5px;
 }
 
-.olControlPanel div {
-	display: block;
-	float: left;
-	width: 22px;
-	height: 22px;
-	border: @frame;
-	margin: 1px;
-	background-position: center center;
-	background-repeat: no-repeat;
+.olControlPanel .olButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  border: @frame;
+  margin: 1px;
 }
 
 .lmsCheckButtonItemActive {
-	background: white url('@{lms-img-path}/ip.gif');
+  .lms-ui-icon-ipnetwork();
+  background-color: white;
+  color: black;
 }
 
 .lmsCheckButtonItemInactive {
-	background: white url('@{lms-img-path}/ip.gif');
+  .lms-ui-icon-ipnetwork();
+  background-color: white;
+  color: black;
 }
 
 .lmsCenterButtonItemActive {
-	background: white url('@{lms-img-path}/network.gif');
+  .lms-ui-icon-align-center();
+  background-color: white;
+  color: black;
 }
 
 .lmsCenterButtonItemInactive {
-	background: white url('@{lms-img-path}/network.gif');
+  .lms-ui-icon-align-center();
+  background-color: white;
+  color: black;
 }
 
 .lmsRefreshButtonItemActive {
-	background: red url('@{lms-img-path}/reload.gif');
+  .lms-ui-icon-reload();
+  background-color: red;
+  color: black;
 }
 
 .lmsRefreshButtonItemInactive {
-	background: white url('@{lms-img-path}/reload.gif');
+  .lms-ui-icon-reload();
+  background-color: white;
+  color: black;
+}
+
+.lmsDevLinkForeignEntityToggleButtonItemActive {
+  .lms-ui-icon-division();
+  background-color: white;
+  color: black;
+}
+
+.lmsDevLinkForeignEntityToggleButtonItemInactive {
+  .lms-ui-icon-division();
+  background-color: lightgrey;
+  color: black;
+}
+
+.lmsCustomerOwnedToggleButtonItemActive {
+  .lms-ui-icon-customer();
+  background-color: white;
+  color: black;
+}
+
+.lmsCustomerOwnedToggleButtonItemInactive {
+  .lms-ui-icon-customer();
+  background-color: lightgrey;
+  color: black;
+}
+
+.lmsNetLinkEditModeChangeButtonItemActive {
+  .lms-ui-icon-port();
+  background-color: white;
+  color: black;
+}
+
+.lmsNetLinkEditModeChangeButtonItemInactive {
+  .lms-ui-icon-port();
+  background-color: lightgrey;
+  color: black;
 }
 
 .netrange-location {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2024 LMS Developers
+ *  (C) Copyright 2001-2026 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2024 LMS Developers';
+const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2026 LMS Developers';
 
 $http_mode = isset($_SERVER['HTTP_HOST']);
 
@@ -220,10 +220,11 @@ define('STORAGE_DIR', $CONFIG['directories']['storage_dir'] ?? $CONFIG['director
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c');
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates');
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins');
+define('VENDOR_DIR', $CONFIG['directories']['vendor_dir'] ?? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor');
 const PLUGINS_DIR = PLUGIN_DIR;
 
 // Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {

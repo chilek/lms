@@ -77,19 +77,21 @@
 				<div class="lms-ui-tab-table-wrapper col-7">
 					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column name">
-							{if $node.lastonline}
-								{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-									{button icon="nodeoff" type="link" class="lms-ui-ignore-target-url"
-										onclick="ping_popup('{$node.ip}')" label=$node.name
-										tip="{trans("Last online:")} {$node.lastonline_date}"}
+							<strong>
+								{if $node.lastonline}
+									{if ($smarty.now-$node.lastonline) > $lastonline_limit}
+										{button icon="nodeoff" type="link" class="lms-ui-ignore-target-url"
+											onclick="ping_popup('{$node.ip}')" label=$node.name
+											tip="{trans("Last online:")} {$node.lastonline_date}"}
+									{else}
+										{button icon="nodeon" type="link" class="lms-ui-ignore-target-url"
+											onclick="ping_popup('{$node.ip}')" label=$node.name tip="online"}
+									{/if}
 								{else}
-									{button icon="nodeon" type="link" class="lms-ui-ignore-target-url"
-										onclick="ping_popup('{$node.ip}')" label=$node.name tip="online"}
+									{button icon="nodeunk" type="link" class="lms-ui-ignore-target-url"
+										onclick="ping_popup('{$node.ip}')" label=$node.name tip="unknown"}
 								{/if}
-							{else}
-								{button icon="nodeunk" type="link" class="lms-ui-ignore-target-url"
-									onclick="ping_popup('{$node.ip}')" label=$node.name tip="unknown"}
-							{/if}
+							</strong>
 							{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}"><span

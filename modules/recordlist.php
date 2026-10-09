@@ -46,6 +46,9 @@ $recordslist = $DB->GetAll(
 	FROM records WHERE domain_id = ? ORDER BY ord desc, prio, name',
     array($d)
 );
+if (empty($recordslist)) {
+    $recordslist = array();
+}
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;

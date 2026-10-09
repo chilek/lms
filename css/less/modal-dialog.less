@@ -22,19 +22,47 @@
  *  $Id$
  */
 
-#lms-ui-modal-dialog {
-  ol {
-    list-style: none;
-    padding-left: 0;
-    width: 90%;
+.lms-ui-modal-dialog-wrapper {
+	&.ui-dialog .ui-dialog-buttonpane {
+		margin-top: 0;
+		padding-top: 0;
+	}
+}
 
-    li.message {
-      font-weight: bold;
-      max-height: 80vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-  }
+#lms-ui-modal-dialog {
+	padding-right: 1em;
+	padding-left: 1em;
+	padding-top: 0;
+	padding-bottom: 0;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	& > * {
+		margin-top: 0.6em;
+		margin-bottom: 0.6em;
+	}
+
+	.status {
+		font-weight: bold;
+		max-height: 80vh;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	.progress-bar {
+	}
+
+	.log-messages {
+		height: 30vh;
+		min-width: 600px;
+		width: 50vw;
+		background-color: @light;
+		border: @dotted-line;
+		overflow: auto;
+		padding: 0.4em;
+	}
 }
 
 .lms-ui-modal-dialog-wrapper {

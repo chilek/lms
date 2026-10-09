@@ -37,12 +37,13 @@
   //	margin: 0 4px 0 4px;
   .chosen-results {
     color: black;
+    max-height: 30vh;
     li.no-results {
       color: black;
       background: @light;
     }
     li {
-      padding: 1px 6px;
+      padding: 3px 6px;
       em {
         background-color: @dark;
         font-weight: bold;
@@ -70,6 +71,11 @@
     li {
       white-space: nowrap;
     }
+  }
+  .chosen-single .group-name {
+    white-space: wrap;
+    color: inherit;
+    font-weight: bold;
   }
 }
 
@@ -104,6 +110,9 @@
         background-position-x: 6px;
         background-position-y: -2px;
       }
+    }
+    span {
+      white-space: wrap;
     }
   }
   &.alert,

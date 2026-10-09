@@ -164,4 +164,6 @@ interface LMSHelpdeskManagerInterface
     public function assignCategoryToTicket($categoryid, $ticketid);
 
     public function deleteTicket($ticketid, $persistent = true);
+
+    public function getDivisionIdByTicketId($ticketid);
 }

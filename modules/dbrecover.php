@@ -109,10 +109,14 @@ if (isset($_GET['is_sure'])) {
 
     $db = $_GET['db'];
 
-    if (file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql')) {
-        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql');
-    } elseif (extension_loaded('zlib') && file_exists(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz')) {
-        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$db.'.sql.gz');
+    if (!preg_match('/^[0-9]+-[0-9]+$/', $db)) {
+        die;
+    }
+
+    if (file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/lms-' . $db . '.sql')) {
+        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-' . $db . '.sql');
+    } elseif (extension_loaded('zlib') && file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/lms-' . $db . '.sql.gz')) {
+        DBLoad(ConfigHelper::getConfig('directories.backup_dir').'/lms-' . $db . '.sql.gz');
     }
 
     include(MODULES_DIR . '/dblist.php');
@@ -121,7 +125,8 @@ if (isset($_GET['is_sure'])) {
     $layout['pagetitle'] = trans('Database Backup Recovery');
     $SMARTY->display('header.html');
     echo '<H1>'.trans('Database Backup Recovery').'</H1>';
-    echo '<P>'.trans('Are you sure, you want to recover database created at $a?', date('Y/m/d H:i.s', $_GET['db'])).'</P>';
-    echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+    $timestamp = explode('-', $_GET['db'])[0];
+    echo '<P>'.trans('Are you sure, you want to recover database created at $a?', date('Y/m/d H:i.s', $timestamp)).'</P>';
+    echo '<a href="?m=dbrecover&db=' . htmlspecialchars($_GET['db']) . ' &is_sure=1">' . trans('Yes, I am sure.') . '</a>';
     $SMARTY->display('footer.html');
 }

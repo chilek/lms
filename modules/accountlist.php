@@ -69,7 +69,7 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
 		LEFT JOIN customers c ON c.id = p.ownerid 
 		LEFT JOIN domains d ON d.id = p.domainid WHERE 1=1'
         .($customer != '' ? ' AND p.ownerid = '.intval($customer) : '')
-        .($type ? ' AND p.type & '.$type.' = '.intval($type) : '')
+        .($type ? ' AND p.type & ' . intval($type) . ' = ' . intval($type) : '')
         .($kind == 1 ? ' AND p.expdate!= 0 AND p.expdate < ?NOW?' : '')
         .($kind == 2 ? ' AND (p.expdate=0 OR p.expdate > ?NOW?)' : '')
         .($domain != '' ? ' AND p.domainid = '.intval($domain) : '')

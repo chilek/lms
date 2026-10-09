@@ -355,6 +355,23 @@
 					</div>
 				</div>
 			</div>
+			{if !empty($configsections)}
+				<div class="lms-ui-box-row">
+					<div class="lms-ui-box-field">
+						<div class="lms-ui-box-field-label">
+							{icon name="configuration"}
+							<strong>{trans("<!rt>Configuration section")}</strong>
+						</div>
+						<select size="1" id="uiconfigsection" form="queue-form" class="lms-ui-box-field-value"
+								name="queue[uiconfigsection]" {tip trigger="uiconfigsection"}>
+							<option value="">{trans("<!rt-configuration-section>— default —")}</option>
+							{foreach $configsections as $configsection}
+								<option value="{$configsection}" {if $configsection == $queue.uiconfigsection} selected{/if}>{$configsection}</option>
+							{/foreach}
+						</select>
+					</div>
+				</div>
+			{/if}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-field">
 					<div class="lms-ui-box-field-label">

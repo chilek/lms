@@ -412,7 +412,7 @@ function module_updateusersave()
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
@@ -438,6 +438,7 @@ function module_updateusersave()
             }
         }
         header('Location: ?m=info');
+        die;
     }
 }
 
@@ -448,7 +449,7 @@ function module_updatepinform()
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $usernodes['ownerid'] = $SESSION->id;
+    //$usernodes['ownerid'] = $SESSION->id;
 
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);
@@ -520,7 +521,7 @@ function module_updatepin()
 
     if (isset($error)) {
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-        $usernodes['ownerid'] = $SESSION->id;
+        //$usernodes['ownerid'] = $SESSION->id;
 
         $SMARTY->assign('userinfo', $userinfo);
         $SMARTY->assign('usernodes', $usernodes);
@@ -635,13 +636,13 @@ if (defined('USERPANEL_SETUPMODE')) {
                             SYSLOG::RES_CUSTCONTACT => $matches[2],
                         );
                         if ($changes['fieldvalue']) {
-                            $DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ?', array($changes['fieldvalue'], $matches[2]));
+                            $DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ? AND customerid = ?', array($changes['fieldvalue'], $matches[2], $changes['customerid']));
                             if ($LMS->SYSLOG) {
                                 $fields['contact'] = $changes['fieldvalue'];
                                 $LMS->SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $fields);
                             }
                         } else {
-                            $DB->Execute('DELETE FROM customercontacts WHERE id = ?', array($matches[2]));
+                            $DB->Execute('DELETE FROM customercontacts WHERE id = ? AND customerid = ?', array($matches[2], $changes['customerid']));
                             if ($LMS->SYSLOG) {
                                 $LMS->SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_DELETE, $fields);
                             }

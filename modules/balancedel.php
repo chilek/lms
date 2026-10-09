@@ -91,6 +91,10 @@ if (!empty($ids)) {
     $refdocs = array();
 
     foreach ($ids as $cashid) {
+        if ($LMS->isKsefDocumentByCashId($cashid)) {
+            continue;
+        }
+
         $refdocs = array_merge($refdocs, $LMS->getDocumentReferences(null, $cashid));
 
         $LMS->DelBalance($cashid);
@@ -105,6 +109,10 @@ if (!empty($ids)) {
 
 if (!empty($docitems)) {
     foreach ($docitems as $docid => $items) {
+        if ($LMS->isKsefDocument($docid)) {
+            continue;
+        }
+
         if (isset($_GET['documents'])) {
             $refdocs = $LMS->getDocumentReferences($docid);
         } else {
@@ -125,6 +133,10 @@ if (!empty($docitems)) {
 
 if (!empty($invoices)) {
     foreach ($invoices as $invoiceid) {
+        if ($LMS->isKsefDocument($invoiceid)) {
+            continue;
+        }
+
         if (isset($_GET['documents'])) {
             $refdocs = $LMS->getDocumentReferences($invoiceid);
         } else {

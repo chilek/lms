@@ -75,6 +75,12 @@ if (strlen($node_empty_mac)) {
     }
 }
 
+if (empty($nodeinfo['netdev'])) {
+    $nodeinfo['ports'] = [];
+} else {
+    $nodeinfo['ports'] = $LMS->getNetDevPorts($nodeinfo['netdev']);
+}
+
 $netdevices = $LMS->GetNetDevNames();
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
@@ -377,9 +383,19 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
-    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+    if (!ConfigHelper::checkPrivilege('full_access')
         && !empty($nodeedit['address_id']) && !$LMS->isTerritAddress($nodeedit['address_id'])) {
-        $error['address_id'] = trans('TERYT address is required!');
+        $terytRequired = ConfigHelper::getConfig('phpui.teryt_required', 'false');
+        if ($terytRequired === 'error') {
+            $terytRequired = true;
+        } elseif ($terytRequired !== 'warning') {
+            $terytRequired = ConfigHelper::checkValue($terytRequired);
+        }
+        if (is_bool($terytRequired) && $terytRequired) {
+            $error['nodeedit[address_id]'] = trans('TERYT address is required!');
+        } elseif ($terytRequired === 'warning' && !isset($warnings['nodeedit-address_id-'])) {
+            $warning['nodeedit[address_id]'] = trans('TERYT address recommended!');
+        }
     }
 
     if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
@@ -457,6 +473,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'] ?? null;
     $nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
     $nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
+    $nodeinfo['login'] = $nodeedit['login'];
     $nodeinfo['passwd'] = $nodeedit['passwd'];
     $nodeinfo['access'] = $nodeedit['access'];
     $nodeinfo['ownerid'] = $nodeedit['ownerid'];
@@ -497,6 +514,8 @@ if (!strlen($node_empty_mac) && empty($nodeinfo['macs'])) {
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customerconsents.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
     $nodeassignments = array();

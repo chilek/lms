@@ -302,7 +302,15 @@ if ($links = $DB->GetAll('SELECT src, dst FROM netlinks')) {
     }
 }
 
-$type = strtolower(ConfigHelper::getConfig('phpui.map_type', 'openlayers'));
+$type = strtolower(
+    ConfigHelper::getConfig(
+        'map.type',
+        ConfigHelper::getConfig(
+            'phpui.map_type',
+            'openlayers'
+        )
+    )
+);
 
 if ($type == 'openlayers') {
     include(MODULES_DIR.'/map.inc.php');
@@ -316,8 +324,8 @@ if ($type == 'openlayers') {
         $SMARTY->assign('lon', $nodes[$nodeid]['lon'] ?? null);
         $SMARTY->assign('lat', $nodes[$nodeid]['lat'] ?? null);
     } else {
-        $SMARTY->assign('lon', $_GET['lon'] ?? null);
-        $SMARTY->assign('lat', $_GET['lat'] ?? null);
+        $SMARTY->assign('lon', isset($_GET['lon']) ? (float) $_GET['lon'] : null);
+        $SMARTY->assign('lat', isset($_GET['lat']) ? (float) $_GET['lat'] : null);
     }
 
     $SMARTY->assign('type', $type);

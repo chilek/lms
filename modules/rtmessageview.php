@@ -53,12 +53,12 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
                 $imagick->scaleImage($width, 0);
                 header('Content-Type: ' . $attach['contenttype']);
                 header('Cache-Control: private');
-                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $filename . '"');
                 echo $imagick->getImageBlob();
             } else {
                 header('Content-Type: ' . $attach['contenttype']);
                 header('Cache-Control: private');
-                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename="' . $filename . '"');
                 echo @file_get_contents($file);
             }
         }

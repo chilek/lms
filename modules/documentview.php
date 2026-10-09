@@ -59,9 +59,29 @@ if (!empty($docids)) {
         )
     )) {
         $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
-        if (isset($_GET['html2pdf']) && empty($_GET['html2pdf'])) {
+        if (isset($_GET['html2pdf']) && empty($_GET['html2pdf']) || isset($_GET['office2pdf']) && empty($_GET['office2pdf'])) {
             $document_type = '';
         }
+
+        $document_office2pdf_document_types = ConfigHelper::getConfig(
+            'documents.office2pdf_document_types',
+            '',
+            true
+        );
+
+        if (strlen($document_office2pdf_document_types)) {
+            $office2pdf_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_office2pdf_document_types, -1, PREG_SPLIT_NO_EMPTY);
+            $document_office2pdf_document_types = array();
+            $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+            foreach ($office2pdf_document_types as $office2pdf_document_type) {
+                if (isset($doctype_aliases[$office2pdf_document_type])) {
+                    $document_office2pdf_document_types[$doctype_aliases[$office2pdf_document_type]] = $office2pdf_document_type;
+                }
+            }
+        } else {
+            $document_office2pdf_document_types = $DOCTYPE_ALIASES;
+        }
+
         $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
         $cache_pdf = ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'));
 
@@ -103,14 +123,24 @@ if (!empty($docids)) {
                 }
             }
         }
+
+        $selectedAttachments = [];
+        if (!empty($_POST['attachment-marks'])) {
+            foreach ($_POST['attachment-marks'] as $documentId => $documentAttachments) {
+                $selectedAttachments = array_merge($selectedAttachments, array_keys($documentAttachments));
+            }
+            $selectedAttachments = Utils::filterIntegers($selectedAttachments);
+        }
+
         $list = $DB->GetAll(
             'SELECT dc.docid, dc.filename, dc.contenttype, dc.md5sum, dc.type
             FROM documentattachments dc
             JOIN documents d ON d.id = dc.docid
             WHERE dc.docid IN ?'
-                . ($attachments || !empty($attachmentid) || isset($_GET['save']) ? '' : ' AND dc.type = 1')
+                . ($attachments || !empty($attachmentid) || isset($_GET['save']) || !empty($selectedAttachments) ? '' : ' AND dc.type = 1')
                 . (empty($attachmentid) ? '' : ' AND dc.id = ' . $attachmentid)
-            . ' ORDER BY dc.docid ASC, dc.type DESC',
+                . (empty($selectedAttachments) ? '' : ' AND dc.id IN (' . implode(', ', $selectedAttachments) . ')')
+            . ' ORDER BY dc.docid ASC, dc.type DESC, dc.id ASC',
             array(
                 Utils::array_column($docs, 'id'),
             )
@@ -121,16 +151,22 @@ if (!empty($docids)) {
 
         $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
         $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
+        $office2pdf_command = ConfigHelper::getConfig('documents.office2pdf_command', '', true);
 
         if (isset($_GET['save'])) {
             $docid = $list[0]['docid'];
+            $doctype = $docs[$docid]['type'];
 
             $pdf_on_output = $document_type == 'pdf';
 
             foreach ($list as $idx => $file) {
                 $contenttype = $file['contenttype'];
+
                 $html_on_input = preg_match('/html$/i', $contenttype);
                 $html2pdf = $html_on_input && $pdf_on_output;
+
+                $office_on_input = preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $contenttype);
+                $office2pdf = $office_on_input && $pdf_on_output;
 
                 $filename = $file['filename'];
                 $document_filename = DOC_DIR . DIRECTORY_SEPARATOR
@@ -139,6 +175,9 @@ if (!empty($docids)) {
 
                 $cached_pdf = false;
                 if ($html_on_input && $pdf_on_output && file_exists($document_filename . '.pdf')) {
+                    $document_filename .= '.pdf';
+                    $cached_pdf = true;
+                } elseif ($office_on_input && $pdf_on_output && file_exists($document_filename . '.pdf')) {
                     $document_filename .= '.pdf';
                     $cached_pdf = true;
                 } elseif (!file_exists($document_filename)) {
@@ -152,7 +191,7 @@ if (!empty($docids)) {
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if ($pdf_on_output && preg_match('/^htm/', $extension)) {
+                    if ($pdf_on_output && preg_match('/^(htm|(odt|ods|doc|docx|xls|xlsx|rtf)$)/i', $extension)) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);
@@ -198,7 +237,7 @@ if (!empty($docids)) {
                     }
                 }
 
-                if ($file['type'] == 1 || count($list) == 1) {
+                if (($file['type'] == 1 || count($list) == 1) && empty($attachmentid)) {
                     $filename = preg_replace(
                         '/[^[:alnum:]_\.\-]/iu',
                         '_',
@@ -222,26 +261,38 @@ if (!empty($docids)) {
                     if ($i === false && strlen($extension)) {
                         $filename .= '.' . $extension;
                     }
+                } elseif ($office2pdf && isset($document_office2pdf_document_types[$doctype])) {
+                    $filename .= '.' . $extension;
                 } else {
                     $filename = $file['filename'];
                 }
 
                 $output_filename = $filename;
 
-                if ($cached_pdf || !$html2pdf) {
+                if ($cached_pdf || !$html2pdf && !$office2pdf) {
                     if (count($list) > 1) {
                         $zip->addFile($document_filename, $output_filename);
                     } else {
                         $content = file_get_contents($document_filename);
                     }
                 } else {
-                    $content = Utils::html2pdf(array(
-                        'content' => file_get_contents($document_filename),
-                        'subject' => trans('Document'),
-                        'margins' => $margins,
-                        'dest' => 'S',
-                        'md5sum' => $cache_pdf ? $file['md5sum'] : null,
-                    ));
+                    if ($office2pdf) {
+                        $content = Utils::office2pdf(array(
+                            'content' => file_get_contents($document_filename),
+                            'subject' => trans('Document'),
+                            'doctype' => Utils::docTypeByMimeType($contenttype),
+                            'dest' => 'S',
+                            'md5sum' => $cache_pdf ? $file['md5sum'] : null,
+                        ));
+                    } else {
+                        $content = Utils::html2pdf(array(
+                            'content' => file_get_contents($document_filename),
+                            'subject' => trans('Document'),
+                            'margins' => $margins,
+                            'dest' => 'S',
+                            'md5sum' => $cache_pdf ? $file['md5sum'] : null,
+                        ));
+                    }
                     if (count($list) > 1) {
                         $zip->addFromString($output_filename, $content);
                     }
@@ -251,47 +302,60 @@ if (!empty($docids)) {
             if (count($list) > 1) {
                 $zip->close();
 
-                header('Content-Disposition: attachment; filename=' . $zip_filename);
+                header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
                 header('Pragma: public');
                 header('Content-Type: application/x-zip');
 
                 readfile($zip_temp_filename);
                 unlink($zip_temp_filename);
             } else {
-                header('Content-Disposition: attachment; filename=' . $output_filename);
+                header('Content-Disposition: attachment; filename="' . $output_filename . '"');
                 header('Pragma: public');
                 header('Content-Type: ' . $contenttype);
 
                 die($content);
             }
         } else {
-            $htmls = $pdfs = $others = 0;
+            $htmls = $offices = $pdfs = $others = 0;
+            $office2pdfs = 0;
             foreach ($list as $doc) {
                 $ctype = $doc['contenttype'];
+                $doctype = $docs[$doc['docid']]['type'];
 
                 if (preg_match('/html$/i', $ctype)) {
                     $htmls++;
                 } elseif (preg_match('/pdf$/i', $ctype)) {
                     $pdfs++;
+                } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $ctype)) {
+                    $offices++;
+                    if (isset($document_office2pdf_document_types[$doctype])) {
+                        $office2pdfs++;
+                    }
                 } else {
                     $others++;
                 }
             }
 
-            if ($others && count($list) > 1 || $htmls && $pdfs && $document_type != 'pdf') {
-                die('Currently you can only print many documents of type text/html or application/pdf!');
+            if ($others && count($list) > 1
+                || $htmls && ($offices || $pdfs) && ($document_type != 'pdf' || $offices > $office2pdfs)
+                || $offices && !$office2pdfs && count($list) > 1) {
+                die(
+                    'Currently you can only print many documents of type text/html, application/pdf, application/rtf, '
+                        . 'application/vnd.oasis.opendocument.text and application/vnd.openxmlformats-officedocument.wordprocessingml.document!'
+                );
             }
 
-            $pdf = $pdfs || $htmls && $document_type == 'pdf';
+            $pdf = $pdfs || ($htmls || $offices) && $document_type == 'pdf' && $offices == $office2pdfs;
 
             if ($pdf || $others || count($docs) == 1) {
                 $docid = $list[0]['docid'];
+                $doctype = $docs[$docid]['type'];
                 $filename = $list[0]['filename'];
-                $i = strpos($filename, '.');
+                $i = mb_strpos($filename, '.', -5);
 
                 if ($i !== false) {
                     $extension = mb_substr($filename, $i + 1);
-                    if (preg_match('/^htm/', $extension) && $pdf) {
+                    if (preg_match('/^(htm|(odt|ods|doc|docx|xls|xlsx|rtf)$)/i', $extension) && $pdf) {
                         $extension = 'pdf';
                     }
                     $filename = mb_substr($filename, 0, $i);
@@ -301,32 +365,36 @@ if (!empty($docids)) {
                     $extension = '';
                 }
 
-                $filename = preg_replace(
-                    '/[^[:alnum:]_\.\-]/iu',
-                    '_',
-                    str_replace(
-                        array(
-                            '%filename',
-                            '%type',
-                            '%document',
-                            '%docid',
-                        ),
-                        array(
-                            $filename,
-                            $DOCTYPES[$docs[$docid]['type']],
-                            $docs[$docid]['fullnumber'],
-                            $docid,
-                        ),
-                        $attachment_filename
-                    )
-                );
+                if (intval($list[0]['type']) == 1) {
+                    $filename = preg_replace(
+                        '/[^[:alnum:]_\.\-]/iu',
+                        '_',
+                        str_replace(
+                            array(
+                                '%filename',
+                                '%type',
+                                '%document',
+                                '%docid',
+                            ),
+                            array(
+                                $filename,
+                                $DOCTYPES[$docs[$docid]['type']],
+                                $docs[$docid]['fullnumber'],
+                                $docid,
+                            ),
+                            $attachment_filename
+                        )
+                    );
+                }
 
                 if ($pdf || $others) {
-                    header('Content-Disposition: ' . ($pdf && !isset($_GET['save']) ? 'inline' : 'attachment') . '; filename=' . $filename . '.' . $extension);
+                    header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename="' . $filename . '.' . $extension . '"');
                 } else {
-                    header('Content-Disposition: ' . (isset($_GET['save']) ? 'attachment' : 'inline') . '; filename=' . $filename . '.' . $extension);
+                    header('Content-Disposition: inline; filename="' . $filename . '.' . $extension . '"');
                 }
                 header('Pragma: public');
+
+                $output_filename = $filename . (empty($extension) ? '' : '.' . $extension);
             }
 
             header('Content-Type: ' . ($pdf ? 'application/pdf' : $list[0]['contenttype']));
@@ -359,7 +427,7 @@ if (!empty($docids)) {
                     continue;
                 }
 
-                if (!$cached_pdf && $htmls && !$pdfs && $document_type == 'pdf') {
+                if (!$cached_pdf && $htmls && !$pdfs && !$offices && $document_type == 'pdf') {
                     if (empty($html2pdf_command)) {
                         if ($i) {
                             $htmlbuffer .= "\n<page>\n";
@@ -381,53 +449,63 @@ if (!empty($docids)) {
                     if ($pdf && count($list) > 1) {
                         $content = file_get_contents($filename);
 
-                        if (!$cached_pdf && preg_match('/html$/i', $doc['contenttype'])) {
-                            $content = "
-                                <html>
-                                    <head>
-                                        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
-                                        <style>
+                        if (!$cached_pdf) {
+                            if (preg_match('/html$/i', $doc['contenttype'])) {
+                                $content = "
+                                    <html>
+                                        <head>
+                                            <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+                                            <style>
 
-                                            @page {
-                                                size: A4;
-                                                margin: 1cm;
-                                            }
+                                                @page {
+                                                    size: A4;
+                                                    margin: 1cm;
+                                                }
 
-                                            .document {
-                                                 break-after: page;
-                                            }
+                                                .document {
+                                                     break-after: page;
+                                                }
 
-                                        </style>
-                                    </head>
-                                    <body>
-                                        <div class=\"document\">"
-                                . $content
-                                . "</div>
-                                        <script>
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <div class=\"document\">"
+                                    . $content
+                                    . "</div>
+                                            <script>
 
-                                            let documents = document.querySelectorAll('.document');
-                                            if (documents.length) {
-                                                documents.forEach(function(document) {
-                                                    let documentShadow = document.attachShadow({
-                                                        mode: \"closed\"
+                                                let documents = document.querySelectorAll('.document');
+                                                if (documents.length) {
+                                                    documents.forEach(function(document) {
+                                                        let documentShadow = document.attachShadow({
+                                                            mode: \"closed\"
+                                                        });
+                                                        let innerHTML = document.innerHTML;
+                                                        document.innerHTML = '';
+                                                        documentShadow.innerHTML = innerHTML;
                                                     });
-                                                    let innerHTML = document.innerHTML;
-                                                    document.innerHTML = '';
-                                                    documentShadow.innerHTML = innerHTML;
-                                                });
-                                            }
+                                                }
 
-                                        </script>
-                                    </body>
-                                </html>";
+                                            </script>
+                                        </body>
+                                    </html>";
 
-                            $content = Utils::html2pdf(array(
-                                'content' => $content,
-                                'subject' => trans('Document'),
-                                'margins' => $margins,
-                                'dest' => 'S',
-                                'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
-                            ));
+                                $content = Utils::html2pdf(array(
+                                    'content' => $content,
+                                    'subject' => trans('Document'),
+                                    'margins' => $margins,
+                                    'dest' => 'S',
+                                    'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                ));
+                            } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $doc['contenttype'])) {
+                                $content = Utils::office2pdf(array(
+                                    'content' => $content,
+                                    'subject' => trans('Document'),
+                                    'doctype' => Utils::docTypeByMimeType($doc['contenttype']),
+                                    'dest' => 'S',
+                                    'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                ));
+                            }
                         }
 
                         try {
@@ -446,8 +524,73 @@ if (!empty($docids)) {
                                     . file_get_contents($filename)
                                     . "\n</div>\n";
                             }
+                        } elseif ($pdf) {
+                            if ($cached_pdf) {
+                                echo file_get_contents($filename);
+                            } else {
+                                $content = file_get_contents($filename);
+
+                                if (preg_match('/html$/i', $doc['contenttype'])) {
+                                    $content = "
+                                    <html>
+                                        <head>
+                                            <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+                                            <style>
+
+                                                @page {
+                                                    size: A4;
+                                                    margin: 1cm;
+                                                }
+
+                                                .document {
+                                                     break-after: page;
+                                                }
+
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <div class=\"document\">"
+                                        . $content
+                                        . "</div>
+                                            <script>
+
+                                                let documents = document.querySelectorAll('.document');
+                                                if (documents.length) {
+                                                    documents.forEach(function(document) {
+                                                        let documentShadow = document.attachShadow({
+                                                            mode: \"closed\"
+                                                        });
+                                                        let innerHTML = document.innerHTML;
+                                                        document.innerHTML = '';
+                                                        documentShadow.innerHTML = innerHTML;
+                                                    });
+                                                }
+
+                                            </script>
+                                        </body>
+                                    </html>";
+
+                                    $content = Utils::html2pdf(array(
+                                        'content' => $content,
+                                        'subject' => trans('Document'),
+                                        'margins' => $margins,
+                                        'dest' => 'S',
+                                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                    ));
+                                } elseif (preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i', $doc['contenttype'])) {
+                                    $content = Utils::office2pdf(array(
+                                        'content' => $content,
+                                        'subject' => trans('Document'),
+                                        'doctype' => Utils::docTypeByMimeType($doc['contenttype']),
+                                        'dest' => 'S',
+                                        'md5sum' => $cache_pdf ? $doc['md5sum'] : null,
+                                    ));
+                                }
+
+                                echo $content;
+                            }
                         } else {
-                            readfile($filename);
+                            echo file_get_contents($filename);
                         }
                     }
                 }
@@ -455,7 +598,7 @@ if (!empty($docids)) {
                 $i++;
             }
 
-            if ($htmls && !$pdfs && strlen($htmlbuffer)) {
+            if ($htmls && !$offices && !$pdfs && strlen($htmlbuffer)) {
                 if ((!empty($html2pdf_command) || $document_type != 'pdf') && $htmls > 1) {
                     $htmlbuffer = "
                         <html>
@@ -498,6 +641,7 @@ if (!empty($docids)) {
 
                 if ($document_type == 'pdf') {
                     Utils::html2pdf(array(
+                        'title' => $output_filename ?? null,
                         'content' => $htmlbuffer,
                         'subject' => trans('Document'),
                         'margins' => $margins,

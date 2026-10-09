@@ -69,7 +69,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
         $where[] = 'p.ownerid = '.intval($customer);
     }
     if ($type) {
-        $where[] = 'p.type & '.$type.' = '.intval($type);
+        $where[] = 'p.type & ' . intval($type) . ' = ' . intval($type);
     }
     if ($kind == 1) {
         $where[] = 'p.expdate != 0 AND p.expdate < ?NOW?';
@@ -184,7 +184,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($accountlist['direction']);
 
         $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
-        $pagelimit = ConfigHelper::getConfig('phpui.accountlist_pagelimit', $queuedata['total']);
+        $pagelimit = ConfigHelper::getConfig('phpui.accountlist_pagelimit', $listdata['total']);
         $start = ($page - 1) * $pagelimit;
 
         $SESSION->save('asp', $page);

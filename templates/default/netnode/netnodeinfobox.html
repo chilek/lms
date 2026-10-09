@@ -60,7 +60,11 @@
 										<strong>{trans("Type")}</strong>
 									</td>
 									<td>
-										{$_NETELEMENTTYPES[$nodeinfo.type]}
+										{if empty($nodeinfo.type)}
+											{trans("<!netelemtype>— other —")}
+										{else}
+											{$_NETELEMENTTYPES[$nodeinfo.type]}
+										{/if}
 									</td>
 								</tr>
 								<tr>
@@ -168,7 +172,17 @@
 										<strong>{trans("Ownership")}</strong>
 									</td>
 									<td>
-										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
+										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]}
+										{if ($nodeinfo.ownership>= $smarty.const.NET_ELEMENT_OWNERSHIP_SHARED)}
+											({strip}
+											{if empty($foreign_entity)}
+												{$nodeninfo.coowner}
+											{else}
+												{$foreign_entity.name}
+												{if !empty($foreign_entity.type)}, {trans("TEN")} {$foreign_entity.id}{/if}
+											{/if}
+											{/strip})
+										{/if}
 									</td>
 								</tr>
 								{if !empty($nodeinfo.ownerid)}
@@ -275,7 +289,7 @@
 										<strong>{trans('Created')}</strong>
 									</td>
 									<td>
-										{$nodeinfo.createtime|date_format:"Y-m-d (l)"}
+										{Utils::strftime('%Y-%m-%d (%A)', $nodeinfo.createtime)}
 									</td>
 								</tr>
 								<tr>
@@ -287,7 +301,7 @@
 									</td>
 									<td>
 										{if $nodeinfo.lastinspectiontime}
-											{$nodeinfo.lastinspectiontime|date_format:"Y-m-d (l)"}
+											{Utils::strftime('%Y-%m-%d (%A)', $nodeinfo.lastinspectiontime)}
 										{else}
 											-
 										{/if}

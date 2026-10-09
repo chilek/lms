@@ -40,7 +40,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
-		updateAdvancedSelects(select);
+		updateAdvancedSelectsTest(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {
@@ -72,11 +72,19 @@ $(function() {
 function change_customer(customer_selector, address_selector) {
 	getCustomerAddresses($(customer_selector).val(), function (addresses) {
 		setAddressList('#customer_addresses', addresses);
-		if (Object.keys(addresses).length == 1) {
-			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			updateAdvancedSelects('#customer_addresses');
+
+		if (Object.keys(addresses).length) {
+			$.each(addresses, function(index, address) {
+				if (address.hasOwnProperty('default_address')) {
+					$('#customer_addresses').val(address.address_id);
+					updateAdvancedSelectsTest('#customer_addresses');
+				}
+			});
 		}
+
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
+		$('#customer_addresses').trigger('lms:address_list_updated');
+		xajax_update_contacts($(customer_selector).val());
 	});
 }
 
@@ -89,9 +97,38 @@ function update_nodes(data) {
 	$('.node-row').toggle(data.length > 0);
 }
 
+function update_contacts(data) {
+	var oldValue;
+	var values = [];
+	$(data.emails).each(function(idx, item) {
+		values.push({
+			value: item.contact,
+			text: item.contact + (item.name.length ? ' (' + escapeHtml(item.name) + ')' : '')
+		});
+	});
+
+	oldValue = $('#requestor_mail_combobox').scombobox('val');
+	$('#requestor_mail_combobox')
+		.scombobox('fill', values)
+		.scombobox('val', oldValue);
+
+	values = [];
+	$(data.phones).each(function(idx, item) {
+		values.push({
+			value: item.contact,
+			text: item.contact + (item.name.length ? ' (' + escapeHtml(item.name) + ')' : '')
+		});
+	});
+
+	oldValue = $('#requestor_phone_combobox').scombobox('val');
+	$('#requestor_phone_combobox')
+		.scombobox('fill', values)
+		.scombobox('val', oldValue);
+}
+
 function initCustomerSelection() {
-	initAdvancedSelects('#customer_addresses');
-	$('#customer_addresses').chosen().change(function() {
+	initAdvancedSelectsTest('#customer_addresses');
+	$('#customer_addresses').change(function() {
 		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
 	});
 }

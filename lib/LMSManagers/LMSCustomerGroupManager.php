@@ -300,21 +300,43 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
      */
     public function CustomerassignmentDelete($customerassignmentdata)
     {
+        $time = time();
+
         if ($this->syslog) {
             if (isset($customerassignmentdata['customergroupid'])) {
-                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM vcustomerassignments
-					WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
-                    $customerassignmentdata['customerid']));
+                $assigns = $this->db->GetAll(
+                    'SELECT
+                        id,
+                        customerid,
+                        customergroupid
+                    FROM vcustomerassignments
+                    WHERE customergroupid = ?
+                        AND customerid = ?',
+                    array(
+                        $customerassignmentdata['customergroupid'],
+                        $customerassignmentdata['customerid'],
+                    )
+                );
             } else {
-                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM vcustomerassignments
-					WHERE customerid = ?', array($customerassignmentdata['customerid']));
+                $assigns = $this->db->GetAll(
+                    'SELECT
+                        id,
+                        customerid,
+                        customergroupid
+                    FROM vcustomerassignments
+                    WHERE customerid = ?',
+                    array(
+                        $customerassignmentdata['customerid'],
+                    )
+                );
             }
             if (!empty($assigns)) {
                 foreach ($assigns as $assign) {
                     $args = array(
-                    SYSLOG::RES_CUSTASSIGN => $assign['id'],
-                    SYSLOG::RES_CUST => $assign['customerid'],
-                    SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
+                        SYSLOG::RES_CUSTASSIGN => $assign['id'],
+                        SYSLOG::RES_CUST => $assign['customerid'],
+                        SYSLOG::RES_CUSTGROUP => $assign['customergroupid'],
+                        'enddate' => $time,
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_UPDATE, $args);
                 }
@@ -322,14 +344,29 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         }
 
         if (isset($customerassignmentdata['customergroupid'])) {
-            return $this->db->Execute('UPDATE customerassignments
-                SET enddate = ?NOW?
-				WHERE customergroupid = ? AND customerid = ? AND enddate = 0', array($customerassignmentdata['customergroupid'],
-                    $customerassignmentdata['customerid']));
+            return $this->db->Execute(
+                'UPDATE customerassignments
+                SET enddate = ?
+                WHERE customergroupid = ?
+                    AND customerid = ?
+                    AND enddate = 0',
+                array(
+                    $time,
+                    $customerassignmentdata['customergroupid'],
+                    $customerassignmentdata['customerid'],
+                )
+            );
         } else {
-            return $this->db->Execute('UPDATE customerassignments
-                SET enddate = ?NOW?
-				WHERE customerid = ? AND enddate = 0', array($customerassignmentdata['customerid']));
+            return $this->db->Execute(
+                'UPDATE customerassignments
+                SET enddate = ?
+                WHERE customerid = ?
+                    AND enddate = 0',
+                array(
+                    $time,
+                    $customerassignmentdata['customerid'],
+                )
+            );
         }
     }
 

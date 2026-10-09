@@ -162,11 +162,26 @@ html .ui-button.ui-state-disabled:active {
   background-color: @dark;
   .ui-dialog-content {
     background-color: @dark;
+    overflow: unset;
+
+    &.ui-widget-content {
+      display: flex;
+      flex-direction: column;
+
+      object[type="application/pdf"] {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .ui-dialog-buttonpane {
     background-color: @dark;
     border-top: 0;
     padding-right: 6px;
+
+    button {
+      font-weight: bold;
+    }
   }
 }
 
@@ -218,6 +233,7 @@ html .ui-button.ui-state-disabled:active {
   background: none;
   margin-left: 0.3em;
   padding: 0;
+  display: none;
 }
 
 input[disabled] + .ui-datepicker-trigger {
@@ -310,4 +326,16 @@ input[disabled] + .ui-datepicker-trigger {
 
 .ui-sortable-handle {
   cursor: grab;
+}
+
+.ui-menu.ui-autocomplete {
+  max-width: 40%;
+
+  .ui-menu-item:not(:last-child) {
+    border-bottom: @dotted-line;
+  }
+}
+
+.ui-button.lms-ui-button > i {
+  margin-right: 0.3em;
 }

@@ -35,6 +35,42 @@ switch ($type) {
         /***********************************************/
         $type = isset($_POST['type']) ? $_POST['type'] : 'print';
 
+        if (!empty($_POST['options'])) {
+            $options = $_POST['options'];
+            if (!empty($options['assigned-bandwidth'])) {
+                $nodeBandwidths = $DB->GetAllByKey(
+                    'SELECT
+                        n.id,
+                        SUM(t.downrate) AS downrate,
+                        SUM(t.downceil) AS downceil,
+                        SUM(t.uprate) AS uprate,
+                        SUM(t.upceil) AS upceil
+                    FROM nodes n
+                    JOIN nodeassignments na ON na.nodeid = n.id
+                    JOIN assignments a ON a.id = na.assignmentid
+                    JOIN tariffs t ON t.id = a.tariffid
+                    WHERE a.commited = 1
+                        AND a.suspended = 0
+                        AND a.datefrom <= ?NOW?
+                        AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM assignments a2
+                            JOIN nodeassignments na2 ON na2.assignmentid = a2.id
+                            WHERE na2.nodeid = n.id
+                                AND a2.tariffid IS NULL
+                                AND a2.liabilityid IS NULL
+                                AND a2.datefrom <= ?NOW?
+                                AND (a2.dateto = 0 OR a2.dateto >= ?NOW?)
+                        )
+                    GROUP BY n.id',
+                    'id'
+                );
+            }
+        } else {
+            $options = array();
+        }
+
         switch ($_POST['filter']) {
             case 0:
                 $layout['pagetitle'] = trans('Nodes List');
@@ -94,6 +130,7 @@ switch ($type) {
                 $nodelist = $DB->GetAll(
                     'SELECT
                         n.id AS id,
+                        n.ownerid,
                         INET_NTOA(n.ipaddr) AS ip,
                         mac,
                         n.name AS name,
@@ -116,6 +153,8 @@ switch ($type) {
                             ELSE lst.ident END) AS street_ident,
                         n.location_house,
                         n.location_flat,
+                        n.longitude,
+                        n.latitude,
                         a.zip
                     FROM vnodes n
                     LEFT JOIN addresses a ON a.id = n.address_id
@@ -129,12 +168,22 @@ switch ($type) {
                     WHERE 1 = 1 '
                         . ($net ? ' AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ') OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
                         . ($group ? ' AND EXISTS (SELECT 1 FROM vcustomerassignments WHERE customerid = ownerid)' : '')
-                    . ' GROUP BY n.id, n.ipaddr, n.mac, n.name, n.info, c.lastname, c.name, c.type, lc.name,
-                        lc.ident, lb.name, lb.ident, lb.type, ld.name, ld.ident, ls.name, ls.ident, lst.ident, lst.name, n.location_house, n.location_flat, a.zip
+                    . ' GROUP BY n.id, n.ownerid, n.ipaddr, n.mac, n.name, n.info, c.lastname, c.name, c.type, lc.name,
+                        lc.ident, lb.name, lb.ident, lb.type, ld.name, ld.ident, ls.name, ls.ident, lst.ident, lst.name, n.location_house, n.location_flat, n.longitude, n.latitude, a.zip
                     HAVING SUM(value) < 0'
                     . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 );
 
+                if (!empty($nodeBandwidths)) {
+                    foreach ($nodelist as &$node) {
+                        if (!empty($nodeBandwidths[$node['id']])) {
+                            $node = array_merge($node, $nodeBandwidths[$node['id']]);
+                        }
+                    }
+                    unset($node);
+                }
+
+                $SMARTY->assign('options', $options);
                 $SMARTY->assign('nodelist', $nodelist);
 
                 if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
@@ -158,7 +207,8 @@ switch ($type) {
                 $SESSION->close();
 
                 die;
-            break;
+
+                break;
         }
 
         unset($nodelist['total']);
@@ -167,7 +217,18 @@ switch ($type) {
         unset($nodelist['totalon']);
         unset($nodelist['totaloff']);
 
+        if (!empty($nodeBandwidths)) {
+            foreach ($nodelist as &$node) {
+                if (!empty($nodeBandwidths[$node['id']])) {
+                    $node = array_merge($node, $nodeBandwidths[$node['id']]);
+                }
+            }
+            unset($node);
+        }
+
+        $SMARTY->assign('options', $options);
         $SMARTY->assign('nodelist', $nodelist);
+
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
             $output = $SMARTY->fetch('print/printnodelist.html');
             Utils::html2pdf(array(

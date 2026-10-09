@@ -85,9 +85,13 @@ if ($api) {
 
     if (empty($model)) {
         $model = -1;
+    } elseif (!preg_match('/^-[0-9]+$/', $model)) {
+        $model = mb_strtoupper($model);
     }
     if (empty($producer)) {
         $producer = -1;
+    } elseif (!preg_match('/^-[0-9]+$/', $producer)) {
+        $producer = mb_strtoupper($producer);
     }
 
     $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
@@ -102,6 +106,17 @@ if ($api) {
         $SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
     }
 
+    if (!isset($_GET['linktechnology'])) {
+        $SESSION->restore('ndflinktechnology', $linktechnology);
+    } else {
+        $linktechnology = $_GET['linktechnology'];
+    }
+    $SESSION->save('ndflinktechnology', $linktechnology);
+
+    if (empty($linktechnology)) {
+        $linktechnology = -1;
+    }
+
     $search = array(
         'status' => $s,
         'project' => $p,
@@ -109,6 +124,7 @@ if ($api) {
         'type' => $type,
         'producer' => $producer,
         'model' => $model,
+        'linktechnology' => $linktechnology,
         'count' => true,
     );
 
@@ -142,6 +158,7 @@ if (!$api) {
     $listdata['type'] = $type;
     $listdata['producer'] = $producer;
     $listdata['model'] = $model;
+    $listdata['linktechnology'] = $linktechnology;
 }
 
 unset($netdevlist['total']);
@@ -151,6 +168,7 @@ unset($netdevlist['direction']);
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($netdevlist));
+    $SESSION->close();
     die;
 }
 

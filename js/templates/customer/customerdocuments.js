@@ -114,4 +114,23 @@ $(function() {
 		}
 		return false;
 	});
+
+	$('.document-checkbox').change(function() {
+		var documentAttachmentCheckboxes = $(this).closest('.lms-ui-tab-table-row').find('.document-attachment-checkbox');
+		var checked = $(this).prop('checked');
+		documentAttachmentCheckboxes.prop('checked', checked);
+		$(this).closest('tbody').trigger('lms:update_check_all');
+	});
+
+	$('.document-attachment-checkbox').change(function() {
+		var documentAttachmentCheckboxes = $(this).closest('.lms-ui-tab-table-row').find('.document-attachment-checkbox');
+		var documentCheckbox = $(this).closest('.lms-ui-tab-table-row').find('.document-checkbox');
+		var checked = $(this).prop('checked');
+		if (checked) {
+			documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':checked').length);
+		} else {
+			documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
+		}
+		$('#docpanel').trigger('lms:update_check_all');
+	});
 });

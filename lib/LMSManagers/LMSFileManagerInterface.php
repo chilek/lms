@@ -26,6 +26,8 @@
 
 interface LMSFileManagerInterface
 {
+    public function checkFileContainerPermission($containerType, $containerId, $fileId = null);
+
     public function GetFileContainers($type, $id);
 
     public function GetFile($id);

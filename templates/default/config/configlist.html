@@ -694,7 +694,7 @@ $(function() {
 		}
 	});
 
-	$('#configlist-datatable').DataTable().order.listener('span', 0);
+	$('#configlist-datatable').DataTable().order.listener('thead span', 0);
 	$('#copy-links-configs').click(function() {
 		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
 			alertDialog($t("No option has been selected!"), this);

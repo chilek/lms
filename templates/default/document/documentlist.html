@@ -195,11 +195,12 @@
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-							<OPTION value="4"{if $filter.status == 5} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
-							<OPTION value="5"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
+							<OPTION value="5"{if $filter.status == 5} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
+							<OPTION value="4"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
 							<option value="6"{if $filter.status == 6} selected{/if}>{trans("waiting for customer action (expired)")}</option>
+							<option value="7"{if $filter.status == 7} selected{/if}>{trans("<!document>cancelled")}</option>
 						</SELECT>
 					</label>
 
@@ -227,7 +228,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="lms-ui-multi-check">
+    <TBODY class="lms-ui-multi-check lms-ui-multi-check-hidden">
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
@@ -236,10 +237,12 @@
 	{/if}
 	{$docattach = reset($doc.attachments)}
 	{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
-	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
+	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}{if !empty($doc.cancelled)} cancel{/if}"
+		data-archived="{if $doc.archived}1{else}0{/if}"
+		data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
-		<TD class="nobr" data-target-url="{$url}"{if $doc.description} {tip text=$doc.description}{/if}>
+		<TD class="nobr"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 			{if $doc.closed == $smarty.const.DOC_OPEN && $doc.confirmdate}
 				{hint text=$doc.confirmdate|date_format:"Y-m-d H:i" icon="wait"}
@@ -248,7 +251,7 @@
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD class="nobr" data-target-url="{$url}">
+		<TD class="nobr">
 			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 			{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
@@ -260,7 +263,7 @@
 			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
-		<TD class="nobr" data-target-url="{$url}">
+		<TD class="nobr">
 			{$doc.title|truncate:40:"&hellip;":true}
 			{if $doc.description}
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
@@ -281,7 +284,7 @@
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"&hellip;":true}</A></TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{buttons}
-				{if $doc.senddocuments}
+				{if $doc.senddocuments && empty($doc.cancelled)}
 					{textformat assign="tip" wrap=5000}
 						{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 					{/textformat}
@@ -290,7 +293,7 @@
 				{/if}
 				{assign var=type value=$doc.type}
 				{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
-				{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
+				{if empty($doc.closed) && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM) && empty($doc.cancelled)}
 					{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 				{/if}
 				{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
@@ -302,31 +305,45 @@
 						href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
 				{/if}
 				{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
+					{if !$doc.closed}
+						{if empty($doc.cancelled)}
+							{button type="link" icon="cancel" href="?m=documentcancel&id={$doc.docid}" tip="Cancel document"
+								class="cancel-document"}
+						{else}
+							{button type="link" icon="recover" href="?m=documentcancel&id={$doc.docid}&recover=1" tip="Recover document"}
+						{/if}
+					{/if}
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
 					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
-						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
+						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('#^application/(rtf|.+(oasis|opendocument|openxml).+)$#i',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
 			{/buttons}
+			<input type="checkbox" name="marks[{$docid}]" value="{$docid}" class="document-checkbox lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 			{if $doc.attachments|size > 1 || $docattach.type < 1}
-			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-				<img src="img/asc_order.gif">
-			</a>
+				<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+					<img src="img/asc_order.gif">
+				</a>
 			{/if}
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
-					{if $docattach@first && $docattach.type == 1}{continue}{/if}
-					{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+					{documentview
+						id="local-{$doc.docid}-{$docattach.id}"
+						type=$docattach.contenttype
+						doctype=$doc.type
+						name=$docattach.filename
+						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}"
+						external=true
+					}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+					<input type="checkbox" name="attachment-marks[{$docid}][{$docattach.id}]" class="document-attachment-checkbox lms-ui-multi-check" value="{$docattach.id}"
+						{if $marks.$docid} checked{/if}>
 					<br>
 				{/foreach}
 			</div>
-			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -437,10 +454,12 @@
 			return;
 		}
 
-		if ($('tr[data-closed="0"] :checked').length) {
-			alertDialog($t('One or more of selected documents are not confirmed!'), this);
-			return;
-		}
+		{if !ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving')}
+			if ($('tr[data-closed="0"] :checked').length) {
+				alertDialog($t('One or more of selected documents are not confirmed!'), this);
+				return;
+			}
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
 			document.page.action = "?m=documentedit&action=archive";
@@ -488,6 +507,47 @@
             });
         }
 		return false;
+	});
+
+	$(function() {
+		$('.document-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var checked = $(this).prop('checked');
+			documentAttachmentCheckboxes.prop('checked', checked);
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.document-attachment-checkbox').change(function() {
+			var documentAttachmentCheckboxes = $(this).closest('td').find('.document-attachment-checkbox');
+			var documentCheckbox = $(this).closest('td').find('.document-checkbox');
+			var checked = $(this).prop('checked');
+			if (checked) {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':checked').length);
+			} else {
+				documentCheckbox.prop('checked', documentAttachmentCheckboxes.filter(':not(:checked)').length !== documentAttachmentCheckboxes.length);
+			}
+			$(this).closest('tbody').trigger('lms:update_check_all');
+		});
+
+		$('.cancel-document').click(function() {
+			confirmDialog($t("Are you sure, you want to cancel that document?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		$('#delete-documents').click(function() {
+			if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+				alertDialog($t('No document has been selected!'), this);
+				return;
+			}
+
+			confirmDialog($t("Are you sure, you want to delete selected documents?"), this).done(function () {
+				document.page.action = "?m=documentdel";
+				document.page.target = "";
+				document.page.submit();
+			});
+		});
 	});
 
 </script>

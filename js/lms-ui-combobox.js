@@ -94,7 +94,7 @@
 			methods.displayDropdown.call(this, opts.showDropDown);
 			if (opts.mode != 'checkboxes') {
 				if (this.find(cp + cdisplay).length == 0) {
-					var $inputDisplay = $('<input class="' + pname + cdisplay + '" type="text" />');
+					var $inputDisplay = $('<input class="' + pname + cdisplay + '" type="text" autocomplete="nope" />');
 					$inputDisplay.attr('title', $select.attr('title'));
 					$inputDisplay.attr('placeholder', opts.placeholder);
 					this.append($inputDisplay);

@@ -76,6 +76,15 @@
                     {/foreach}
                 </SELECT>
             </label>
+			<label class="nobr">
+				{trans("Cause")}
+				<select size="1" name="cause" onchange="document.filter.submit();">
+					<option value=""{if !isset($filter.cause) || $filter.cause === ""} selected{/if}>{trans("— any —")}</option>
+					<option value="0"{if $filter.cause === 0} selected{/if}>{trans("unknown/other")}</option>
+					<option value="1"{if $filter.cause == 1} selected{/if}>{trans("customer's side")}</option>
+					<option value="2"{if $filter.cause == 2} selected{/if}>{trans("company's side")}</option>
+				</select>
+			</label>
             <label class="nobr">
             {trans("Owner")}
                 <input type="hidden" name="owner" value="all">

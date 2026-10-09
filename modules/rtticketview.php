@@ -27,7 +27,7 @@
 if (! $LMS->TicketExists($_GET['id'])) {
     $SESSION->redirect('?m=rtqueuelist');
 } else {
-    $id = $_GET['id'];
+    $id = intval($_GET['id']);
 }
 
 if (!$LMS->CheckTicketAccess($id)) {

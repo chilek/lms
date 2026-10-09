@@ -48,7 +48,9 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
         $address = $LMS->GetAddress($location['address_id']);
         $address['city_name'] = $address['city'];
         $location['street'] = $address['street'];
-        $location['simple_street'] = $address['simple_street_name'];
+        if (isset($address['simple_street_name'])) {
+            $location['simple_street'] = $address['simple_street_name'];
+        }
         $location['house'] = $address['house'];
         $location['flat'] = $address['flat'];
     } elseif (isset($location['city_id'])) {
@@ -127,7 +129,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $params['street'] = (isset($location['house']) && mb_strlen($location['house'])
                     ? $location['house'] . ' '
                     : ''
-                    ) . $location['simple_street'];
+                    ) . (isset($location['simple_street']) ? $location['simple_street'] : '');
             } elseif (isset($location['house']) && mb_strlen($location['house'])) {
                 $params['street'] = $location['house'];
             }
@@ -145,6 +147,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
                 $("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
             ');
+
+            break;
         } elseif (($provider == 'siis' || $provider == 'prg') && isset($address)) {
             $args = array(
                 'city_id' => $address['city_id'],
@@ -164,6 +168,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 				$("' . $latitude_selector . '").val("' . $coordinates['latitude'] . '");
 				$("' . $longitude_selector . '").val("' . $coordinates['longitude'] . '");
 			');
+
+            break;
         }
     }
 

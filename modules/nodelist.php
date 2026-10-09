@@ -112,6 +112,7 @@ unset($nodelist['totaloff']);
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nodelist));
+    $SESSION->close();
     die;
 }
 

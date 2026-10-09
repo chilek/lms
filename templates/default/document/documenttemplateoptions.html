@@ -2,5 +2,6 @@
 {foreach $docengines as $templatename => $docengine}
     <option value="{$docengine.name}"
         {if isset($docengine['reference-document-required']) && !empty($docengine['reference-document-required'])} data-refdoc-required="1"{/if}
-        {if $document.templ == $templatename} selected{/if}>{$docengine.title}</option>
+        {if $document.templ == $templatename} selected{/if}
+        {if !empty($docengine.default[$document.type])} selected{/if}>{$docengine.title}</option>
 {/foreach}

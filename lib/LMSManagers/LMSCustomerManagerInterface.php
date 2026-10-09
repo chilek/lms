@@ -54,11 +54,11 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
-    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false, $reverse_order = true, $item_description_format = null);
 
     public function customerStats();
 
-    public function updateCustomerConsents($customerid, $current_consents, $new_consents);
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents, $consent_mask = null);
 
     public function customerAdd($customeradd);
 
@@ -72,7 +72,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerConsents($id);
 
-    public function getCustomerSensibleData($id);
+    public function getCustomerSensitiveData($id);
 
     public function GetCustomer($id, $short = false);
 
@@ -109,6 +109,8 @@ interface LMSCustomerManagerInterface
     public function isTelecomServiceSuggested($customerid);
 
     public function getCustomerSMSOptions();
+
+    public function getCustomerAddressesWithOrWithoutEndPoints($customerid, $with = true);
 
     public function GetCustomerAddressesWithEndPoints($customerid);
 
@@ -154,7 +156,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerSsn($id);
 
-    public function changeCustomerType($id, $tyoe);
+    public function changeCustomerType($id, $type);
 
     public function changeCustomerStatus($id, $status);
 

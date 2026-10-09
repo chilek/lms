@@ -86,7 +86,13 @@
 		</TD>
 		<TD>
 			{foreach $ticket.relatedtickets as $i}
-				<A href="?m=rtticketview&id={$i.id}">#{$i.id|string_format:"%06d"} {$i.subject}</A><br>
+				{button
+					type="link"
+					label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+					href="?m=rtticketview&id={$i.id}"
+				}
+				{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
+				{if !$i@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>
@@ -98,7 +104,13 @@
 		</TD>
 		<TD>
 			{foreach $ticket.childtickets as $i}
-			<A href="?m=rtticketview&id={$i.id}">#{$i.id|string_format:"%06d"} {$i.subject}</A><br>
+				{button
+					type="link"
+					label="#{$i.id|string_format:"%06d"} {$i.subject|escape}"
+					href="?m=rtticketview&id={$i.id}"
+				}
+				{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
+				{if !$i@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>

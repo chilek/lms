@@ -46,7 +46,11 @@ if ($api) {
     $SESSION->save('nnft', $t);
 
     if (!isset($_GET['s'])) {
-        $SESSION->restore('nnfs', $s);
+        if ($SESSION->is_set('nnfs')) {
+            $SESSION->restore('nnfs', $s);
+        } else {
+            $s = -1;
+        }
     } else {
         $s = $_GET['s'];
     }
@@ -60,7 +64,11 @@ if ($api) {
     $SESSION->save('nnfp', $p);
 
     if (!isset($_GET['w'])) {
-        $SESSION->restore('nnfw', $w);
+        if ($SESSION->is_set('nnfw')) {
+            $SESSION->restore('nnfw', $w);
+        } else {
+            $w = -1;
+        }
     } else {
         $w = $_GET['w'];
     }
@@ -123,6 +131,7 @@ if (!$api) {
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nlist));
+    $SESSION->close();
 } else {
     $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
