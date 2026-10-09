@@ -10,7 +10,12 @@
 			<strong>{trans("Node tickets")}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			{button type="link" label="{if $alltickets}Hide resolved{else}Show resolved{/if}" icon="close" href="?m={$layout.module}&id={$nodeinfo.id}{if !$alltickets}&alltickets=1{/if}"}
+			{button
+				type="link"
+				label="{if $alltickets}Hide resolved{else}Show resolved{/if}"
+				icon="close"
+				href="?m={$layout.module}&id={$nodeinfo.id}&alltickets={if $alltickets}0{else}1{/if}"
+			}
 		{/tab_header_cell}
 	{/tab_header}
 
@@ -59,7 +64,7 @@
 									{$ticket.createtime|date_format:"Y-m-d H:i"}
 								</div>
 								<div class="lms-ui-tab-table-column queue">
-									{$ticket.name}
+									{$ticket.name|escape}
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
@@ -72,14 +77,14 @@
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column title" {tip text="{$ticket.subject|escape}"}>
+							<div class="lms-ui-tab-table-column title" {tip text=$ticket.subject|escape}>
 								{$ticket.subject|escape}
 							</div>
 							{if ConfigHelper::checkConfig('rt.show_ticket_categories')}
 								<div class="lms-ui-tab-table-column categories">
 									{foreach $ticket.categories as $tc}
 										<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&o=lastmodified,desc">
-											<span class="lms-ui-category-label" style="{$tc.style}">{$tc.name}</span>
+											<span class="lms-ui-category-label" style="{$tc.style}">{$tc.name|escape}</span>
 										</a>
 									{/foreach}
 								</div>
