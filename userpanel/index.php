@@ -259,7 +259,7 @@ if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $function = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['f'] ?? '');
     if ($SESSION->isPasswdChangeRequired) {
-        if ($module != 'info' || $function != 'updatepinform') {
+        if ($module != 'info' || ($function != 'updatepinform' && $function != 'updatepin')) {
             $SESSION->close();
             header('Location: ?m=info&f=updatepinform');
             die;
