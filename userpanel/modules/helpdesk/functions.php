@@ -59,6 +59,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        global $SESSION;
+
         $DB = LMSDB::getInstance();
         if (!empty($_POST['queues']) && ($queues = Utils::filterIntegers($_POST['queues']))) {
             $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $queues)));
@@ -89,7 +91,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(intval($_POST['allow_reopen_tickets_newer_than']), 'userpanel' , 'allow_reopen_tickets_newer_than')
         );
-        header('Location: ?m=userpanel&module=helpdesk');
+        $SESSION->redirect('?m=userpanel&module=helpdesk');
     }
 }
 
@@ -155,13 +157,11 @@ function module_main()
         $ticket['categories'] = ConfigHelper::getConfig('userpanel.default_categories');
 
         if (!$ticket['queue']) {
-            header('Location: ?m=helpdesk');
-            die;
+            $SESSION->redirect('?m=helpdesk');
         }
 
         if ($ticket['subject'] == '' && $ticket['body'] == '') {
-            header('Location: ?m=helpdesk');
-            die;
+            $SESSION->redirect('?m=helpdesk');
         }
 
         if ($ticket['subject'] == '') {
@@ -359,8 +359,7 @@ function module_main()
                 ));
             }
 
-            header('Location: ?m=helpdesk&op=view&id=' . $id);
-            die;
+            $SESSION->redirect('?m=helpdesk&op=view&id=' . $id);
         } else {
             $SMARTY->assign('error', $error);
             $SMARTY->assign('helpdesk', $ticket);
@@ -377,8 +376,7 @@ function module_main()
         );
         $allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0));
         if ($allow_reopen_tickets_newer_than && time() - $allow_reopen_tickets_newer_than > $ticket['lastmod']) {
-            header('Location: ?m=helpdesk&op=view&id=' . $id);
-            die;
+            $SESSION->redirect('?m=helpdesk&op=view&id=' . $id);
         }
 
         $ticket['inreplyto'] = intval($ticket['inreplyto']);
@@ -554,8 +552,7 @@ function module_main()
                 'attachments' => &$attachments,
             ));
 
-            header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);
-            die;
+            $SESSION->redirect('?m=helpdesk&op=view&id='.$ticket['id']);
         } else {
             $SMARTY->assign('error', $error);
             $helpdesk = $ticket;

@@ -57,7 +57,7 @@ if (isset($_POST['netadd'])) {
             $netadd['ownerid'] == '' &&
             $netadd['snat'] == ''
     ) {
-        header('Location: ?m=netadd');
+        $SESSION->redirect('?m=netadd');
     }
 
     if ($netadd['name'] == '') {

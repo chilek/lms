@@ -682,6 +682,13 @@ class Session
         $this->_content = array();
     }
 
+    public function redirect($location)
+    {
+        $this->close();
+        header('Location: ' . $location);
+        die;
+    }
+
     public function finish()
     {
         $this->_destroySession();

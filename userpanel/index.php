@@ -260,9 +260,7 @@ if ($SESSION->islogged) {
     $function = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['f'] ?? '');
     if ($SESSION->isPasswdChangeRequired) {
         if ($module != 'info' && $function != 'updatepinform') {
-            $SESSION->close();
-            header('Location: ?m=info&f=updatepinform');
-            die;
+            $SESSION->redirect('?m=info&f=updatepinform');
         }
         $SMARTY->assign('passwd_change_required', true);
     }
@@ -320,9 +318,9 @@ if ($SESSION->islogged) {
         }
     } elseif ($module=='') {
         if (!empty($module)) {
-            header('Location: ?m=' . $module);
+            $SESSION->redirect('?m=' . $module);
         } else {
-            header('Location: ?m=' . $startupmodule);
+            $SESSION->redirect('?m=' . $startupmodule);
         }
     } else {
         $layout['error'] = trans('Module <b>$a</b> not found!', $module);

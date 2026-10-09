@@ -63,4 +63,4 @@ if ($id) {
     }
 }
 
-header('Location: ?m=hostlist');
+$SESSION->redirect('?m=hostlist');

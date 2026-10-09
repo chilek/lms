@@ -41,4 +41,4 @@ if ($id) {
     $DB->CommitTrans();
 }
 
-header('Location: ?m=accountlist');
+$SESSION->redirect('?m=accountlist');

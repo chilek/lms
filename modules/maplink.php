@@ -44,7 +44,7 @@ switch ($action) {
             'yMax' => number_format($mapPosition[1] + $geoportalDefaultMapZoom, 6, '.', ''),
         );
 
-        header('Location: ' . $geoportalMapUrl . $pos['xMin'] . ',' . $pos['yMin'] . ',' . $pos['xMax'] . ',' . $pos['yMax']);
+        $SESSION->redirect($geoportalMapUrl . $pos['xMin'] . ',' . $pos['yMin'] . ',' . $pos['xMax'] . ',' . $pos['yMax']);
         break;
     case 'get-sidusis-link':
         $latitude = filter_var($_GET['latitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -57,7 +57,7 @@ switch ($action) {
             'x' => number_format($mapPosition[0], 6, '.', ''),
             'y' => number_format($mapPosition[1], 6, '.', ''),
         );
-        header('Location: ' . $sidusisMapUrl . $pos['x'] . ';' . $pos['y'] . '&zoom=' . $sidusisDefaultMapZoom);
+        $SESSION->redirect($sidusisMapUrl . $pos['x'] . ';' . $pos['y'] . '&zoom=' . $sidusisDefaultMapZoom);
         break;
     case 'geocoding':
         if (!isset($_POST['address'])) {

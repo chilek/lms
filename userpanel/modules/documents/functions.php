@@ -589,6 +589,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        global $SESSION;
+
         if (!isset($_POST['moduleconfig'])) {
             die;
         }
@@ -674,6 +676,6 @@ if (defined('USERPANEL_SETUPMODE')) {
             );
         }
 
-        header('Location: ?m=userpanel&module=documents');
+        $SESSION->redirect('?m=userpanel&module=documents');
     }
 }

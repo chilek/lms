@@ -437,8 +437,7 @@ function module_updateusersave()
                     ), $mail_body);
             }
         }
-        header('Location: ?m=info');
-        die;
+        $SESSION->redirect('?m=info');
     }
 }
 
@@ -462,7 +461,7 @@ function module_updatepin()
     global $LMS, $SMARTY, $SESSION;
 
     if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata'])) {
-        header('Location: ?m=info');
+        $SESSION->redirect('?m=info');
     }
 
     $error = null;
@@ -534,7 +533,7 @@ function module_updatepin()
 
         $SESSION->remove('passwd_change_required');
 
-        header('Location: ?m=info');
+        $SESSION->redirect('?m=info');
     }
 }
 
@@ -830,6 +829,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        global $SESSION;
+
         if (!ConfigHelper::checkPrivilege('userpanel_management')) {
             access_denied();
         }
@@ -906,6 +907,6 @@ if (defined('USERPANEL_SETUPMODE')) {
             array($_POST['change_rejection_mail_body'], 'userpanel', 'change_rejection_mail_body')
         );
 
-        header('Location: ?m=userpanel&module=info');
+        $SESSION->redirect('?m=userpanel&module=info');
     }
 }

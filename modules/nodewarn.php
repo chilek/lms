@@ -146,8 +146,7 @@ if ($backid && $LMS->NodeExists($backid)) {
     }
 
     if (!empty($_GET['shortlist'])) {
-        header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
-        die;
+        $SESSION->redirect('?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
     } else {
         $SESSION->redirect('?' . $SESSION->remove_history_entry() . '#' . $backid);
     }
