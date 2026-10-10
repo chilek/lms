@@ -439,8 +439,7 @@ $_LANG['Assigned'] = 'Przypisany';
 $_LANG['Requestor'] = 'Zgłaszający';
 $_LANG['Requestor:'] = 'Zgłaszający:';
 $_LANG['documents'] = 'dokumenty';
-$_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
-$_LANG['Administrative contact'] = 'Kontakt administracyjny';
+$_LANG['Administrative contacts'] = 'Kontakty administracyjne';
 $_LANG['Check if contact should be printed on documents'] = 'Zaznacz, jeśli kontakt powinien być drukowany na dokumentach';
 $_LANG['Check if would like to print customer list as sending register'] = 'Zaznacz, jeśli chcesz wydrukować listę klientów w formacie książki nadawczej';
 
@@ -2149,6 +2148,7 @@ $_LANG['Serial number:'] = 'Numer seryjny:';
 $_LANG['Serial number'] = 'Numer seryjny';
 $_LANG['Service:'] = 'Usługa:';
 $_LANG['Services:'] = 'Usługi:';
+$_LANG['Services'] = 'Usługi';
 $_LANG['Settlement date:'] = 'Data wystawienia:';
 $_LANG['shell'] = 'powłoka';
 $_LANG['Show closed'] = 'Pokaż zamknięte';

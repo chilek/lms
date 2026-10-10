@@ -247,8 +247,8 @@
 					{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
 			{/box_row}
 
-			{box_row icon="phone" icon_class="fa-fw" label="Administrative contact"}
-				<input type="text" name="netnode[admcontact]" maxlength="10" value="{$netnode.admcontact}">
+			{box_row icon="phone" label="Administrative contacts"}
+				{include file="netnode/netnodecontacts.html"}
 			{/box_row}
 
 		{/box_panel}
