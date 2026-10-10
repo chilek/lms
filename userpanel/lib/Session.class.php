@@ -692,6 +692,17 @@ class Session
         return bin2hex(random_bytes(32));
     }
 
+    private function _setUSIDCookie($value)
+    {
+        // Flags match lib/Session::_setSIDCookie(). An empty value still
+        // deletes the cookie (PHP sends Expires in the past and Max-Age=0).
+        setcookie('USID', $value, array(
+            'httponly' => true,
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'samesite' => 'Lax',
+        ));
+    }
+
     private function _createSession()
     {
         $this->SID = $this->makeSID();
@@ -710,7 +721,7 @@ class Session
                 serialize($this->_content),
             )
         );
-        setcookie('USID', $this->SID);
+        $this->_setUSIDCookie($this->SID);
     }
 
     private function _restoreSession()
@@ -756,7 +767,7 @@ class Session
         $this->db->Execute('DELETE FROM up_sessions WHERE id = ?', array($this->SID));
         $this->_content = array();
         $this->SID = null;
-        setcookie('USID', false);
+        $this->_setUSIDCookie('');
     }
 
     private function ValidateRecaptchaResponse()
