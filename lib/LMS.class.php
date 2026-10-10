@@ -2416,10 +2416,10 @@ class LMS
         return $manager->GetUserRightsToCategory($user, $category, $ticket);
     }
 
-    public function GetCategoryList($stats = true)
+    public function GetCategoryList($stats = true, $owners = true)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetCategoryList($stats);
+        return $manager->GetCategoryList($stats, $owners);
     }
 
     public function GetCategoryStats($id)
