@@ -2257,7 +2257,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $text;
     }
 
-    public function TicketNoteNotify(array $params)
+    public function TicketNotifyUsers(array $params)
+    {
+        if (($params['type'] ?? '') === 'note') {
+            $this->ticketNoteNotify($params);
+            return;
+        }
+
+        if (($params['type'] ?? '') === 'message') {
+            return $this->ticketMessageNotify($params);
+        }
+    }
+
+    private function ticketNoteNotify(array $params)
     {
         global $LMS, $RT_PRIORITIES, $RT_MAIL_PRIORITIES;
 
@@ -2452,6 +2464,182 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($divisionChanged) {
             ConfigHelper::setFilter($divisionId, Auth::GetCurrentUser());
         }
+    }
+
+    private function ticketMessageNotify(array $params)
+    {
+        global $LMS, $RT_PRIORITIES, $RT_MAIL_PRIORITIES;
+
+        $ticketId = $params['ticketid'];
+        $queue = $params['queue'];
+        $user = $params['user'];
+        $headers = $params['headers'];
+        $verifierId = $params['verifierid'] ?? null;
+        $notifyUsers = !empty($params['notifyUsers']);
+        $customerInfoEnabled = $params['customerInfoEnabled'] ?? false;
+        $mailCustomerInfo = $params['mailCustomerInfo'] ?? null;
+        $smsCustomerInfo = $params['smsCustomerInfo'] ?? null;
+        $attachments = $params['attachments'] ?? null;
+
+        $mailFromName = '';
+        $senderName = $params['senderName'] ?? '';
+        if (!empty($senderName)) {
+            $mailFromName = $senderName;
+            if ($mailFromName == 'queue') {
+                $mailFromName = $queue['name'];
+            } elseif ($mailFromName == 'user') {
+                $mailFromName = $user['name'];
+            }
+            $mailFromName = '"' . $mailFromName . '"';
+        }
+
+        $mailFrom = $this->DetermineSenderEmail(
+            $user['email'],
+            $queue['email'],
+            $params['requestorMail'] ?? null,
+            $params['senderEmail'] ?? null
+        );
+        $ticket = $this->GetTicketContents($ticketId);
+
+        $headers['From'] = $mailFromName . ' <' . $mailFrom . '>';
+        $headers['Reply-To'] = $headers['From'];
+
+        if ($ticket['customerid']) {
+            $customer = $LMS->GetCustomer($ticket['customerid'], true);
+            $emails = array_map(
+                function ($contact) {
+                    return $contact['fullname'];
+                },
+                array_filter(
+                    $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                    function ($contact) {
+                        return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
+                    }
+                )
+            );
+            $allPhones = array_filter(
+                $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                function ($contact) {
+                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                }
+            );
+            $phones = array_map(function ($contact) {
+                return $contact['fullname'];
+            }, $allPhones);
+            $mobilePhones = array_filter($allPhones, function ($contact) {
+                return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
+            });
+
+            if (($notifyUsers || !empty($verifierId)) && $customerInfoEnabled) {
+                $customerInfoParams = [
+                    'id' => $ticketId,
+                    'customerid' => $ticket['customerid'],
+                    'customer' => $customer,
+                    'emails' => $emails,
+                    'phones' => $phones,
+                ];
+                $mailCustomerInfo = $this->ReplaceNotificationCustomerSymbols(
+                    $params['mailCustomerInfoFormat'],
+                    $customerInfoParams
+                );
+                $smsCustomerInfo = $this->ReplaceNotificationCustomerSymbols(
+                    $params['smsCustomerInfoFormat'],
+                    $customerInfoParams
+                );
+            }
+        } elseif (($notifyUsers || !empty($verifierId)) && $customerInfoEnabled) {
+            $mailCustomerInfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticket['requestor'];
+            $smsCustomerInfo = "\n" . trans('Customer:') . ' ' . $ticket['requestor'];
+        }
+
+        if ($notifyUsers) {
+            $contentType = $params['contenttype'] ?? 'text/plain';
+            $notificationParams = [
+                'id' => $ticketId,
+                'author' => Auth::GetCurrentUserName(),
+                'queue' => $queue['name'],
+                'messageid' => $params['messageid'] ?? null,
+                'customerid' => empty($params['customerid']) ? $ticket['customerid'] : $params['customerid'],
+                'status' => $ticket['status'],
+                'categories' => $ticket['categorynames'],
+                'priority' => isset($ticket['priority']) && is_numeric($ticket['priority'])
+                    ? $RT_PRIORITIES[$ticket['priority']]
+                    : trans('undefined'),
+                'deadline' => $ticket['deadline'],
+                'subject' => $this->cleanupTicketSubject($params['subject']),
+                'body' => $params['body'],
+                'attachments' => $attachments,
+            ];
+            if ($ticket['priority']) {
+                $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
+            }
+            $headers['Subject'] = $this->ReplaceNotificationSymbols(
+                $params['mailSubjectTemplate'],
+                $notificationParams
+            );
+
+            $notificationParams['customerinfo'] = isset($mailCustomerInfo)
+                ? ($contentType == 'text/html'
+                    ? str_replace("\n", '<br>', $mailCustomerInfo)
+                    : $mailCustomerInfo)
+                : null;
+            $notificationParams['contenttype'] = $contentType;
+            $mailBody = $this->ReplaceNotificationSymbols(
+                $params['mailBodyTemplate'],
+                $notificationParams
+            );
+
+            if ($contentType == 'text/html') {
+                $notificationParams['body'] = trans('(HTML content has been omitted)');
+                $headers['X-LMS-Format'] = 'html';
+            }
+
+            $notificationParams['customerinfo'] = $smsCustomerInfo ?? null;
+            $notificationParams['contenttype'] = 'text/plain';
+            $smsBody = $this->ReplaceNotificationSymbols(
+                $params['smsBodyTemplate'],
+                $notificationParams
+            );
+
+            // Don't notify verifier adding message
+            $currentUser = Auth::GetCurrentUser();
+            if (empty($verifierId)
+                || !$params['authorNotify']
+                || ($params['propsVerifierid'] ?? null) == $currentUser
+                || $verifierId == $currentUser
+            ) {
+                $verifierId = null;
+            }
+
+            $this->NotifyUsers([
+                'queue' => $queue['id'],
+                'ticketid' => $ticketId,
+                'verifierid' => $verifierId,
+                'mail_headers' => $headers,
+                'mail_body' => $mailBody,
+                'sms_body' => $smsBody,
+                'contenttype' => $contentType,
+                'attachments' => $attachments,
+                'recipients' => ($params['notify'] ? RT_NOTIFICATION_USER : 0)
+                    | (empty($verifierId) ? 0 : RT_NOTIFICATION_VERIFIER),
+                'smtp_options' => $params['smtpOptions'],
+            ]);
+        }
+
+        $result = [
+            'ticket' => $ticket,
+            'headers' => $headers,
+            'mailCustomerInfo' => $mailCustomerInfo,
+            'smsCustomerInfo' => $smsCustomerInfo,
+            'verifierid' => $verifierId,
+        ];
+        if ($ticket['customerid']) {
+            $result['customer'] = $customer;
+            $result['emails'] = $emails;
+            $result['mobilePhones'] = $mobilePhones;
+        }
+
+        return $result;
     }
 
     public function NotifyUsers(array $params)

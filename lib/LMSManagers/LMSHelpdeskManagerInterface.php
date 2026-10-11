@@ -119,7 +119,7 @@ interface LMSHelpdeskManagerInterface
 
     public function NotifyUsers(array $params);
 
-    public function TicketNoteNotify(array $params);
+    public function TicketNotifyUsers(array $params);
 
     public function CleanupTicketLastView();
 

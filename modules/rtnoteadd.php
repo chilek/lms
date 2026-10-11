@@ -152,7 +152,8 @@ if (isset($_GET['ticketid'])) {
         $LMS->TicketChange($note['ticketid'], $props);
 
         if (isset($note['notify'])) {
-            $LMS->TicketNoteNotify([
+            $LMS->TicketNotifyUsers([
+                'type' => 'note',
                 'ticketid' => $note['ticketid'],
                 'body' => $note['body'],
                 'messageid' => $msgid ?? null,
