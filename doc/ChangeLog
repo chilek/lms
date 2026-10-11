@@ -2,6 +2,8 @@ $Id$
 
 version 28-git (????-??-??):
 
+  - security: client IP is taken from X-Forwarded-For only when REMOTE_ADDR is listed in new
+    'phpui.trusted_proxies' (set it for reverse proxy!) [interduo]
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
   - improvement: implemented 'all suspended' for assignment filter [chilan]
   - enhancement: ticket watching support [interduo]
