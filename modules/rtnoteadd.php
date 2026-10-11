@@ -30,32 +30,6 @@ $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtnotexajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$notification_options_by_division_ids = array(
-    0 => array(
-        'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
-        'notification_customerinfo' => ConfigHelper::checkConfig(
-            'rt.notification_customerinfo',
-            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
-        ),
-        'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig(
-            'rt.notification_mail_body_customerinfo_format',
-            ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
-        ),
-        'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig(
-            'rt.notification_sms_body_customerinfo_format',
-            ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
-        ),
-        'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
-        'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
-        'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
-        'note_send_re_in_subject' => ConfigHelper::checkConfig('rt.note_send_re_in_subject'),
-    ),
-);
-
-$smtp_options_by_division_ids = array(
-    0 => $LMS->GetRTSmtpOptions(),
-);
-
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories)) {
     $categories = array();
@@ -178,164 +152,16 @@ if (isset($_GET['ticketid'])) {
         $LMS->TicketChange($note['ticketid'], $props);
 
         if (isset($note['notify'])) {
-            $ticket = $LMS->GetTicketContents($note['ticketid']);
-
-            $notification_options_by_division_ids[$divisionid] = $notification_options_by_division_ids[0];
-
-            $ticket_divisionid = $LMS->getDivisionIdByTicketId($note['ticketid']);
-            if (empty($ticket_divisionid)) {
-                $smtp_options = $smtp_options_by_division_ids[0];
-                extract($notification_options_by_division_ids[0]);
-            } elseif ($ticket_divisionid != $divisionid) {
-                ConfigHelper::setFilter($ticket_divisionid, Auth::GetCurrentUser());
-
-                $smtp_options_by_division_ids[$ticket_divisionid] = $LMS->GetRTSmtpOptions();
-
-                $notification_options_by_division_ids[$ticket_divisionid] = array(
-                    'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
-                    'notification_customerinfo' => ConfigHelper::checkConfig(
-                        'rt.notification_customerinfo',
-                        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
-                    ),
-                    'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig(
-                        'rt.notification_mail_body_customerinfo_format',
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
-                    ),
-                    'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig(
-                        'rt.notification_sms_body_customerinfo_format',
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
-                    ),
-                    'notification_mail_subject' => ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')),
-                    'notification_mail_body' => ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')),
-                    'notification_sms_body' => ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')),
-                    'note_send_re_in_subject' => ConfigHelper::checkConfig('rt.note_send_re_in_subject'),
-                );
-
-                $smtp_options = $smtp_options_by_division_ids[$ticket_divisionid];
-                extract($notification_options_by_division_ids[$ticket_divisionid]);
-            } else {
-                $smtp_options = $smtp_options_by_division_ids[0];
-                extract($notification_options_by_division_ids[0]);
-            }
-
-            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
-            $queue = $LMS->GetQueueByTicketId($note['ticketid']);
-            $mailfname = '';
-
-            if (!empty($notification_sender_name)) {
-                $mailfname = $notification_sender_name;
-
-                if ($mailfname == 'queue') {
-                    $mailfname = $queue['name'];
-                } elseif ($mailfname == 'user') {
-                    $mailfname = $user['name'];
-                }
-
-                $mailfname = '"' . $mailfname . '"';
-            }
-
-            $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
-
-            $headers['From'] = $mailfname.' <'.$mailfrom.'>';
-            $headers['Reply-To'] = $headers['From'];
-            if ($note['references']) {
-                $headers['References'] = explode(' ', $note['references']);
-                $headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
-            }
-
-            if ($notification_customerinfo) {
-                if ($ticket['customerid']) {
-                    $info = $LMS->GetCustomer($ticket['customerid'], true);
-
-                    $emails = array_map(
-                        function ($contact) {
-                            return $contact['fullname'];
-                        },
-                        array_filter(
-                            $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
-                            function ($contact) {
-                                return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
-                            }
-                        )
-                    );
-                    $phones = array_map(
-                        function ($contact) {
-                            return $contact['fullname'];
-                        },
-                        array_filter(
-                            $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
-                            function ($contact) {
-                                return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
-                            }
-                        )
-                    );
-
-                    $params = array(
-                        'id' => $note['ticketid'],
-                        'customerid' => $ticket['customerid'],
-                        'customer' => $info,
-                        'emails' => $emails,
-                        'phones' => $phones,
-                    );
-                    $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols($notification_mail_body_customerinfo_format, $params);
-                    $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols($notification_sms_body_customerinfo_format, $params);
-                } else {
-                    $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticket['requestor'];
-                    $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticket['requestor'];
-                }
-            }
-
-            $params = array(
-                'id' => $note['ticketid'],
-                'author' => Auth::GetCurrentUserName(),
-                'queue' => $queue['name'],
-                'messageid' => $msgid ?? null,
-                'customerid' => $ticket['customerid'],
-                'status' => $ticket['status'],
-                'categories' => $ticket['categorynames'],
-                'priority' => isset($ticket['priority']) && is_numeric($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : '',
-                'deadline' => $ticket['deadline'],
-                'subject' => $ticket['subject'],
-                'body' => $note['body'],
-                'attachments' => &$attachments,
-            );
-
-            if (isset($ticket['priority'])) {
-                $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
-            }
-
-            if ($note_send_re_in_subject) {
-                $params['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($ticket['subject']);
-            }
-
-            $headers['Subject'] = $LMS->ReplaceNotificationSymbols($notification_mail_subject, $params);
-            $params['customerinfo'] = $mail_customerinfo ?? null;
-            $body = $LMS->ReplaceNotificationSymbols($notification_mail_body, $params);
-            $params['customerinfo'] = $sms_customerinfo ?? null;
-            $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
-
-            // Don't notify verifier adding note
-            $currentuser = Auth::GetCurrentUser();
-            $author_notify = ConfigHelper::checkConfig('rt.author_notify');
-            if (empty($note['verifierid'])
-                || !$author_notify
-                || $props['verifierid'] == $currentuser
-                || $note['verifierid'] == $currentuser) {
-                $note['verifierid'] = null;
-            }
-
-            $LMS->NotifyUsers(array(
-                'queue' => $queue['id'],
+            $LMS->TicketNotifyUsers([
+                'type' => 'note',
                 'ticketid' => $note['ticketid'],
-                'verifierid' => $note['verifierid'],
-                'mail_headers' => $headers,
-                'mail_body' => $body,
-                'sms_body' => $sms_body,
-                'attachments' => &$attachments,
-                'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
-                    | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
-                'smtp_options' => $smtp_options,
-            ));
+                'body' => $note['body'],
+                'messageid' => $msgid ?? null,
+                'references' => $note['references'] ?? '',
+                'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
+                'notify' => $note['notify'],
+                'attachments' => $attachments,
+            ]);
         }
 
         $backto = $SESSION->remove_history_entry();
