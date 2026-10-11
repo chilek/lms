@@ -242,7 +242,8 @@ if ($id && !isset($_POST['ticket'])) {
                     'body' => $fastNoteBody,
                     'type' => RTMESSAGE_NOTE,
                 ]);
-                $LMS->TicketNoteNotify([
+                $LMS->TicketNotifyUsers([
+                    'type' => 'note',
                     'ticketid' => $id,
                     'body' => $fastNoteBody,
                     'messageid' => $fastNoteMessageId,
