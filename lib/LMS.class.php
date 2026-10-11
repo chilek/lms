@@ -2542,6 +2542,12 @@ class LMS
         return $manager->NotifyUsers($params);
     }
 
+    public function TicketNoteNotify(array $params)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->TicketNoteNotify($params);
+    }
+
     public function CleanupTicketLastView()
     {
         $manager = $this->getHelpdeskManager();
