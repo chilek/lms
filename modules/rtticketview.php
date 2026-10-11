@@ -165,6 +165,11 @@ if (isset($_GET['highlight'])) {
         unset($message);
 }
 
+$fastNoteNotify = ConfigHelper::checkConfig(
+    'rt.notify',
+    ConfigHelper::checkConfig('phpui.helpdesk_notify')
+);
+
 $LMS->InitXajax();
 
 $hook_data = $LMS->executeHook(
@@ -188,6 +193,7 @@ $SMARTY->assign(
         'assignedevents' => $assignedevents,
         'rtticketview_sortable_order' => $SESSION->get_persistent_setting('rtticketview-sortable-order'),
         'favorite_queues' => $LMS->GetFavoriteQueues(),
+        'fastNoteNotify' => $fastNoteNotify,
     )
 );
 
