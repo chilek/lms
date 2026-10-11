@@ -28,9 +28,6 @@
         gap: 10px;
         align-items: center;
     }
-    #quick-note-notify {
-        margin-top: 0.5em;
-    }
 </style>
 
 <table class="lmsbox">
@@ -42,13 +39,6 @@
                 {speech_recognition target="#quick-note-input"}
                 <textarea id="quick-note-input" placeholder="{trans('Enter note')}"></textarea>
                 {button id="quick-message-send" label="Add" icon="note" onclick="javascript:addQuickNote({$ticket.ticketid});"}
-                </div>
-                <div id="quick-note-notify">
-                    {icon name="mail"}
-                    <label for="fast-note-notify">
-                        {trans("Notify users")}
-                    </label>
-                    <input type="checkbox" id="fast-note-notify" value="1"{if $fastNoteNotify} checked{/if}>
                 </div>
                 <div id="quick-message-overlay"></div>
             </div>

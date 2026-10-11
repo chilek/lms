@@ -242,14 +242,11 @@ if ($id && !isset($_POST['ticket'])) {
                     'body' => $fastNoteBody,
                     'type' => RTMESSAGE_NOTE,
                 ]);
-                if (empty($_POST['notify'])) {
-                    break;
-                }
                 $LMS->TicketNoteNotify([
                     'ticketid' => $id,
                     'body' => $fastNoteBody,
                     'messageid' => $fastNoteMessageId,
-                    'notify' => $_POST['notify'],
+                    'notify' => true,
                 ]);
                 break;
             case 'resolve':
