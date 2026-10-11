@@ -21,7 +21,6 @@ function showStatus(message, color) {
 
 function addQuickNote(ticketId) {
     const messageText = $input.val().trim();
-    const notify = $('#fast-note-notify').is(':checked') ? 1 : 0;
     updateButtonState(true);
 
     showStatus($t('Adding note'), 'orange');
@@ -29,7 +28,7 @@ function addQuickNote(ticketId) {
     $.ajax({
         url: "?m=rtticketedit&id=" + ticketId + "&action=fastnote",
         type: 'POST',
-        data: { fastnote: messageText, notify: notify },
+        data: { fastnote: messageText },
         success: () => {
             showStatus($t('Note added'), 'green');
             $input.val('');
