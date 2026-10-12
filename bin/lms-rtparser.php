@@ -94,7 +94,7 @@ if (preg_match('/^[0-9]+$/', $queue)) {
 $categories = ConfigHelper::getConfig($config_section . '.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
 $auto_open = ConfigHelper::checkConfig($config_section . '.auto_open', true);
-//$tmp_dir = ConfigHelper::getConfig($config_section . '.tmp_dir', '', true);
+$tmpDir = ConfigHelper::getConfig($config_section . '.tmp_dir', '', true) ?: sys_get_temp_dir();
 $notify = ConfigHelper::checkConfig(
     $config_section . '.new_ticket_notify',
     ConfigHelper::checkConfig($config_section . '.newticket_notify', true)
@@ -212,6 +212,11 @@ if ($mode == MODE_IMAP) {
         exit(6);
     }
 
+    $lockHandle = fopen($tmpDir . '/lms-rtparser-' . md5($rtparser_server . $rtparser_username . $rtparser_folder) . '.lock', 'c');
+    if (!$lockHandle || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
+        exit(0);
+    }
+
     $ih = @imap_open("{" . $rtparser_server . "}" . $rtparser_folder, $rtparser_username, $rtparser_password);
     if (!$ih) {
         fprintf($stderr, 'Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
@@ -249,13 +254,7 @@ if ($mode == MODE_IMAP) {
 
 while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
-        $buffer = imap_fetchbody($ih, $postid, '');
-
-        if (!empty($set_flags)) {
-            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
-        }
+        $buffer = imap_fetchbody($ih, $postid, '', FT_PEEK);
     }
 
     if (!empty($buffer)) {
@@ -298,8 +297,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if ($postid !== false && $postid !== null) {
                 if (!empty($set_flags)) {
                     imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-                } else {
-                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
                 }
 
                 $postid = next($posts);
@@ -610,6 +607,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if (!$queue) {
             if ($mode == MODE_IMAP) {
+                if (!empty($set_flags)) {
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                }
                 $postid = next($posts);
                 $buffer = null;
                 continue;
@@ -1018,8 +1018,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
         if (!empty($set_flags)) {
             imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
 
         $postid = next($posts);
