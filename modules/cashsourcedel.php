@@ -37,4 +37,4 @@ if ($id) {
     }
 }
 
-header('Location: ?m=cashsourcelist');
+$SESSION->redirect_to_history_entry('m=cashsourcelist');

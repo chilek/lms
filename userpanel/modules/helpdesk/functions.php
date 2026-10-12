@@ -59,6 +59,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
+        global $SESSION;
+
         $DB = LMSDB::getInstance();
         if (!empty($_POST['queues']) && ($queues = Utils::filterIntegers($_POST['queues']))) {
             $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $queues)));
@@ -89,7 +91,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(intval($_POST['allow_reopen_tickets_newer_than']), 'userpanel' , 'allow_reopen_tickets_newer_than')
         );
-        header('Location: ?m=userpanel&module=helpdesk');
+        $SESSION->redirect('?m=userpanel&module=helpdesk');
     }
 }
 
