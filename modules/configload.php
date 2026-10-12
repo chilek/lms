@@ -53,7 +53,7 @@ foreach (array('phpui', 'invoices', 'notes', 'receipts', 'finances', 'sms', 'mai
             );
 
             if ($SYSLOG) {
-                $args[SYSLOG::RES_UICONFIG] = $DB->GetLastInsertID('uiconfig');
+                $args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
                 $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
             }
         }
