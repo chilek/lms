@@ -299,7 +299,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             });
         }
 
-        if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
+        $autoSubmitted = isset($headers['auto-submitted']) ? strtolower(trim((string) $headers['auto-submitted'])) : 'no';
+        $precedence = isset($headers['precedence']) ? strtolower(trim((string) $headers['precedence'])) : '';
+        if (!empty($return_paths) || $autoSubmitted != 'no' || in_array($precedence, ['bulk', 'junk', 'list', 'auto_reply'])) {
             mailparse_msg_free($mail);
 
             if ($postid !== false && $postid !== null) {
@@ -832,6 +834,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
+                    'Auto-Submitted' => 'auto-replied',
                 ];
 
                 if ($autoreply_format == 'html') {
