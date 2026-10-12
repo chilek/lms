@@ -2762,7 +2762,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $PAYTYPES;
 
-        static $netsted_flag = null;
+        static $nested_flag = null;
 
         if (!isset($nested_flag)) {
             $nested_flag = 0;
@@ -3233,7 +3233,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
             $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
 
-            if ($netsted_flag) {
+            if ($nested_flag) {
                 $nested_flag--;
             } else {
                 $nested_flag = null;
