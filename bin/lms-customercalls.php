@@ -140,12 +140,19 @@ $user_phones = $DB->GetAll(
 );
 if (!empty($user_phones)) {
     foreach ($user_phones as $user_phone) {
-        $phone = normalizePhoneNumber($user_phone['phone']);
+        $phones = array_map(
+            function ($phone) {
+                return normalizePhoneNumber($phone);
+            },
+            preg_split('/([\s]+|[\s]*,[\s]*)/', $user_phone['phone'])
+        );
 
-        $users[$phone] = $user_phone['id'];
+        foreach ($phones as $phone) {
+            $users[$phone] = $user_phone['id'];
 
-        if (preg_match('/' . $local_number_pattern . '/', $phone, $m) && isset($m['prefix'])) {
-            $users[$m['number']] = $user_phone['id'];
+            if (preg_match('/' . $local_number_pattern . '/', $phone, $m) && isset($m['prefix'])) {
+                $users[$m['number']] = $user_phone['id'];
+            }
         }
     }
     unset($user_phones);
