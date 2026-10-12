@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$SESSION->add_history_entry();
-
 $id = intval($_GET['id']);
 if (!$LMS->CustomerExists($id)) {
     header('Location: ?m=customerlist');
 }
+
+$SESSION->add_history_entry();
 
 $customername = $LMS->GetCustomerName($id);
 
