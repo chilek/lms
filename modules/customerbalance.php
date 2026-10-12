@@ -26,14 +26,14 @@
 
 $SESSION->add_history_entry();
 
-if (!$LMS->CustomerExists($_GET['id'])) {
+$id = intval($_GET['id']);
+if (!$LMS->CustomerExists($id)) {
     header('Location: ?m=customerlist');
 }
 
-$customername = $LMS->GetCustomerName($_GET['id']);
-$id = $_GET['id'];
+$customername = $LMS->GetCustomerName($id);
 
-$layout['pagetitle'] = trans('Customer Balance: $a', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
+$layout['pagetitle'] = trans('Customer Balance: $a', '<a href="?m=customerinfo&id=' . $id . '">' . $customername . '</a>');
 
 if (isset($_GET['aggregate_documents'])) {
     $aggregate_documents = !empty($_GET['aggregate_documents']);
@@ -42,7 +42,7 @@ if (isset($_GET['aggregate_documents'])) {
 }
 
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
-$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, 'ASC', $aggregate_documents));
+$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($id, null, 'ASC', $aggregate_documents));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customername', $customername);
 $SMARTY->assign('objectid', $id);
