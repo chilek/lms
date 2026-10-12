@@ -363,7 +363,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $html = strpos($partdata['content-type'], 'html') !== false;
                 $isAttachment = isset($partdata['content-disposition']) && $partdata['content-disposition'] == 'attachment';
                 if (!$isAttachment
-                    && preg_match('/text/', $partdata['content-type'])
+                    && preg_match('#^text/(plain|html)$#i', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $charset = $partdata['content-charset'] ?? 'UTF-8';
@@ -399,7 +399,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         $subpart = mailparse_msg_get_part($mail, $subpartid);
                         $subpartdata = mailparse_msg_get_part_data($subpart);
                         $html = strpos($subpartdata['content-type'], 'html') !== false;
-                        if (preg_match('/text/', $subpartdata['content-type'])
+                        if (preg_match('#^text/(plain|html)$#i', $subpartdata['content-type'])
                             && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                             $charset = $subpartdata['content-charset'] ?? 'UTF-8';
