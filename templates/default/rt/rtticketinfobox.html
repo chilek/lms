@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
-{$ticketinfo_clipboard_text = ConfigHelper::getConfig('rt.ticketinfo_clipboard_text',"%ticketurl {trans("Subject:")}%subject{if $ticket.location}, {trans("Location:")}%location{/if}")|replace:"%location":$ticket.location|replace:"%ticketid":$ticket.ticketid|replace:"%subject":$ticket.subject|replace:"%ticketurl":"{$url}?m=rtticketview&id={$ticket.ticketid}"}
+{$ticketinfo_clipboard_text = ConfigHelper::getConfig('rt.ticketinfo_clipboard_text',"%ticketurl {trans("Subject:")}%subject{if $ticket.location}, {trans("Location:")}%location{/if}")|replace:"%location":$ticket.location|replace:"%ticketid":$ticket.ticketid|replace:"%subject":$ticket.subject|escape|replace:"%ticketurl":"{$url}?m=rtticketview&id={$ticket.ticketid}"}
 
 <TABLE class="lmsbox">
 	<THEAD>
