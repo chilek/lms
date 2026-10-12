@@ -628,7 +628,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
             $queueid = $queue;
             $queue = $DB->GetRow(
-                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ? LIMIT 1",
+                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ?"
+                    . ($check_mail && $queueid ? ' AND id = ' . intval($queueid) : '') . " LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
