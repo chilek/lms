@@ -307,7 +307,7 @@ class Session
     public function redirect_to_history_entry($default = null)
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
-            $url = array_pop($this->_tab_content[$this->tabId]['history']);
+            $url = $this->remove_history_entry();
             $this->close();
             header('Location: ?' . $url);
             die;
@@ -321,7 +321,13 @@ class Session
     public function remove_history_entry()
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
-            return array_pop($this->_tab_content[$this->tabId]['history']);
+            $entry = array_pop($this->_tab_content[$this->tabId]['history']);
+            if ($this->autoupdate) {
+                $this->_saveSession();
+            } else {
+                $this->_updated = true;
+            }
+            return $entry;
         } else {
             return null;
         }
