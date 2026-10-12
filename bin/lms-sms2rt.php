@@ -74,7 +74,7 @@ $helpdesk_customerinfo = ConfigHelper::checkConfig(
     'rt.notification_customerinfo',
     ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
 );
-$helpdesk_sendername = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
+$helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 $customer_auto_reply_body = ConfigHelper::getConfig('sms.customer_auto_reply_body', '', true);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
@@ -321,8 +321,11 @@ foreach ($message_files as $message_file) {
 
         if ($newticket_notify) {
             if (!empty($helpdesk_sender_name)) {
-                $mailfname = $LMS->GetQueueName($queueid);
-                $mailfname = '"'.$mailfname.'"';
+                $mailfname = $helpdesk_sender_name;
+                if ($mailfname == 'queue' || $mailfname == 'user') {
+                    $mailfname = $LMS->GetQueueName($queueid);
+                }
+                $mailfname = '"' . $mailfname . '"';
             } else {
                 $mailfname = '';
             }
