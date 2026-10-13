@@ -259,7 +259,8 @@ if ($mode == MODE_IMAP) {
 } else {
     if (isset($options['message-file'])) {
         if (!is_readable($options['message-file'])) {
-            die('Cannot read message file \'' . $options['message-file'] . '\'!' . PHP_EOL);
+            fprintf($stderr, "Cannot read message file '%s'!" . PHP_EOL, $options['message-file']);
+            exit(8);
         }
         $buffer = file_get_contents($options['message-file']);
     } else {
