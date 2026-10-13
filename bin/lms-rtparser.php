@@ -474,20 +474,25 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     }
 
                     if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
-                        $imagick = new \Imagick();
-                        $imagick->readImageBlob($file_content);
-                        $width = $imagick->getImageWidth();
-                        $height = $imagick->getImageHeight();
-                        if ($height > $width) {
-                            if ($height > $image_max_size) {
-                                $imagick->scaleImage(0, $image_max_size);
-                                $file_content = $imagick->getImageBlob();
+                        try {
+                            $imagick = new \Imagick();
+                            $imagick->readImageBlob($file_content);
+                            $width = $imagick->getImageWidth();
+                            $height = $imagick->getImageHeight();
+                            if ($height > $width) {
+                                if ($height > $image_max_size) {
+                                    $imagick->scaleImage(0, $image_max_size);
+                                    $file_content = $imagick->getImageBlob();
+                                }
+                            } else {
+                                if ($width > $image_max_size) {
+                                    $imagick->scaleImage($image_max_size, 0);
+                                    $file_content = $imagick->getImageBlob();
+                                }
                             }
-                        } else {
-                            if ($width > $image_max_size) {
-                                $imagick->scaleImage($image_max_size, 0);
-                                $file_content = $imagick->getImageBlob();
-                            }
+                            $imagick->clear();
+                        } catch (\Exception $e) {
+                            // keep original content
                         }
                     }
 
