@@ -300,7 +300,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $result['location'] = $LMS->getAddressForCustomerStuff($result['ownerid']);
             }
 
-            $result['mac'] = preg_split('/,/', $result['mac']);
+            $result['mac'] = empty($result['mac']) ? [] : preg_split('/,/', $result['mac']);
             foreach ($result['mac'] as $mac) {
                 $result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
             }
