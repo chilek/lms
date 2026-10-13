@@ -248,13 +248,7 @@ if ($mode == MODE_IMAP) {
 
 while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
-        $buffer = imap_fetchbody($ih, $postid, '');
-
-        if (!empty($set_flags)) {
-            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
-        }
+        $buffer = imap_fetchbody($ih, $postid, '', FT_PEEK);
     }
 
     if (!empty($buffer)) {
@@ -605,6 +599,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if (!$queue) {
             if ($mode == MODE_IMAP) {
+                if (!empty($set_flags)) {
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                } else {
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
+                }
                 $postid = next($posts);
                 $buffer = null;
                 continue;
