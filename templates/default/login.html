@@ -200,39 +200,6 @@
 			return fp;
 		})();
 
-/*
-		let ready = false;
-		let submitting = false;
-
-		$form.on('submit.fingerprint', async function (event) {
-			if (ready) {
-				return;
-			}
-
-			event.preventDefault();
-
-			if (submitting) {
-				return;
-			}
-
-			submitting = true;
-
-			const form = this;
-			const submitter = event.originalEvent?.submitter;
-
-			try {
-				$fingerprint.val(JSON.stringify(await fingerprintPromise));
-			} catch (error) {
-				$fingerprint.val('');
-			}
-
-			ready = true;
-
-			// Native submit preserves HTML5 validation and submitter.
-			form.requestSubmit(submitter || undefined);
-		});
-*/
-
 		let submitting = false;
 
 		$form.on('submit.fingerprint', async function (event) {
