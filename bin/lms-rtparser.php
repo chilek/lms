@@ -657,7 +657,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $reqcustid = $DB->GetCol(
                 "SELECT c.id FROM customers c
                 JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-                WHERE cc.contact = ?",
+                WHERE LOWER(cc.contact) = LOWER(?)",
                 array(
                     CONTACT_EMAIL,
                     $fromemail,
@@ -781,7 +781,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 FROM customercontacts cc
                 WHERE cc.customerid = ?
                     AND (cc.type & ?) = ?
-                    AND cc.contact = ?',
+                    AND LOWER(cc.contact) = LOWER(?)',
                 array(
                     $reqcustid,
                     CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
