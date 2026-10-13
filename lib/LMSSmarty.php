@@ -94,6 +94,8 @@ class LMSSmarty extends Smarty
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'is_null', 'is_null');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'location_str', 'location_str');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_flip', 'array_flip');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strpos', 'strpos');
     }
 
     public static function getInstance()
