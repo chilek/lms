@@ -388,9 +388,9 @@ if (!empty($docids)) {
                 }
 
                 if ($pdf || $others) {
-                    header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename="' . $filename . '.' . $extension . '"');
+                    header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename="' . str_replace(["\r", "\n", '"'], '', $filename . '.' . $extension) . '"');
                 } else {
-                    header('Content-Disposition: inline; filename="' . $filename . '.' . $extension . '"');
+                    header('Content-Disposition: inline; filename="' . str_replace(["\r", "\n", '"'], '', $filename . '.' . $extension) . '"');
                 }
                 header('Pragma: public');
 

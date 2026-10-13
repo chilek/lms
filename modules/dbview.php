@@ -61,7 +61,7 @@ if (extension_loaded('zlib') && strstr($_GET['file'], 'sql.gz')) {
     $suffix = '.gz';
     $filename .= '.gz';
 }
-header('Content-Disposition: attachment; filename=lms-backup-' . date('Ymd-His', $db_dump_date) . '-' . $db_schema_date . '.sql' . $suffix);
+header('Content-Disposition: attachment; filename=lms-backup-' . date('Ymd-His', intval($db_dump_date)) . '-' . intval($db_schema_date) . '.sql' . $suffix);
 header('Pragma: public');
 header('Content-Length: '.filesize($filename));
 set_time_limit(0);
