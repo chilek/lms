@@ -73,8 +73,12 @@ CREATE TABLE twofactorauthtrusteddevices (
     useragent varchar(256) NOT NULL,
     ipaddr bigint DEFAULT NULL,
     expires bigint NOT NULL,
+    tokenhash varchar(64) DEFAULT NULL,
+    fingerprint text DEFAULT NULL,
+    fingerprintversion integer DEFAULT NULL,
     PRIMARY KEY (id)
 );
+CREATE INDEX twofactorauthtrusteddevices_tokenhash_idx ON twofactorauthtrusteddevices (tokenhash);
 
 /* ---------------------------------------------------
  Structure of table "countries"
@@ -4747,6 +4751,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026101200');
 
 COMMIT;

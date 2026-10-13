@@ -115,9 +115,9 @@
 </div>
 <script>
 
-	document.forms['authcodeform'].elements['authcodeform[authcode]'].focus();
-
 	$(function() {
+		$('[name="authcodeform[authcode]"]:visible').focus();
+
 		$('#loginform-button').click(function() {
 			$('[name="authcodeform[backtologinform]"]').val(1);
 			$('[name="authcodeform"]').submit();

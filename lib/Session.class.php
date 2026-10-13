@@ -387,14 +387,16 @@ class Session
             $content = unserialize($row['content']);
 
             // login timeout specific for current user (hacky code but should work)
-            $user_timeout = $this->DB->GetOne(
-                'SELECT value FROM uiconfig WHERE section = ? AND var = ? AND userid = ?',
-                array(
-                    'phpui',
-                    'timeout',
-                    $content['session_id'],
-                )
-            );
+            if (!empty($content['session_id'])) {
+                $user_timeout = $this->DB->GetOne(
+                    'SELECT value FROM uiconfig WHERE section = ? AND var = ? AND userid = ?',
+                    array(
+                        'phpui',
+                        'timeout',
+                        $content['session_id'],
+                    )
+                );
+            }
             if (!empty($user_timeout)) {
                 $this->timeout = $user_timeout;
             }
@@ -424,7 +426,8 @@ class Session
             'session_lastip' => true, 'session_smsauthenticated' => true, 'backto' => true,
             'history' => true, 'lastmodule' => true, 'session_passwdrequiredchange' => true,
             'session_authcoderequired' => true, 'session_twofactorauthrequirechange' => true,
-            'session_passverified' => true, 'tabs' => true, 'prepared_persistent_filters' => true);
+            'session_passverified' => true, 'tabs' => true, 'prepared_persistent_filters' => true,
+            'session_browser_fingerprint' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
