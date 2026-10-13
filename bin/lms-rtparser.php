@@ -352,7 +352,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     && preg_match('/text/', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
-                    $charset = $partdata['content-charset'];
+                    $charset = $partdata['content-charset'] ?? 'UTF-8';
                     $transfer_encoding = $partdata['transfer-encoding'] ?? '';
                     switch ($transfer_encoding) {
                         case 'base64':
@@ -362,7 +362,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             $mail_body = quoted_printable_decode($mail_body);
                             break;
                     }
-                    $mail_body = iconv($charset, 'UTF-8', $mail_body);
+                    try {
+                        $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+                    } catch (\ValueError $e) {
+                        $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+                    }
 
                     $contenttype = 'text/plain';
 
@@ -384,7 +388,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         if (preg_match('/text/', $subpartdata['content-type'])
                             && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
-                            $charset = $subpartdata['content-charset'];
+                            $charset = $subpartdata['content-charset'] ?? 'UTF-8';
                             $transfer_encoding = $subpartdata['transfer-encoding'] ?? '';
                             switch ($transfer_encoding) {
                                 case 'base64':
@@ -394,7 +398,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                                     $mail_body = quoted_printable_decode($mail_body);
                                     break;
                             }
-                            $mail_body = iconv($charset, 'UTF-8', $mail_body);
+                            try {
+                                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+                            } catch (\ValueError $e) {
+                                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+                            }
 
                             $contenttype = 'text/plain';
 
@@ -462,7 +470,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 }
             }
         } else {
-            $charset = $partdata['content-charset'];
+            $charset = $partdata['content-charset'] ?? 'UTF-8';
             $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
 
             $transfer_encoding = $partdata['transfer-encoding'] ?? '';
@@ -475,7 +483,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     break;
             }
 
-            $mail_body = iconv($charset, 'UTF-8', $mail_body);
+            try {
+                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+            } catch (\ValueError $e) {
+                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+            }
 
             $contenttype = 'text/plain';
 
