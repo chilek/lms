@@ -267,6 +267,8 @@ if ($mode == MODE_IMAP) {
     }
 }
 
+$defaultQueue = $queue;
+
 while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
         $buffer = imap_fetchbody($ih, $postid, '');
@@ -277,6 +279,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
         }
     }
+
+    unset($msgid, $mail_customerinfo, $sms_customerinfo, $info, $emails, $queuedata, $prev_tid_contents);
+    $queue = $defaultQueue;
+    $contenttype = 'text/plain';
 
     if (!empty($buffer)) {
         if (!preg_match('/\r?\n$/', $buffer)) {
