@@ -876,13 +876,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $mailfname = '"' . $mailfname . '"';
             }
 
-            if ($qemail = $LMS->GetQueueEmail($queue)) {
-                $mailfrom = $qemail;
-            } elseif ($fromemail) {
-                $mailfrom = $fromemail;
-            } else {
-                $mailfrom = $messageAutoreplyFrom;
-            }
+            $mailfrom = $LMS->DetermineSenderEmail(
+                empty($requserid) ? null : $fromemail,
+                $LMS->GetQueueEmail($queue),
+                $fromemail,
+                ConfigHelper::getConfig($config_section . '.sender_email', '', true)
+            ) ?: $messageAutoreplyFrom;
 
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
             $headers['Reply-To'] = $headers['From'];
