@@ -170,6 +170,27 @@ if (!function_exists('mailparse_msg_create')) {
     exit(2);
 }
 
+function parseAddressList($header)
+{
+    $addresses = [];
+    if (!strlen($header)) {
+        return $addresses;
+    }
+    foreach (mailparse_rfc822_parse_addresses($header) as $item) {
+        $address = trim($item['address']);
+        if (!empty($item['is_group']) || !check_email($address)) {
+            continue;
+        }
+        $display = $item['display'] == $item['address'] ? '' : (string) @iconv_mime_decode($item['display'], 0, 'UTF-8');
+        $addresses[] = [
+            'display' => trim(str_replace(["\r", "\n"], ' ', $display)),
+            'address' => $address,
+        ];
+    }
+
+    return $addresses;
+}
+
 class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
 {
     public $browsable = true;
@@ -325,8 +346,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $customCreateTime = isset($headers['date']) ? strtotime($headers['date']) : null;
         $mh_from = isset($headers['from']) ? (string) iconv_mime_decode($headers['from']) : '';
-        $mh_to = isset($headers['to']) ? (string) iconv_mime_decode($headers['to']) : '';
-        $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
         $mh_msgid = isset($headers['message-id']) ? (string) iconv_mime_decode($headers['message-id']) : '';
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
         $mh_subject = isset($headers['subject']) ? str_replace(["\r", "\n"], ' ', (string) iconv_mime_decode($headers['subject'])) : '';
@@ -588,40 +607,22 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $reqcustid = 0;
         $requserid = null;
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $mh_replyto, $m)) {
-            $replytoname = $m['display'] ?? '';
-            $replytoemail = $m['address'];
-        } else {
-            $replytoname = $replytoemail = '';
+        $replyToAddresses = parseAddressList($headers['reply-to'] ?? '');
+        $replytoname = $replyToAddresses ? $replyToAddresses[0]['display'] : '';
+        $replytoemail = $replyToAddresses ? $replyToAddresses[0]['address'] : '';
+
+        $fromAddresses = parseAddressList($headers['from'] ?? '');
+        $fromname = $fromAddresses ? $fromAddresses[0]['display'] : '';
+        $fromemail = $fromAddresses ? $fromAddresses[0]['address'] : '';
+
+        $toemails = [];
+        foreach (parseAddressList($headers['to'] ?? '') as $address) {
+            $toemails[strtolower($address['address'])] = strtolower($address['address']);
         }
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $mh_from, $m)) {
-            $fromname = $m['display'] ?? '';
-            $fromemail = $m['address'];
-        } else {
-            $fromname = $fromemail = '';
-        }
-
-        $toemails = array();
-
-        foreach (preg_split('/\s*,\s*/', $mh_to, -1, PREG_SPLIT_NO_EMPTY) as $toEmail) {
-            if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $toEmail, $m)) {
-                $toemails[strtolower($m['address'])] = strtolower($m['address']);
-            } else {
-                $toemails[strtolower($toEmail)] = strtolower($toEmail);
-            }
-        }
-
-        $ccemails = array();
-        $_ccemails = preg_split('/\s*,\s*/', $mh_cc, -1, PREG_SPLIT_NO_EMPTY);
-        if (!empty($_ccemails)) {
-            foreach ($_ccemails as $ccemail) {
-                if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $ccemail, $m)) {
-                    $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
-                } else {
-                    $ccemails[strtolower($ccemail)] = '';
-                }
-            }
+        $ccemails = [];
+        foreach (parseAddressList($headers['cc'] ?? '') as $address) {
+            $ccemails[strtolower($address['address'])] = $address['display'];
         }
 
         // find queue ID if not specified
