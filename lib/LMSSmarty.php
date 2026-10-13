@@ -48,6 +48,7 @@ class LMSSmarty extends Smarty
         $this->registerClass('Utils', 'Utils');
         $this->registerClass('EtherCodes', 'EtherCodes');
         $this->registerClass('LMSTcpdfTransferForm', 'LMSTcpdfTransferForm');
+        $this->registerClass('SYSLOG', 'SYSLOG');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'trans', 'trans');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'date', 'date');
