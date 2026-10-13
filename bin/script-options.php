@@ -33,6 +33,8 @@ $http_mode = isset($_SERVER['HTTP_HOST']);
 if ($http_mode) {
     ob_clean();
     $options = array();
+    http_response_code(403);
+    die('Nie, nie nie koluszku, nie grzeb tutaj');
 } else {
     $long_to_shorts = array();
     $short_to_longs = array();
