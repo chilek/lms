@@ -835,6 +835,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
+                    'Auto-Submitted' => 'auto-replied',
                 ];
 
                 if ($autoreply_format == 'html') {
