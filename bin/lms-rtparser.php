@@ -306,6 +306,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
+        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'date', 'auto-submitted', 'precedence'] as $headerName) {
+            if (isset($headers[$headerName]) && is_array($headers[$headerName])) {
+                $headers[$headerName] = implode($headerName == 'to' || $headerName == 'cc' ? ', ' : ' ', $headers[$headerName]);
+            }
+        }
+
         $return_paths = null;
         if (isset($headers['return-path'])) {
             if (is_array($headers['return-path'])) {
