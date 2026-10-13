@@ -758,8 +758,16 @@ class Auth
         $nonce = random_bytes(12);
         $plaintext = json_encode(['version' => 2, 'expires' => (int) $expires, 'rand' => $rand]);
         $tag = '';
-        $ciphertext = openssl_encrypt($plaintext, 'aes-256-gcm', $cryptoParams['key'],
-            OPENSSL_RAW_DATA, $nonce, $tag, $cryptoParams['name'], 16);
+        $ciphertext = openssl_encrypt(
+            $plaintext,
+            'aes-256-gcm',
+            $cryptoParams['key'],
+            OPENSSL_RAW_DATA,
+            $nonce,
+            $tag,
+            $cryptoParams['name'],
+            16
+        );
         if ($ciphertext === false) {
             return false;
         }
@@ -781,9 +789,15 @@ class Auth
         if ($raw === false || strlen($raw) < 29) {
             return null;
         }
-        $plaintext = openssl_decrypt(substr($raw, 28), 'aes-256-gcm',
-            $cryptoParams['key'], OPENSSL_RAW_DATA, substr($raw, 0, 12),
-            substr($raw, 12, 16), $cryptoParams['name']);
+        $plaintext = openssl_decrypt(
+            substr($raw, 28),
+            'aes-256-gcm',
+            $cryptoParams['key'],
+            OPENSSL_RAW_DATA,
+            substr($raw, 0, 12),
+            substr($raw, 12, 16),
+            $cryptoParams['name']
+        );
         if ($plaintext === false) {
             return null;
         }
@@ -830,8 +844,13 @@ class Auth
             'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
             'samesite' => 'Lax',
         ])) {
-            $this->DB->Execute('DELETE FROM twofactorauthtrusteddevices WHERE userid = ? AND tokenhash = ?',
-                [$this->id, $cookie['tokenhash']]);
+            $this->DB->Execute(
+                'DELETE FROM twofactorauthtrusteddevices WHERE userid = ? AND tokenhash = ?',
+                [
+                    $this->id,
+                    $cookie['tokenhash'],
+                ]
+            );
             return false;
         }
         return true;
@@ -865,8 +884,10 @@ class Auth
         if ($stored === null) {
             return false;
         }
-        $minimumScore = max(90, min(100, (int) ConfigHelper::getConfig(
-            'phpui.two_factor_auth_trust_device_min_score', 90)));
+        $minimumScore = max(
+            90,
+            min(100, (int) ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_min_score', 90))
+        );
         return $this->compareBrowserFingerprints($stored, $this->browserFingerprint) >= $minimumScore;
     }
 
