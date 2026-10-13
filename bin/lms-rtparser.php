@@ -825,21 +825,21 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $mailto_qp_encoded = (empty($fromname) ? '' : qp_encode($fromname) . ' ') . '<' . $fromemail . '>';
                 }
 
-                $headers = array(
+                $autoreplyHeaders = [
                     'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
                     'To' => $mailto_qp_encoded,
                     'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
-                );
+                ];
 
                 if ($autoreply_format == 'html') {
-                    $headers['X-LMS-Format'] = 'html';
+                    $autoreplyHeaders['X-LMS-Format'] = 'html';
                 }
 
                 if (!empty($reqcustid) && !empty($ccemails)) {
-                    $headers['Cc'] = implode(
+                    $autoreplyHeaders['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {
                             return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
@@ -847,13 +847,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     );
                 }
 
-                $LMS->SendMail($mailto, $headers, $current_autoreply_body, null, null, $smtp_options);
+                $LMS->SendMail($mailto, $autoreplyHeaders, $current_autoreply_body, null, null, $smtp_options);
             }
 
             $new_ticket = true;
         }
 
         $ticket = $LMS->GetTicketContents($ticket_id);
+
+        $headers = [];
 
         if ($notify || $ticket['customerid'] && $reqcustid) {
             $helpdesk_sender_name = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
