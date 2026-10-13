@@ -315,7 +315,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
         $mh_msgid = iconv_mime_decode($headers['message-id']);
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
-        $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']) : '';
+        $mh_subject = isset($headers['subject']) ? str_replace(["\r", "\n"], ' ', (string) iconv_mime_decode($headers['subject'])) : '';
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
@@ -426,7 +426,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         unset($file_content);
                         continue;
                     }
-                    $file_name = iconv_mime_decode($file_name);
+                    $file_name = basename(str_replace('\\', '/', (string) iconv_mime_decode($file_name)));
+                    if ($file_name === '' || $file_name === '.' || $file_name === '..') {
+                        unset($file_content);
+                        continue;
+                    }
 
                     if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
                         $imagick = new \Imagick();
@@ -829,7 +833,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $headers['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {
-                            return (empty($display) ? '' : $display . ' ') . '<' . $address . '>';
+                            return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
                         }, array_keys($ccemails), array_values($ccemails))
                     );
                 }

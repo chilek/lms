@@ -675,7 +675,7 @@ function qp_encode($string)
     }
 
     $encoded = preg_replace_callback(
-        '/([\x2C\x3F\x80-\xFF])/',
+        '/([\x2C\x3D\x3F\x5F\x80-\xFF])/',
         function ($m) {
             return '=' . sprintf("%02X", ord($m[1]));
         },
