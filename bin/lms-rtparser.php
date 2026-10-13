@@ -203,7 +203,7 @@ $postid = null;
 
 if ($mode == MODE_IMAP) {
     if (!function_exists('imap_open')) {
-        fprintf($stderr, "Fatal error: PHP IMAP extension is required!" . PGP_EOL);
+        fprintf($stderr, "Fatal error: PHP IMAP extension is required!" . PHP_EOL);
         exit(5);
     }
 
