@@ -548,14 +548,14 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $reqcustid = 0;
         $requserid = null;
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_replyto, $m)) {
+        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $mh_replyto, $m)) {
             $replytoname = $m['display'] ?? '';
             $replytoemail = $m['address'];
         } else {
             $replytoname = $replytoemail = '';
         }
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_from, $m)) {
+        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $mh_from, $m)) {
             $fromname = $m['display'] ?? '';
             $fromemail = $m['address'];
         } else {
@@ -564,17 +564,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $toemails = array();
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
-            $toemails[strtolower($m['address'])] = strtolower($m['address']);
-        } elseif (!empty($mh_to)) {
-            $toemails[strtolower($mh_to)] = strtolower($mh_to);
+        foreach (preg_split('/\s*,\s*/', $mh_to, -1, PREG_SPLIT_NO_EMPTY) as $toEmail) {
+            if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $toEmail, $m)) {
+                $toemails[strtolower($m['address'])] = strtolower($m['address']);
+            } else {
+                $toemails[strtolower($toEmail)] = strtolower($toEmail);
+            }
         }
 
         $ccemails = array();
         $_ccemails = preg_split('/\s*,\s*/', $mh_cc, -1, PREG_SPLIT_NO_EMPTY);
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
-                if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
+                if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.+=-]+@[\da-z\.-]+\.[a-z]{2,63})>?$/iA', $ccemail, $m)) {
                     $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
                 } else {
                     $ccemails[strtolower($ccemail)] = '';
