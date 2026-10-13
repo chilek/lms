@@ -310,10 +310,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         $customCreateTime = isset($headers['date']) ? strtotime($headers['date']) : null;
-        $mh_from = iconv_mime_decode($headers['from']);
-        $mh_to = iconv_mime_decode($headers['to']);
+        $mh_from = isset($headers['from']) ? (string) iconv_mime_decode($headers['from']) : '';
+        $mh_to = isset($headers['to']) ? (string) iconv_mime_decode($headers['to']) : '';
         $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
-        $mh_msgid = iconv_mime_decode($headers['message-id']);
+        $mh_msgid = isset($headers['message-id']) ? (string) iconv_mime_decode($headers['message-id']) : '';
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
         $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']) : '';
         if (!strlen($mh_subject)) {
@@ -571,7 +571,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         $ccemails = array();
-        $_ccemails = preg_split('/\s*,\s*/', $mh_cc, null, PREG_SPLIT_NO_EMPTY);
+        $_ccemails = preg_split('/\s*,\s*/', $mh_cc, -1, PREG_SPLIT_NO_EMPTY);
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
                 if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
