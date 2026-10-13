@@ -957,16 +957,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $headers['X-LMS-Format'] = 'html';
             }
 
-            $LMS->NotifyUsers(array(
-                'queue' => $queue,
-                'ticketid' => $ticket_id,
-                'mail_headers' => $headers,
-                'mail_body' => $body,
-                'sms_body' => $sms_body,
-                'contenttype' => $contenttype,
-                'attachments' => &$attachments,
-                'smtp_options' => $smtp_options,
-            ));
+            if ($notify) {
+                $LMS->NotifyUsers([
+                    'queue' => $queue,
+                    'ticketid' => $ticket_id,
+                    'mail_headers' => $headers,
+                    'mail_body' => $body,
+                    'sms_body' => $sms_body,
+                    'contenttype' => $contenttype,
+                    'attachments' => &$attachments,
+                    'smtp_options' => $smtp_options,
+                ]);
+            }
         }
 
         if ($ticket['customerid'] && $reqcustid && !empty($emails)) {
