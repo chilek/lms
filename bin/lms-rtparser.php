@@ -315,7 +315,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
         $mh_msgid = iconv_mime_decode($headers['message-id']);
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
-        $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']) : '';
+        $mh_subject = isset($headers['subject']) ? str_replace(["\r", "\n"], ' ', (string) iconv_mime_decode($headers['subject'])) : '';
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
@@ -833,7 +833,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $headers['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {
-                            return (empty($display) ? '' : $display . ' ') . '<' . $address . '>';
+                            return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
                         }, array_keys($ccemails), array_values($ccemails))
                     );
                 }
