@@ -488,7 +488,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ConfigHelper::checkConfig('phpui.promotion_use_discounts')
             );
 
-            $current_month = date('m', $data['cdate']);
+            $current_month = date('m', $data['cdate'] ?? time());
 
             foreach ($data_tariff as $idx => $dt) {
                 [$value, $period] = explode(':', $dt);
