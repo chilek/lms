@@ -426,7 +426,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         unset($file_content);
                         continue;
                     }
-                    $file_name = iconv_mime_decode($file_name);
+                    $file_name = basename(str_replace('\\', '/', (string) iconv_mime_decode($file_name)));
+                    if ($file_name === '' || $file_name === '.' || $file_name === '..') {
+                        unset($file_content);
+                        continue;
+                    }
 
                     if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
                         $imagick = new \Imagick();
