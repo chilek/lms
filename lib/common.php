@@ -449,7 +449,17 @@ function striphtml($text)
 
 function check_email($email)
 {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    $email = (string) $email;
+    $atPos = strrpos($email, '@');
+    if ($atPos !== false && function_exists('idn_to_ascii') && preg_match('/[\x80-\xFF]/', substr($email, $atPos + 1))) {
+        $domain = idn_to_ascii(substr($email, $atPos + 1), IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        if ($domain === false) {
+            return false;
+        }
+        $email = substr($email, 0, $atPos + 1) . $domain;
+    }
+
+    return filter_var($email, FILTER_VALIDATE_EMAIL, FILTER_FLAG_EMAIL_UNICODE) !== false;
 }
 
 function get_producer($mac)
