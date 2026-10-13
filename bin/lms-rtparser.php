@@ -590,13 +590,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         // check email subject
-        if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
-            $prev_tid = sprintf('%d', $matches['ticketid']);
+        if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches) && isset($matches['ticketid'])) {
+            $prev_tid = intval($matches['ticketid']);
         }
 
         if ($prev_tid) {
             $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
-            $queue = $prev_tid_contents['queueid'];
+            if (empty($prev_tid_contents)) {
+                $prev_tid = 0;
+                $inreplytoid = null;
+            } else {
+                $queue = $prev_tid_contents['queueid'];
+            }
         }
 
         $mail_mh_subject = $mh_subject;
