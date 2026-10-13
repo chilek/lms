@@ -681,15 +681,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
         }
 
+        $messageAutoreplyFrom = $autoreply_from;
+        $messageAutoreplyName = $autoreply_name;
+
         // get sender e-mail if not specified
-        if (!$autoreply_from) {
+        if (!$messageAutoreplyFrom) {
             $queue_autoreply = $DB->GetRow(
                 "SELECT email, name FROM rtqueues WHERE id = ?",
                 array($queue)
             );
             if (!empty($queue_autoreply)) {
-                $autoreply_from = $queue_autoreply['email'];
-                $autoreply_name = $autoreply_name ?: $queue_autoreply['name'];
+                $messageAutoreplyFrom = $queue_autoreply['email'];
+                $messageAutoreplyName = $messageAutoreplyName ?: $queue_autoreply['name'];
             }
         }
 
@@ -826,7 +829,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 }
 
                 $autoreplyHeaders = [
-                    'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
+                    'From' => (empty($messageAutoreplyName) ? '' : qp_encode($messageAutoreplyName) . ' ') . '<' . $messageAutoreplyFrom . '>',
                     'To' => $mailto_qp_encoded,
                     'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
@@ -877,7 +880,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             } elseif ($fromemail) {
                 $mailfrom = $fromemail;
             } else {
-                $mailfrom = $autoreply_from;
+                $mailfrom = $messageAutoreplyFrom;
             }
 
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
