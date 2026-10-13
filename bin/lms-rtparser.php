@@ -976,7 +976,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             ));
         }
 
-        if ($ticket['customerid'] && $reqcustid && !empty($mails)) {
+        if ($ticket['customerid'] && $reqcustid && !empty($emails)) {
             if ($new_ticket) {
                 $ticketsubject_variable = 'newticketsubject';
                 $ticketbody_variable = 'newticketbody';
