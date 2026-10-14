@@ -4006,7 +4006,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         OR kc.allconsumers = ?
                         OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?)
                     )
-                    AND kd.id <> kd2.maxid
+                    AND (kd.id IS NULL OR kd.id <> kd2.maxid)
                 )',
             [
                 400,
@@ -4050,7 +4050,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         OR kc.allconsumers = ?
                         OR EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.customerid AND cc.type = ?)
                     )
-                    AND kd.id <> kd2.maxid
+                    AND (kd.id IS NULL OR kd.id <> kd2.maxid)
                 )',
             [
                 400,
