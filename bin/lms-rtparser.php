@@ -114,7 +114,8 @@ $subject_template = ConfigHelper::getConfig($config_section . '.subject_template
 $body_template = ConfigHelper::getConfig($config_section . '.body_template', '', true);
 $ignore_sender_email = ConfigHelper::checkConfig($config_section . '.ignore_sender_email');
 
-$modify_ticket_timeframe = ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800);
+$modify_ticket_timeframe = intval(ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800));
+$parserMaxDateAge = intval(ConfigHelper::getConfig($config_section . '.parser_max_date_age', 3));
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
@@ -340,7 +341,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             continue;
         }
 
-        $customCreateTime = isset($headers['date']) ? strtotime($headers['date']) : null;
+        $customCreateTime = null;
+        if (isset($headers['date'])) {
+            $parsedDate = strtotime($headers['date']);
+            $now = time();
+            if ($parsedDate === false
+                || $parsedDate > strtotime('+5 minutes', $now)
+                || $parsedDate < strtotime('-' . $parserMaxDateAge . ' days', $now)
+            ) {
+                $customCreateTime = $now;
+            } else {
+                $customCreateTime = $parsedDate;
+            }
+        }
         $mh_from = isset($headers['from']) ? (string) iconv_mime_decode($headers['from']) : '';
         $mh_msgid = isset($headers['message-id']) ? (string) iconv_mime_decode($headers['message-id']) : '';
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
