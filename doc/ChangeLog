@@ -1269,6 +1269,9 @@ version 28-git (????-??-??):
   - enhancement: customer search can be limited by active tariff maximum download and upload speed range
     (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
+  - enhancement: merge duplicate helpdesk tickets; rt.merge_allow_different_customers
+    (default: true) controls merging tickets of different customers; opening a merged
+    source ticket shows a dialog with a link to the final target ticket [interduo]
 
 version 27.0 (2021-08-20):
 
