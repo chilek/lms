@@ -1264,6 +1264,7 @@ version 28-git (????-??-??):
   - enhancement: KSeF: export purchase invoices to transfer file which can be loaded in bank service [chilan]
   - improvement: more precise web browser fingerprint calculation (it is used in trusted device management
     process) [chilan]
+  - enhancement: merge duplicate helpdesk tickets [interduo]
 
 version 27.0 (2021-08-20):
 
