@@ -186,4 +186,42 @@ function update_contacts($customerid)
     return $JSResponse;
 }
 
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed', 'update_contacts'));
+function suggestSimilarTickets($subject, $customerId, $email, $phone, $seq = 0)
+{
+    global $LMS, $SMARTY;
+
+    $response = new xajaxResponse();
+    $html = '';
+    if (ConfigHelper::checkConfig('rt.similar_tickets', true)) {
+        $tickets = $LMS->GetSimilarOpenTickets(array(
+            'subject' => $subject,
+            'customerid' => $customerId,
+            'email' => $email,
+            'phone' => $phone,
+        ));
+        if ($tickets) {
+            foreach ($tickets as &$ticket) {
+                $requestor = trim((string) ($ticket['customername'] ?: $ticket['requestor']));
+                if (!empty($ticket['requestor_mail'])) {
+                    $requestor = trim($requestor . ' <' . $ticket['requestor_mail'] . '>');
+                } elseif (!empty($ticket['requestor_phone'])) {
+                    $requestor = trim($requestor . ' ' . $ticket['requestor_phone']);
+                }
+                $ticket['requestorlabel'] = $requestor;
+                $ticket['subject'] = (string) $ticket['subject'];
+                $ticket['queuename'] = (string) $ticket['queuename'];
+            }
+            unset($ticket);
+            $SMARTY->assign('tickets', $tickets);
+            $html = $SMARTY->fetch('rt/rtsimilartickets.html');
+        }
+    }
+
+    $response->script(
+        'if(' . intval($seq) . '===scheduleSimilarTickets.seq)'
+        . 'document.getElementById("similar-tickets").innerHTML=' . json_encode($html) . ';'
+    );
+    return $response;
+}
+
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed', 'update_contacts', 'suggestSimilarTickets'));
