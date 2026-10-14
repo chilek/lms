@@ -589,6 +589,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         if ($prev_tid) {
+            $prev_tid = $LMS->resolveMergedTicket($prev_tid);
             $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
             if (empty($prev_tid_contents)) {
                 $prev_tid = 0;

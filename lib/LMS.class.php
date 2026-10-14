@@ -2507,6 +2507,36 @@ class LMS
         return $manager->TicketChange($ticketid, $props);
     }
 
+    public function mergeTickets($sourceTicketId, $targetTicketId, ?array $keep = null, $leftTicketId = 0, $rightTicketId = 0, $reopenTarget = false)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->mergeTickets($sourceTicketId, $targetTicketId, $keep, $leftTicketId, $rightTicketId, $reopenTarget);
+    }
+
+    public function getTicketMergeComparison($sourceTicketId, $targetTicketId)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->getTicketMergeComparison($sourceTicketId, $targetTicketId);
+    }
+
+    public function getTicketMergedInto($ticketId)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->getTicketMergedInto($ticketId);
+    }
+
+    public function ticketWasMergedAway($ticketId)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->ticketWasMergedAway($ticketId);
+    }
+
+    public function resolveMergedTicket($ticketId)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->resolveMergedTicket($ticketId);
+    }
+
     public function changeTicketWatching($ticketid, $watching)
     {
         $manager = $this->getHelpdeskManager();

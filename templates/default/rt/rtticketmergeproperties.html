@@ -1,0 +1,133 @@
+{if !isset($mergeKeepSide)}{$mergeKeepSide = 'left'}{/if}
+{$keepChecked = ($side == $mergeKeepSide)}
+{$ownerDiffers = false}
+{$verifierDiffers = false}
+{$customerDiffers = false}
+{if $leftTicket && $rightTicket}
+	{$leftOwner = $leftTicket.owner|default:0}
+	{$rightOwner = $rightTicket.owner|default:0}
+	{$leftVerifier = $leftTicket.verifierid|default:0}
+	{$rightVerifier = $rightTicket.verifierid|default:0}
+	{$leftCustomer = $leftTicket.customerid|default:0}
+	{$rightCustomer = $rightTicket.customerid|default:0}
+	{$leftRequestor = $leftTicket.requestor|default:''}
+	{$rightRequestor = $rightTicket.requestor|default:''}
+	{$leftRequestorMail = $leftTicket.requestor_mail|default:''}
+	{$rightRequestorMail = $rightTicket.requestor_mail|default:''}
+	{$leftRequestorPhone = $leftTicket.requestor_phone|default:''}
+	{$rightRequestorPhone = $rightTicket.requestor_phone|default:''}
+	{$leftRequestorUser = $leftTicket.requestor_userid|default:0}
+	{$rightRequestorUser = $rightTicket.requestor_userid|default:0}
+	{$ownerDiffers = ($leftOwner != $rightOwner)}
+	{$verifierDiffers = ($leftVerifier != $rightVerifier)}
+	{$customerDiffers = ($leftCustomer != $rightCustomer || $leftRequestor != $rightRequestor || $leftRequestorMail != $rightRequestorMail || $leftRequestorPhone != $rightRequestorPhone || $leftRequestorUser != $rightRequestorUser)}
+{/if}
+<table class="lmsbox-inner">
+	<tbody>
+		<tr>
+			<td class="bold nobr">{trans("Ticket ID")}</td>
+			<td><a href="?m=rtticketview&id={$ticket.ticketid|escape}">#{$ticket.ticketid|string_format:"%06d"}</a></td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Subject")}</td>
+			<td>{$ticket.subject|escape}</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Queue")}</td>
+			<td>{$ticket.queuename|escape}</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Status")}</td>
+			<td>{$_RT_STATES[$ticket.state].label}</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Owner")}</td>
+			<td class="rt-ticket-merge-choice{if $ownerDiffers && $side == $mergeKeepSide} highlight{/if}"{if $ownerDiffers} data-keep-group="owner" data-keep-side="{$side|escape}"{/if}>
+				{rt_merge_keep group="owner" side=$side differs=$ownerDiffers primary=1 checked=$keepChecked ticketid=$ticket.ticketid}
+				{if $ticket.owner}{$ticket.ownername|escape}{else}{trans("none")}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Verifier")}</td>
+			<td class="rt-ticket-merge-choice{if $verifierDiffers && $side == $mergeKeepSide} highlight{/if}"{if $verifierDiffers} data-keep-group="verifier" data-keep-side="{$side|escape}"{/if}>
+				{rt_merge_keep group="verifier" side=$side differs=$verifierDiffers primary=1 checked=$keepChecked ticketid=$ticket.ticketid}
+				{if $ticket.verifierid}{$ticket.verifier_username|escape}{else}{trans("none")}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Customer")}</td>
+			<td class="rt-ticket-merge-choice{if $customerDiffers && $side == $mergeKeepSide} highlight{/if}"{if $customerDiffers} data-keep-group="customer" data-keep-side="{$side|escape}"{/if}>
+				{rt_merge_keep group="customer" side=$side differs=$customerDiffers primary=1 checked=$keepChecked ticketid=$ticket.ticketid}
+				{if $ticket.customerid}
+					{$ticket.customername|trim|escape} (#{$ticket.customerid})
+				{else}
+					{trans("none")}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Requestor")}</td>
+			<td class="rt-ticket-merge-choice{if $customerDiffers && $side == $mergeKeepSide} highlight{/if}"{if $customerDiffers} data-keep-group="customer" data-keep-side="{$side|escape}"{/if}>
+				{rt_merge_keep group="customer" side=$side differs=$customerDiffers primary=0 checked=$keepChecked ticketid=$ticket.ticketid}
+				{if $ticket.requestor}{$ticket.requestor|escape}{else}{trans("none")}{/if}
+				{if $ticket.requestor_mail}
+					&lt;{$ticket.requestor_mail|escape}&gt;
+				{/if}
+				{if $ticket.requestor_phone}
+					{$ticket.requestor_phone|escape}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="bold nobr">{trans("Creation time")}</td>
+			<td>{$ticket.createtime|date_format:"Y-m-d H:i"}</td>
+		</tr>
+		<tr>
+			<td class="bold nobr valign-top">{trans("Messages")}</td>
+			<td>
+				{assign var=mergePreviewCount value=0}
+				{if $ticket.messages}
+					{foreach $ticket.messages as $message}
+						{if $mergePreviewCount < 5 && ($message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE)}
+							{assign var=mergePreviewCount value=$mergePreviewCount+1}
+							<p>
+								<span class="bold">{$message.createtime|date_format:"Y-m-d H:i"}</span>
+								{if $message.type == $smarty.const.RTMESSAGE_NOTE}
+									{trans("Note")}
+								{/if}
+								{if $message.customerid}
+									{$message.customername|trim|escape}
+								{elseif $message.userid}
+									{$message.username|escape}
+								{elseif $message.mailfrom}
+									{$message.mailfrom|escape}
+								{elseif $message.phonefrom}
+									{$message.phonefrom|escape}
+								{/if}
+								{if $message.body}
+									<br>
+									{if $message.contenttype == 'text/plain'}
+										{trim($message.body)|truncate:400:"…":true|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
+									{else}
+										{$message.body|striphtml|truncate:400:"…":true|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
+									{/if}
+								{/if}
+								{if $message.attachments}
+									<br>
+									{foreach $message.attachments as $attachment}
+										{documentview id="rt-merge-{$ticket.ticketid}-{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
+											url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1"
+											text="{icon name="attachment" label="{$attachment.filename|escape}"}"}
+									{/foreach}
+								{/if}
+							</p>
+						{/if}
+					{/foreach}
+				{/if}
+				{if !$mergePreviewCount}
+					{trans("none")}
+				{/if}
+			</td>
+		</tr>
+	</tbody>
+</table>

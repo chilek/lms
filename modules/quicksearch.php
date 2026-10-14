@@ -834,7 +834,7 @@ switch ($mode) {
         break;
 
     case 'ticket':
-        if (empty($search) || (!ConfigHelper::checkPrivilege('helpdesk_operation') && !ConfigHelper::checkPrivilege('read_only'))) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('helpdesk_operation') && !ConfigHelper::checkPrivilege('read_only') && !ConfigHelper::checkPrivilege('helpdesk_administration'))) {
             die;
         }
 
@@ -846,17 +846,25 @@ switch ($mode) {
 
             $userid = Auth::GetCurrentUser();
 
-            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
             $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+            $fullAccess = ConfigHelper::checkPrivilege('full_access');
+            $rightsJoin = $fullAccess
+                ? ''
+                : 'JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND (r.rights & ?) > 0';
+            $queryParams = [];
+            if (!$fullAccess) {
+                $queryParams[] = $userid;
+                $queryParams[] = RT_RIGHT_READ;
+            }
+            $queryParams[] = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
 
             $candidates = $DB->GetAll(
                 "SELECT t.id, t.subject, t.requestor, t.requestor_mail, t.requestor_phone, t.state, c.name, c.lastname
 				FROM rttickets t
-				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & ? > 0
+				" . $rightsJoin . "
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
-				WHERE (r.rights IS NOT NULL" . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ")
-					AND " . (is_array($catids) ? '(tc.categoryid IN (' . implode(',', $catids) . ') ' . ($allow_empty_categories ? ' OR tc.categoryid IS NULL' : '') . ')' : 'tc.categoryid IS NULL')
+				WHERE " . (is_array($catids) ? '(tc.categoryid IN (' . implode(',', $catids) . ') ' . ($allow_empty_categories ? ' OR tc.categoryid IS NULL' : '') . ')' : 'tc.categoryid IS NULL')
                     . (empty($properties) || isset($properties['unresolvedonly']) ? ' AND t.state <> ' . RT_RESOLVED : '') . " AND ("
                     . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 't.id = ' . $search : '1=0') : '1=0')
                     . (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
@@ -867,10 +875,7 @@ switch ($mode) {
 						OR LOWER(c.lastname) ?LIKE? LOWER($sql_search)" : '') . ")
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor, t.requestor_mail, t.requestor_phone
 					LIMIT ?",
-                array(
-                        $userid, RT_RIGHT_READ,
-                        intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
-                    )
+                $queryParams
             );
 
             $result = array();

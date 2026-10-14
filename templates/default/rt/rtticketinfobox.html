@@ -491,6 +491,9 @@
 				    {button icon="watch" tip="Start watching" label="Start watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=1"}
 				{/if}
 				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
+				{if $canMergeTicket && !$ticket.deleted}
+					{button id="rt-ticket-merge-open" icon="relatedticket" label="Merge" tip="Merge"}
+				{/if}
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
 				{/if}
@@ -602,11 +605,19 @@
 
 </div>
 
+{if $canMergeTicket && !$ticket.deleted}
+	{include file="rt/rtticketmergedialog.html"}
+{/if}
+
 <script>
 
 	restoreSortable('rtticketview-sortable', '{$rtticketview_sortable_order}');
 
 	$(function() {
+		{if $error.merge}
+			alertDialog("{$error.merge|escape:"javascript"}");
+		{/if}
+
 		$('#print-anchor').click(function() {
 			window.open('?m=rtticketprint&id={$ticket.ticketid}'
 				+ ($('#messages-chkbox:checked').length ? '&messages=1' : '')
