@@ -25,10 +25,67 @@
 		width: 20em;
 	}
 
+	#similar-tickets:empty {
+		display: none;
+	}
+
+	#ticket-top {
+		display: flex;
+		align-items: stretch;
+		align-self: stretch;
+		width: 100%;
+	}
+
+	#ticket-top-fields {
+		flex: 1 1 auto;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#similar-tickets {
+		position: relative;
+		align-self: stretch;
+		flex: 0 1 32em;
+		width: 32em;
+		max-width: 50%;
+		margin: .5em;
+	}
+
+	#similar-tickets > .lms-ui-box-container {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		margin: 0;
+		align-items: stretch;
+		overflow: hidden;
+	}
+
+	#similar-tickets .lms-ui-box-header {
+		flex: 0 0 auto;
+	}
+
+	#similar-tickets table.lmsbox-inner {
+		display: block;
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
+		margin: 0;
+	}
+
+	#similar-tickets table.lmsbox-inner tbody {
+		display: table;
+		width: 100%;
+	}
+
 </style>
 
 {box_container id="ticket"}
 	{box_header multi_row=true}
+		<div id="ticket-top">
+		<div id="ticket-top-fields">
 		{box_header icon="helpdesk" label="Subject" icon_class="fa-fw"}
 			<INPUT type="text" size="50" name="ticket[subject]" maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
 				   value="{$ticket.subject|default:""|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
@@ -65,6 +122,11 @@
 					{tip class="lms-ui-datetime" trigger="customresolvetime"}>
 			{/box_header}
 		{/if}
+		</div>
+		{if $layout.module == 'rtticketadd' && ConfigHelper::checkConfig('rt.similar_tickets', true)}
+			<div id="similar-tickets"></div>
+		{/if}
+		</div>
 	{/box_header}
 
 	{box_contents}
