@@ -357,6 +357,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $attachments = array();
 
         $mail_headers = substr($buffer, $partdata['starting-pos'], $partdata['starting-pos-body'] - $partdata['starting-pos'] - 1);
+        // unfold first, otherwise encoded-words split across lines are not decoded
+        $mail_headers = preg_replace('/\r?\n[ \t]+/', ' ', $mail_headers);
         $decoded_mail_headers = array();
         foreach (explode("\n", $mail_headers) as $mail_header) {
             $decoded_mail_header = @iconv_mime_decode($mail_header);
