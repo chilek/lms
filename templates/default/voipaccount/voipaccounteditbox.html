@@ -96,7 +96,7 @@
                                                 {trans("Password:")}
                                             </td>
                                             <td>
-                                                <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"} required>
+                                                <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords', false)}password{else}text{/if}" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"} required>
                                                 <a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
                                             </td>
                                         </tr>
