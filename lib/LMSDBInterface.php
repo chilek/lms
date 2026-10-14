@@ -112,6 +112,8 @@ interface LMSDBInterface
 
     public function &GetErrors();
 
+    public function GetFailureCount();
+
     public function SetErrors(array $errors = array());
 
     public function SetDebug($debug = true);

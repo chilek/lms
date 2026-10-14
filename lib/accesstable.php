@@ -215,14 +215,14 @@ $access_table = array(
     ),
     'helpdesk_administration' => array(
         'label' => trans('Helpdesk (RT) administration'),
-        'allow_regexp' => '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$',
+        'allow_regexp' => '^(rtsearch|rtprint|rtticketmerge|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$',
         'allow_menu_items' => array(
             'helpdesk' => array('rtqueuelist', 'rtqueueadd', 'rtcategorylist', 'rtcategoryadd', 'rtsearch', 'rtticketadd', 'rtprint'),
         ),
     ),
     'helpdesk_operation' => array(
         'label' => trans('Helpdesk (RT) operation'),
-        'allow_regexp' => '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+        'allow_regexp' => '^(rtsearch|rtticketmerge|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
         'allow_menu_items' => array(
             'helpdesk' => array('rtqueuelist', 'rtsearch', 'rtticketadd'),
         ),

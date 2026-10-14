@@ -34,6 +34,11 @@ if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'assign':
             if (!empty($_GET['ticketid'])) {
+                $ticketId = $LMS->followMergedTicketWrite($_GET['ticketid']);
+                if ($ticketId === null) {
+                    access_denied();
+                }
+                $_GET['ticketid'] = $ticketId;
                 if (isset($_GET['check-conflict'])) {
                     header('Content-Type: application/json');
                     die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
@@ -44,11 +49,21 @@ if (isset($_GET['action'])) {
             }
             break;
         case 'assign2':
+            $ticketId = $LMS->followMergedTicketWrite($_GET['ticketid']);
+            if ($ticketId === null) {
+                access_denied();
+            }
+            $_GET['ticketid'] = $ticketId;
             $LMS->TicketChange($_GET['ticketid'], array('verifierid' => $currentuser));
             $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
             break;
         case 'unlink':
+            $ticketId = $LMS->followMergedTicketWrite($_GET['ticketid']);
+            if ($ticketId === null) {
+                access_denied();
+            }
+            $_GET['ticketid'] = $ticketId;
             $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
             $SESSION->redirect_to_history_entry('m=rtqueuelist');
             break;
@@ -58,8 +73,12 @@ if (isset($_GET['action'])) {
 $LMS->CleanupTicketLastView();
 
 if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
-    $LMS->changeTicketWatching($_GET['ticketid'], intval($_GET['ticketwatching']));
-    $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
+    $ticketId = $LMS->followMergedTicketWrite($_GET['ticketid']);
+    if ($ticketId === null) {
+        access_denied();
+    }
+    $LMS->changeTicketWatching($ticketId, intval($_GET['ticketwatching']));
+    $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $ticketId);
 }
 
 // queue id's
@@ -406,4 +425,5 @@ $SMARTY->assign(
     )
 );
 
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('rt/rtqueueview.html');

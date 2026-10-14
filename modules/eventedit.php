@@ -203,6 +203,14 @@ if (isset($_POST['event'])) {
         if (empty($event['ticketid'])) {
             $error['ticketid'] = trans('Ticket id should not be empty!');
         } else {
+            if ($LMS->ticketWasMergedAway($event['ticketid'])) {
+                $targetTicketId = $LMS->followMergedTicketWrite($event['ticketid']);
+                if ($targetTicketId === null) {
+                    $error['ticketid'] = trans('Ticket access denied!');
+                } else {
+                    $event['ticketid'] = $targetTicketId;
+                }
+            }
             $event['ticket'] = $LMS->GetTicketContents($event['ticketid'], true);
             if (!empty($event['ticket']['address_id']) && $event['address_id'] > 0) {
                 $error['address_id'] = trans('Event location selection is not possible as it is assigned to ticket!');
@@ -291,4 +299,5 @@ $SMARTY->assign(array(
     'event' => $event,
 ));
 
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('event/eventmodify.html');

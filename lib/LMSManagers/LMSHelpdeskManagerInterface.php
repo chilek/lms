@@ -103,6 +103,26 @@ interface LMSHelpdeskManagerInterface
 
     public function TicketChange($ticketid, array $props);
 
+    public function mergeTickets($sourceTicketId, $targetTicketId, ?array $keep = null, $leftTicketId = 0, $rightTicketId = 0, $reopenTarget = false);
+
+    public function getTicketMergeComparison($sourceTicketId, $targetTicketId);
+
+    public function getTicketMergedInto($ticketId);
+
+    public function ticketWasMergedAway($ticketId);
+
+    public function resolveMergedTicket($ticketId);
+
+    public function getMergedTicketWriteTarget($ticketId);
+
+    public function followMergedTicketWrite($ticketId);
+
+    public function redirectMergedTicketToTarget($ticketId);
+
+    public function assignMergedTicketWriteNotice();
+
+    public function resolveCustomerMergedTicket($ticketId, $customerId);
+
     ///public function GetTicketMessages($ticketid);
 
     ///public function GetTicketMessageAttachments($messageid);

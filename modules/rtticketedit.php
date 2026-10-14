@@ -45,14 +45,11 @@ if (!empty($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if (is_array($id)) {
-    foreach ($id as $ticketid) {
-        if (!($LMS->CheckTicketAccess($ticketid) & RT_RIGHT_WRITE)) {
-            access_denied();
-        }
+if (!empty($id)) {
+    $id = $LMS->followMergedTicketWrite($id);
+    if ($id === null) {
+        access_denied();
     }
-} elseif (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE)) {
-    access_denied();
 }
 
 if ($id && !isset($_POST['ticket'])) {
@@ -595,6 +592,12 @@ if (isset($_POST['ticket'])) {
     $ticketedit['ticketid'] = $ticket['ticketid'];
 
     if (!empty($ticketedit['parentid'])) {
+        if ($LMS->ticketWasMergedAway($ticketedit['parentid'])) {
+            $parentTarget = $LMS->getMergedTicketWriteTarget($ticketedit['parentid']);
+            if (!empty($parentTarget)) {
+                $ticketedit['parentid'] = $parentTarget;
+            }
+        }
         if (!$LMS->TicketExists($ticketedit['parentid'])) {
             $error['parentid'] = trans("Ticket does not exist");
         }
@@ -1098,4 +1101,5 @@ $SMARTY->assign(
     )
 );
 
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('rt/rtticketedit.html');

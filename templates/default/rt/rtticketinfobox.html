@@ -459,10 +459,10 @@
 			{button id="print-anchor" icon="print" label="Print"}
 
 			<br>
-			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
+			{if !$ticketMergedAway && ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser')))}
 				{button type="link-button" icon="edit" tip= "Edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 			{/if}
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
+			{if !$ticketMergedAway && $ticket.state != $smarty.const.RT_RESOLVED}
 				{if ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
 					&& !empty($ticket['openeventcount'])}
 					{button icon="status-resolved" label="Ticket has open assigned events!" tip="Ticket has open assigned events!" class="blend disabled"}
@@ -479,25 +479,31 @@
 				{/if}
 			{/if}
 			{buttons type="button" icon="dropdown2" label="Additional options"}
-				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{if !$ticketMergedAway && (($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser'))}
 					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 				{/if}
-				{if (!$ticket.verifierid && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{if !$ticketMergedAway && ((!$ticket.verifierid && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser'))}
 					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 				{/if}
-				{if $ticket.watching}
-				    {button icon="unwatch" tip="Stop watching" label="Stop watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=0"}
-				{else}
-				    {button icon="watch" tip="Start watching" label="Start watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=1"}
+				{if !$ticketMergedAway}
+					{if $ticket.watching}
+						{button icon="unwatch" tip="Stop watching" label="Stop watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=0"}
+					{else}
+						{button icon="watch" tip="Start watching" label="Start watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=1"}
+					{/if}
 				{/if}
 				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
-				{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{if $canMergeTicket && !$ticket.deleted}
+					{button id="rt-ticket-merge-open" icon="relatedticket" label="Merge" tip="Merge"}
+				{/if}
+				{if !$ticketMergedAway && $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
 				{/if}
 				{if $ticket.images|size}
 					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{base64_encode(json_encode($ticket.images))}"}
 				{/if}
-				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{if $ticketMergedAway}
+				{elseif $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 					{button id="restore-rtticket" icon="restore" label="Restore<!RT>" tip="Restore<!RT>"
 						data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"
 						data_confirmation_text=trans('Are you sure, you want to restore ticket $a?', $ticket.ticketid)
@@ -602,11 +608,19 @@
 
 </div>
 
+{if $canMergeTicket && !$ticket.deleted}
+	{include file="rt/rtticketmergedialog.html"}
+{/if}
+
 <script>
 
 	restoreSortable('rtticketview-sortable', '{$rtticketview_sortable_order}');
 
 	$(function() {
+		{if $error.merge}
+			alertDialog("{$error.merge|escape:"javascript"}");
+		{/if}
+
 		$('#print-anchor').click(function() {
 			window.open('?m=rtticketprint&id={$ticket.ticketid}'
 				+ ($('#messages-chkbox:checked').length ? '&messages=1' : '')

@@ -51,6 +51,13 @@ if (!isset($ticket['customerid'])) {
 }
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 $ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
+if (!empty($ticket['parentid']) && $LMS->ticketWasMergedAway($ticket['parentid'])) {
+    $parentTarget = $LMS->followMergedTicketWrite($ticket['parentid']);
+    if ($parentTarget === null) {
+        access_denied();
+    }
+    $ticket['parentid'] = $parentTarget;
+}
 
 $categories = $LMS->GetUserCategories($userid);
 if (!$categories) {
@@ -755,4 +762,5 @@ $SMARTY->assign(
         'notetemplates' => $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE),
     )
 );
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('rt/rtticketadd.html');

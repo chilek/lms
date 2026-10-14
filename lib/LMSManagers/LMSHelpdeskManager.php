@@ -31,6 +31,8 @@
 class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterface
 {
     private $lastmessageid = null;
+    private $mergeFailed = false;
+    private $mergeAttachmentMoves = [];
 
     public function GetQueue($id, $short = false)
     {
@@ -1135,6 +1137,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function TicketMessageAdd($message, $files = null)
     {
+        $message['ticketid'] = $this->mergedTicketWriteId($message['ticketid'] ?? 0);
+        if (empty($message['ticketid'])) {
+            return null;
+        }
+
         $headers = '';
         if (isset($message['headers'])) {
             if (is_array($message['headers'])) {
@@ -1365,7 +1372,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             t.subject, t.deleted, t.deltime, t.deluserid,
             t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
             t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, va.city_id, va.street_id, va.house,
-            t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
+            t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid, t.mergedinto' .
             (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
             FROM rttickets t
             LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
@@ -1492,6 +1499,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function changeTicketWatching($ticketid, $watching)
     {
+        $ticketid = $this->mergedTicketWriteId($ticketid);
+        if (empty($ticketid)) {
+            return;
+        }
+
         $userid = Auth::GetCurrentUser();
         $ticketprivilege = $this->db->GetOne(
             'SELECT rights FROM rtrights
@@ -1628,6 +1640,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function TicketChange($ticketid, array $props)
     {
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
+
+        $ticketid = $this->mergedTicketWriteId($ticketid);
+        if (empty($ticketid)) {
+            return;
+        }
 
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
@@ -3070,5 +3087,1548 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $ticketid,
             )
         );
+    }
+
+    public function getTicketMergeComparison($sourceTicketId, $targetTicketId)
+    {
+        return $this->validateTicketMerge($sourceTicketId, $targetTicketId);
+    }
+
+    public function getTicketMergedInto($ticketId)
+    {
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0) {
+            return null;
+        }
+        $mergedInto = $this->db->GetOne('SELECT mergedinto FROM rttickets WHERE id = ?', [$ticketId]);
+        return empty($mergedInto) ? null : intval($mergedInto);
+    }
+
+    public function ticketWasMergedAway($ticketId)
+    {
+        return $this->getTicketMergedInto($ticketId) !== null;
+    }
+
+    public function resolveMergedTicket($ticketId)
+    {
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0) {
+            return null;
+        }
+        $originTicketId = $ticketId;
+        $seen = [];
+        for ($step = 0; $step < 32; $step++) {
+            if (isset($seen[$ticketId])) {
+                return $originTicketId;
+            }
+            $seen[$ticketId] = true;
+            $mergedInto = $this->getTicketMergedInto($ticketId);
+            if (empty($mergedInto)) {
+                return $ticketId;
+            }
+            if (isset($seen[$mergedInto])) {
+                return $originTicketId;
+            }
+            $ticketId = $mergedInto;
+        }
+        return $originTicketId;
+    }
+
+    public function getMergedTicketWriteTarget($ticketId)
+    {
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0) {
+            return null;
+        }
+        $targetId = intval($this->resolveMergedTicket($ticketId));
+        if ($targetId <= 0) {
+            return null;
+        }
+        if ($targetId === $ticketId && $this->ticketWasMergedAway($ticketId)) {
+            return null;
+        }
+        if (!($this->CheckTicketAccess($targetId) & RT_RIGHT_WRITE)) {
+            return null;
+        }
+        return $targetId;
+    }
+
+    public function followMergedTicketWrite($ticketId)
+    {
+        if (is_array($ticketId)) {
+            return $this->followMergedTicketWriteList($ticketId);
+        }
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0) {
+            return null;
+        }
+        $targetId = $this->getMergedTicketWriteTarget($ticketId);
+        if ($targetId === null || $targetId === $ticketId) {
+            return $targetId;
+        }
+        if (!isset($_GET['check-conflict'])) {
+            $this->rememberMergedTicketWrite($targetId, false);
+        }
+        if ($this->mergedTicketWriteShouldRedirect()) {
+            $this->redirectMergedTicketRequest([$ticketId => $targetId]);
+        }
+        return $targetId;
+    }
+
+    public function redirectMergedTicketToTarget($ticketId)
+    {
+        global $SESSION;
+
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0 || !$this->ticketWasMergedAway($ticketId)) {
+            return false;
+        }
+        $targetId = intval($this->resolveMergedTicket($ticketId));
+        if ($targetId <= 0 || $targetId === $ticketId || $this->ticketWasMergedAway($targetId)) {
+            $targetId = intval($this->getTicketMergedInto($ticketId));
+        }
+        if ($targetId > 0) {
+            $this->rememberMergedTicketWrite($targetId, false);
+            $SESSION->redirect('?m=rtticketview&id=' . $targetId);
+        }
+        return false;
+    }
+
+    public function assignMergedTicketWriteNotice()
+    {
+        global $SESSION, $SMARTY;
+
+        $targetId = intval($SESSION->get('rt_merged_write_target'));
+        $multi = !empty($SESSION->get('rt_merged_write_multi'));
+        if ($targetId <= 0 && !$multi) {
+            return;
+        }
+        $SESSION->remove('rt_merged_write_target');
+        $SESSION->remove('rt_merged_write_multi');
+        $SMARTY->assign('mergedWriteNoticeTarget', $targetId > 0 ? $targetId : null);
+        $SMARTY->assign('mergedWriteNoticeMulti', $multi);
+    }
+
+    public function resolveCustomerMergedTicket($ticketId, $customerId)
+    {
+        $ticketId = intval($ticketId);
+        $customerId = intval($customerId);
+        if ($ticketId <= 0 || $customerId <= 0) {
+            return null;
+        }
+        if (!$this->ticketWasMergedAway($ticketId)) {
+            return $ticketId;
+        }
+        $targetId = intval($this->resolveMergedTicket($ticketId));
+        if ($targetId <= 0 || $targetId === $ticketId || $this->ticketWasMergedAway($targetId)) {
+            return null;
+        }
+        $owner = intval($this->db->GetOne('SELECT customerid FROM rttickets WHERE id = ?', [$targetId]));
+        if ($owner !== $customerId) {
+            return null;
+        }
+        return $targetId;
+    }
+
+    private function followMergedTicketWriteList(array $ticketIds)
+    {
+        $idMap = [];
+        $result = [];
+        $changed = false;
+        foreach ($ticketIds as $ticketId) {
+            $ticketId = intval($ticketId);
+            $targetId = $this->getMergedTicketWriteTarget($ticketId);
+            if ($targetId === null) {
+                return null;
+            }
+            if ($targetId !== $ticketId) {
+                $changed = true;
+            }
+            $idMap[$ticketId] = $targetId;
+            $result[$targetId] = $targetId;
+        }
+        $result = array_values($result);
+        if ($changed && !isset($_GET['check-conflict'])) {
+            if (count($result) === 1) {
+                $this->rememberMergedTicketWrite($result[0], false);
+            } else {
+                $this->rememberMergedTicketWrite(0, true);
+            }
+            if ($this->mergedTicketWriteShouldRedirect()) {
+                $this->redirectMergedTicketRequest($idMap);
+            }
+        }
+        return $result;
+    }
+
+    private function mergedTicketWriteId($ticketId)
+    {
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0) {
+            return null;
+        }
+        $targetId = intval($this->resolveMergedTicket($ticketId));
+        if ($targetId > 0 && $targetId !== $ticketId && !$this->ticketWasMergedAway($targetId)) {
+            return $targetId;
+        }
+        if ($this->ticketWasMergedAway($ticketId)) {
+            return null;
+        }
+        return $ticketId;
+    }
+
+    private function rememberMergedTicketWrite($targetId, $multi)
+    {
+        global $SESSION;
+
+        if ($multi) {
+            $SESSION->save('rt_merged_write_multi', 1);
+            $SESSION->remove('rt_merged_write_target');
+            return;
+        }
+        $SESSION->save('rt_merged_write_target', intval($targetId));
+        $SESSION->remove('rt_merged_write_multi');
+    }
+
+    private function mergedTicketWriteShouldRedirect()
+    {
+        if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
+            return false;
+        }
+        return !isset($_GET['check-conflict']);
+    }
+
+    private function redirectMergedTicketRequest(array $idMap)
+    {
+        global $SESSION;
+
+        $params = $_GET;
+        foreach (['id', 'ticketid', 'parentid'] as $key) {
+            if (!isset($params[$key])) {
+                continue;
+            }
+            if (is_array($params[$key])) {
+                $rebuilt = [];
+                foreach ($params[$key] as $value) {
+                    $value = intval($value);
+                    $rebuilt[] = $idMap[$value] ?? $value;
+                }
+                $params[$key] = array_values(array_unique($rebuilt));
+            } else {
+                $value = intval($params[$key]);
+                if (isset($idMap[$value])) {
+                    $params[$key] = $idMap[$value];
+                }
+            }
+        }
+        $SESSION->redirect('?' . http_build_query($params));
+    }
+
+    public function mergeTickets($sourceTicketId, $targetTicketId, ?array $keep = null, $leftTicketId = 0, $rightTicketId = 0, $reopenTarget = false)
+    {
+        global $LMS, $RT_STATES;
+
+        $sourceTicketId = intval($sourceTicketId);
+        $targetTicketId = intval($targetTicketId);
+        $reopenTarget = !empty($reopenTarget);
+
+        $error = $this->validateTicketMerge($sourceTicketId, $targetTicketId);
+        if ($error !== null) {
+            return $error;
+        }
+
+        if (!empty($LMS)) {
+            $hookData = $LMS->executeHook('rtticket_merge_before', [
+                'sourceid' => $sourceTicketId,
+                'targetid' => $targetTicketId,
+            ]);
+            if (is_array($hookData) && !empty($hookData['abort'])) {
+                return !empty($hookData['error']) ? $hookData['error'] : trans('Ticket merge has been aborted!');
+            }
+        }
+
+        $this->mergeFailed = false;
+        $this->mergeAttachmentMoves = [];
+        if ($this->db->BeginTrans() === false) {
+            return trans('Ticket merge failed!');
+        }
+
+        $firstTicketId = min($sourceTicketId, $targetTicketId);
+        $secondTicketId = max($sourceTicketId, $targetTicketId);
+        $this->mergeGetRow('SELECT id FROM rttickets WHERE id = ? FOR UPDATE', [$firstTicketId]);
+        $this->mergeGetRow('SELECT id FROM rttickets WHERE id = ? FOR UPDATE', [$secondTicketId]);
+
+        $source = $this->mergeGetRow(
+            'SELECT id, deleted, state, parentid FROM rttickets WHERE id = ?',
+            [$sourceTicketId]
+        );
+        $target = $this->mergeGetRow(
+            'SELECT id, deleted, state, parentid FROM rttickets WHERE id = ?',
+            [$targetTicketId]
+        );
+        if ($this->mergeFailed) {
+            $this->mergeAbort();
+            return trans('Ticket merge failed!');
+        }
+        if (empty($source) || empty($target)) {
+            $this->mergeAbort();
+            return trans('Ticket does not exist');
+        }
+        if (!empty($source['deleted']) || !empty($target['deleted'])) {
+            $this->mergeAbort();
+            return trans('Deleted ticket cannot be merged!');
+        }
+        if ($sourceTicketId == $targetTicketId) {
+            $this->mergeAbort();
+            return trans('Cannot merge ticket with itself!');
+        }
+
+        $errorCount = $this->mergeErrorCount();
+        $alreadyMerged = $this->ticketWasMergedAway($sourceTicketId);
+        $targetMergedAway = $this->ticketWasMergedAway($targetTicketId);
+        $sourceRights = intval($this->CheckTicketAccess($sourceTicketId));
+        $targetRights = intval($this->CheckTicketAccess($targetTicketId));
+        if ($this->mergeErrorCount() > $errorCount) {
+            $this->mergeFailed = true;
+            $this->mergeAbort();
+            return trans('Ticket merge failed!');
+        }
+        if ($alreadyMerged) {
+            $this->mergeAbort();
+            return trans('Ticket has already been merged!');
+        }
+        if ($this->mergeChainReaches($targetTicketId, $sourceTicketId)) {
+            $this->mergeAbort();
+            return trans('Merging these tickets would create a cycle!');
+        }
+        if ($targetMergedAway) {
+            $this->mergeAbort();
+            $mergedTargetId = $this->resolveMergedTicket($targetTicketId);
+            return trans(
+                'Target ticket has already been merged into ticket $a!',
+                sprintf('%06d', intval($mergedTargetId))
+            );
+        }
+        if (!ConfigHelper::checkPrivilege('full_access')
+            && (!($sourceRights & RT_RIGHT_WRITE) || !($targetRights & RT_RIGHT_WRITE))
+        ) {
+            $this->mergeAbort();
+            return trans('You have no write rights to both ticket queues!');
+        }
+        if (!$this->mergeAllowsDifferentCustomers() && $this->mergeCustomersDiffer($sourceTicketId, $targetTicketId)) {
+            $this->mergeAbort();
+            return trans('Source and target tickets belong to different customers.');
+        }
+
+        $choiceError = $this->applyMergeFieldChoices(
+            $sourceTicketId,
+            $targetTicketId,
+            $leftTicketId,
+            $rightTicketId,
+            $keep
+        );
+        if ($choiceError !== null || $this->mergeFailed) {
+            $this->mergeAbort();
+            return $choiceError !== null ? $choiceError : trans('Ticket merge failed!');
+        }
+
+        $sourceParentId = empty($source['parentid']) ? null : intval($source['parentid']);
+        $targetParentId = empty($target['parentid']) ? null : intval($target['parentid']);
+        $parentConflict = $this->mergeParentConflict($sourceParentId, $targetParentId, $sourceTicketId, $targetTicketId);
+        if ($parentConflict !== null) {
+            $this->mergeAbort();
+            return $parentConflict;
+        }
+        if ($sourceParentId == $targetTicketId || $sourceParentId == $sourceTicketId) {
+            $sourceParentId = null;
+        }
+        $replacementParentId = $sourceParentId;
+        if ($targetParentId == $sourceTicketId && $replacementParentId
+            && $this->mergeParentWouldCycle($targetTicketId, $replacementParentId, $sourceTicketId)
+        ) {
+            $replacementParentId = null;
+        }
+        $seen = [];
+        $this->detachMergedTicketParent(
+            $sourceTicketId,
+            $targetTicketId,
+            $targetParentId == $sourceTicketId ? $replacementParentId : $sourceParentId,
+            $seen
+        );
+        if ($targetParentId === null && $sourceParentId
+            && !$this->mergeParentWouldCycle($targetTicketId, $sourceParentId, $sourceTicketId)
+        ) {
+            $this->mergeSetParent($targetTicketId, $sourceParentId);
+        }
+        $this->mergeExecute(
+            'UPDATE rttickets SET mergedinto = ? WHERE mergedinto = ?',
+            [$targetTicketId, $sourceTicketId]
+        );
+        $childIds = $this->mergeGetCol(
+            'SELECT id FROM rttickets WHERE parentid = ? AND id <> ?',
+            [$sourceTicketId, $targetTicketId]
+        );
+        foreach ($childIds as $childId) {
+            $this->mergeSetParent(intval($childId), $targetTicketId);
+        }
+
+        $this->copyTicketCategories($sourceTicketId, $targetTicketId);
+        $this->moveTicketWatchers($sourceTicketId, $targetTicketId);
+        $this->mergeExecute(
+            'UPDATE events SET ticketid = ? WHERE ticketid = ?',
+            [$targetTicketId, $sourceTicketId]
+        );
+        $this->mergeExecute(
+            'UPDATE rtmessages SET ticketid = ? WHERE ticketid = ?',
+            [$targetTicketId, $sourceTicketId]
+        );
+        $this->mergeExecute(
+            'DELETE FROM rtticketlastview WHERE ticketid = ?',
+            [$targetTicketId]
+        );
+
+        $now = time();
+        $userId = Auth::GetCurrentUser();
+        $sourceState = intval($source['state']);
+        if ($sourceState == RT_RESOLVED) {
+            $this->mergeExecute(
+                'UPDATE rttickets SET parentid = ?, modtime = ?, mergedinto = ? WHERE id = ?',
+                [null, $now, $targetTicketId, $sourceTicketId]
+            );
+        } else {
+            $this->mergeExecute(
+                'UPDATE rttickets SET parentid = ?, state = ?, resolvetime = ?, modtime = ?, mergedinto = ? WHERE id = ?',
+                [null, RT_RESOLVED, $now, $now, $targetTicketId, $sourceTicketId]
+            );
+        }
+        $targetState = intval($target['state']);
+        $reopenResolvedTarget = $reopenTarget && $targetState == RT_RESOLVED;
+        if ($reopenResolvedTarget) {
+            $this->mergeExecute(
+                'UPDATE rttickets SET state = ?, resolvetime = ?, modtime = ? WHERE id = ?',
+                [RT_OPEN, 0, $now, $targetTicketId]
+            );
+        } else {
+            $this->mergeExecute(
+                'UPDATE rttickets SET modtime = ? WHERE id = ?',
+                [$now, $targetTicketId]
+            );
+        }
+
+        $sourceNote = trans('Ticket has been merged into ticket $a.', sprintf('%06d', $targetTicketId));
+        $messageType = RTMESSAGE_MERGE;
+        if ($sourceState != RT_RESOLVED) {
+            $sourceNote .= "\n" . trans(
+                'Ticket\'s state has been changed from $a to $b.',
+                $RT_STATES[$sourceState]['label'],
+                $RT_STATES[RT_RESOLVED]['label']
+            );
+            $messageType |= RTMESSAGE_STATE_CHANGE;
+        }
+        $targetNote = trans('Ticket $a has been merged into this ticket.', sprintf('%06d', $sourceTicketId));
+        $targetMessageType = RTMESSAGE_MERGE;
+        if ($reopenResolvedTarget) {
+            $targetNote .= "\n" . trans(
+                'Ticket\'s state has been changed from $a to $b.',
+                $RT_STATES[RT_RESOLVED]['label'],
+                $RT_STATES[RT_OPEN]['label']
+            );
+            $targetMessageType |= RTMESSAGE_STATE_CHANGE;
+        }
+
+        $this->mergeExecute(
+            'INSERT INTO rtmessages (userid, ticketid, type, body, createtime) VALUES (?, ?, ?, ?, ?)',
+            [$userId, $sourceTicketId, $messageType, $sourceNote, $now]
+        );
+        $this->mergeExecute(
+            'INSERT INTO rtmessages (userid, ticketid, type, body, createtime) VALUES (?, ?, ?, ?, ?)',
+            [$userId, $targetTicketId, $targetMessageType, $targetNote, $now]
+        );
+
+        if ($this->mergeFailed || !$this->planMergeAttachmentNames($sourceTicketId, $targetTicketId)) {
+            $this->mergeAbort();
+            return trans('Ticket merge failed!');
+        }
+        if ($this->db->CommitTrans() === false) {
+            $this->mergeAttachmentMoves = [];
+            $this->db->RollbackTrans();
+            return trans('Ticket merge failed!');
+        }
+
+        $failedPaths = $this->moveTicketAttachmentFiles($sourceTicketId, $targetTicketId);
+
+        if (!empty($LMS)) {
+            $LMS->executeHook('rtticket_merge_after', [
+                'sourceid' => $sourceTicketId,
+                'targetid' => $targetTicketId,
+            ]);
+        }
+
+        $this->notifyTicketMerge($sourceTicketId, $targetTicketId);
+
+        if (!empty($failedPaths)) {
+            return [
+                'warning' => trans('Ticket has been merged, but some attachments could not be moved!'),
+            ];
+        }
+
+        return true;
+    }
+
+    private function applyMergeFieldChoices($sourceTicketId, $targetTicketId, $leftTicketId, $rightTicketId, $keep)
+    {
+        if ($this->mergeFailed) {
+            return trans('Ticket merge failed!');
+        }
+
+        $leftTicketId = intval($leftTicketId);
+        $rightTicketId = intval($rightTicketId);
+        $keep = is_array($keep) ? $keep : [];
+        $hasChoice = array_key_exists('owner', $keep)
+            || array_key_exists('verifier', $keep)
+            || array_key_exists('customer', $keep);
+        if (!$hasChoice) {
+            return null;
+        }
+        if ($leftTicketId <= 0 || $rightTicketId <= 0 || $leftTicketId === $rightTicketId
+            || !in_array($leftTicketId, [$sourceTicketId, $targetTicketId], true)
+            || !in_array($rightTicketId, [$sourceTicketId, $targetTicketId], true)
+        ) {
+            return trans('Invalid merge choice!');
+        }
+
+        $leftRow = $this->mergeGetRow(
+            'SELECT id, owner, verifierid, customerid, requestor, requestor_mail, requestor_phone, requestor_userid
+            FROM rttickets WHERE id = ?',
+            [$leftTicketId]
+        );
+        $rightRow = $this->mergeGetRow(
+            'SELECT id, owner, verifierid, customerid, requestor, requestor_mail, requestor_phone, requestor_userid
+            FROM rttickets WHERE id = ?',
+            [$rightTicketId]
+        );
+        if ($this->mergeFailed) {
+            return trans('Ticket merge failed!');
+        }
+        if (empty($leftRow) || empty($rightRow)) {
+            return trans('Ticket does not exist');
+        }
+
+        $leftValue = $this->mergeIdentityValue($leftRow);
+        $rightValue = $this->mergeIdentityValue($rightRow);
+        $targetValue = ($targetTicketId === $leftTicketId) ? $leftValue : $rightValue;
+        $ownerDiffers = $leftValue['owner'] !== $rightValue['owner'];
+        $verifierDiffers = $leftValue['verifierid'] !== $rightValue['verifierid'];
+        $customerDiffers = !$this->mergeCustomerGroupSame($leftValue, $rightValue);
+        $ownerTicketId = $this->mergeChoiceTicketId($keep, 'owner', $ownerDiffers, $sourceTicketId, $targetTicketId);
+        $verifierTicketId = $this->mergeChoiceTicketId($keep, 'verifier', $verifierDiffers, $sourceTicketId, $targetTicketId);
+        $customerTicketId = $this->mergeChoiceTicketId($keep, 'customer', $customerDiffers, $sourceTicketId, $targetTicketId);
+        if ($ownerTicketId === false || $verifierTicketId === false || $customerTicketId === false) {
+            return trans('Invalid merge choice!');
+        }
+
+        $chosenOwner = ($ownerTicketId === $leftTicketId) ? $leftValue : $rightValue;
+        $chosenVerifier = ($verifierTicketId === $leftTicketId) ? $leftValue : $rightValue;
+        $chosenCustomer = ($customerTicketId === $leftTicketId) ? $leftValue : $rightValue;
+        if ($ownerDiffers && $chosenOwner['owner'] !== $targetValue['owner']) {
+            $ownerId = $this->mergeActiveUserId($chosenOwner['owner']);
+            if ($ownerId === false) {
+                return trans('Ticket merge failed!');
+            }
+            if ($ownerId === null) {
+                return trans('Selected ticket owner does not exist!');
+            }
+        }
+        if ($verifierDiffers && $chosenVerifier['verifierid'] !== $targetValue['verifierid']) {
+            $verifierId = $this->mergeActiveUserId($chosenVerifier['verifierid']);
+            if ($verifierId === false) {
+                return trans('Ticket merge failed!');
+            }
+            if ($verifierId === null) {
+                return trans('Selected ticket verifier does not exist!');
+            }
+        }
+        if ($customerDiffers && !$this->mergeCustomerGroupSame($chosenCustomer, $targetValue)) {
+            $customerId = $this->mergeActiveCustomerId($chosenCustomer['customerid']);
+            if ($customerId === false) {
+                return trans('Ticket merge failed!');
+            }
+            if ($customerId === null) {
+                return trans('Selected ticket customer does not exist!');
+            }
+            $requestorUserId = $this->mergeActiveUserId($chosenCustomer['requestor_userid']);
+            if ($requestorUserId === false) {
+                return trans('Ticket merge failed!');
+            }
+            if ($requestorUserId === null) {
+                return trans('Selected requestor does not exist!');
+            }
+        }
+
+        $notes = [];
+        $type = 0;
+        $sets = [];
+        $params = [];
+        if ($ownerDiffers && $chosenOwner['owner'] !== $targetValue['owner']) {
+            $sets[] = 'owner = ?';
+            $params[] = $chosenOwner['owner'] > 0 ? $chosenOwner['owner'] : null;
+            if ($chosenOwner['owner'] > 0) {
+                $notes[] = trans('Ticket has been assigned to user $a.', $this->mergeUserName($chosenOwner['owner']));
+            } else {
+                $notes[] = trans('Ticket has been unassigned from user $a.', $this->mergeUserName($targetValue['owner']));
+            }
+            $type |= RTMESSAGE_OWNER_CHANGE;
+        }
+        if ($verifierDiffers && $chosenVerifier['verifierid'] !== $targetValue['verifierid']) {
+            $sets[] = 'verifierid = ?';
+            $params[] = $chosenVerifier['verifierid'] > 0 ? $chosenVerifier['verifierid'] : null;
+            if ($chosenVerifier['verifierid'] > 0) {
+                $notes[] = trans('User $a has been set as verifier to ticket.', $this->mergeUserName($chosenVerifier['verifierid']));
+            } else {
+                $notes[] = trans('Verifier has been removed from ticket.');
+            }
+            $type |= RTMESSAGE_VERIFIER_CHANGE;
+        }
+        if ($customerDiffers && !$this->mergeCustomerGroupSame($chosenCustomer, $targetValue)) {
+            $sets[] = 'customerid = ?';
+            $params[] = $chosenCustomer['customerid'] > 0 ? $chosenCustomer['customerid'] : null;
+            $sets[] = 'requestor = ?';
+            $params[] = $chosenCustomer['requestor'];
+            $sets[] = 'requestor_mail = ?';
+            $params[] = $chosenCustomer['requestor_mail'] !== '' ? $chosenCustomer['requestor_mail'] : null;
+            $sets[] = 'requestor_phone = ?';
+            $params[] = $chosenCustomer['requestor_phone'] !== '' ? $chosenCustomer['requestor_phone'] : null;
+            $sets[] = 'requestor_userid = ?';
+            $params[] = $chosenCustomer['requestor_userid'] > 0 ? $chosenCustomer['requestor_userid'] : null;
+            $notes[] = $this->mergeCustomerChangeNote($targetValue, $chosenCustomer);
+            $type |= RTMESSAGE_CUSTOMER_CHANGE;
+        }
+        if (!$sets) {
+            return null;
+        }
+
+        $params[] = $targetTicketId;
+        $this->mergeExecute(
+            'UPDATE rttickets SET ' . implode(', ', $sets) . ' WHERE id = ?',
+            $params
+        );
+        $this->mergeExecute(
+            'INSERT INTO rtmessages (userid, ticketid, type, body, createtime) VALUES (?, ?, ?, ?, ?)',
+            [Auth::GetCurrentUser(), $targetTicketId, $type, implode("\n", $notes), time()]
+        );
+        if ($this->mergeFailed) {
+            return trans('Ticket merge failed!');
+        }
+
+        return null;
+    }
+
+    private function mergeIdentityValue(array $row)
+    {
+        return [
+            'owner' => intval($row['owner'] ?? 0),
+            'verifierid' => intval($row['verifierid'] ?? 0),
+            'customerid' => intval($row['customerid'] ?? 0),
+            'requestor' => trim((string) ($row['requestor'] ?? '')),
+            'requestor_mail' => trim((string) ($row['requestor_mail'] ?? '')),
+            'requestor_phone' => trim((string) ($row['requestor_phone'] ?? '')),
+            'requestor_userid' => intval($row['requestor_userid'] ?? 0),
+        ];
+    }
+
+    private function mergeCustomerGroupSame(array $left, array $right)
+    {
+        return $left['customerid'] === $right['customerid']
+            && $left['requestor'] === $right['requestor']
+            && $left['requestor_mail'] === $right['requestor_mail']
+            && $left['requestor_phone'] === $right['requestor_phone']
+            && $left['requestor_userid'] === $right['requestor_userid'];
+    }
+
+    private function mergeChoiceTicketId(array $keep, $key, $differs, $sourceTicketId, $targetTicketId)
+    {
+        $sourceTicketId = intval($sourceTicketId);
+        $targetTicketId = intval($targetTicketId);
+        if (!$differs) {
+            return $targetTicketId;
+        }
+        if (!array_key_exists($key, $keep) || $keep[$key] === '' || $keep[$key] === null) {
+            return $targetTicketId;
+        }
+        $ticketId = intval($keep[$key]);
+        if ($ticketId !== $sourceTicketId && $ticketId !== $targetTicketId) {
+            return false;
+        }
+        return $ticketId;
+    }
+
+    private function mergeActiveUserId($userId)
+    {
+        $userId = intval($userId);
+        if ($userId <= 0) {
+            return 0;
+        }
+        $row = $this->mergeGetRow('SELECT id FROM vusers WHERE id = ? AND deleted = 0', [$userId]);
+        if ($this->mergeFailed) {
+            return false;
+        }
+        return empty($row['id']) ? null : intval($row['id']);
+    }
+
+    private function mergeActiveCustomerId($customerId)
+    {
+        $customerId = intval($customerId);
+        if ($customerId <= 0) {
+            return 0;
+        }
+        $row = $this->mergeGetRow('SELECT id FROM customers WHERE id = ? AND deleted = 0', [$customerId]);
+        if ($this->mergeFailed) {
+            return false;
+        }
+        return empty($row['id']) ? null : intval($row['id']);
+    }
+
+    private function mergeUserName($userId)
+    {
+        global $LMS;
+
+        $userId = intval($userId);
+        if ($userId <= 0) {
+            return '';
+        }
+        if (!empty($LMS)) {
+            $name = $LMS->GetUserName($userId);
+            if ($name !== null && $name !== '') {
+                return $name;
+            }
+        }
+        return (string) $userId;
+    }
+
+    private function mergeCustomerName($customerId)
+    {
+        global $LMS;
+
+        $customerId = intval($customerId);
+        if ($customerId <= 0) {
+            return '';
+        }
+        if (!empty($LMS)) {
+            $name = $LMS->GetCustomerName($customerId);
+            if ($name !== null && $name !== '') {
+                return $name;
+            }
+        }
+        return (string) $customerId;
+    }
+
+    private function mergeRequestorLabel(array $value)
+    {
+        $parts = [];
+        if ($value['requestor'] !== '') {
+            $parts[] = $value['requestor'];
+        }
+        if ($value['requestor_mail'] !== '') {
+            $parts[] = '<' . $value['requestor_mail'] . '>';
+        }
+        if ($value['requestor_phone'] !== '') {
+            $parts[] = $value['requestor_phone'];
+        }
+        if (!$parts) {
+            return trans('none');
+        }
+        return implode(' ', $parts);
+    }
+
+    private function mergeCustomerChangeNote(array $current, array $chosen)
+    {
+        if ($current['customerid'] != $chosen['customerid']) {
+            if ($current['customerid']) {
+                if (empty($chosen['customerid'])) {
+                    return trans(
+                        'Ticket has been moved from customer $a ($b) to $c.',
+                        $this->mergeCustomerName($current['customerid']),
+                        $current['customerid'],
+                        $chosen['requestor']
+                    );
+                }
+                return trans(
+                    'Ticket has been moved from customer $a ($b) to customer $c ($d).',
+                    $this->mergeCustomerName($current['customerid']),
+                    $current['customerid'],
+                    $this->mergeCustomerName($chosen['customerid']),
+                    $chosen['customerid']
+                );
+            }
+            return trans(
+                'Ticket has been moved from $a to customer $b ($c).',
+                $current['requestor'],
+                $this->mergeCustomerName($chosen['customerid']),
+                $chosen['customerid']
+            );
+        }
+
+        return trans(
+            'Ticket requestor has been changed from $a to $b.',
+            $this->mergeRequestorLabel($current),
+            $this->mergeRequestorLabel($chosen)
+        );
+    }
+
+    private function validateTicketMerge($sourceTicketId, $targetTicketId)
+    {
+        $sourceTicketId = intval($sourceTicketId);
+        $targetTicketId = intval($targetTicketId);
+
+        if ($sourceTicketId <= 0 || $targetTicketId <= 0 || !$this->TicketExists($sourceTicketId) || !$this->TicketExists($targetTicketId)) {
+            return trans('Ticket does not exist');
+        }
+        if ($sourceTicketId == $targetTicketId) {
+            return trans('Cannot merge ticket with itself!');
+        }
+
+        $sourceDeleted = $this->db->GetOne('SELECT deleted FROM rttickets WHERE id = ?', [$sourceTicketId]);
+        $targetDeleted = $this->db->GetOne('SELECT deleted FROM rttickets WHERE id = ?', [$targetTicketId]);
+        if (!empty($sourceDeleted) || !empty($targetDeleted)) {
+            return trans('Deleted ticket cannot be merged!');
+        }
+        if ($this->ticketWasMergedAway($sourceTicketId)) {
+            return trans('Ticket has already been merged!');
+        }
+        if ($this->mergeChainReaches($targetTicketId, $sourceTicketId)) {
+            return trans('Merging these tickets would create a cycle!');
+        }
+        if ($this->ticketWasMergedAway($targetTicketId)) {
+            return trans(
+                'Target ticket has already been merged into ticket $a!',
+                sprintf('%06d', intval($this->resolveMergedTicket($targetTicketId)))
+            );
+        }
+        $sourceParentId = $this->db->GetOne('SELECT parentid FROM rttickets WHERE id = ?', [$sourceTicketId]);
+        $targetParentId = $this->db->GetOne('SELECT parentid FROM rttickets WHERE id = ?', [$targetTicketId]);
+        $parentConflict = $this->mergeParentConflict($sourceParentId, $targetParentId, $sourceTicketId, $targetTicketId);
+        if ($parentConflict !== null) {
+            return $parentConflict;
+        }
+
+        $sourceRights = intval($this->CheckTicketAccess($sourceTicketId));
+        $targetRights = intval($this->CheckTicketAccess($targetTicketId));
+        if (!ConfigHelper::checkPrivilege('full_access')
+            && (!($sourceRights & RT_RIGHT_WRITE) || !($targetRights & RT_RIGHT_WRITE))
+        ) {
+            return trans('You have no write rights to both ticket queues!');
+        }
+        if (!$this->mergeAllowsDifferentCustomers() && $this->mergeCustomersDiffer($sourceTicketId, $targetTicketId)) {
+            return trans('Source and target tickets belong to different customers.');
+        }
+
+        return null;
+    }
+
+    private function mergeAllowsDifferentCustomers()
+    {
+        return ConfigHelper::checkConfig('rt.merge_allow_different_customers', true);
+    }
+
+    private function mergeCustomersDiffer($sourceTicketId, $targetTicketId)
+    {
+        $sourceCustomerId = intval($this->db->GetOne(
+            'SELECT customerid FROM rttickets WHERE id = ?',
+            [intval($sourceTicketId)]
+        ));
+        $targetCustomerId = intval($this->db->GetOne(
+            'SELECT customerid FROM rttickets WHERE id = ?',
+            [intval($targetTicketId)]
+        ));
+        return $sourceCustomerId !== $targetCustomerId;
+    }
+
+    private function mergeUserHasTargetQueueRights($userId, $queueId)
+    {
+        global $LMS;
+
+        $userId = intval($userId);
+        $queueId = intval($queueId);
+        if ($userId <= 0 || $queueId <= 0) {
+            return false;
+        }
+        if (intval($this->GetUserRightsRT($userId, $queueId)) > 0) {
+            return true;
+        }
+        if (empty($LMS)) {
+            return false;
+        }
+        $rights = $LMS->GetUserRights($userId);
+        return is_array($rights) && in_array('full_access', $rights, true);
+    }
+
+    private function mergeChainReaches($ticketId, $sourceTicketId)
+    {
+        $ticketId = intval($ticketId);
+        $sourceTicketId = intval($sourceTicketId);
+        $seen = [];
+        for ($step = 0; $step < 32; $step++) {
+            if ($ticketId === $sourceTicketId) {
+                return true;
+            }
+            if (isset($seen[$ticketId])) {
+                return false;
+            }
+            $seen[$ticketId] = true;
+            $mergedInto = $this->getTicketMergedInto($ticketId);
+            if (empty($mergedInto)) {
+                return false;
+            }
+            $ticketId = $mergedInto;
+        }
+        return $ticketId === $sourceTicketId;
+    }
+
+    private function notifyTicketMerge($sourceTicketId, $targetTicketId)
+    {
+        global $LMS, $RT_PRIORITIES;
+
+        if (empty($LMS)) {
+            return;
+        }
+
+        $ticket = $this->GetTicketContents($targetTicketId, true);
+        if (empty($ticket)) {
+            return;
+        }
+
+        $userIds = [];
+        if (!empty($ticket['owner'])) {
+            $ownerId = intval($ticket['owner']);
+            $userIds[$ownerId] = $ownerId;
+        }
+        $queueId = intval($ticket['queueid']);
+        $watcherIds = $this->db->GetCol(
+            'SELECT userid FROM rtticketwatchers WHERE ticketid = ?',
+            [$targetTicketId]
+        );
+        if (!empty($watcherIds)) {
+            foreach ($watcherIds as $watcherId) {
+                $watcherId = intval($watcherId);
+                if ($watcherId > 0 && $this->mergeUserHasTargetQueueRights($watcherId, $queueId)) {
+                    $userIds[$watcherId] = $watcherId;
+                }
+            }
+        }
+
+        $notifyAuthor = ConfigHelper::checkConfig('rt.author_notify', ConfigHelper::checkConfig('phpui.helpdesk_author_notify'));
+        $currentUserId = intval(Auth::GetCurrentUser());
+        if (!$notifyAuthor && $currentUserId) {
+            unset($userIds[$currentUserId]);
+        }
+        if (empty($userIds)) {
+            return;
+        }
+
+        $emails = $this->db->GetCol(
+            'SELECT DISTINCT email
+            FROM users
+            WHERE id IN ?
+                AND deleted = 0
+                AND access = 1
+                AND email <> ?
+                AND (ntype & ?) > 0',
+            [array_values($userIds), '', MSG_MAIL]
+        );
+        if (empty($emails)) {
+            return;
+        }
+
+        $queue = $this->GetQueueByTicketId($targetTicketId);
+        if (empty($queue['email'])) {
+            return;
+        }
+
+        $note = trans('Ticket $a has been merged into this ticket.', sprintf('%06d', $sourceTicketId));
+        $priority = '';
+        if (isset($ticket['priority']) && $ticket['priority'] !== '' && isset($RT_PRIORITIES[$ticket['priority']])) {
+            $priority = $RT_PRIORITIES[$ticket['priority']];
+        }
+        $params = [
+            'id' => $targetTicketId,
+            'queue' => $ticket['queuename'],
+            'customerid' => $ticket['customerid'],
+            'status' => $ticket['status'],
+            'categories' => empty($ticket['categorynames']) ? [] : $ticket['categorynames'],
+            'priority' => $priority,
+            'subject' => $ticket['subject'],
+            'body' => $note,
+        ];
+        $subjectTemplate = ConfigHelper::getConfig(
+            'rt.notification_mail_subject',
+            ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject', '')
+        );
+        $bodyTemplate = ConfigHelper::getConfig(
+            'rt.notification_mail_body',
+            ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body', '')
+        );
+        if ($subjectTemplate === null || $subjectTemplate === '') {
+            $subjectTemplate = '[RT#%06tid] %subject';
+        }
+        if ($bodyTemplate === null || $bodyTemplate === '') {
+            $bodyTemplate = "%body\n\n%url";
+        }
+
+        $headers = [
+            'From' => '"' . str_replace('"', '', $queue['name']) . '" <' . $queue['email'] . '>',
+            'Reply-To' => '"' . str_replace('"', '', $queue['name']) . '" <' . $queue['email'] . '>',
+            'Subject' => $LMS->ReplaceNotificationSymbols($subjectTemplate, $params),
+        ];
+        $body = $LMS->ReplaceNotificationSymbols($bodyTemplate, $params);
+        $smtpOptions = $this->GetRTSmtpOptions();
+        foreach ($emails as $email) {
+            $headers['To'] = '<' . $email . '>';
+            $LMS->SendMail($email, $headers, $body, null, null, $smtpOptions);
+        }
+    }
+
+    private function mergeParentConflict($sourceParentId, $targetParentId, $sourceTicketId, $targetTicketId)
+    {
+        $sourceParentId = intval($sourceParentId);
+        $targetParentId = intval($targetParentId);
+        $sourceTicketId = intval($sourceTicketId);
+        $targetTicketId = intval($targetTicketId);
+        if ($sourceParentId == $targetTicketId) {
+            $sourceParentId = 0;
+        }
+        if ($targetParentId == $sourceTicketId) {
+            $targetParentId = 0;
+        }
+        if ($sourceParentId > 0 && $targetParentId > 0 && $sourceParentId != $targetParentId) {
+            return trans('These tickets have different primary tickets!');
+        }
+        return null;
+    }
+
+    private function mergeParentWouldCycle($ticketId, $parentId, $sourceTicketId)
+    {
+        $ticketId = intval($ticketId);
+        $parentId = intval($parentId);
+        $sourceTicketId = intval($sourceTicketId);
+        if ($parentId <= 0 || $parentId == $sourceTicketId) {
+            return true;
+        }
+        $seen = [];
+        for ($step = 0; $step < 32; $step++) {
+            if ($parentId == $ticketId || isset($seen[$parentId])) {
+                return true;
+            }
+            $seen[$parentId] = true;
+            $row = $this->mergeGetRow('SELECT parentid FROM rttickets WHERE id = ?', [$parentId]);
+            if ($this->mergeFailed || empty($row['parentid'])) {
+                return false;
+            }
+            $parentId = intval($row['parentid']);
+            if ($parentId == $sourceTicketId) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function detachMergedTicketParent($sourceTicketId, $ticketId, $replacementParentId, &$seen)
+    {
+        $ticketId = intval($ticketId);
+        if ($ticketId <= 0 || isset($seen[$ticketId]) || $this->mergeFailed) {
+            return;
+        }
+        $seen[$ticketId] = true;
+
+        $row = $this->mergeGetRow('SELECT parentid FROM rttickets WHERE id = ?', [$ticketId]);
+        if ($this->mergeFailed || empty($row['parentid'])) {
+            return;
+        }
+        $parentId = intval($row['parentid']);
+        if ($parentId == $sourceTicketId) {
+            if ($replacementParentId == $ticketId) {
+                $replacementParentId = null;
+            }
+            $this->mergeSetParent($ticketId, $replacementParentId);
+            return;
+        }
+        $this->detachMergedTicketParent($sourceTicketId, $parentId, $replacementParentId, $seen);
+    }
+
+    private function mergeSetParent($ticketId, $parentId)
+    {
+        if ($this->mergeFailed) {
+            return;
+        }
+        if ($parentId) {
+            $note = trans('Primary ticket ID has been set to $a.', $parentId);
+        } else {
+            $note = trans('Primary ticket ID has been removed.');
+        }
+        $this->mergeExecute(
+            'INSERT INTO rtmessages (userid, ticketid, type, body, createtime) VALUES (?, ?, ?, ?, ?NOW?)',
+            [Auth::GetCurrentUser(), $ticketId, RTMESSAGE_PARENT_CHANGE, $note]
+        );
+        $this->mergeExecute(
+            'UPDATE rttickets SET parentid = ? WHERE id = ?',
+            [$parentId, $ticketId]
+        );
+    }
+
+    private function copyTicketCategories($sourceTicketId, $targetTicketId)
+    {
+        $sourceCategoryIds = $this->mergeGetCol(
+            'SELECT categoryid FROM rtticketcategories WHERE ticketid = ?',
+            [$sourceTicketId]
+        );
+        if ($this->mergeFailed || empty($sourceCategoryIds)) {
+            return;
+        }
+        $targetCategoryIds = $this->mergeGetCol(
+            'SELECT categoryid FROM rtticketcategories WHERE ticketid = ?',
+            [$targetTicketId]
+        );
+        if ($this->mergeFailed) {
+            return;
+        }
+        $targetCategoryIds = array_flip($targetCategoryIds);
+        foreach ($sourceCategoryIds as $categoryId) {
+            if (!isset($targetCategoryIds[$categoryId])) {
+                $this->mergeExecute(
+                    'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                    [$targetTicketId, $categoryId]
+                );
+            }
+        }
+    }
+
+    private function moveTicketWatchers($sourceTicketId, $targetTicketId)
+    {
+        $sourceWatcherIds = $this->mergeGetCol(
+            'SELECT userid FROM rtticketwatchers WHERE ticketid = ?',
+            [$sourceTicketId]
+        );
+        if ($this->mergeFailed || empty($sourceWatcherIds)) {
+            return;
+        }
+        $targetWatcherIds = $this->mergeGetCol(
+            'SELECT userid FROM rtticketwatchers WHERE ticketid = ?',
+            [$targetTicketId]
+        );
+        if ($this->mergeFailed) {
+            return;
+        }
+        $targetWatcherIds = array_flip($targetWatcherIds);
+        $queueId = intval($this->db->GetOne('SELECT queueid FROM rttickets WHERE id = ?', [$targetTicketId]));
+        foreach ($sourceWatcherIds as $watcherId) {
+            $watcherId = intval($watcherId);
+            if ($watcherId <= 0 || isset($targetWatcherIds[$watcherId])) {
+                continue;
+            }
+            if (!$this->mergeUserHasTargetQueueRights($watcherId, $queueId)) {
+                continue;
+            }
+            $this->mergeExecute(
+                'INSERT INTO rtticketwatchers (ticketid, userid) VALUES (?, ?)',
+                [$targetTicketId, $watcherId]
+            );
+        }
+        $this->mergeExecute('DELETE FROM rtticketwatchers WHERE ticketid = ?', [$sourceTicketId]);
+    }
+
+    private function planMergeAttachmentNames($sourceTicketId, $targetTicketId)
+    {
+        $this->mergeAttachmentMoves = [];
+        $root = $this->mergeAttachmentRoot();
+        $sourceDir = $root . DIRECTORY_SEPARATOR . sprintf('%06d', $sourceTicketId);
+        if (!is_dir($sourceDir)) {
+            return true;
+        }
+        $targetDir = $root . DIRECTORY_SEPARATOR . sprintf('%06d', $targetTicketId);
+        $reservedNames = [];
+        return $this->planMergeAttachmentDirectory($sourceDir, $targetDir, '', $reservedNames);
+    }
+
+    private function planMergeAttachmentDirectory($sourceDir, $targetDir, $relativeDir, array &$reservedNames)
+    {
+        if (!isset($reservedNames[$relativeDir])) {
+            $reservedNames[$relativeDir] = [];
+            if (preg_match('/^\d+$/', $relativeDir)) {
+                $names = $this->mergeGetCol(
+                    'SELECT filename FROM rtattachments WHERE messageid = ?',
+                    [intval($relativeDir)]
+                );
+                if ($this->mergeFailed) {
+                    return false;
+                }
+                foreach ($names as $name) {
+                    $reservedNames[$relativeDir][(string) $name] = true;
+                }
+            }
+        }
+        $entries = @scandir($sourceDir);
+        if ($entries === false) {
+            return false;
+        }
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $from = $sourceDir . DIRECTORY_SEPARATOR . $entry;
+            if (is_file($from) && !is_link($from)) {
+                $reservedNames[$relativeDir][$entry] = true;
+            }
+        }
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $from = $sourceDir . DIRECTORY_SEPARATOR . $entry;
+            if (is_link($from)) {
+                $this->mergeAttachmentMoves[] = ['from' => $from, 'to' => null, 'drop' => false, 'fail' => true];
+                continue;
+            }
+            $to = $targetDir . DIRECTORY_SEPARATOR . $entry;
+            if (is_dir($from)) {
+                if (is_link($to) || (file_exists($to) && !is_dir($to))) {
+                    return false;
+                }
+                $childRelative = $relativeDir === '' ? $entry : $relativeDir . DIRECTORY_SEPARATOR . $entry;
+                if (!$this->planMergeAttachmentDirectory($from, $to, $childRelative, $reservedNames)) {
+                    return false;
+                }
+                continue;
+            }
+            if (!is_file($from)) {
+                $this->mergeAttachmentMoves[] = ['from' => $from, 'to' => null, 'drop' => false, 'fail' => true];
+                continue;
+            }
+            if (is_link($to) || (file_exists($to) && !is_file($to))) {
+                return false;
+            }
+            if (is_file($to)) {
+                if ($this->mergeFilesEquivalent($from, $to)) {
+                    $this->mergeAttachmentMoves[] = ['from' => $from, 'to' => $to, 'drop' => true, 'fail' => false];
+                    continue;
+                }
+                $unique = $this->mergeCollisionName($targetDir, $entry, $reservedNames[$relativeDir]);
+                if ($unique === null) {
+                    return false;
+                }
+                $reservedNames[$relativeDir][$unique] = true;
+                if (preg_match('/^\d+$/', $relativeDir)) {
+                    $this->mergeExecute(
+                        'UPDATE rtattachments SET filename = ? WHERE messageid = ? AND filename = ?',
+                        [$unique, intval($relativeDir), $entry]
+                    );
+                    if ($this->mergeFailed) {
+                        return false;
+                    }
+                }
+                $this->mergeAttachmentMoves[] = [
+                    'from' => $from,
+                    'to' => $targetDir . DIRECTORY_SEPARATOR . $unique,
+                    'drop' => false,
+                    'fail' => false,
+                ];
+                continue;
+            }
+            $reservedNames[$relativeDir][$entry] = true;
+            $this->mergeAttachmentMoves[] = ['from' => $from, 'to' => $to, 'drop' => false, 'fail' => false];
+        }
+        return !$this->mergeFailed;
+    }
+
+    private function mergeCollisionName($directory, $filename, array $reserved)
+    {
+        $filename = basename($filename);
+        $dot = strrpos($filename, '.');
+        if ($dot > 0) {
+            $base = substr($filename, 0, $dot);
+            $ext = substr($filename, $dot);
+        } else {
+            $base = $filename;
+            $ext = '';
+        }
+        for ($n = 1; $n < 1000; $n++) {
+            $suffix = '-' . $n;
+            $maxBase = 255 - strlen($suffix) - strlen($ext);
+            if ($maxBase < 1) {
+                return null;
+            }
+            $candidate = substr($base, 0, $maxBase) . $suffix . $ext;
+            if (isset($reserved[$candidate])) {
+                continue;
+            }
+            $path = $directory . DIRECTORY_SEPARATOR . $candidate;
+            if (file_exists($path) || is_link($path)) {
+                continue;
+            }
+            return $candidate;
+        }
+        return null;
+    }
+
+    private function mergeFilesEquivalent($left, $right)
+    {
+        if (is_link($left) || is_link($right) || !is_file($left) || !is_file($right)) {
+            return false;
+        }
+        $leftSize = @filesize($left);
+        $rightSize = @filesize($right);
+        if ($leftSize === false || $rightSize === false || $leftSize !== $rightSize) {
+            return false;
+        }
+        $leftHash = @hash_file('sha256', $left);
+        $rightHash = @hash_file('sha256', $right);
+        return $leftHash !== false && $leftHash === $rightHash;
+    }
+
+    private function moveTicketAttachmentFiles($sourceTicketId, $targetTicketId)
+    {
+        $failed = [];
+        $moves = $this->mergeAttachmentMoves;
+        $this->mergeAttachmentMoves = [];
+        $root = $this->mergeAttachmentRoot();
+        $sourceDir = $root . DIRECTORY_SEPARATOR . sprintf('%06d', $sourceTicketId);
+        $mode = $this->mergeDirectoryMode();
+        foreach ($moves as $move) {
+            if (!empty($move['fail'])) {
+                error_log('LMS ticket merge: unable to move attachment ' . $move['from']);
+                $failed[] = $move['from'];
+                continue;
+            }
+            if (!empty($move['drop'])) {
+                if (!$this->mergeFilesEquivalent($move['from'], $move['to'])) {
+                    error_log('LMS ticket merge: attachment content differs, source kept ' . $move['from']);
+                    $failed[] = $move['from'];
+                    continue;
+                }
+                @unlink($move['from']);
+                if (file_exists($move['from']) || is_link($move['from'])) {
+                    error_log('LMS ticket merge: unable to remove equivalent attachment ' . $move['from']);
+                    $failed[] = $move['from'];
+                }
+                continue;
+            }
+            if (!$this->moveMergeAttachmentEntry($move['from'], $move['to'], $mode)) {
+                error_log('LMS ticket merge: unable to move attachment ' . $move['from'] . ' to ' . $move['to']);
+                $failed[] = $move['from'];
+            }
+        }
+        if (is_dir($sourceDir) && !is_link($sourceDir)) {
+            $this->removeEmptyMergeDirs($sourceDir);
+        }
+        return $failed;
+    }
+
+    private function removeEmptyMergeDirs($path)
+    {
+        if (!is_dir($path) || is_link($path)) {
+            return;
+        }
+        $entries = @scandir($path);
+        if ($entries === false) {
+            return;
+        }
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $this->removeEmptyMergeDirs($path . DIRECTORY_SEPARATOR . $entry);
+        }
+        @rmdir($path);
+    }
+
+    private function mergeAttachmentRoot()
+    {
+        return ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+    }
+
+    private function mergeDirectoryMode()
+    {
+        return intval(ConfigHelper::getConfig(
+            'storage.dir_permission',
+            ConfigHelper::getConfig('rt.mail_dir_permission', '0700')
+        ), 8);
+    }
+
+    private function ensureMergeDirectory($path)
+    {
+        if (is_dir($path)) {
+            return true;
+        }
+        if (!@mkdir($path, $this->mergeDirectoryMode(), true) && !is_dir($path)) {
+            return false;
+        }
+        @chown($path, ConfigHelper::getConfig('storage.dir_owneruid', 'root'));
+        @chgrp($path, ConfigHelper::getConfig('storage.dir_ownergid', 'root'));
+        return true;
+    }
+
+    private function moveMergeAttachmentEntry($from, $to, $dirPermission)
+    {
+        if (is_link($from) || is_link($to)) {
+            return false;
+        }
+        $sourceExists = file_exists($from);
+        $destExists = file_exists($to);
+        if (!$sourceExists) {
+            return true;
+        }
+        if ($destExists && is_dir($from) && is_dir($to)) {
+            $entries = @scandir($from);
+            if ($entries === false) {
+                return false;
+            }
+            foreach ($entries as $entry) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+                if (!$this->moveMergeAttachmentEntry(
+                    $from . DIRECTORY_SEPARATOR . $entry,
+                    $to . DIRECTORY_SEPARATOR . $entry,
+                    $dirPermission
+                )) {
+                    return false;
+                }
+            }
+            @rmdir($from);
+            return !is_dir($from);
+        }
+        if ($destExists && is_file($from) && is_file($to)) {
+            if (!$this->mergeFilesEquivalent($from, $to)) {
+                return false;
+            }
+            @unlink($from);
+            return !file_exists($from) && !is_link($from);
+        }
+        if ($destExists) {
+            return false;
+        }
+        $parent = dirname($to);
+        if (!$this->ensureMergeDirectory($parent)) {
+            return false;
+        }
+        if (@rename($from, $to)) {
+            return true;
+        }
+        if ($this->copyPathVerified($from, $to, $dirPermission)) {
+            $this->removePath($from);
+            return !file_exists($from) && !is_link($from);
+        }
+        return false;
+    }
+
+    private function copyPathVerified($from, $to, $dirPermission)
+    {
+        if (is_link($from) || is_link($to)) {
+            return false;
+        }
+        if (is_dir($from)) {
+            if (!is_dir($to) && !@mkdir($to, $dirPermission, true)) {
+                return false;
+            }
+            $entries = @scandir($from);
+            if ($entries === false) {
+                return false;
+            }
+            foreach ($entries as $entry) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+                if (!$this->copyPathVerified(
+                    $from . DIRECTORY_SEPARATOR . $entry,
+                    $to . DIRECTORY_SEPARATOR . $entry,
+                    $dirPermission
+                )) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (!is_file($from) || file_exists($to) || !@copy($from, $to)) {
+            return false;
+        }
+        if (!$this->mergeFilesEquivalent($from, $to)) {
+            @unlink($to);
+            return false;
+        }
+        $mode = @fileperms($from);
+        if ($mode !== false) {
+            @chmod($to, $mode & 0777);
+        }
+        return true;
+    }
+
+    private function removePath($path)
+    {
+        if (is_link($path) || is_file($path)) {
+            @unlink($path);
+            return;
+        }
+        if (!is_dir($path)) {
+            return;
+        }
+        $entries = @scandir($path);
+        if ($entries === false) {
+            return;
+        }
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $this->removePath($path . DIRECTORY_SEPARATOR . $entry);
+        }
+        @rmdir($path);
+    }
+
+    private function mergeExecute($query, array $params = [])
+    {
+        if ($this->mergeFailed) {
+            return false;
+        }
+        if ($this->db->Execute($query, $params) === false) {
+            $this->mergeFailed = true;
+            return false;
+        }
+        return true;
+    }
+
+    private function mergeGetRow($query, array $params = [])
+    {
+        if ($this->mergeFailed) {
+            return null;
+        }
+        if ($this->db->Execute($query, $params) === false) {
+            $this->mergeFailed = true;
+            return null;
+        }
+        $row = $this->db->GetRow();
+        return is_array($row) ? $row : null;
+    }
+
+    private function mergeGetCol($query, array $params = [])
+    {
+        if ($this->mergeFailed) {
+            return [];
+        }
+        if ($this->db->Execute($query, $params) === false) {
+            $this->mergeFailed = true;
+            return [];
+        }
+        $rows = $this->db->GetCol();
+        return empty($rows) ? [] : $rows;
+    }
+
+    private function mergeErrorCount()
+    {
+        return $this->db->GetFailureCount();
+    }
+
+    private function mergeAbort()
+    {
+        $this->db->RollbackTrans();
+        $this->mergeFailed = false;
+        $this->mergeAttachmentMoves = [];
     }
 }

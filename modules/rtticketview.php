@@ -137,6 +137,26 @@ $assignedevents = $LMS->GetEventsByTicketId($id);
 
 $LMS->MarkTicketAsRead($id);
 
+$ticketMergedAway = $LMS->ticketWasMergedAway($id);
+$mergedTicketTarget = null;
+if ($ticketMergedAway) {
+    $mergedTicketTarget = intval($LMS->resolveMergedTicket($id));
+    if ($mergedTicketTarget === $id || $LMS->ticketWasMergedAway($mergedTicketTarget)) {
+        $mergedTicketTarget = intval($LMS->getTicketMergedInto($id));
+    }
+    if ($mergedTicketTarget <= 0) {
+        $mergedTicketTarget = null;
+    }
+}
+$canMergeTicket = empty($ticket['deleted']) && !$ticketMergedAway && ($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE);
+if ($SESSION->is_set('rt_ticket_merge_error')) {
+    if (!is_array($error)) {
+        $error = [];
+    }
+    $error['merge'] = $SESSION->get('rt_ticket_merge_error');
+    $SESSION->remove('rt_ticket_merge_error');
+}
+
 $layout['pagetitle'] = trans('Ticket Review: $a', sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->add_history_entry();
@@ -188,7 +208,11 @@ $SMARTY->assign(
         'assignedevents' => $assignedevents,
         'rtticketview_sortable_order' => $SESSION->get_persistent_setting('rtticketview-sortable-order'),
         'favorite_queues' => $LMS->GetFavoriteQueues(),
+        'canMergeTicket' => $canMergeTicket,
+        'ticketMergedAway' => $ticketMergedAway,
+        'mergedTicketTarget' => $mergedTicketTarget,
     )
 );
+$LMS->assignMergedTicketWriteNotice();
 
 $SMARTY->display('rt/rtticketview.html');

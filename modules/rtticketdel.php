@@ -38,6 +38,9 @@ foreach ($tickets as $ticket) {
     if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE)) {
         access_denied();
     }
+    if ($LMS->ticketWasMergedAway($ticket)) {
+        $LMS->redirectMergedTicketToTarget($ticket);
+    }
 }
 
 switch ($_GET['taction']) {

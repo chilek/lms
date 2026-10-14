@@ -134,9 +134,11 @@
 					{if !ConfigHelper::checkConfig('rt.default_hide_system_messages')} checked{/if}>
 				{trans("system messages")}
 			</label>
-			{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
-			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
-				{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
+			{if !$ticketMergedAway}
+				{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+				{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+					{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
+				{/if}
 			{/if}
 		</TD>
 	</TR>
@@ -221,7 +223,8 @@
 								<div class="message-buttons">
 									{if $message.type == $smarty.const.RTMESSAGE_NOTE}
 										{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
-										{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+										{if $ticketMergedAway}
+										{elseif $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 											{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
 											{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
@@ -231,7 +234,7 @@
 									{else}
 										{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 										{button icon="details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
-										{if $msgidx > 0}
+										{if $msgidx > 0 && !$ticketMergedAway}
 											{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 												{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
@@ -240,7 +243,7 @@
 												{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 											{/if}
 										{/if}
-										{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+										{if !$ticketMergedAway && (($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser')))}
 											{button icon="reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
 											{button icon="quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
 										{/if}

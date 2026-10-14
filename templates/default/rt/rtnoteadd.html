@@ -6,6 +6,7 @@
 {include file="rt/rtticketshared.html"}
 
 <h1>{$layout.pagetitle}</h1>
+{include file="rt/rtticketmergednotice.html"}
 <form method="POST" name="note" id="note-form" action="?m=rtnoteadd">
 	<input type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
 	<input type="hidden" name="note[references]" value ="{$note.references|escape|default:""}">

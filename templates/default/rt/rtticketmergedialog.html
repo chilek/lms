@@ -1,0 +1,429 @@
+<div id="rt-ticket-merge-dialog" class="lms-ui-dialog" title="{trans("Merge with another ticket")}">
+	<style>
+		#rt-ticket-merge-dialog .rt-ticket-merge-titlebar > td {
+			height: 2.5em;
+			min-height: 2.5em;
+			line-height: 2.5em;
+			vertical-align: middle;
+		}
+		#rt-ticket-merge-dialog .rt-ticket-merge-titlebar .lms-ui-button {
+			vertical-align: middle;
+			line-height: normal;
+		}
+		#rt-ticket-merge-dialog td.rt-ticket-merge-direction-cell {
+			vertical-align: middle;
+		}
+		#rt-ticket-merge-actions {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		#rt-ticket-merge-hint {
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: 0.4em;
+		}
+		#rt-ticket-merge-actions #rt-ticket-merge-direction {
+			margin-left: 0.4em;
+			vertical-align: middle;
+		}
+		#rt-ticket-merge-dialog td.highlight {
+			background-color: #CCFFCC;
+		}
+		#rt-ticket-merge-reopen {
+			margin: 0.4em 0;
+		}
+		#rt-ticket-merge-dialog .rt-ticket-merge-hidden {
+			display: none;
+		}
+		#rt-ticket-merge-dialog .rt-ticket-merge-concealed {
+			visibility: hidden;
+		}
+	</style>
+	<form id="rt-ticket-merge-form" method="post" action="?m=rtticketmerge">
+		<input type="hidden" name="merge[openedid]" value="{$ticket.ticketid|escape}">
+		<input type="hidden" id="rt-ticket-merge-targetid" name="merge[targetid]" value="{$ticket.ticketid|escape}">
+		<input type="hidden" id="rt-ticket-merge-sourceid" name="merge[sourceid]" value="">
+		<input type="hidden" id="rt-ticket-merge-leftid" name="merge[leftid]" value="{$ticket.ticketid|escape}">
+		<input type="hidden" id="rt-ticket-merge-rightid" name="merge[rightid]" value="">
+		<div id="rt-ticket-merge-status"></div>
+		<div id="rt-ticket-merge-actions">
+			<div id="rt-ticket-merge-hint">
+				{hint content="Messages, attachments, notes, watchers and assigned events will be moved to the target ticket. Categories will be added to the target ticket. The source ticket will be resolved and linked to the target. This cannot be undone."}
+			</div>
+			{button id="rt-ticket-merge-direction" icon="previous" tip="will be merged into" disabled=1}
+		</div>
+		<table width="100%">
+			<tr>
+				<td width="48%" class="valign-top">
+					<table class="lmsbox lms-ui-tab-container">
+						<thead>
+							<tr class="lmsbox-titlebar rt-ticket-merge-titlebar">
+								<td width="1%" class="text-right">
+									{button icon="delete" class="rt-ticket-merge-concealed" tabindex="-1"}
+								</td>
+								<td id="rt-ticket-merge-left-title" class="bold text-center">{trans("Target ticket")}</td>
+								<td width="1%" class="text-right">
+									{button icon="delete" class="rt-ticket-merge-concealed" tabindex="-1"}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td id="rt-ticket-merge-left-body" colspan="3"></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td width="4%" class="text-center rt-ticket-merge-direction-cell">
+					<i id="rt-ticket-merge-direction-icon" class="lms-ui-icon-previous" title="{trans("will be merged into")|escape}" data-title="{trans("will be merged into")|escape}"></i>
+				</td>
+				<td width="48%" class="valign-top">
+					<table class="lmsbox lms-ui-tab-container">
+						<thead>
+							<tr class="lmsbox-titlebar rt-ticket-merge-titlebar">
+								<td width="1%" class="text-right">
+									{button icon="delete" class="rt-ticket-merge-concealed" tabindex="-1"}
+								</td>
+								<td id="rt-ticket-merge-right-title" class="bold text-center">{trans("Ticket to merge")}</td>
+								<td width="1%" class="text-right">
+									{button id="rt-ticket-merge-clear" icon="delete" tip="Delete" class="rt-ticket-merge-concealed"}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="3">
+									<div id="rt-ticket-merge-right-body" class="rt-ticket-merge-hidden"></div>
+									<div id="rt-ticket-merge-search-slot">
+										{function ticket_item_content}
+											{capture name="item_content_result" assign="item_content_result"}{strip}
+												{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id|escape:"url"}"}
+												(#{$item.id|escape})
+												<a class="lms-ui-list-item-name" href="?m=rtticketview&id={$item.id|escape}">{$item.name|escape}</a>
+											{/strip}{/capture}
+										{/function}
+										{list id="rt-ticket-merge-search" tipid="rt-ticket-merge-search-tip" tip="Enter ticket identifier or ticket subject part"
+											field_name_pattern="merge[searchedid]" item_content="ticket_item_content"}
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+	var rtTicketMergeDialog = new LmsUiDialog('rt-ticket-merge-dialog');
+	rtTicketMergeDialog.setDialogWidth(980);
+	var rtTicketMergeOpenedId = parseInt('{$ticket.ticketid|escape:"javascript"}', 10) || 0;
+	var rtTicketMergeLeftId = rtTicketMergeOpenedId;
+	var rtTicketMergeRightId = 0;
+	var rtTicketMergeIntoLeft = true;
+	var rtTicketMergeRequest = 0;
+	var rtTicketMergeExcluded = ['{$ticket.ticketid|escape:"javascript"}'];
+	var rtTicketMergeTargetLabel = '{trans("Target ticket")|escape:"javascript"}';
+	var rtTicketMergeSourceLabel = '{trans("Ticket to merge")|escape:"javascript"}';
+	var rtTicketMergeSuggestion = $('#lms-ui-list-suggestion-container');
+	var rtTicketMergeSuggestionParent = rtTicketMergeSuggestion.parent();
+	var rtTicketMergeSuggestionNext = rtTicketMergeSuggestion.next();
+
+	function rtTicketMergeSearchedId() {
+		var selected = $('#rt-ticket-merge-search').find('input[name="merge[searchedid]"]').val();
+		return selected ? (parseInt(selected, 10) || 0) : 0;
+	}
+
+	function rtTicketMergeSyncFields() {
+		var targetId = rtTicketMergeIntoLeft ? rtTicketMergeLeftId : rtTicketMergeRightId;
+		var sourceId = rtTicketMergeIntoLeft ? rtTicketMergeRightId : rtTicketMergeLeftId;
+		$('#rt-ticket-merge-targetid').val(targetId ? String(targetId) : '');
+		$('#rt-ticket-merge-sourceid').val(sourceId ? String(sourceId) : '');
+		$('#rt-ticket-merge-leftid').val(rtTicketMergeLeftId ? String(rtTicketMergeLeftId) : '');
+		$('#rt-ticket-merge-rightid').val(rtTicketMergeRightId ? String(rtTicketMergeRightId) : '');
+		rtTicketMergeExcluded.splice(0, rtTicketMergeExcluded.length);
+		if (rtTicketMergeLeftId) {
+			rtTicketMergeExcluded.push(String(rtTicketMergeLeftId));
+		}
+		if (rtTicketMergeRightId) {
+			rtTicketMergeExcluded.push(String(rtTicketMergeRightId));
+		}
+	}
+
+	function rtTicketMergeUpdateDirection() {
+		var iconClass = rtTicketMergeIntoLeft ? 'lms-ui-icon-previous' : 'lms-ui-icon-next';
+		var button = $('#rt-ticket-merge-direction');
+		button.prop('disabled', !rtTicketMergeRightId);
+		button.find('i').attr('class', iconClass);
+		$('#rt-ticket-merge-direction-icon').attr('class', iconClass);
+		$('#rt-ticket-merge-left-title').text(rtTicketMergeIntoLeft ? rtTicketMergeTargetLabel : rtTicketMergeSourceLabel);
+		$('#rt-ticket-merge-right-title').text(rtTicketMergeIntoLeft ? rtTicketMergeSourceLabel : rtTicketMergeTargetLabel);
+	}
+
+	function rtTicketMergeRevealSearch() {
+		if (!rtTicketMergeDialog.handler.dialog('isOpen')) {
+			return;
+		}
+		var container = $('#rt-ticket-merge-search');
+		container.find('.lms-ui-list-suggestion').prev().hide().end().show().focus()
+			.closest('.lms-ui-list-container').css('flex-direction', 'column')
+			.find('ul').css({
+				'margin-block-start': '0.5em',
+				'margin-block-end': '0.5em'
+			});
+	}
+
+	function rtTicketMergeShowRight(hasTicket) {
+		$('#rt-ticket-merge-search-slot').toggleClass('rt-ticket-merge-hidden', !!hasTicket);
+		$('#rt-ticket-merge-right-body').toggleClass('rt-ticket-merge-hidden', !hasTicket);
+		$('#rt-ticket-merge-clear').toggleClass('rt-ticket-merge-concealed', !hasTicket);
+		if (hasTicket) {
+			$('#lms-ui-list-suggestion-container').hide();
+		} else {
+			$('#rt-ticket-merge-right-body').empty();
+			rtTicketMergeRevealSearch();
+		}
+	}
+
+	function rtTicketMergeResetState() {
+		rtTicketMergeRequest++;
+		rtTicketMergeLeftId = rtTicketMergeOpenedId;
+		rtTicketMergeRightId = 0;
+		rtTicketMergeIntoLeft = true;
+		rtTicketMergeClearSearchList();
+		rtTicketMergeSyncFields();
+		rtTicketMergeUpdateDirection();
+		$('#rt-ticket-merge-status').empty();
+		$('#rt-ticket-merge-left-body').empty();
+		rtTicketMergeShowRight(false);
+		rtTicketMergeButtons(false);
+	}
+
+	function rtTicketMergeClearSearchList() {
+		$('#rt-ticket-merge-search .lms-ui-list').empty().hide();
+		$('#rt-ticket-merge-search .lms-ui-list-suggestion').val('');
+	}
+
+	function rtTicketMergeApplySearch(searchedId) {
+		searchedId = parseInt(searchedId, 10) || 0;
+		if (!searchedId || searchedId === rtTicketMergeLeftId) {
+			rtTicketMergeRightId = 0;
+			rtTicketMergeIntoLeft = true;
+			return;
+		}
+		rtTicketMergeRightId = searchedId;
+	}
+
+	function rtTicketMergeAttachSuggestions() {
+		var dialog = rtTicketMergeDialog.handler.closest('.ui-dialog');
+		if (dialog.length) {
+			rtTicketMergeSuggestion.appendTo(dialog);
+		}
+	}
+
+	function rtTicketMergeDetachSuggestions() {
+		rtTicketMergeSuggestion.hide();
+		if (rtTicketMergeSuggestionNext.length && rtTicketMergeSuggestionNext.parent()[0] === rtTicketMergeSuggestionParent[0]) {
+			rtTicketMergeSuggestion.insertBefore(rtTicketMergeSuggestionNext);
+		} else if (rtTicketMergeSuggestionParent.length) {
+			rtTicketMergeSuggestion.appendTo(rtTicketMergeSuggestionParent);
+		}
+	}
+
+	function rtTicketMergeButtons(canConfirm) {
+		var actions = $('#rt-ticket-merge-actions').detach();
+		var buttonSet = rtTicketMergeDialog.handler.closest('.ui-dialog').find('.ui-dialog-buttonset');
+		if (!buttonSet.children('button.ui-button').length) {
+			rtTicketMergeDialog.setButtons([{
+				text: '{trans("Merge")|escape:"javascript"}',
+				icon: 'lms-ui-icon-link',
+				disabled: !canConfirm,
+				click: function() {
+					if ($(this).prop('disabled') || !$('#rt-ticket-merge-ready').length || !rtTicketMergeLeftId || !rtTicketMergeRightId) {
+						return;
+					}
+					rtTicketMergeSyncFields();
+					rtTicketMergeDialog.disableButtons();
+					$('#rt-ticket-merge-direction').prop('disabled', true);
+					$('#rt-ticket-merge-form').trigger('submit');
+				}
+			}]);
+			buttonSet = rtTicketMergeDialog.handler.closest('.ui-dialog').find('.ui-dialog-buttonset');
+		}
+		if (actions.length && buttonSet.length) {
+			actions.appendTo(buttonSet);
+		} else if (actions.length) {
+			actions.prependTo('#rt-ticket-merge-form');
+		}
+		if (buttonSet.length) {
+			buttonSet.find('button.ui-button').prop('disabled', !canConfirm);
+		}
+		rtTicketMergeUpdateDirection();
+	}
+
+	function rtTicketMergeResponseCurrent(requestId, leftId, rightId, intoLeft) {
+		return requestId === rtTicketMergeRequest
+			&& rtTicketMergeLeftId === leftId
+			&& rtTicketMergeRightId === rightId
+			&& rtTicketMergeIntoLeft === intoLeft;
+	}
+
+	function rtTicketMergeApplyPreview(html) {
+		var parsed = $('<div>').html(html);
+		$('#rt-ticket-merge-status').empty().append(parsed.find('#rt-ticket-merge-fragment-status').contents());
+		$('#rt-ticket-merge-left-body').html(parsed.find('#rt-ticket-merge-fragment-left').html());
+		$('#rt-ticket-merge-right-body').html(parsed.find('#rt-ticket-merge-fragment-right').html());
+		rtTicketMergeShowRight(parsed.find('#rt-ticket-merge-right-ready').length > 0);
+		rtTicketMergeButtons($('#rt-ticket-merge-ready').length > 0);
+	}
+
+	function rtTicketMergeLoadPreview() {
+		var requestId = ++rtTicketMergeRequest;
+		var leftId = rtTicketMergeLeftId;
+		var rightId = rtTicketMergeRightId;
+		var intoLeft = rtTicketMergeIntoLeft;
+		rtTicketMergeSyncFields();
+		rtTicketMergeButtons(false);
+		if (!leftId) {
+			$('#rt-ticket-merge-status').empty();
+			$('#rt-ticket-merge-left-body').empty();
+			rtTicketMergeShowRight(false);
+			return;
+		}
+		$('#rt-ticket-merge-status').html('<div class="blend">{trans("Loading")|escape:"javascript"}...</div>');
+		var url = '?m=rtticketmerge&preview=1&leftid=' + encodeURIComponent(leftId)
+			+ '&direction=' + (intoLeft ? 'left' : 'right');
+		if (rightId) {
+			url += '&rightid=' + encodeURIComponent(rightId);
+		}
+		$.ajax({
+			url: url,
+			method: 'GET',
+			dataType: 'html'
+		}).done(function(html) {
+			if (!rtTicketMergeResponseCurrent(requestId, leftId, rightId, intoLeft)) {
+				return;
+			}
+			rtTicketMergeApplyPreview(html);
+		}).fail(function() {
+			if (!rtTicketMergeResponseCurrent(requestId, leftId, rightId, intoLeft)) {
+				return;
+			}
+			$('#rt-ticket-merge-status').empty();
+			alertDialog('{trans("Ticket merge failed!")|escape:"javascript"}');
+			rtTicketMergeButtons(false);
+		});
+	}
+
+	function rtTicketMergeLoadStatus() {
+		var requestId = ++rtTicketMergeRequest;
+		var leftId = rtTicketMergeLeftId;
+		var rightId = rtTicketMergeRightId;
+		var intoLeft = rtTicketMergeIntoLeft;
+		rtTicketMergeButtons(false);
+		if (!leftId || !rightId) {
+			$('#rt-ticket-merge-status').empty();
+			return;
+		}
+		var url = '?m=rtticketmerge&preview=1&leftid=' + encodeURIComponent(leftId)
+			+ '&rightid=' + encodeURIComponent(rightId)
+			+ '&direction=' + (intoLeft ? 'left' : 'right');
+		$.ajax({
+			url: url,
+			method: 'GET',
+			dataType: 'html'
+		}).done(function(html) {
+			if (!rtTicketMergeResponseCurrent(requestId, leftId, rightId, intoLeft)) {
+				return;
+			}
+			rtTicketMergeApplyPreview(html);
+		}).fail(function() {
+			if (!rtTicketMergeResponseCurrent(requestId, leftId, rightId, intoLeft)) {
+				return;
+			}
+			$('#rt-ticket-merge-status').empty();
+			alertDialog('{trans("Ticket merge failed!")|escape:"javascript"}');
+			rtTicketMergeButtons(false);
+		});
+	}
+
+	rtTicketMergeButtons(false);
+	rtTicketMergeShowRight(false);
+	initListQuickSearch({
+		selector: '#rt-ticket-merge-search',
+		field_name_pattern: 'merge[searchedid]',
+		single: true,
+		ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
+		item_content: function(item) {
+			var ticketId = parseInt(item.id, 10);
+			return sprintf("#%06d", ticketId) + ' <a href="?m=rtticketview&id=' + ticketId + '">' + escapeHtml(item.name == null ? '' : String(item.name)) + '</a>';
+		},
+		excluded_elements: rtTicketMergeExcluded
+	});
+
+	function rtTicketMergeSyncKeep(input) {
+		var group = input.attr('data-keep-group');
+		var side = input.attr('data-keep-side');
+		if ((group !== 'owner' && group !== 'verifier' && group !== 'customer') || (side !== 'left' && side !== 'right')) {
+			return;
+		}
+		var form = $('#rt-ticket-merge-form');
+		form.find('.rt-ticket-merge-keep[data-keep-group="' + group + '"]').each(function() {
+			this.checked = $(this).attr('data-keep-side') === side;
+		});
+		form.find('td[data-keep-group="' + group + '"]').each(function() {
+			$(this).toggleClass('highlight', $(this).attr('data-keep-side') === side);
+		});
+	}
+
+	function rtTicketMergeResetKeep() {
+		var targetSide = rtTicketMergeIntoLeft ? 'left' : 'right';
+		var form = $('#rt-ticket-merge-form');
+		form.find('.rt-ticket-merge-keep').each(function() {
+			var side = $(this).attr('data-keep-side');
+			if (side === 'left' || side === 'right') {
+				this.checked = side === targetSide;
+			}
+		});
+		form.find('td[data-keep-group]').each(function() {
+			$(this).toggleClass('highlight', $(this).attr('data-keep-side') === targetSide);
+		});
+	}
+
+	$('#rt-ticket-merge-form').on('change', '.rt-ticket-merge-keep', function() {
+		rtTicketMergeSyncKeep($(this));
+	});
+	$('#rt-ticket-merge-search').on('lms:list_updated', function() {
+		rtTicketMergeApplySearch(rtTicketMergeSearchedId());
+		rtTicketMergeLoadPreview();
+	});
+	$(document).on('click', '#rt-ticket-merge-direction', function() {
+		if (!rtTicketMergeRightId || $(this).prop('disabled')) {
+			return false;
+		}
+		rtTicketMergeIntoLeft = !rtTicketMergeIntoLeft;
+		rtTicketMergeSyncFields();
+		rtTicketMergeUpdateDirection();
+		rtTicketMergeResetKeep();
+		rtTicketMergeLoadStatus();
+		return false;
+	});
+	$('#rt-ticket-merge-clear').on('click', function(event) {
+		event.preventDefault();
+		rtTicketMergeResetState();
+		rtTicketMergeLoadPreview();
+	});
+	$('#rt-ticket-merge-open').click(function() {
+		rtTicketMergeDialog.open();
+		return false;
+	});
+	rtTicketMergeDialog.handler.on('dialogopen', function() {
+		rtTicketMergeAttachSuggestions();
+		rtTicketMergeRevealSearch();
+		rtTicketMergeLoadPreview();
+	});
+	rtTicketMergeDialog.handler.on('dialogclose', function() {
+		rtTicketMergeDetachSuggestions();
+		rtTicketMergeResetState();
+	});
+</script>

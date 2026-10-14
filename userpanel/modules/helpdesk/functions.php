@@ -102,6 +102,22 @@ function module_main()
     $error = null;
 
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($id && $LMS->ticketWasMergedAway($id)) {
+        $mergedTarget = $LMS->resolveCustomerMergedTicket($id, $SESSION->id);
+        if (empty($mergedTarget)) {
+            header('Location: ?m=helpdesk');
+            die;
+        }
+        if (intval($mergedTarget) !== $id) {
+            if (isset($_POST['helpdesk'])) {
+                $id = intval($mergedTarget);
+                $_GET['id'] = $id;
+            } else {
+                header('Location: ?m=helpdesk&op=view&id=' . intval($mergedTarget));
+                die;
+            }
+        }
+    }
 
     $files = array();
     $attachments = array();

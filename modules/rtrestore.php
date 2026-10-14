@@ -31,6 +31,7 @@ $qaction = empty($_GET['qaction']) ? null : $_GET['qaction'];
 if ($maction == 'restore') {
     $msg = intval($_GET['id']);
     $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
+    $LMS->redirectMergedTicketToTarget($ticket);
     $del = 0;
     $deltime = 0;
     $deluserid = null;
@@ -41,6 +42,7 @@ if ($maction == 'restore') {
 
 if ($taction == 'restore') {
     $ticket = intval($_GET['id']);
+    $LMS->redirectMergedTicketToTarget($ticket);
     $del = 1;
     $nodel = 0;
     $deltime = 0;
