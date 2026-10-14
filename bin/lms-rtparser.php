@@ -171,6 +171,19 @@ if (!function_exists('mailparse_msg_create')) {
     exit(2);
 }
 
+function decodeHeader($value)
+{
+    $value = (string) $value;
+    $decoded = @iconv_mime_decode($value, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
+    if ($decoded === false) {
+        $decoded = $value;
+    }
+    $decoded = mb_scrub($decoded, 'UTF-8');
+    $decoded = preg_replace('/[\x00-\x1F\x7F]/', '', $decoded);
+
+    return trim($decoded);
+}
+
 function parseAddressList($header)
 {
     $addresses = [];
@@ -183,14 +196,41 @@ function parseAddressList($header)
         if (!empty($item['is_group']) || !preg_match('/^[^@\s]+@[^@\s]+$/', $address)) {
             continue;
         }
-        $display = $item['display'] == $item['address'] ? '' : (string) @iconv_mime_decode($item['display'], 0, 'UTF-8');
+        $display = $item['display'] == $item['address'] ? '' : decodeHeader($item['display']);
         $addresses[] = [
-            'display' => trim(str_replace(["\r", "\n"], ' ', $display)),
+            'display' => $display,
             'address' => $address,
         ];
     }
 
     return $addresses;
+}
+
+function decodeMailBody($part, $message, $partData, $useHtml, $purifier)
+{
+    $body = mailparse_msg_extract_part($part, $message, null);
+    if (!is_string($body)) {
+        $body = '';
+    }
+    $charset = $partData['content-charset'] ?? 'UTF-8';
+    try {
+        $body = mb_convert_encoding($body, 'UTF-8', $charset);
+    } catch (\ValueError $e) {
+        $body = @iconv($charset, 'UTF-8//IGNORE', $body) ?: mb_convert_encoding($body, 'UTF-8', 'UTF-8');
+    }
+    $body = str_replace("\0", '', $body);
+
+    $contentType = 'text/plain';
+    if ($partData['content-type'] == 'text/html') {
+        if ($useHtml) {
+            $contentType = 'text/html';
+            $body = $purifier->purify($body);
+        } else {
+            $body = (new \Html2Text\Html2Text($body, array()))->getText();
+        }
+    }
+
+    return array($body, $contentType);
 }
 
 class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
@@ -358,15 +398,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $customCreateTime = $parsedDate;
             }
         }
-        $mh_from = isset($headers['from']) ? (string) iconv_mime_decode($headers['from']) : '';
-        $mh_msgid = isset($headers['message-id']) ? (string) iconv_mime_decode($headers['message-id']) : '';
-        $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
-        $mh_subject = isset($headers['subject']) ? str_replace(["\r", "\n"], ' ', (string) iconv_mime_decode($headers['subject'])) : '';
+        $mh_from = isset($headers['from']) ? decodeHeader($headers['from']) : '';
+        $mh_msgid = isset($headers['message-id']) ? decodeHeader($headers['message-id']) : '';
+        $mh_replyto = isset($headers['reply-to']) ? decodeHeader($headers['reply-to']) : '';
+        $mh_subject = isset($headers['subject']) ? decodeHeader($headers['subject']) : '';
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
         if (isset($headers['references'])) {
-            $mh_references = iconv_mime_decode($headers['references']);
+            $mh_references = decodeHeader($headers['references']);
         } else {
             $mh_references = '';
         }
@@ -385,7 +425,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $decoded_mail_headers[] = $decoded_mail_header;
             }
         }
-        $mail_headers = implode("\n", $decoded_mail_headers);
+        $mail_headers = str_replace("\0", '', mb_scrub(implode("\n", $decoded_mail_headers), 'UTF-8'));
         unset($decoded_mail_headers);
 
         if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
@@ -400,34 +440,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     && !isset($partdata['disposition-filename']) && !isset($partdata['content-name'])
                     && preg_match('#^text/(plain|html)$#i', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
-                    $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
-                    $charset = $partdata['content-charset'] ?? 'UTF-8';
-                    $transfer_encoding = $partdata['transfer-encoding'] ?? '';
-                    switch ($transfer_encoding) {
-                        case 'base64':
-                            $mail_body = base64_decode($mail_body);
-                            break;
-                        case 'quoted-printable':
-                            $mail_body = quoted_printable_decode($mail_body);
-                            break;
-                    }
-                    try {
-                        $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
-                    } catch (\ValueError $e) {
-                        $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
-                    }
-
-                    $contenttype = 'text/plain';
-
-                    if ($partdata['content-type'] == 'text/html') {
-                        if ($use_html) {
-                            $contenttype = 'text/html';
-                            $mail_body = $hm_purifier->purify($mail_body);
-                        } else {
-                            $html2text = new \Html2Text\Html2Text($mail_body, array());
-                            $mail_body = $html2text->getText();
-                        }
-                    }
+                    list($mail_body, $contenttype) = decodeMailBody($part, $buffer, $partdata, $use_html, $hm_purifier ?? null);
                 } elseif (preg_match('#multipart/alternative#', $partdata['content-type']) && $mail_body == '') {
                     while (!empty($parts) && strpos($parts[0], $partid . '.') === 0) {
                         $subpartid = array_shift($parts);
@@ -436,34 +449,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         $html = strpos($subpartdata['content-type'], 'html') !== false;
                         if (preg_match('#^text/(plain|html)$#i', $subpartdata['content-type'])
                             && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
-                            $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
-                            $charset = $subpartdata['content-charset'] ?? 'UTF-8';
-                            $transfer_encoding = $subpartdata['transfer-encoding'] ?? '';
-                            switch ($transfer_encoding) {
-                                case 'base64':
-                                    $mail_body = base64_decode($mail_body);
-                                    break;
-                                case 'quoted-printable':
-                                    $mail_body = quoted_printable_decode($mail_body);
-                                    break;
-                            }
-                            try {
-                                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
-                            } catch (\ValueError $e) {
-                                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
-                            }
-
-                            $contenttype = 'text/plain';
-
-                            if ($subpartdata['content-type'] == 'text/html') {
-                                if ($use_html) {
-                                    $contenttype = 'text/html';
-                                    $mail_body = $hm_purifier->purify($mail_body);
-                                } else {
-                                    $html2text = new \Html2Text\Html2Text($mail_body, array());
-                                    $mail_body = $html2text->getText();
-                                }
-                            }
+                            list($mail_body, $contenttype) = decodeMailBody($subpart, $buffer, $subpartdata, $use_html, $hm_purifier ?? null);
                         }
                     }
                 } elseif ((isset($partdata['content-disposition']) && ($isAttachment
@@ -483,7 +469,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         unset($file_content);
                         continue;
                     }
-                    $file_name = basename(str_replace('\\', '/', (string) iconv_mime_decode($file_name)));
+                    $file_name = basename(str_replace('\\', '/', decodeHeader($file_name)));
                     if ($file_name === '' || $file_name === '.' || $file_name === '..') {
                         unset($file_content);
                         continue;
@@ -534,36 +520,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 }
             }
         } else {
-            $charset = $partdata['content-charset'] ?? 'UTF-8';
-            $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
-
-            $transfer_encoding = $partdata['transfer-encoding'] ?? '';
-            switch ($transfer_encoding) {
-                case 'base64':
-                    $mail_body = base64_decode($mail_body);
-                    break;
-                case 'quoted-printable':
-                    $mail_body = quoted_printable_decode($mail_body);
-                    break;
-            }
-
-            try {
-                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
-            } catch (\ValueError $e) {
-                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
-            }
-
-            $contenttype = 'text/plain';
-
-            if ($partdata['content-type'] == 'text/html') {
-                if ($use_html) {
-                    $contenttype = 'text/html';
-                    $mail_body = $hm_purifier->purify($mail_body);
-                } else {
-                    $html2text = new \Html2Text\Html2Text($mail_body, array());
-                    $mail_body = $html2text->getText();
-                }
-            }
+            list($mail_body, $contenttype) = decodeMailBody($part, $buffer, $partdata, $use_html, $hm_purifier ?? null);
         }
 
         mailparse_msg_free($mail);
