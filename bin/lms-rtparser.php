@@ -485,7 +485,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         continue;
                     }
 
-                    if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
+                    if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0
+                        && ($imageSize = @getimagesizefromstring($file_content))
+                        && $imageSize[0] > 0 && $imageSize[1] > 0 && $imageSize[0] <= 8192 && $imageSize[1] <= 8192
+                    ) {
                         try {
                             $imagick = new \Imagick();
                             $imagick->readImageBlob($file_content);
@@ -504,6 +507,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             }
                             $imagick->clear();
                         } catch (\Exception $e) {
+                            if (isset($imagick)) {
+                                $imagick->clear();
+                            }
                             // keep original content
                         }
                     }
