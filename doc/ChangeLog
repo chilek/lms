@@ -1265,6 +1265,10 @@ version 28-git (????-??-??):
   - improvement: more precise web browser fingerprint calculation (it is used in trusted device management
     process) [chilan]
   - enhancement: new 'rt.parser_max_date_age' configuration variable (days, default 3) [interduo]
+  - enhancement: lms-rtparser: send customer notifications as html when the received message is html [interduo]
+  - enhancement: lms-rtparser: log skipped automatic messages and messages without a matching queue [interduo]
+  - enhancement: lms-rtparser: find an existing ticket by In-Reply-To and any References entry [interduo]
+  - enhancement: lms-rtparser: link a new ticket to its resolved parent outside the reopen window [interduo]
 
 version 27.0 (2021-08-20):
 
