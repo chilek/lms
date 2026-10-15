@@ -10,6 +10,44 @@
 
 <script>
 
+{if ConfigHelper::checkConfig('rt.similar_tickets', true)}
+	function requestorField(boxId, invalidId, altId) {
+		var box = $(boxId);
+		var display = box.children('.scombobox-display');
+		var shown = display.length ? $.trim(display.val()) : '';
+		var stored = box.hasClass('scombobox') ? (box.scombobox('val') || '') : '';
+		if (shown && shown.indexOf(' (') === -1) {
+			return shown;
+		}
+		return stored || $(invalidId).val() || $(altId).val() || '';
+	}
+
+	function scheduleSimilarTickets() {
+		clearTimeout(scheduleSimilarTickets.timer);
+		scheduleSimilarTickets.timer = setTimeout(function () {
+			scheduleSimilarTickets.seq = (scheduleSimilarTickets.seq || 0) + 1;
+			xajax_suggestSimilarTickets(
+				$('[name="ticket[subject]"]').val(),
+				$('[name="ticket[custid]"]').val(),
+				requestorField('#requestor_mail_combobox', '#requestor_mail', '#requestor_customer_mail'),
+				requestorField('#requestor_phone_combobox', '#requestor_phone', '#requestor_customer_phone'),
+				scheduleSimilarTickets.seq
+			);
+		}, 400);
+	}
+
+	$(function() {
+		$(document).on(
+			'change input',
+			'[name="ticket[subject]"], [name="ticket[custid]"], #requestor_mail, #requestor_customer_mail, #requestor_phone, #requestor_customer_phone, #requestor_mail_combobox .scombobox-display, #requestor_phone_combobox .scombobox-display',
+			scheduleSimilarTickets
+		);
+		if ($('[name="ticket[subject]"]').val() || $('[name="ticket[custid]"]').val()) {
+			scheduleSimilarTickets();
+		}
+	});
+{/if}
+
 	$(function() {
 		$('[name="ticket[subject]"]').focus();
 	});

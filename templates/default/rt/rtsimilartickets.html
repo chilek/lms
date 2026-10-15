@@ -1,0 +1,15 @@
+<div class="lms-ui-box-container">
+	<div class="lms-ui-box-header">
+		<i class="lms-ui-icon-helpdesk fa-fw"></i>
+		<strong>{trans("Similar open tickets")}</strong>
+	</div>
+	<table class="lmsbox-inner">
+		<tbody>
+		{foreach $tickets as $ticket}
+			<tr class="highlight">
+				<td><a href="?m=rtticketview&id={$ticket.id|escape}" target="_blank" rel="noopener">#{$ticket.id|escape} {$ticket.subject|escape}</a> ({$ticket.queuename|escape}{if $ticket.requestorlabel}, {$ticket.requestorlabel|escape}{/if})</td>
+			</tr>
+		{/foreach}
+		</tbody>
+	</table>
+</div>
