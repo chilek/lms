@@ -1,0 +1,137 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+
+<h1>{trans("Periodic tickets")}</h1>
+
+<style>
+@media (max-width: 768px) {
+    .periodic-tickets-table thead {
+        display: none;
+    }
+
+    .periodic-tickets-table tbody tr {
+        display: block;
+    }
+
+    .periodic-tickets-table tr {
+	padding: 5px;
+    }
+
+    .periodic-tickets-table td {
+        display: flex;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    /* Etykiety kolumn */
+    .periodic-tickets-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        min-width: 120px;
+    }
+
+    /* Temat wyrównany do góry przy długich tekstach */
+    .periodic-tickets-table td.subject-cell {
+        align-items: flex-start;
+    }
+
+    .periodic-tickets-table tr[data-target-url] {
+        cursor: pointer;
+    }
+}
+</style>
+
+<form method="GET" action="?m=rtperiodiclist" name="filter" form="filter-form">
+    <input type="submit" class="hiddenbtn">
+    <input type="hidden" name="m" value="rtperiodiclist">
+
+    <label class="nobr">{trans("Queue")}</label>
+
+    <input type="hidden" name="id" value="all">
+
+    <select size="1"
+            name="queueids[]"
+            OnChange="document.filter.submit();"
+            multiple
+            class="lms-ui-multiselect lms-ui-multiselect-filter"
+            data-default-value="{trans("— all —")}">
+
+        {foreach $queuelist as $q}
+            <option value="{$q.id}"
+                {if is_array($filter.queueids) && in_array($q.id, $filter.queueids)} selected{/if}>
+                {$q.name}
+            </option>
+        {/foreach}
+    </select>
+</form>
+
+{foreach $EVENT_PERIODICITY as $periodicity => $meta}
+    {assign var="periodTickets" value=$events[$periodicity]|default:[]}
+
+    <div class="lmsbox-body">
+    <h3>Cykliczność {$meta.label}</h3>
+
+    <table class="lmsbox lms-ui-background-cycle periodic-tickets-table">
+        <thead>
+            <tr>
+                <th style="width: 90px;">{trans("Ticket ID")}</th>
+                <th class="text-center" style="width: 90px;">{trans("Queue")}</th>
+                <th>{trans("Subject")}</th>
+                <th class="text-center" style="width: 180px;">{trans("Planned date")}</th>
+                <th class="text-center" style="width: 90px;">{trans("Actions")}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {if empty($periodTickets)}
+                <tr>
+                    <td colspan="5" class="empty-table text-center">
+                        {trans("No events in this category.")}
+                    </td>
+                </tr>
+            {else}
+                {foreach $periodTickets as $ticket}
+                <tr data-target-url="?m=rtticketview&id={$ticket.ticketid}"
+                    class="highlight{if $ticket.next_run < $smarty.now} lms-ui-warning{/if}">
+
+                    <td data-label="{trans("Ticket ID")}">
+                        {$ticket.ticketid}
+                    </td>
+
+                    <td data-label="{trans("Queue")}" class="text-center">
+                        {$ticket.queue_name}
+                    </td>
+
+                    <td data-label="{trans("Subject")}" class="subject-cell">
+                        {$ticket.subject|escape}
+                    </td>
+
+                    <td data-label="{trans("Planned date")}" class="text-center">
+                        {if $ticket.next_run > 0}
+                            {$ticket.next_run|date_format:"%Y-%m-%d %H:%M"}&nbsp;
+                            {button type='link'
+                                    href="?m=eventinfo&id={$ticket.next_run_id}"
+                                    tip='Show in timetable'
+                                    icon='timetable'}
+                        {else}
+                            <span class="alert">{trans("Not scheduled")}</span>
+                        {/if}
+                    </td>
+
+                    <td data-label="{trans("Actions")}" class="actions-cell text-center">
+                        {button type='link'
+                                href="?m=rtticketedit&id={$ticket.ticketid}"
+                                tip='Edit'
+                                icon='edit'}
+                    </td>
+
+                </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>
+{/foreach}
+
+{/block}
