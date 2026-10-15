@@ -1269,6 +1269,10 @@ version 28-git (????-??-??):
   - enhancement: customer search can be limited by active tariff maximum download and upload speed range
     (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
+  - enhancement: suggest similar open tickets (same customer, phone or e-mail, and a similar subject
+    or recently created) when adding a ticket; new 'rt.similar_tickets' (default: true),
+    'rt.similar_tickets_limit' (default: 8) and 'rt.similar_tickets_days' (default: 30)
+    configuration variables [interduo]
 
 version 27.0 (2021-08-20):
 
