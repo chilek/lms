@@ -28,7 +28,7 @@ $action = $_GET['action'] ?? '';
 
 if (!$LMS->NodeExists($_GET['id'])) {
     if (isset($_GET['ownerid'])) {
-        header('Location: ?m=customerinfo&id=' . $_GET['ownerid']);
+        header('Location: ?m=customerinfo&id=' . intval($_GET['ownerid']));
     } else {
         header('Location: ?m=nodelist');
     }

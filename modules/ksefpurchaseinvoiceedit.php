@@ -316,7 +316,7 @@ switch ($action) {
             ];
         }
 
-        $encoding = $_POST['encoding'] ?? 'UTF-8';
+        $encoding = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_POST['encoding'] ?? 'UTF-8');
 
         $fileName = trans('transfers-$a.csv', date('Ymd-His'));
 
