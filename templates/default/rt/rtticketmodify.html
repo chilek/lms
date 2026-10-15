@@ -325,6 +325,15 @@
 				</SELECT>
 			{/box_row}
 
+			{box_row icon="reload" label="Scheduling" icon_class="fa-fw"}
+				<select size="1" id="periodicity" name="ticket[periodicity]">
+					{foreach $_EVENT_PERIODICITY as $idx => $per}
+					<option value="{$idx}"{if $ticket.periodicity == $idx} selected{/if}>{trans($per.label)}</option>
+					{/foreach}
+				</select>
+				{hint content="Set scheduling to automatically create assigned events.<br>Creation time is counted from the last assigned event, or from the moment the ticket was created if there are no events."}
+			{/box_row}
+
 {if $layout.module != 'eventadd'}
 			{box_row icon="location" label="Location" icon_class="fa-fw"}
 				{if $ticket.address_id > 0 && $customerid}
