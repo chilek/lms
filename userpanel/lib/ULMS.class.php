@@ -48,8 +48,16 @@ class ULMS extends LMS
 
     public function GetCustomer($id, $short = false)
     {
-        if (($result = $this->DB->GetRow('SELECT c.*, '.$this->DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername
-			FROM customeraddressview c WHERE c.id = ?', array($id)))) {
+        if (($result = $this->DB->GetRow(
+            'SELECT c.*,
+                ' . $this->DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+                d.shortname AS division,
+                d.label AS division_label
+            FROM customeraddressview c
+            LEFT JOIN divisions d ON d.id = c.divisionid
+            WHERE c.id = ?',
+            array($id)
+        ))) {
             if (!$short) {
                 $result['balance'] = $this->GetCustomerBalance($result['id']);
 
