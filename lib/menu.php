@@ -748,6 +748,12 @@ $menu = array(
                     'tip' => trans('Add new ticket'),
                     'prio' => 60,
                 ),
+                'rtperiodiclist' => array(
+                    'name' => trans('Periodic tickets'),
+                    'link' => '?m=rtperiodiclist',
+                    'tip' => trans('Periodic tickets'),
+                    'prio' => 65,
+                ),
                 'rtprint' => array(
                     'name' => trans('Reports'),
                     'link' => '?m=rtprint',

@@ -37,16 +37,21 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function EventAdd($event)
     {
+        $authorId = Auth::GetCurrentUser();
+        if (empty($authorId) && !empty($event['loggedas'])) {
+            $authorId = $event['loggedas'];
+        }
+
         $args = array(
-            'title' => $event['title'],
-            'description' => Utils::removeInsecureHtml($event['description']),
+            'title' => $event['title'] ?? '',
+            'description' => Utils::removeInsecureHtml($event['description'] ?? ''),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
             'endtime' => $event['endtime'],
-            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            SYSLOG::RES_USER => $authorId,
             'private' => $event['private'],
-            'note' => $event['note'],
+            'note' => $event['note'] ?? '',
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
@@ -95,14 +100,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         if (!empty($event['ticketid'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
             $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
-            $messagebody = trans('Assigned event ($a) has been created.', $a = $id);
+            $queueId = $ticketqueue['id'] ?? 0;
+            $messageid = '<msg.' . $queueId . '.' . $event['ticketid'] . '.' . $id
+                . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $messagebody = trans('Assigned event ($a) has been created.', $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
                 'ticketid' => $event['ticketid'],
                 'messageid' => $messageid,
                 'body' => $messagebody,
                 'type' => RTMESSAGE_ASSIGNED_EVENT_ADD,
+                'userid' => $authorId,
+                'queue' => $queueId,
             ));
         }
 
