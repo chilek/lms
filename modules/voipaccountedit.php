@@ -26,9 +26,9 @@
 
 if (!$LMS->VoipAccountExists($_GET['id'])) {
     if (isset($_GET['ownerid'])) {
-        header('Location: ?m=customerinfo&id='.$_GET['ownerid']);
+        $SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
     } else {
-        header('Location: ?m=voipaccountlist');
+        $SESSION->redirect('?m=voipaccountlist');
     }
 }
 

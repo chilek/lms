@@ -127,7 +127,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_postedit()
     {
-        global $SMARTY,$_POST;
+        global $SMARTY, $SESSION, $_POST;
         if ($_POST['title'] == '') {
             $error['title'] = trans('This cannot be empty');
         }
@@ -136,7 +136,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         }
         if (!$error) {
             update_solution($_POST['id'], $_POST['title'], Utils::removeInsecureHtml($_POST['body']));
-            header('Location: ?m=userpanel&module=help');
+            $SESSION->redirect('?m=userpanel&module=help');
         } else {
             $solution['id'] = $_POST['id'];
             $solution['title'] = $_POST['title'];
@@ -149,9 +149,9 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_delete()
     {
-        global $SMARTY,$_GET;
+        global $SMARTY, $SESSION, $_GET;
         delete_solution($_GET['nr']);
-        header('Location: ?m=userpanel&module=help');
+        $SESSION->redirect('?m=userpanel&module=help');
     }
 
     function module_add()
@@ -164,7 +164,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_postadd()
     {
-        global $SMARTY,$_POST;
+        global $SMARTY, $SESSION, $_POST;
         if ($_POST['refid'] == '') {
             $_POST['refid'] = 0;
         }
@@ -176,7 +176,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         }
         if (empty($error)) {
             add_solution($_POST['refid'], $_POST['title'], Utils::removeInsecureHtml($_POST['body']));
-            header('Location: ?m=userpanel&module=help');
+            $SESSION->redirect('?m=userpanel&module=help');
         } else {
             $solution['refid'] = $_POST['refid'];
             $solution['title'] = $_POST['title'];

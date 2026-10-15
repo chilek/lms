@@ -44,4 +44,4 @@ if ($id) {
     $DB->CommitTrans();
 }
 
-header('Location: ?m=domainlist');
+$SESSION->redirect('?m=domainlist');
