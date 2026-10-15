@@ -49,6 +49,16 @@
 			{$ticket.uptime}
 		</TD>
 	</TR>
+	{if $ticket.periodicity}
+	<tr>
+		<td class="bold nobr">
+			{icon name="reload" label="Scheduling"}
+		</td>
+		<td>
+			{trans($_EVENT_PERIODICITY[$ticket.periodicity].label)}
+		</td>
+	</tr>
+	{/if}
 	<TR>
 		<TD class="bold nobr">
 			{icon name="cause" label="Cause"}
