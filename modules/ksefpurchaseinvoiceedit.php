@@ -302,7 +302,7 @@ switch ($action) {
                 substr($buyerBankAccount, preg_match('/^[a-z]{2}/i', $buyerBankAccount) ? 4 : 2, 8),
                 0,
                 '"' . $buyerBankAccount . '"',
-                '"' . $sellerBankAccount . '"',
+                '"' . preg_replace('/^pl/i', '', $sellerBankAccount) . '"',
                 '"' . str_replace('"', '""', $invoice['division_name']) . '"',
                 '"' . str_replace('"', '""', mb_substr($invoice['seller_name'], 0, 35)) . '"',
                 0,
