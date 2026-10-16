@@ -877,10 +877,11 @@ function handleRtparserMessage()
                 $phone = preg_replace('/[^0-9]/', '', $phone);
 
                 $reqcustid = $DB->GetCol(
-                    "SELECT c.id
+                    "SELECT DISTINCT c.id
                     FROM customers c
                     JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-                    WHERE REPLACE(REPLACE(contact, ' ', ''), '-', '') ?LIKE? ?",
+                    WHERE c.deleted = 0
+                        AND REPLACE(REPLACE(contact, ' ', ''), '-', '') ?LIKE? ?",
                     array(
                         CONTACT_MOBILE | CONTACT_LANDLINE,
                         '%' . $phone,
@@ -904,9 +905,11 @@ function handleRtparserMessage()
         } elseif ($fromMayIdentify && $fromemail !== '') {
             // find customerid
             $reqcustid = $DB->GetCol(
-                "SELECT c.id FROM customers c
+                "SELECT DISTINCT c.id
+                FROM customers c
                 JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-                WHERE LOWER(cc.contact) = LOWER(?)",
+                WHERE c.deleted = 0
+                    AND LOWER(cc.contact) = LOWER(?)",
                 [
                     CONTACT_EMAIL,
                     $fromemail,
