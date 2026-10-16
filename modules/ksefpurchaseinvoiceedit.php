@@ -263,6 +263,9 @@ switch ($action) {
 
         break;
     case 'transfer-file':
+        $encoding = $_POST['encoding'] ?? 'UTF-8';
+        $splitPayment = !empty($_POST['split-payment']);
+
         $invoices = $DB->GetAll(
             'SELECT
                 i.*,
@@ -307,16 +310,17 @@ switch ($action) {
                 '"' . str_replace('"', '""', mb_substr($invoice['seller_name'], 0, 35)) . '"',
                 0,
                 substr($sellerBankAccount, preg_match('/^[a-z]{2}/i', $sellerBankAccount) ? 4 : 2, 8),
-                //'"' . trans('<!ksef>invoice no. $a', $invoice['invoice_number']) . '"',
-                '"' . mb_substr($invoice['invoice_number'], 0, 35) . '"',
+                //'"' .  . '"',
+                '"' . ($splitPayment
+                    ? '/VAT/' . str_replace('.', ',', round($invoice['vat_amount'], 2)) . '/IDC/' . $invoice['seller_ten'] . '/INV/' . mb_substr($invoice['invoice_number'], 0, 35) . '/TXT/' . mb_substr($invoice['invoice_number'], 0, 33)
+                    : implode('|', mb_str_split(trans('<!ksef>invoice no. $a', $invoice['invoice_number']), 35, 'UTF-8')))
+                . '"',
                 '""',
                 '""',
-                '"51"',
+                '"' . ($splitPayment ? '53' : '51') . '"',
                 '"' . $invoice['id'] . '"',
             ];
         }
-
-        $encoding = $_POST['encoding'] ?? 'UTF-8';
 
         $fileName = trans('transfers-$a.csv', date('Ymd-His'));
 
