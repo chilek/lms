@@ -271,10 +271,15 @@ CREATE TABLE twofactorauthtrusteddevices (
     useragent  varchar(256) NOT NULL,
     ipaddr int(16) DEFAULT NULL,
     expires    int(16)      NOT NULL,
+    tokenhash varchar(64) DEFAULT NULL,
+    fingerprint text DEFAULT NULL,
+    fingerprintversion int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT twofactorauthtrusteddevices_userid_fkey
-        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY twofactorauthtrusteddevices_tokenhash_idx (tokenhash)
 ) ENGINE=InnoDB;
+
 
 # --------------------------------------------------------
 #
@@ -4708,4 +4713,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026100600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026101200');

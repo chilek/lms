@@ -59,6 +59,7 @@ class Auth
     private $twofactorauthsecretkey = null;
     private $authcode = null;
     private $trusteddevice = false;
+    private $browserFingerprint = null;
     public $error;
     public $_version = '1.11-git';
     public $_revision = '$Revision$';
@@ -132,6 +133,7 @@ class Auth
                 $this->trusteddevice = isset($loginform['trusteddevice']);
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
             } elseif (isset($loginform['login'])) {
+                $this->SESSION->save('session_browser_fingerprint', null);
                 $components = explode('#', $loginform['login']);
                 $this->login = $login = $components[0];
                 $targetLogin = count($components) == 2 ? $components[1] : null;
@@ -177,6 +179,7 @@ class Auth
 
             if (isset($loginform)) {
                 $this->SESSION->regenerateSID();
+                $this->SESSION->save('session_browser_fingerprint', null);
                 $this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
                 writesyslog('User '.$this->login . (empty($this->authcode) ? '' : ' (authentication code)') . ' logged in.', LOG_INFO);
                 if ($this->SYSLOG) {
@@ -479,6 +482,7 @@ class Auth
                             )
                     ) < 10) {
                         $this->SESSION->restore('session_passverified', $this->passverified);
+                        $this->restoreLoginFingerprint();
                         $google2fa = new Google2FA();
                         if ($this->passverified && $google2fa->verifyKey(
                             $user['twofactorauthsecretkey'],
@@ -551,12 +555,15 @@ class Auth
                     $this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
                     $this->accessto = $this->VerifyAccessTo($user['accessto']);
                     $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                    if ($this->islogged) {
+                        $this->saveLoginFingerprint($_POST['loginform']['fingerprint'] ?? null);
+                    }
                     if (!$this->trustedhost && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
                         $this->SESSION->save('session_passverified', $this->passverified);
                     }
 
                     if ($this->islogged && !$this->trustedhost && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
-                        if ($this->isTrustedDevice() && $this->passverified) {
+                        if ($this->isTrustedDevice()) {
                             $this->authcoderequired = '';
                         } else {
                             $this->authcoderequired = $this->login;
@@ -613,110 +620,275 @@ class Auth
         return $des_key;
     }
 
+    private function parseBrowserFingerprint($json)
+    {
+        if (!is_string($json) || $json === '' || strlen($json) > 8192) {
+            return null;
+        }
+
+        $data = json_decode($json, true);
+        if (!is_array($data) || ($data['version'] ?? null) !== 1) {
+            return null;
+        }
+
+        $strings = ['os' => 32, 'browser' => 32, 'platform' => 100,
+            'canvas' => 64, 'webglRenderer' => 512, 'webglVendor' => 256,
+            'timezone' => 100];
+        $result = ['version' => 1];
+        foreach ($strings as $field => $limit) {
+            $value = $data[$field] ?? null;
+            if ($value !== null && (!is_string($value) || strlen($value) > $limit)) {
+                return null;
+            }
+            $result[$field] = $value === '' ? null : $value;
+        }
+        if (!in_array($result['os'], ['windows', 'linux', 'macos', 'android', 'ios'], true)
+            || !in_array($result['browser'], ['chrome', 'firefox', 'edge', 'opera', 'safari'], true)
+            || ($result['canvas'] !== null && !preg_match('/^[a-f0-9]{64}$/D', $result['canvas']))) {
+            return null;
+        }
+
+        foreach (['hardwareConcurrency' => [1, 1024], 'deviceMemory' => [0, 4096],
+            'maxTouchPoints' => [0, 100], 'colorDepth' => [1, 128],
+            'pixelRatio' => [0.1, 20]] as $field => [$min, $max]) {
+            $value = $data[$field] ?? null;
+            if ($value !== null && ((!is_int($value) && !is_float($value)) || $value < $min || $value > $max)) {
+                return null;
+            }
+            $result[$field] = $value;
+        }
+
+        $languages = $data['languages'] ?? [];
+        if (!is_array($languages) || count($languages) > 5) {
+            return null;
+        }
+        foreach ($languages as $language) {
+            if (!is_string($language) || strlen($language) > 32) {
+                return null;
+            }
+        }
+        $result['languages'] = array_values($languages);
+        return $result;
+    }
+
+    private function fingerprintWeights()
+    {
+        return ['os' => 15, 'browser' => 15, 'platform' => 5,
+            'canvas' => 15, 'webglRenderer' => 10, 'webglVendor' => 5,
+            'languages' => 10, 'timezone' => 5, 'hardwareConcurrency' => 5,
+            'deviceMemory' => 5, 'maxTouchPoints' => 5, 'colorDepth' => 3,
+            'pixelRatio' => 2];
+    }
+
+    private function fingerprintCoverage(array $fingerprint)
+    {
+        $coverage = 0;
+        foreach ($this->fingerprintWeights() as $field => $weight) {
+            $value = $fingerprint[$field] ?? null;
+            if ($value !== null && $value !== '' && $value !== []) {
+                $coverage += $weight;
+            }
+        }
+        return $coverage;
+    }
+
+    private function compareBrowserFingerprints(array $stored, array $current)
+    {
+        if (($stored['version'] ?? null) !== 1 || ($current['version'] ?? null) !== 1) {
+            return 0;
+        }
+        foreach (['os', 'browser'] as $field) {
+            if (empty($stored[$field]) || $stored[$field] !== ($current[$field] ?? null)) {
+                return 0;
+            }
+        }
+        if ($this->fingerprintCoverage($stored) < 90 || $this->fingerprintCoverage($current) < 90) {
+            return 0;
+        }
+        $score = 0;
+        foreach ($this->fingerprintWeights() as $field => $weight) {
+            if (isset($stored[$field], $current[$field]) && $stored[$field] === $current[$field]) {
+                $score += $weight;
+            }
+        }
+        return $score;
+    }
+
+    private function saveLoginFingerprint($json)
+    {
+        $this->browserFingerprint = $this->parseBrowserFingerprint($json);
+        $this->SESSION->save('session_browser_fingerprint', [
+            'userid' => $this->id,
+            'created_at' => time(),
+            'data' => $this->browserFingerprint,
+        ]);
+    }
+
+    private function restoreLoginFingerprint()
+    {
+        $entry = null;
+        $this->SESSION->restore('session_browser_fingerprint', $entry);
+        $this->browserFingerprint = null;
+        if (!is_array($entry) || !isset($entry['userid'], $entry['created_at'])
+            || (int) $entry['userid'] !== (int) $this->id
+            || !is_int($entry['created_at']) || $entry['created_at'] > time()
+            || time() - $entry['created_at'] > 300 || !is_array($entry['data'] ?? null)) {
+            return;
+        }
+        $json = json_encode($entry['data']);
+        $this->browserFingerprint = $this->parseBrowserFingerprint($json);
+    }
+
     private function getTrustedDeviceParams()
     {
-        $des_key = $this->getDesKey();
-
-        $user_agent = hash_hmac(
-            'md5',
-            filter_input(INPUT_SERVER, 'HTTP_USER_AGENT') ?: "\0\0\0\0\0",
-            $des_key
-        );
+        $desKey = $this->getDesKey();
         $key = hash_hmac(
             'sha256',
-            implode("\2\1\2", array($this->logname, $this->twofactorauthsecretkey)),
-            $des_key,
+            implode("\2\1\2", [$this->logname, $this->twofactorauthsecretkey]),
+            $desKey,
             true
         );
-        $iv = hash_hmac(
-            'md5',
-            implode("\3\2\3", array($this->logname, $this->twofactorauthsecretkey)),
-            $des_key,
-            true
-        );
-        $name = hash_hmac(
-            'md5',
-            $this->logname,
-            $des_key
-        );
+        $name = hash_hmac('md5', $this->logname, $desKey);
+        return compact('key', 'name');
+    }
 
-        return compact('user_agent', 'key', 'iv', 'name', 'des_key');
+    private function buildTrustedDeviceCookie(array $cryptoParams, $expires)
+    {
+        $rand = bin2hex(random_bytes(32));
+        $nonce = random_bytes(12);
+        $plaintext = json_encode(['version' => 2, 'expires' => (int) $expires, 'rand' => $rand]);
+        $tag = '';
+        $ciphertext = openssl_encrypt(
+            $plaintext,
+            'aes-256-gcm',
+            $cryptoParams['key'],
+            OPENSSL_RAW_DATA,
+            $nonce,
+            $tag,
+            $cryptoParams['name'],
+            16
+        );
+        if ($ciphertext === false) {
+            return false;
+        }
+        return [
+            'cookie' => 'v2.' . rtrim(strtr(base64_encode($nonce . $tag . $ciphertext), '+/', '-_'), '='),
+            'tokenhash' => hash('sha256', $rand),
+        ];
+    }
+
+    private function decodeTrustedDeviceCookie($value, array $cryptoParams)
+    {
+        if (!is_string($value) || strlen($value) > 2048
+            || !preg_match('/^v2\.([a-zA-Z0-9_-]+)$/D', $value, $matches)) {
+            return null;
+        }
+        $encoded = $matches[1];
+        $raw = base64_decode(strtr($encoded, '-_', '+/')
+            . str_repeat('=', (4 - strlen($encoded) % 4) % 4), true);
+        if ($raw === false || strlen($raw) < 29) {
+            return null;
+        }
+        $plaintext = openssl_decrypt(
+            substr($raw, 28),
+            'aes-256-gcm',
+            $cryptoParams['key'],
+            OPENSSL_RAW_DATA,
+            substr($raw, 0, 12),
+            substr($raw, 12, 16),
+            $cryptoParams['name']
+        );
+        if ($plaintext === false) {
+            return null;
+        }
+        $data = json_decode($plaintext, true);
+        if (!is_array($data) || ($data['version'] ?? null) !== 2
+            || !is_int($data['expires'] ?? null) || !is_string($data['rand'] ?? null)
+            || !preg_match('/^[a-f0-9]{64}$/D', $data['rand'])) {
+            return null;
+        }
+        return $data;
     }
 
     // remember option by https://github.com/corrideat/
     public function addTrustedDevice()
     {
-        $crypto_params = $this->getTrustedDeviceParams();
-        extract($crypto_params);
-
-        $expires = time() + ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400);
-        $rand = mt_rand();
-        $signature = hash_hmac(
-            'sha512',
-            implode("\1\0\1", array($this->logname, $this->twofactorauthsecretkey, $user_agent, $rand, $expires)),
-            $des_key,
-            true
-        );
-        $plain_content = sprintf("%d:%d:%s", $expires, $rand, $signature);
-        $encrypted_content = openssl_encrypt($plain_content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-        if ($encrypted_content !== false) {
-            $b64_encrypted_content = strtr(base64_encode($encrypted_content), '+/=', '-_,');
-            setcookie($name, $b64_encrypted_content, $expires);
-            $this->DB->Execute(
-                'INSERT INTO twofactorauthtrusteddevices (userid, cookiename, useragent, ipaddr, expires) VALUES (?, ?, ?, INET_ATON(?), ?)',
-                array($this->id, $name, filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'), $this->ip, $expires)
-            );
-            return true;
+        if (!is_array($this->browserFingerprint)
+            || $this->fingerprintCoverage($this->browserFingerprint) < 90) {
+            return false;
         }
-
-        return false;
+        $cryptoParams = $this->getTrustedDeviceParams();
+        $expires = time() + (int) ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400);
+        try {
+            $cookie = $this->buildTrustedDeviceCookie($cryptoParams, $expires);
+        } catch (Exception $e) {
+            return false;
+        }
+        if ($cookie === false) {
+            return false;
+        }
+        $result = $this->DB->Execute(
+            'INSERT INTO twofactorauthtrusteddevices
+                (userid, cookiename, useragent, ipaddr, expires, tokenhash, fingerprint, fingerprintversion)
+                VALUES (?, ?, ?, INET_ATON(?), ?, ?, ?, ?)',
+            [$this->id, $cryptoParams['name'], $_SERVER['HTTP_USER_AGENT'] ?? '',
+                $this->ip, $expires, $cookie['tokenhash'], json_encode($this->browserFingerprint), 1]
+        );
+        if ($result === false) {
+            return false;
+        }
+        if (!setcookie($cryptoParams['name'], $cookie['cookie'], [
+            'expires' => $expires,
+            'path' => '/',
+            'httponly' => true,
+            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'samesite' => 'Lax',
+        ])) {
+            $this->DB->Execute(
+                'DELETE FROM twofactorauthtrusteddevices WHERE userid = ? AND tokenhash = ?',
+                [
+                    $this->id,
+                    $cookie['tokenhash'],
+                ]
+            );
+            return false;
+        }
+        return true;
     }
 
     public function isTrustedDevice()
     {
-        $crypto_params = $this->getTrustedDeviceParams();
-        extract($crypto_params);
-
-        $this->DB->Execute('DELETE FROM twofactorauthtrusteddevices WHERE expires < ?NOW?');
-
-        $b64_encrypted_content = filter_input(
-            INPUT_COOKIE,
-            $name,
-            FILTER_VALIDATE_REGEXP,
-            array('options' => array('regexp' => '/[a-zA-Z0-9_-]+,{0,3}/'))
-        );
-
-        if (is_string($b64_encrypted_content) && !empty($b64_encrypted_content) && strlen($b64_encrypted_content) % 4 === 0) {
-            $encrypted_content = base64_decode(strtr($b64_encrypted_content, '-_,', '+/='), true);
-            if ($encrypted_content !== false) {
-                $plain_content = openssl_decrypt($encrypted_content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-                if ($plain_content !== false) {
-                    $now = time();
-                    [$expires, $rand, $signature] = explode(':', $plain_content, 3);
-                    if ($this->DB->GetOne(
-                        'SELECT COUNT(*) FROM twofactorauthtrusteddevices
-                        WHERE userid = ? AND cookiename = ? AND expires = ?',
-                        array($this->id, $name, $expires)
-                    ) && $expires > $now && ($expires - $now) <= ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400)) {
-                        $signature_verification = hash_hmac(
-                            'sha512',
-                            implode("\1\0\1", array($this->logname, $this->twofactorauthsecretkey, $user_agent, $rand, $expires)),
-                            $des_key,
-                            true
-                        );
-                        // constant time
-                        $cmp = strlen($signature) ^ strlen($signature_verification);
-                        $signature = $signature ^ $signature_verification;
-                        for ($i = 0; $i < strlen($signature); $i++) {
-                            $cmp += ord($signature[$i]);
-                        }
-                        return ($cmp === 0);
-                    }
-                }
-            }
+        if (!is_array($this->browserFingerprint)) {
+            return false;
         }
-
-        return false;
+        $cryptoParams = $this->getTrustedDeviceParams();
+        $this->DB->Execute('DELETE FROM twofactorauthtrusteddevices WHERE expires < ?NOW?');
+        $data = $this->decodeTrustedDeviceCookie($_COOKIE[$cryptoParams['name']] ?? null, $cryptoParams);
+        if ($data === null) {
+            return false;
+        }
+        $now = time();
+        $maxLifetime = (int) ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400);
+        if ($data['expires'] <= $now || $data['expires'] - $now > $maxLifetime) {
+            return false;
+        }
+        $device = $this->DB->GetRow(
+            'SELECT fingerprint, fingerprintversion FROM twofactorauthtrusteddevices
+                WHERE userid = ? AND cookiename = ? AND tokenhash = ? AND expires = ?',
+            [$this->id, $cryptoParams['name'], hash('sha256', $data['rand']), $data['expires']]
+        );
+        if (!$device || (int) $device['fingerprintversion'] !== 1) {
+            return false;
+        }
+        $stored = $this->parseBrowserFingerprint($device['fingerprint']);
+        if ($stored === null) {
+            return false;
+        }
+        $minimumScore = max(
+            90,
+            min(100, (int) ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_min_score', 90))
+        );
+        return $this->compareBrowserFingerprints($stored, $this->browserFingerprint) >= $minimumScore;
     }
 
     public function removeTrustedDevices($userid = null, $deviceid = null)

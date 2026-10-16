@@ -48,6 +48,7 @@ class LMSSmarty extends Smarty
         $this->registerClass('Utils', 'Utils');
         $this->registerClass('EtherCodes', 'EtherCodes');
         $this->registerClass('LMSTcpdfTransferForm', 'LMSTcpdfTransferForm');
+        $this->registerClass('SYSLOG', 'SYSLOG');
 
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'trans', 'trans');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'date', 'date');
@@ -90,6 +91,11 @@ class LMSSmarty extends Smarty
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'str_pad', 'str_pad');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'max', 'max');
         $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_unique', 'array_unique');
+
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'is_null', 'is_null');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'location_str', 'location_str');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'array_flip', 'array_flip');
+        $this->registerPlugin(self::PLUGIN_MODIFIER, 'strpos', 'strpos');
     }
 
     public static function getInstance()

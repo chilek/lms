@@ -5,6 +5,7 @@
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 	{include file="language.html"}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 	<link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="{ConfigHelper::getConfig('phpui.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
     <title>{t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv}</title>
@@ -65,7 +66,8 @@
 			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br>
 			&copy; 2001-{$smarty.now|date_format:"Y"} LMS Developers
 		</span>
-		<form method="post" name="loginform" action="{$target|escape}">
+		<form method="post" name="loginform" id="loginform" action="{$target|escape}">
+			<input type="hidden" name="loginform[fingerprint]">
 			<table>
 				<tr>
 					<td class="text-right bold">
@@ -104,7 +106,120 @@
 </div>
 <script>
 
-	document.forms['loginform'].elements['loginform[login]'].focus();
+	(() => {
+		$('[name="loginform[login]"]:visible').focus();
+	})();
+
+
+	$(function () {
+		const $form = $('form[name="loginform"]');
+		const $fingerprint = $form.find('[name="loginform[fingerprint]"]');
+
+		if (!$form.length || !$fingerprint.length) {
+			return;
+		}
+
+		const fingerprintPromise = (async function () {
+			const ua = navigator.userAgent || '';
+
+			const browser = /Edg\/|EdgiOS\/|EdgA\//.test(ua) ? 'edge'
+				: /OPR\/|OPiOS\//.test(ua) ? 'opera'
+					: /Firefox\/|FxiOS\//.test(ua) ? 'firefox'
+						: /Chrome\/|CriOS\//.test(ua) ? 'chrome'
+							: /Safari\//.test(ua) ? 'safari' : 'other';
+
+			const os = /Android/i.test(ua) ? 'android'
+				: /iPhone|iPad|iPod/i.test(ua) ? 'ios'
+					: /Windows/i.test(ua) ? 'windows'
+						: /Macintosh|Mac OS X/i.test(ua) ? 'macos'
+							: /Linux/i.test(ua) ? 'linux' : 'other';
+
+			const fp = {
+				version: 1,
+				os,
+				browser,
+				platform: navigator.userAgentData?.platform || navigator.platform || null,
+				canvas: null,
+				webglRenderer: null,
+				webglVendor: null,
+				languages: $.makeArray(navigator.languages || []).slice(0, 5),
+				timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
+				hardwareConcurrency: navigator.hardwareConcurrency ?? null,
+				deviceMemory: navigator.deviceMemory ?? null,
+				maxTouchPoints: navigator.maxTouchPoints ?? null,
+				colorDepth: screen.colorDepth ?? null,
+				pixelRatio: window.devicePixelRatio ?? null
+			};
+
+			// Canvas fingerprint
+			try {
+				const canvas = $('<canvas>', {
+					width: 280,
+					height: 80
+				})[0];
+
+				const ctx = canvas.getContext('2d');
+
+				if (ctx && crypto.subtle) {
+					ctx.font = '18px Arial';
+					ctx.fillStyle = '#f60';
+					ctx.fillRect(10, 10, 120, 40);
+					ctx.fillStyle = '#069';
+					ctx.fillText('LMS+ fingerprint ąę€', 12, 35);
+
+					const bytes = new TextEncoder().encode(canvas.toDataURL());
+					const hash = await crypto.subtle.digest('SHA-256', bytes);
+
+					fp.canvas = $.map(new Uint8Array(hash), function (byte) {
+						return byte.toString(16).padStart(2, '0');
+					}).join('');
+				}
+			} catch (error) {
+				// Canvas may be unavailable or restricted.
+			}
+
+			// WebGL fingerprint
+			try {
+				const gl = $('<canvas>')[0].getContext('webgl');
+
+				if (gl) {
+					const ext = gl.getExtension('WEBGL_debug_renderer_info');
+
+					fp.webglVendor = gl.getParameter(
+						ext ? ext.UNMASKED_VENDOR_WEBGL : gl.VENDOR
+					);
+
+					fp.webglRenderer = gl.getParameter(
+						ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER
+					);
+				}
+			} catch (error) {
+				// WebGL may be unavailable or restricted.
+			}
+
+			return fp;
+		})();
+
+		let submitting = false;
+
+		$form.on('submit.fingerprint', async function (event) {
+			event.preventDefault();
+
+			if (submitting) {
+				return;
+			}
+
+			submitting = true;
+
+			try {
+				$fingerprint.val(JSON.stringify(await fingerprintPromise));
+			} catch (error) {
+				$fingerprint.val('');
+			}
+
+			HTMLFormElement.prototype.submit.call(this);
+		});
+	});
 
 </script>
 </body>

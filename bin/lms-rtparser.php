@@ -170,6 +170,27 @@ if (!function_exists('mailparse_msg_create')) {
     exit(2);
 }
 
+function parseAddressList($header)
+{
+    $addresses = [];
+    if (!strlen($header)) {
+        return $addresses;
+    }
+    foreach (mailparse_rfc822_parse_addresses($header) as $item) {
+        $address = trim($item['address']);
+        if (!empty($item['is_group']) || !check_email($address)) {
+            continue;
+        }
+        $display = $item['display'] == $item['address'] ? '' : (string) @iconv_mime_decode($item['display'], 0, 'UTF-8');
+        $addresses[] = [
+            'display' => trim(str_replace(["\r", "\n"], ' ', $display)),
+            'address' => $address,
+        ];
+    }
+
+    return $addresses;
+}
+
 class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
 {
     public $browsable = true;
@@ -203,7 +224,7 @@ $postid = null;
 
 if ($mode == MODE_IMAP) {
     if (!function_exists('imap_open')) {
-        fprintf($stderr, "Fatal error: PHP IMAP extension is required!" . PGP_EOL);
+        fprintf($stderr, "Fatal error: PHP IMAP extension is required!" . PHP_EOL);
         exit(5);
     }
 
@@ -238,7 +259,8 @@ if ($mode == MODE_IMAP) {
 } else {
     if (isset($options['message-file'])) {
         if (!is_readable($options['message-file'])) {
-            die('Cannot read message file \'' . $options['message-file'] . '\'!' . PHP_EOL);
+            fprintf($stderr, "Cannot read message file '%s'!" . PHP_EOL, $options['message-file']);
+            exit(8);
         }
         $buffer = file_get_contents($options['message-file']);
     } else {
@@ -246,16 +268,16 @@ if ($mode == MODE_IMAP) {
     }
 }
 
+$defaultQueue = $queue;
+
 while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
-        $buffer = imap_fetchbody($ih, $postid, '');
-
-        if (!empty($set_flags)) {
-            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
-        }
+        $buffer = imap_fetchbody($ih, $postid, '', FT_PEEK);
     }
+
+    unset($msgid, $mail_customerinfo, $sms_customerinfo, $info, $emails, $queuedata, $prev_tid_contents);
+    $queue = $defaultQueue;
+    $contenttype = 'text/plain';
 
     if (!empty($buffer)) {
         if (!preg_match('/\r?\n$/', $buffer)) {
@@ -279,6 +301,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
+        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'date', 'auto-submitted', 'precedence'] as $headerName) {
+            if (isset($headers[$headerName]) && is_array($headers[$headerName])) {
+                $headers[$headerName] = implode($headerName == 'to' || $headerName == 'cc' ? ', ' : ' ', $headers[$headerName]);
+            }
+        }
+
         $return_paths = null;
         if (isset($headers['return-path'])) {
             if (is_array($headers['return-path'])) {
@@ -291,7 +319,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             });
         }
 
-        if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
+        $autoSubmitted = isset($headers['auto-submitted']) ? strtolower(trim((string) $headers['auto-submitted'])) : 'no';
+        $precedence = isset($headers['precedence']) ? strtolower(trim((string) $headers['precedence'])) : '';
+        if (!empty($return_paths) || $autoSubmitted != 'no' || in_array($precedence, ['bulk', 'junk', 'list', 'auto_reply'])) {
             mailparse_msg_free($mail);
 
             if ($postid !== false && $postid !== null) {
@@ -310,12 +340,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         $customCreateTime = isset($headers['date']) ? strtotime($headers['date']) : null;
-        $mh_from = iconv_mime_decode($headers['from']);
-        $mh_to = iconv_mime_decode($headers['to']);
-        $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
-        $mh_msgid = iconv_mime_decode($headers['message-id']);
+        $mh_from = isset($headers['from']) ? (string) iconv_mime_decode($headers['from']) : '';
+        $mh_msgid = isset($headers['message-id']) ? (string) iconv_mime_decode($headers['message-id']) : '';
         $mh_replyto = isset($headers['reply-to']) ? iconv_mime_decode($headers['reply-to']) : '';
-        $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']) : '';
+        $mh_subject = isset($headers['subject']) ? str_replace(["\r", "\n"], ' ', (string) iconv_mime_decode($headers['subject'])) : '';
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
@@ -349,10 +377,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $html = strpos($partdata['content-type'], 'html') !== false;
                 $isAttachment = isset($partdata['content-disposition']) && $partdata['content-disposition'] == 'attachment';
                 if (!$isAttachment
-                    && preg_match('/text/', $partdata['content-type'])
+                    && preg_match('#^text/(plain|html)$#i', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
-                    $charset = $partdata['content-charset'];
+                    $charset = $partdata['content-charset'] ?? 'UTF-8';
                     $transfer_encoding = $partdata['transfer-encoding'] ?? '';
                     switch ($transfer_encoding) {
                         case 'base64':
@@ -362,7 +390,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             $mail_body = quoted_printable_decode($mail_body);
                             break;
                     }
-                    $mail_body = iconv($charset, 'UTF-8', $mail_body);
+                    try {
+                        $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+                    } catch (\ValueError $e) {
+                        $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+                    }
 
                     $contenttype = 'text/plain';
 
@@ -381,10 +413,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         $subpart = mailparse_msg_get_part($mail, $subpartid);
                         $subpartdata = mailparse_msg_get_part_data($subpart);
                         $html = strpos($subpartdata['content-type'], 'html') !== false;
-                        if (preg_match('/text/', $subpartdata['content-type'])
+                        if (preg_match('#^text/(plain|html)$#i', $subpartdata['content-type'])
                             && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
-                            $charset = $subpartdata['content-charset'];
+                            $charset = $subpartdata['content-charset'] ?? 'UTF-8';
                             $transfer_encoding = $subpartdata['transfer-encoding'] ?? '';
                             switch ($transfer_encoding) {
                                 case 'base64':
@@ -394,7 +426,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                                     $mail_body = quoted_printable_decode($mail_body);
                                     break;
                             }
-                            $mail_body = iconv($charset, 'UTF-8', $mail_body);
+                            try {
+                                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+                            } catch (\ValueError $e) {
+                                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+                            }
 
                             $contenttype = 'text/plain';
 
@@ -426,23 +462,32 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         unset($file_content);
                         continue;
                     }
-                    $file_name = iconv_mime_decode($file_name);
+                    $file_name = basename(str_replace('\\', '/', (string) iconv_mime_decode($file_name)));
+                    if ($file_name === '' || $file_name === '.' || $file_name === '..') {
+                        unset($file_content);
+                        continue;
+                    }
 
                     if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
-                        $imagick = new \Imagick();
-                        $imagick->readImageBlob($file_content);
-                        $width = $imagick->getImageWidth();
-                        $height = $imagick->getImageHeight();
-                        if ($height > $width) {
-                            if ($height > $image_max_size) {
-                                $imagick->scaleImage(0, $image_max_size);
-                                $file_content = $imagick->getImageBlob();
+                        try {
+                            $imagick = new \Imagick();
+                            $imagick->readImageBlob($file_content);
+                            $width = $imagick->getImageWidth();
+                            $height = $imagick->getImageHeight();
+                            if ($height > $width) {
+                                if ($height > $image_max_size) {
+                                    $imagick->scaleImage(0, $image_max_size);
+                                    $file_content = $imagick->getImageBlob();
+                                }
+                            } else {
+                                if ($width > $image_max_size) {
+                                    $imagick->scaleImage($image_max_size, 0);
+                                    $file_content = $imagick->getImageBlob();
+                                }
                             }
-                        } else {
-                            if ($width > $image_max_size) {
-                                $imagick->scaleImage($image_max_size, 0);
-                                $file_content = $imagick->getImageBlob();
-                            }
+                            $imagick->clear();
+                        } catch (\Exception $e) {
+                            // keep original content
                         }
                     }
 
@@ -462,7 +507,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 }
             }
         } else {
-            $charset = $partdata['content-charset'];
+            $charset = $partdata['content-charset'] ?? 'UTF-8';
             $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
 
             $transfer_encoding = $partdata['transfer-encoding'] ?? '';
@@ -475,7 +520,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     break;
             }
 
-            $mail_body = iconv($charset, 'UTF-8', $mail_body);
+            try {
+                $mail_body = mb_convert_encoding($mail_body, 'UTF-8', $charset);
+            } catch (\ValueError $e) {
+                $mail_body = @iconv($charset, 'UTF-8//IGNORE', $mail_body) ?: mb_convert_encoding($mail_body, 'UTF-8', 'UTF-8');
+            }
 
             $contenttype = 'text/plain';
 
@@ -535,58 +584,48 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         // check email subject
-        if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
-            $prev_tid = sprintf('%d', $matches['ticketid']);
+        if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches) && isset($matches['ticketid'])) {
+            $prev_tid = intval($matches['ticketid']);
         }
 
         if ($prev_tid) {
             $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
-            $queue = $prev_tid_contents['queueid'];
+            if (empty($prev_tid_contents)) {
+                $prev_tid = 0;
+                $inreplytoid = null;
+            } else {
+                $queue = $prev_tid_contents['queueid'];
+            }
         }
 
         $mail_mh_subject = $mh_subject;
         $reqcustid = 0;
         $requserid = null;
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_replyto, $m)) {
-            $replytoname = $m['display'] ?? '';
-            $replytoemail = $m['address'];
-        } else {
-            $replytoname = $replytoemail = '';
+        $replyToAddresses = parseAddressList($headers['reply-to'] ?? '');
+        $replytoname = $replyToAddresses ? $replyToAddresses[0]['display'] : '';
+        $replytoemail = $replyToAddresses ? $replyToAddresses[0]['address'] : '';
+
+        $fromAddresses = parseAddressList($headers['from'] ?? '');
+        $fromname = $fromAddresses ? $fromAddresses[0]['display'] : '';
+        $fromemail = $fromAddresses ? $fromAddresses[0]['address'] : '';
+
+        $toemails = [];
+        foreach (parseAddressList($headers['to'] ?? '') as $address) {
+            $toemails[strtolower($address['address'])] = strtolower($address['address']);
         }
 
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_from, $m)) {
-            $fromname = $m['display'] ?? '';
-            $fromemail = $m['address'];
-        } else {
-            $fromname = $fromemail = '';
-        }
-
-        $toemails = array();
-
-        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
-            $toemails[strtolower($m['address'])] = strtolower($m['address']);
-        } elseif (!empty($mh_to)) {
-            $toemails[strtolower($mh_to)] = strtolower($mh_to);
-        }
-
-        $ccemails = array();
-        $_ccemails = preg_split('/\s*,\s*/', $mh_cc, null, PREG_SPLIT_NO_EMPTY);
-        if (!empty($_ccemails)) {
-            foreach ($_ccemails as $ccemail) {
-                if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
-                    $ccemails[strtolower($m['address'])] = $m['display'] ?? '';
-                } else {
-                    $ccemails[strtolower($ccemail)] = '';
-                }
-            }
+        $ccemails = [];
+        foreach (parseAddressList($headers['cc'] ?? '') as $address) {
+            $ccemails[strtolower($address['address'])] = $address['display'];
         }
 
         // find queue ID if not specified
         if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
             $queueid = $queue;
             $queue = $DB->GetRow(
-                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ? LIMIT 1",
+                "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ?"
+                    . ($check_mail && $queueid ? ' AND id = ' . intval($queueid) : '') . " LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
@@ -605,6 +644,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if (!$queue) {
             if ($mode == MODE_IMAP) {
+                if (!empty($set_flags)) {
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                } else {
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
+                }
                 $postid = next($posts);
                 $buffer = null;
                 continue;
@@ -655,7 +699,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $reqcustid = $DB->GetCol(
                 "SELECT c.id FROM customers c
                 JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-                WHERE cc.contact = ?",
+                WHERE LOWER(cc.contact) = LOWER(?)",
                 array(
                     CONTACT_EMAIL,
                     $fromemail,
@@ -668,15 +712,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
         }
 
+        $messageAutoreplyFrom = $autoreply_from;
+        $messageAutoreplyName = $autoreply_name;
+
         // get sender e-mail if not specified
-        if (!$autoreply_from) {
+        if (!$messageAutoreplyFrom) {
             $queue_autoreply = $DB->GetRow(
                 "SELECT email, name FROM rtqueues WHERE id = ?",
                 array($queue)
             );
             if (!empty($queue_autoreply)) {
-                $autoreply_from = $queue_autoreply['email'];
-                $autoreply_name = $autoreply_name ?: $queue_autoreply['name'];
+                $messageAutoreplyFrom = $queue_autoreply['email'];
+                $messageAutoreplyName = $messageAutoreplyName ?: $queue_autoreply['name'];
             }
         }
 
@@ -779,7 +826,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 FROM customercontacts cc
                 WHERE cc.customerid = ?
                     AND (cc.type & ?) = ?
-                    AND cc.contact = ?',
+                    AND LOWER(cc.contact) = LOWER(?)',
                 array(
                     $reqcustid,
                     CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
@@ -812,35 +859,38 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     $mailto_qp_encoded = (empty($fromname) ? '' : qp_encode($fromname) . ' ') . '<' . $fromemail . '>';
                 }
 
-                $headers = array(
-                    'From' => (empty($autoreply_name) ? '' : qp_encode($autoreply_name) . ' ') . '<' . $autoreply_from . '>',
+                $autoreplyHeaders = [
+                    'From' => (empty($messageAutoreplyName) ? '' : qp_encode($messageAutoreplyName) . ' ') . '<' . $messageAutoreplyFrom . '>',
                     'To' => $mailto_qp_encoded,
                     'Subject' => $current_autoreply_subject,
                     'References' => $mh_references . ' ' . $mh_msgid,
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
-                );
+                    'Auto-Submitted' => 'auto-replied',
+                ];
 
                 if ($autoreply_format == 'html') {
-                    $headers['X-LMS-Format'] = 'html';
+                    $autoreplyHeaders['X-LMS-Format'] = 'html';
                 }
 
                 if (!empty($reqcustid) && !empty($ccemails)) {
-                    $headers['Cc'] = implode(
+                    $autoreplyHeaders['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {
-                            return (empty($display) ? '' : $display . ' ') . '<' . $address . '>';
+                            return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
                         }, array_keys($ccemails), array_values($ccemails))
                     );
                 }
 
-                $LMS->SendMail($mailto, $headers, $current_autoreply_body, null, null, $smtp_options);
+                $LMS->SendMail($mailto, $autoreplyHeaders, $current_autoreply_body, null, null, $smtp_options);
             }
 
             $new_ticket = true;
         }
 
         $ticket = $LMS->GetTicketContents($ticket_id);
+
+        $headers = [];
 
         if ($notify || $ticket['customerid'] && $reqcustid) {
             $helpdesk_sender_name = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
@@ -857,13 +907,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $mailfname = '"' . $mailfname . '"';
             }
 
-            if ($qemail = $LMS->GetQueueEmail($queue)) {
-                $mailfrom = $qemail;
-            } elseif ($fromemail) {
-                $mailfrom = $fromemail;
-            } else {
-                $mailfrom = $autoreply_from;
-            }
+            $mailfrom = $LMS->DetermineSenderEmail(
+                empty($requserid) ? null : $fromemail,
+                $LMS->GetQueueEmail($queue),
+                $fromemail,
+                ConfigHelper::getConfig($config_section . '.sender_email', '', true)
+            ) ?: $messageAutoreplyFrom;
 
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
             $headers['Reply-To'] = $headers['From'];
@@ -951,19 +1000,21 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $headers['X-LMS-Format'] = 'html';
             }
 
-            $LMS->NotifyUsers(array(
-                'queue' => $queue,
-                'ticketid' => $ticket_id,
-                'mail_headers' => $headers,
-                'mail_body' => $body,
-                'sms_body' => $sms_body,
-                'contenttype' => $contenttype,
-                'attachments' => &$attachments,
-                'smtp_options' => $smtp_options,
-            ));
+            if ($notify) {
+                $LMS->NotifyUsers([
+                    'queue' => $queue,
+                    'ticketid' => $ticket_id,
+                    'mail_headers' => $headers,
+                    'mail_body' => $body,
+                    'sms_body' => $sms_body,
+                    'contenttype' => $contenttype,
+                    'attachments' => &$attachments,
+                    'smtp_options' => $smtp_options,
+                ]);
+            }
         }
 
-        if ($ticket['customerid'] && $reqcustid && !empty($mails)) {
+        if ($ticket['customerid'] && $reqcustid && !empty($emails)) {
             if ($new_ticket) {
                 $ticketsubject_variable = 'newticketsubject';
                 $ticketbody_variable = 'newticketbody';
