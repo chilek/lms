@@ -860,7 +860,7 @@ function handleRtparserMessage()
                 return;
             }
             fprintf($stderr, "Fatal error: Queue ID not found, exiting." . PHP_EOL);
-            exit(5);
+            exit(9);
         }
 
         // try to find customerid by phone number match
