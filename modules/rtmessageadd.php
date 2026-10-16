@@ -867,6 +867,11 @@ if (isset($_POST['message'])) {
                     $message['contenttype'] = 'text/plain';
                     break;
             }
+            // An HTML message always opens the visual editor, including when the
+            // reply content type is forced to plain text.
+            if ($reply['contenttype'] == 'text/html') {
+                $message['contenttype'] = 'text/html';
+            }
             $message['wysiwyg']['body'] = $message['contenttype'] == 'text/html' ? 'true' : 'false';
 
             $message['mailfrom'] = array();
