@@ -116,6 +116,9 @@ $ignore_sender_email = ConfigHelper::checkConfig($config_section . '.ignore_send
 
 $modify_ticket_timeframe = intval(ConfigHelper::getConfig($config_section . '.allow_modify_resolved_tickets_newer_than', 604800));
 $parserMaxDateAge = intval(ConfigHelper::getConfig($config_section . '.parser_max_date_age', 3));
+$parserAutoreplyLimit = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit', 10, true));
+$parserAutoreplyLimitPeriod = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit_period', 86400, true));
+$parserAutoreplyMaxCc = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_max_cc', 5, true));
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
@@ -204,6 +207,92 @@ function parseAddressList($header)
     }
 
     return $addresses;
+}
+
+function autoreplyDestinations($row)
+{
+    $destinations = [];
+    $replyTo = parseAddressList((string) ($row['replyto'] ?? ''));
+    if ($replyTo) {
+        $destinations[] = strtolower($replyTo[0]['address']);
+    } else {
+        $from = parseAddressList((string) ($row['mailfrom'] ?? ''));
+        if ($from) {
+            $destinations[] = strtolower($from[0]['address']);
+        }
+    }
+    if (!empty($row['customerid']) && preg_match_all('/^cc:[ \t]*(.*)$/im', str_replace("\r", '', (string) ($row['headers'] ?? '')), $matches)) {
+        foreach ($matches[1] as $ccHeader) {
+            foreach (parseAddressList($ccHeader) as $item) {
+                $destinations[] = strtolower($item['address']);
+            }
+        }
+    }
+
+    return array_values(array_unique($destinations));
+}
+
+function recentAutoreplyDestinationCounts()
+{
+    global $DB, $parserAutoreplyLimit, $parserAutoreplyLimitPeriod;
+
+    if ($parserAutoreplyLimit <= 0 || $parserAutoreplyLimitPeriod <= 0) {
+        return [];
+    }
+
+    $rows = $DB->GetAll(
+        'SELECT m.customerid, m.mailfrom, m.replyto, m.headers
+        FROM rtmessages m
+        WHERE m.createtime >= ?
+            AND m.type = ?
+            AND NOT EXISTS (
+                SELECT 1 FROM rtmessages older
+                WHERE older.ticketid = m.ticketid
+                    AND older.id < m.id
+            )',
+        [
+            time() - $parserAutoreplyLimitPeriod,
+            RTMESSAGE_REGULAR,
+        ]
+    ) ?: [];
+
+    $counts = [];
+    foreach ($rows as $row) {
+        foreach (autoreplyDestinations($row) as $address) {
+            $counts[$address] = ($counts[$address] ?? 0) + 1;
+        }
+    }
+
+    return $counts;
+}
+
+function autoreplyDestinationAllowed($address, $counts)
+{
+    global $parserAutoreplyLimit, $parserAutoreplyLimitPeriod;
+
+    if ($parserAutoreplyLimit <= 0 || $parserAutoreplyLimitPeriod <= 0) {
+        return true;
+    }
+
+    return ($counts[strtolower($address)] ?? 0) <= $parserAutoreplyLimit;
+}
+
+function limitAutoreplyCc($ccemails, $counts)
+{
+    global $parserAutoreplyMaxCc;
+
+    $limited = [];
+    foreach ($ccemails as $address => $display) {
+        if ($parserAutoreplyMaxCc > 0 && count($limited) >= $parserAutoreplyMaxCc) {
+            break;
+        }
+        if (!autoreplyDestinationAllowed($address, $counts)) {
+            continue;
+        }
+        $limited[$address] = $display;
+    }
+
+    return $limited;
 }
 
 function decodeMailBody($part, $message, $partData, $useHtml, $purifier)
@@ -883,7 +972,7 @@ function handleRtparserMessage()
                     AND LOWER(cc.contact) = LOWER(?)',
                 array(
                     $reqcustid,
-                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
+                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED,
                     CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
                     $fromemail,
                 )
@@ -913,30 +1002,42 @@ function handleRtparserMessage()
                     $mailto_qp_encoded = (empty($fromname) ? '' : qp_encode($fromname) . ' ') . '<' . $fromemail . '>';
                 }
 
-                $autoreplyHeaders = [
-                    'From' => (empty($messageAutoreplyName) ? '' : qp_encode($messageAutoreplyName) . ' ') . '<' . $messageAutoreplyFrom . '>',
-                    'To' => $mailto_qp_encoded,
-                    'Subject' => $current_autoreply_subject,
-                    'References' => $mh_references . ' ' . $mh_msgid,
-                    'In-Reply-To' => $mh_msgid,
-                    'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
-                    'Auto-Submitted' => 'auto-replied',
-                ];
-
-                if ($autoreply_format == 'html') {
-                    $autoreplyHeaders['X-LMS-Format'] = 'html';
-                }
-
-                if (!empty($reqcustid) && !empty($ccemails)) {
-                    $autoreplyHeaders['Cc'] = implode(
-                        ', ',
-                        array_map(function ($address, $display) {
-                            return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
-                        }, array_keys($ccemails), array_values($ccemails))
+                $autoreplyCounts = recentAutoreplyDestinationCounts();
+                if (!autoreplyDestinationAllowed($mailto, $autoreplyCounts)) {
+                    writesyslog(
+                        'Autoreply suppressed, limit reached for <' . decodeHeader($mailto)
+                            . '> (Message-ID: ' . decodeHeader($mh_msgid ?? '-') . ').',
+                        LOG_INFO
                     );
-                }
+                } else {
+                    $autoreplyHeaders = [
+                        'From' => (empty($messageAutoreplyName) ? '' : qp_encode($messageAutoreplyName) . ' ') . '<' . $messageAutoreplyFrom . '>',
+                        'To' => $mailto_qp_encoded,
+                        'Subject' => $current_autoreply_subject,
+                        'References' => $mh_references . ' ' . $mh_msgid,
+                        'In-Reply-To' => $mh_msgid,
+                        'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
+                        'Auto-Submitted' => 'auto-replied',
+                    ];
 
-                $LMS->SendMail($mailto, $autoreplyHeaders, $current_autoreply_body, null, null, $smtp_options);
+                    if ($autoreply_format == 'html') {
+                        $autoreplyHeaders['X-LMS-Format'] = 'html';
+                    }
+
+                    if (!empty($reqcustid) && !empty($ccemails)) {
+                        $ccLimited = limitAutoreplyCc($ccemails, $autoreplyCounts);
+                        if ($ccLimited) {
+                            $autoreplyHeaders['Cc'] = implode(
+                                ', ',
+                                array_map(function ($address, $display) {
+                                    return (empty($display) ? '' : qp_encode($display) . ' ') . '<' . $address . '>';
+                                }, array_keys($ccLimited), array_values($ccLimited))
+                            );
+                        }
+                    }
+
+                    $LMS->SendMail($mailto, $autoreplyHeaders, $current_autoreply_body, null, null, $smtp_options);
+                }
             }
 
             $new_ticket = true;
