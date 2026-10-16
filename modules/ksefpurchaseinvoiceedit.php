@@ -312,7 +312,7 @@ switch ($action) {
                 substr($sellerBankAccount, preg_match('/^[a-z]{2}/i', $sellerBankAccount) ? 4 : 2, 8),
                 //'"' .  . '"',
                 '"' . ($splitPayment
-                    ? '/VAT/' . str_replace('.', ',', round($invoice['vat_amount'], 2)) . '/IDC/' . $invoice['seller_ten'] . '/INV/' . mb_substr($invoice['invoice_number'], 0, 35) . '/TXT/' . mb_substr($invoice['invoice_number'], 0, 33)
+                    ? '/VAT/' . str_replace('.', ',', sprintf('%.2f', round($invoice['vat_amount'], 2))) . '/IDC/' . $invoice['seller_ten'] . '/INV/' . mb_substr($invoice['invoice_number'], 0, 35) . '/TXT/' . mb_substr($invoice['invoice_number'], 0, 33)
                     : implode('|', mb_str_split(trans('<!ksef>invoice no. $a', $invoice['invoice_number']), 35, 'UTF-8')))
                 . '"',
                 '""',
