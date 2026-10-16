@@ -2026,11 +2026,15 @@ CREATE TABLE nodesessions (
     nasport text		DEFAULT NULL,
     nasid text          DEFAULT NULL,
     location text       DEFAULT NULL,
+    nassessionid varchar(253) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
 CREATE INDEX nodesessions_tag_idx ON nodesessions(tag);
+CREATE INDEX nodesessions_nassessionid_idx ON nodesessions (nassessionid);
+CREATE INDEX nodesessions_start_idx ON nodesessions (start);
+CREATE INDEX nodesessions_stop_idx ON nodesessions (stop);
 
 /* --------------------------------------------------------
   Structure of table "stats"
@@ -4751,6 +4755,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026101200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026101600');
 
 COMMIT;
