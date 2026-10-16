@@ -81,6 +81,14 @@ abstract class LMSDB_common implements LMSDBInterface
 
     private $_upgrade_errors = array();
 
+    /**
+     * True while UpgradeDb() holds the migration transaction.
+     * BeginTrans() and CommitTrans() from the script are then ignored.
+     *
+     * @var bool|null
+     */
+    private $_upgrade_transaction = null;
+
     protected $sqlQueryTime = 0;
 
     /**
@@ -393,6 +401,9 @@ abstract class LMSDB_common implements LMSDBInterface
      */
     public function BeginTrans()
     {
+        if ($this->_upgrade_transaction === true) {
+            return true;
+        }
         return $this->_driver_begintrans();
     }
 
@@ -403,6 +414,9 @@ abstract class LMSDB_common implements LMSDBInterface
      */
     public function CommitTrans()
     {
+        if ($this->_upgrade_transaction === true) {
+            return true;
+        }
         return $this->_driver_committrans();
     }
 
@@ -816,6 +830,68 @@ abstract class LMSDB_common implements LMSDBInterface
         return $this->debug;
     }
 
+    /**
+     * Prints an upgrade message on the console. Web requests stay silent
+     * so output does not start before HTTP headers.
+     *
+     * @param string $message
+     */
+    private function _upgrade_log($message)
+    {
+        if (PHP_SAPI === 'cli') {
+            echo $message . PHP_EOL;
+        }
+    }
+
+    /**
+     * Formats a duration in seconds for upgrade logs.
+     *
+     * @param float $seconds
+     * @return string
+     */
+    private function _upgrade_format_duration($seconds)
+    {
+        $seconds = max(0, (float) $seconds);
+        if ($seconds >= 3600) {
+            $hours = (int) floor($seconds / 3600);
+            $minutes = (int) floor(fmod($seconds, 3600) / 60);
+            $rest = fmod($seconds, 60);
+            return sprintf('%d h %d min %.3f s', $hours, $minutes, $rest);
+        }
+        if ($seconds >= 60) {
+            $minutes = (int) floor($seconds / 60);
+            $rest = fmod($seconds, 60);
+            return sprintf('%d min %.3f s', $minutes, $rest);
+        }
+        return sprintf('%.3f s', $seconds);
+    }
+
+    /**
+     * A migration opts out of the runner transaction with its own line:
+     * // LMS-UPGRADE-TRANSACTION: off
+     *
+     * @param string $fname
+     * @return bool
+     */
+    private function _upgrade_transaction_disabled($fname)
+    {
+        $source = file_get_contents($fname);
+        return is_string($source)
+            && preg_match('/^\s*\/\/\s*LMS-UPGRADE-TRANSACTION:\s*off\s*$/m', $source) === 1;
+    }
+
+    /**
+     * Rolls back the transaction opened by UpgradeDb().
+     */
+    private function _upgrade_rollback()
+    {
+        $use_transaction = $this->_upgrade_transaction === true;
+        $this->_upgrade_transaction = null;
+        if ($use_transaction) {
+            $this->_driver_rollbacktrans();
+        }
+    }
+
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)
     {
         static $dbversions = null;
@@ -873,15 +949,95 @@ abstract class LMSDB_common implements LMSDBInterface
                         }
                     }
 
-                    if (!empty($pendingupgrades)) {
+                    if (empty($pendingupgrades)) {
+                        $this->_upgrade_log('No pending upgrades');
+                    } else {
                         sort($pendingupgrades);
-                        foreach ($pendingupgrades as $upgrade) {
-                            include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-                            if (empty($this->errors)) {
-                                $lastupgrade = $upgrade;
-                            } else {
-                                break;
+                        $core_db_version = null;
+                        if ($pluginclass !== null) {
+                            $core_db_version = $this->GetOne(
+                                'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
+                                array('dbversion')
+                            );
+                        }
+                        $schema_upgrade_started_at = microtime(true);
+                        $this->_upgrade_log(
+                            'Schema upgrade (' . $keytype . ') started at ' . date('Y-m-d H:i:s')
+                        );
+                        try {
+                            foreach ($pendingupgrades as $upgrade) {
+                                $fname = $libdir . DIRECTORY_SEPARATOR . 'upgradedb'
+                                    . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php';
+                                $upgrade_version = $upgrade;
+                                $use_transaction = !$this->_upgrade_transaction_disabled($fname);
+                                $committed = false;
+                                $file_started_at = microtime(true);
+                                try {
+                                    if ($use_transaction) {
+                                        $this->_driver_begintrans();
+                                        $this->_upgrade_transaction = true;
+                                        if ($this->errors) {
+                                            $this->_upgrade_log('Error in DB schema upgrade: ' . $fname);
+                                            $this->_upgrade_rollback();
+                                            break;
+                                        }
+                                    }
+                                    include($fname);
+                                    if ($this->errors) {
+                                        $this->_upgrade_log('Error in DB schema upgrade: ' . $fname);
+                                        $this->_upgrade_rollback();
+                                        break;
+                                    }
+                                    if ($pluginclass !== null
+                                        && $core_db_version !== null
+                                        && $core_db_version !== false
+                                        && $core_db_version !== ''
+                                    ) {
+                                        $this->Execute(
+                                            'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
+                                            array($core_db_version, 'dbversion')
+                                        );
+                                    }
+                                    $this->Execute(
+                                        'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
+                                        array($upgrade_version, $keytype)
+                                    );
+                                    if ($this->errors) {
+                                        $this->_upgrade_log('Error in DB schema upgrade: ' . $fname);
+                                        $this->_upgrade_rollback();
+                                        break;
+                                    }
+                                    $this->_upgrade_transaction = null;
+                                    if ($use_transaction) {
+                                        $this->_driver_committrans();
+                                        if ($this->errors) {
+                                            $this->_driver_rollbacktrans();
+                                            $this->_upgrade_log('Error in DB schema upgrade: ' . $fname);
+                                            break;
+                                        }
+                                    }
+                                    $committed = true;
+                                    $dbversions[$keytype] = $upgrade_version;
+                                    $this->_upgrade_log(
+                                        'DB version is now: ' . $upgrade_version
+                                        . ', took ' . $this->_upgrade_format_duration(microtime(true) - $file_started_at)
+                                    );
+                                    $lastupgrade = $upgrade_version;
+                                } catch (Throwable $e) {
+                                    if ($use_transaction && !$committed) {
+                                        $this->_upgrade_transaction = true;
+                                        $this->_upgrade_rollback();
+                                    }
+                                    throw $e;
+                                } finally {
+                                    $this->_upgrade_transaction = null;
+                                }
                             }
+                        } finally {
+                            $this->_upgrade_log(
+                                'Schema upgrade (' . $keytype . ') took '
+                                . $this->_upgrade_format_duration(microtime(true) - $schema_upgrade_started_at)
+                            );
                         }
                     }
 
