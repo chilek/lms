@@ -1264,6 +1264,8 @@ version 28-git (????-??-??):
   - enhancement: KSeF: export purchase invoices to transfer file which can be loaded in bank service [chilan]
   - improvement: more precise web browser fingerprint calculation (it is used in trusted device management
     process) [chilan]
+  - improvement: added 'nassessionid' field to nodesessions table - it can store RADIUS Acct-Session-Id
+    attribute values [chilan]
 
 version 27.0 (2021-08-20):
 
