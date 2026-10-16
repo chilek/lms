@@ -851,40 +851,6 @@ function get_timer($label = 0)
     return sprintf('%.4f', microtime(true) - $GLOBALS['lms_timer'][$label]);
 }
 
-/* Functions for modularized LMS */
-function plugin_handle($name)
-{
-    global $PLUGINS;
-
-    if (isset($PLUGINS[$name])) {
-        foreach ($PLUGINS[$name] as $plugin) {
-            include($plugin);
-        }
-    }
-}
-
-function clearheader()
-{
-    global $ExecStack, $layout;
-
-    $ExecStack->replaceTemplate('core', 'header', 'core', 'clearheader');
-    //$ExecStack->dropTemplate('core', 'menu');
-}
-
-/*
-    Registering "plugin" function is for use in actions.
-    $handle - handle name
-    $plugin - template or action for including in handle. Example of use:
-
-    register_plugin('nodeinfobox-end', '/path/sometemplate.html');
-*/
-function register_plugin($handle, $plugin)
-{
-        global $PLUGINS;
-
-        $PLUGINS[$handle][] = $plugin;
-}
-
 function html2pdf($content, $subject = null, $title = null, $type = null, $id = null, $orientation = 'P', $margins = array(5, 10, 5, 10), $dest = 'I', $copy = false, $md5sum = '')
 {
     return Utils::html2pdf(compact(

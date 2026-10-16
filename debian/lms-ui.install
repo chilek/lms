@@ -24,7 +24,6 @@ lib/common.php                  /usr/share/lms/lib/
 lib/config.php                  /usr/share/lms/lib/
 lib/definitions.php             /usr/share/lms/lib/
 lib/dns.php                     /usr/share/lms/lib/
-lib/ExecStack.class.php         /usr/share/lms/lib/
 lib/language.php                /usr/share/lms/lib/
 lib/LMS.class.php               /usr/share/lms/lib/
 lib/LMSDB_common.class.php      /usr/share/lms/lib/
