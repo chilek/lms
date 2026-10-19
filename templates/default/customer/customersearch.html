@@ -637,6 +637,25 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{foreach array(
+		array('icon' => 'download', 'label' => 'Maximum download speed:', 'from' => 'downceilfrom', 'to' => 'downceilto', 'fromtip' => 'Enter minimum tariff download speed in Mbit/s (optional)', 'totip' => 'Enter maximum tariff download speed in Mbit/s (optional)'),
+		array('icon' => 'upload', 'label' => 'Maximum upload speed:', 'from' => 'upceilfrom', 'to' => 'upceilto', 'fromtip' => 'Enter minimum tariff upload speed in Mbit/s (optional)', 'totip' => 'Enter maximum tariff upload speed in Mbit/s (optional)')
+	) as $speedFilter}
+	<TR>
+		<TD class="bold nobr">
+			{icon name=$speedFilter.icon} {trans($speedFilter.label)}
+		</TD>
+		<TD>
+			<span>{trans("from")}</span>
+			<input type="text" name="search[{$speedFilter.from}]" value="{$search[$speedFilter.from]|escape}" size="6"
+				{tip text=$speedFilter.fromtip}>
+			<span>{trans("to")}</span>
+			<input type="text" name="search[{$speedFilter.to}]" value="{$search[$speedFilter.to]|escape}" size="6"
+				{tip text=$speedFilter.totip}>
+			Mbit/s
+		</TD>
+	</TR>
+	{/foreach}
 	{if !empty($promotions)}
 		<tr>
 			<td class="nobr">

@@ -359,6 +359,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);
     $SMARTY->assign('netdevicetypes', $DB->GetAllByKey('SELECT * FROM netdevicetypes', 'id'));
+    $SMARTY->assign('search', $search ?? array());
 
     $hook_data = $LMS->executeHook(
         'customersearch_before_display',
