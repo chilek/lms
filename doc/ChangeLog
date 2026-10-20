@@ -1269,6 +1269,7 @@ version 28-git (????-??-??):
   - enhancement: customer search can be limited by active tariff maximum download and upload speed range
     (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
+  - improvement: added location address filter in customer voip account box [chilan]
 
 version 27.0 (2021-08-20):
 
