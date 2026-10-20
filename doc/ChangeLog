@@ -1266,6 +1266,7 @@ version 28-git (????-??-??):
     process) [chilan]
   - improvement: added 'nassessionid' field to nodesessions table - it can store RADIUS Acct-Session-Id
     attribute values [chilan]
+  - enhancement: customer search can be limited by active tariff maximum download and upload speed range (Mbit/s) [interduo]
 
 version 27.0 (2021-08-20):
 

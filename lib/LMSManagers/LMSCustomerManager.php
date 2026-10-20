@@ -1697,6 +1697,57 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							AND (a.dateto >= ?NOW? OR a.dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
+                        case 'downceilfrom':
+                        case 'downceilto':
+                        case 'upceilfrom':
+                        case 'upceilto':
+                            if (isset($searchargs['tariffspeed'])) {
+                                break;
+                            }
+                            $speedUnitType = intval(ConfigHelper::getConfig('phpui.speed_unit_type', 1000));
+                            if ($speedUnitType !== 1000 && $speedUnitType !== 1024) {
+                                $speedUnitType = 1000;
+                            }
+                            $effectiveSpeed = array(
+                                'downceil' => 'CASE WHEN t.downceil > 0 THEN t.downceil ELSE t.downrate END',
+                                'upceil' => 'CASE WHEN t.upceil > 0 THEN t.upceil ELSE t.uprate END',
+                            );
+                            $speedBounds = array();
+                            foreach (array(
+                                'downceilfrom' => array('downceil', '>='),
+                                'downceilto' => array('downceil', '<='),
+                                'upceilfrom' => array('upceil', '>='),
+                                'upceilto' => array('upceil', '<='),
+                            ) as $boundKey => $boundSpec) {
+                                if (!isset($search[$boundKey]) || !is_scalar($search[$boundKey]) || $search[$boundKey] === '') {
+                                    continue;
+                                }
+                                $bound = str_replace(',', '.', trim((string) $search[$boundKey]));
+                                if (!preg_match('/^\d+(\.\d+)?$/', $bound)) {
+                                    continue;
+                                }
+                                $speedBounds[] = $effectiveSpeed[$boundSpec[0]] . ' ' . $boundSpec[1] . ' '
+                                    . intval(round((float) $bound * $speedUnitType));
+                            }
+                            if (!$speedBounds) {
+                                break;
+                            }
+                            $searchargs['tariffspeed'] = 'EXISTS (SELECT 1 FROM assignments a
+                                JOIN tariffs t ON t.id = a.tariffid
+                                WHERE a.customerid = c.id
+                                    AND a.suspended = 0
+                                    AND a.commited = 1
+                                    AND a.datefrom <= ?NOW?
+                                    AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+                                    AND (a.period <> ' . DISPOSABLE . ' OR (a.at + 86400) > ?NOW?)
+                                    AND ' . implode(' AND ', $speedBounds) . ')';
+                            unset(
+                                $search['downceilfrom'],
+                                $search['downceilto'],
+                                $search['upceilfrom'],
+                                $search['upceilto']
+                            );
+                            break;
                         case 'balance':
                         case 'balance_relation':
                             if ($key == 'balance' && isset($search['balance_relation'])) {
