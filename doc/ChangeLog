@@ -1270,6 +1270,7 @@ version 28-git (????-??-??):
     (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
   - improvement: added location address filter in customer voip account box [chilan]
+  - improvement: added 'show on map' icon button in network ranges list (near gps coordinates) [chilan]
 
 version 27.0 (2021-08-20):
 
