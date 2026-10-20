@@ -24,6 +24,11 @@
  *  $Id$
  */
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('This script can only be run from the command line.' . PHP_EOL);
+}
+
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 const SCRIPT_COPYRIGHT_INFO = '(c) 2001-2026 LMS Developers';
