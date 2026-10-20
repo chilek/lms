@@ -48,10 +48,25 @@
 		document.contents.submit();
 	}
 
-	function updateDocumentFlags() {
+	function updateDocumentHeader(flags) {
+		if (typeof(flags) !== 'object') {
+			flags = {
+				documentflags: true,
+				paytype: false
+			};
+		} else {
+			if (!flags.hasOwnProperty('documentflags') || typeof(flags.documentflags) !== 'boolean') {
+				flags.documentflags = true;
+			}
+			if (!flags.hasOwnProperty('paytype') || typeof(flags.paytype) !== 'boolean') {
+				flags.paytype = false;
+			}
+		}
+
 		$.ajax({
 			data: {
-				updatedocumentflags: 1,
+				action: 'updateheader',
+				flags: flags,
 				customerid: {$refdoc.customerid},
 				cdate: $('[name="cnote[cdate]"]').val(),
 				value: $('#s-valuebrutto').val()
@@ -80,7 +95,7 @@
 
 		$('[name="cnote[cdate]"]').change(function(e, init) {
 			if (typeof(init) === 'undefined' || !init) {
-				updateDocumentFlags();
+				updateDocumentHeader();
 			}
 			if ($("#copy-cdate").prop('checked')) {
 				var date = $(this).datepicker("getDate");

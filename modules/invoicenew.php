@@ -839,6 +839,8 @@ $SMARTY->assign('numberplanlist', $numberplanlist);
 
 $SMARTY->assign('taxeslist', $taxeslist);
 
+$SMARTY->assign('default_paytype', $LMS->getDefaultPayType($args['customerid']));
+
 if (!empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
 } elseif (!empty($invoice['proforma'])) {

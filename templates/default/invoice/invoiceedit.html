@@ -276,10 +276,25 @@
 		recipient_addr2 = JSON.parse(Base64.decode('{$invoice.recipient_address2}'));
 	{/if}
 
-	function updateDocumentFlags() {
+	function updateDocumentHeader(flags) {
+		if (typeof(flags) !== 'object') {
+			flags = {
+				documentflags: true,
+				paytype: false
+			};
+		} else {
+			if (!flags.hasOwnProperty('documentflags') || typeof(flags.documentflags) !== 'boolean') {
+				flags.documentflags = true;
+			}
+			if (!flags.hasOwnProperty('paytype') || typeof(flags.paytype) !== 'boolean') {
+				flags.paytype = false;
+			}
+		}
+
 		$.ajax({
 			data: {
-				updatedocumentflags: 1,
+				action: 'updateheader'
+				flags: flags,
 				customerid: $('#ownerid_input').val(),
 				cdate: $('[name="invoice[cdate]"]').val(),
 				value: $('#s-valuebrutto').val()
@@ -337,7 +352,10 @@
 
 			setAddressList('#customer_addresses2', addresses2);
 		});
-		updateDocumentFlags();
+		updateDocumentHeader({
+			documentflags: true,
+			paytype: true
+		});
 	}
 
 	initAdvancedSelectsTest('#customer_addresses');
@@ -348,7 +366,7 @@
 
 		$('[name="invoice[cdate]"]').change(function(e, init) {
 			if (typeof(init) === 'undefined' || !init) {
-				updateDocumentFlags();
+				updateDocumentHeader();
 			}
 			if ($("#copy-cdate").prop('checked')) {
 				var date = $(this).datepicker("getDate");

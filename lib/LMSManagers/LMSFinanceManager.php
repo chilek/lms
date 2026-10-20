@@ -6288,4 +6288,39 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'debit-note-total-value' => $debitNoteTotalValue,
         );
     }
+
+    public function getDefaultPayType($cid)
+    {
+        global $PAYTYPES;
+
+        $defaultPayType = intval(ConfigHelper::getConfig('invoices.paytype'));
+
+        if (empty($cid)) {
+            if (empty($defaultPayType) || !isset($PAYTYPES[$defaultPayType])) {
+                $defaultPayType = 0;
+            }
+
+            return $defaultPayType;
+        }
+
+        $payType = $this->db->GetOne(
+            'SELECT
+                CASE WHEN c.paytype IS NULL
+                    THEN (CASE WHEN d.inv_paytype IS NULL
+                        THEN ?
+                        ELSE d.inv_paytype
+                    END)
+                    ELSE c.paytype
+                END
+            FROM customers c
+            JOIN divisions d ON d.id = c.divisionid
+            WHERE c.id = ?',
+            [
+                $defaultPayType,
+                $cid,
+            ]
+        );
+
+        return empty($payType) || !isset($PAYTYPES[$payType]) ? 0 : $payType;
+    }
 }

@@ -4202,6 +4202,12 @@ class LMS
         return $manager->calculateDebtForDocuments($params);
     }
 
+    public function getDefaultPayType($cid)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getDefaultPayType($cid);
+    }
+
     /**
      * VoIP functions
      */

@@ -179,4 +179,6 @@ interface LMSFinanceManagerInterface
     public function getCashSources();
 
     public function calculateDebtForDocuments(array $params);
+
+    public function getDefaultPayType($cid);
 }

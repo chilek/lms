@@ -1176,6 +1176,7 @@ class LMSSmartyPlugins
         $elemname = $params['elemname'];
         $id = !empty($params['id']) ? $params['id'] : null;
         $selected = !empty($params['selected']) ? $params['selected'] : 0;
+        $default = !empty($params['default']) ? $params['default'] : 0;
         $tip = $params['tip'] ?? trans('Select payment type');
         $trigger = $params['trigger'] ?? 'paytype';
         $form = $params['form'] ?? null;
@@ -1188,7 +1189,7 @@ class LMSSmartyPlugins
         return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
             . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($form) ? ' form="' . $form . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("default") . '—</option>'
+            <option value=""' . (!$selected ? ' selected' : '') . '>' . (empty($default) ? trans('<!paytype>— default —') : trans('<!paytype>— default ($a) —', $paytypes[$default])) . '</option>'
             . $options
             . '</select>';
     }
