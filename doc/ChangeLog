@@ -1266,6 +1266,8 @@ version 28-git (????-??-??):
     process) [chilan]
   - improvement: added 'nassessionid' field to nodesessions table - it can store RADIUS Acct-Session-Id
     attribute values [chilan]
+  - enhancement: customer search can be limited by active tariff maximum download and upload speed range
+    (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
 
 version 27.0 (2021-08-20):
