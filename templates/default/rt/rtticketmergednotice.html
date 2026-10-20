@@ -1,0 +1,61 @@
+{if $mergedTicketTarget}
+	{capture assign="merged_ticket_link"}<a href="?m=rtticketview&amp;id={$mergedTicketTarget}">#{$mergedTicketTarget|string_format:"%06d"}</a>{/capture}
+	<p class="lms-ui-alert bold">
+		{trans('This ticket has been merged into ticket $a.', $merged_ticket_link)}
+	</p>
+	<template id="rt-ticket-merged-dialog-message" data-target-url="?m=rtticketview&amp;id={$mergedTicketTarget}">
+		{trans('This ticket has been merged into $a.', $merged_ticket_link)}
+	</template>
+	<script>
+		$(function() {
+			$('#rt-ticket-merged-dialog-message').trigger('rt-ticket-merged-dialog:open');
+		});
+
+		$(document).on('rt-ticket-merged-dialog:open', '#rt-ticket-merged-dialog-message', function() {
+			var messageNode = this;
+			var targetUrl = messageNode.getAttribute('data-target-url');
+			var deferred = $.Deferred();
+
+			modalDialog(
+				$t('<!dialog>Information'),
+				messageNode.innerHTML.trim(),
+				[
+					{
+						text: '{trans("OK")|escape:"javascript"}',
+						icon: 'ui-icon-check',
+						class: 'lms-ui-button',
+						click: function() {
+							$(this).dialog('close');
+							deferred.resolve();
+						}
+					},
+					{
+						text: '{trans("Redirect")|escape:"javascript"}',
+						icon: 'ui-icon-extlink',
+						class: 'lms-ui-button',
+						click: function() {
+							window.location.assign(targetUrl);
+						}
+					}
+				],
+				deferred
+			);
+
+			$('#lms-ui-modal-dialog').one('dialogclose', function() {
+				window.setTimeout(function() {
+					if (deferred.state() === 'pending') {
+						deferred.resolve();
+					}
+				}, 0);
+			});
+		});
+	</script>
+{/if}
+{if $mergedWriteNoticeMulti}
+	<p class="lms-ui-alert bold">{trans('The action was redirected to the target tickets, because some of the selected tickets have been merged.')}</p>
+{elseif $mergedWriteNoticeTarget}
+	<p class="lms-ui-alert bold">
+		{capture assign="merged_write_link"}<a href="?m=rtticketview&amp;id={$mergedWriteNoticeTarget}">#{$mergedWriteNoticeTarget|string_format:"%06d"}</a>{/capture}
+		{trans('This ticket has been merged into ticket $a. The action was redirected to the target ticket.', $merged_write_link)}
+	</p>
+{/if}

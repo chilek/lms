@@ -81,10 +81,17 @@ if (isset($_POST['message'])) {
         $message['destination'] = '';
         $message['inreplyto'] = null;
         $message['sender'] = 'user';
-    } else {
-        if (!intval($message['ticketid']) || !($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_WRITE)) {
+        $tickets = $LMS->followMergedTicketWrite($tickets);
+        if ($tickets === null) {
             access_denied();
         }
+        $message['ticketid'] = $tickets;
+    } else {
+        $targetTicketId = $LMS->followMergedTicketWrite($message['ticketid']);
+        if ($targetTicketId === null) {
+            access_denied();
+        }
+        $message['ticketid'] = $targetTicketId;
 
         $tickets = array($message['ticketid']);
 
@@ -804,6 +811,10 @@ if (isset($_POST['message'])) {
             if (empty($ticketid)) {
                 die;
             }
+            $ticketid = $LMS->followMergedTicketWrite($ticketid);
+            if ($ticketid === null) {
+                access_denied();
+            }
             $message['customernotify'] = 1;
             $message['state'] = -1;
             $message['cause'] = -1;
@@ -813,10 +824,10 @@ if (isset($_POST['message'])) {
             $message['deadline'] = 0;
             $message['verifierid'] = -1;
         } else {
-            if (!($LMS->CheckTicketAccess($_GET['ticketid']) & RT_RIGHT_WRITE)) {
+            $ticketid = $LMS->followMergedTicketWrite($_GET['ticketid']);
+            if ($ticketid === null) {
                 access_denied();
             }
-            $ticketid = intval($_GET['ticketid']);
             if (empty($ticketid)) {
                 die;
             }
@@ -1224,4 +1235,5 @@ $SMARTY->assign('categories', $categories);
 $SMARTY->assign('contacts', $contacts);
 $SMARTY->assign('message', $message);
 
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('rt/rtmessageadd.html');

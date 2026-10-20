@@ -25,7 +25,7 @@
  */
 
 // here should be always the newest version of database!
-define('DBVERSION', '2026101600');
+define('DBVERSION', '2026102000');
 
 /**
  *
@@ -74,6 +74,9 @@ abstract class LMSDB_common implements LMSDBInterface
     /** @var array Query errors * */
     protected $errors = array();
 
+    /** @var int Query failures, excluding debug timing rows * */
+    protected $failureCount = 0;
+
     /** @var boolean Debug flag * */
     protected $debug = false;
 
@@ -106,10 +109,10 @@ abstract class LMSDB_common implements LMSDBInterface
         if ($this->_driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)) {
             return $this->_dblink;
         } else {
-            $this->errors[] = array(
+            $this->addFailure(array(
                 'query' => 'database connect',
                 'error' => $this->_driver_geterror(),
-            );
+            ));
             return false;
         }
     }
@@ -138,10 +141,10 @@ abstract class LMSDB_common implements LMSDBInterface
         }
 
         if (!$this->_driver_execute($this->_query_parser($query, $inputarray))) {
-            $this->errors[] = array(
+            $this->addFailure(array(
                 'query' => $this->_query,
                 'error' => $this->_driver_geterror(),
-            );
+            ));
         } elseif ($this->debug) {
             $sqlQueryTime =  microtime(true) - $start;
 
@@ -173,10 +176,10 @@ abstract class LMSDB_common implements LMSDBInterface
         }
 
         if (!$this->_driver_multi_execute($this->_query_parser($query, $inputarray))) {
-            $this->errors[] = array(
+            $this->addFailure(array(
                 'query' => $this->_query,
                 'error' => $this->_driver_geterror(),
-            );
+            ));
         } elseif ($this->debug) {
             $sqlQueryTime =  microtime(true) - $start;
 
@@ -320,10 +323,10 @@ abstract class LMSDB_common implements LMSDBInterface
         }
 
         if (!$this->_driver_execute($this->_query_parser($query, $inputarray))) {
-            $this->errors[] = array(
+            $this->addFailure(array(
                 'query' => $this->_query,
-                'error' => $this->_driver_geterror()
-            );
+                'error' => $this->_driver_geterror(),
+            ));
         } elseif ($this->debug) {
             $sqlQueryTime =  microtime(true) - $start;
 
@@ -639,7 +642,7 @@ abstract class LMSDB_common implements LMSDBInterface
                     'query' => $query,
                     'error' => $logError . PHP_EOL . $backtraceText,
                 );
-                $this->errors[] = $error;
+                $this->addFailure($error);
 
                 writesyslog(
                     $logError
@@ -781,6 +784,27 @@ abstract class LMSDB_common implements LMSDBInterface
     {
 
         return $this->errors;
+    }
+
+    /**
+     * Returns the number of query failures. Debug timing rows are not included.
+     *
+     * @return int
+     */
+    public function GetFailureCount()
+    {
+        return $this->failureCount;
+    }
+
+    /**
+     * Records a query failure.
+     *
+     * @param array $error
+     */
+    protected function addFailure(array $error)
+    {
+        $this->errors[] = $error;
+        $this->failureCount++;
     }
 
     public function GetConnectionError()

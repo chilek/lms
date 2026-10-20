@@ -51,6 +51,12 @@ $now = time();
 
 if (!empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
+    if ($LMS->ticketWasMergedAway($eventticketid)) {
+        $eventticketid = $LMS->followMergedTicketWrite($eventticketid);
+        if ($eventticketid === null) {
+            access_denied();
+        }
+    }
 }
 
 if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
@@ -219,6 +225,13 @@ if (isset($_POST['event'])) {
                 $error['ticketid'] = trans('Nonexistent ticket!');
             } elseif (!($LMS->checkTicketAccess($event['ticketid']) & RT_RIGHT_READ)) {
                 $error['ticketid'] = trans('Ticket access denied!');
+            } elseif ($LMS->ticketWasMergedAway($event['ticketid'])) {
+                $targetTicketId = $LMS->followMergedTicketWrite($event['ticketid']);
+                if ($targetTicketId === null) {
+                    $error['ticketid'] = trans('Ticket access denied!');
+                } else {
+                    $event['ticketid'] = $targetTicketId;
+                }
             }
             break;
     }
@@ -629,4 +642,5 @@ $SMARTY->assign(
     )
 );
 
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('event/eventmodify.html');

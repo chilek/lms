@@ -1,0 +1,44 @@
+{function name=rt_merge_keep}
+	{if $differs}
+		<input type="radio" class="rt-ticket-merge-keep" data-keep-group="{$group|escape}" data-keep-side="{$side|escape}" value="{$ticketid|escape}" title="{trans("Keep this value in the merged ticket")|escape}"{if $primary == 1} name="keep[{$group|escape}]"{/if}{if $checked} checked{/if}>
+	{/if}
+{/function}
+<div id="rt-ticket-merge-fragment-status">
+	{if $mergeError}
+		<div class="red bold">{$mergeError|escape}</div>
+	{/if}
+	{if $mergeCustomerWarning}
+		<div class="lms-ui-warning bold">{$mergeCustomerWarning|escape}</div>
+	{/if}
+	{if $mergeRelationParent || $mergeRelationChildren}
+		<div id="rt-ticket-merge-relations">
+			{if $mergeRelationParent}<div>{$mergeRelationParent|escape}</div>{/if}
+			{if $mergeRelationChildren}<div>{$mergeRelationChildren|escape}</div>{/if}
+		</div>
+	{/if}
+	{if $mergeReopenTarget}
+		<div id="rt-ticket-merge-reopen">
+			<div class="red bold">{trans("Target ticket is resolved. Messages from the ticket being merged will be added to a resolved ticket.")}</div>
+			<label>
+				<input type="checkbox" name="merge[reopentarget]" value="1" checked>
+				{trans("Reopen target ticket")}
+			</label>
+		</div>
+	{/if}
+	{if $mergeReady}
+		<div id="rt-ticket-merge-ready" data-merge-ready="1"></div>
+	{/if}
+</div>
+<div id="rt-ticket-merge-fragment-left">
+	{if $leftTicket}
+		{include file="rt/rtticketmergeproperties.html" ticket=$leftTicket side="left"}
+	{else}
+		{trans("none")}
+	{/if}
+</div>
+<div id="rt-ticket-merge-fragment-right">
+	{if $rightTicket}
+		<div id="rt-ticket-merge-right-ready"></div>
+		{include file="rt/rtticketmergeproperties.html" ticket=$rightTicket side="right"}
+	{/if}
+</div>

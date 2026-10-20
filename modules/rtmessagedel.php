@@ -27,6 +27,7 @@
 $msg = intval($_GET['id']);
 $maction = ($_GET['maction']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
+$LMS->redirectMergedTicketToTarget($ticket);
 $rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $ticket);
 
 if (($rights & 4) != 4) {

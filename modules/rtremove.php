@@ -32,6 +32,7 @@ $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARAT
 
 if ($maction == 'delperm') {
     $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($id));
+    $LMS->redirectMergedTicketToTarget($ticket);
 
     if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $id) {
         if (!empty($rt_dir)) {
@@ -45,6 +46,7 @@ if ($maction == 'delperm') {
 }
 
 if ($taction == 'delperm') {
+    $LMS->redirectMergedTicketToTarget($id);
     $DB->BeginTrans();
 
     $LMS->deleteTicket($id);

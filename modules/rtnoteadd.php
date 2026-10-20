@@ -62,9 +62,8 @@ if (empty($categories)) {
 }
 
 if (isset($_GET['ticketid'])) {
-    $note['ticketid'] = intval($_GET['ticketid']);
-
-    if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE)) {
+    $note['ticketid'] = $LMS->followMergedTicketWrite($_GET['ticketid']);
+    if ($note['ticketid'] === null) {
         access_denied();
     }
 
@@ -86,9 +85,11 @@ if (isset($_GET['ticketid'])) {
 } elseif (isset($_POST['note'])) {
     $note = $_POST['note'];
 
-    if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE)) {
+    $targetTicketId = $LMS->followMergedTicketWrite($note['ticketid']);
+    if ($targetTicketId === null) {
         access_denied();
     }
+    $note['ticketid'] = $targetTicketId;
 
     $ticket = $LMS->GetTicketContents($note['ticketid']);
 
@@ -382,4 +383,5 @@ $SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $note['queueid']));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($note['queueid'], RTMESSAGE_NOTE));
 $SMARTY->assign('error', $error);
+$LMS->assignMergedTicketWriteNotice();
 $SMARTY->display('rt/rtnoteadd.html');

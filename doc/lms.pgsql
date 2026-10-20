@@ -2211,6 +2211,8 @@ CREATE TABLE rttickets (
   type integer DEFAULT NULL,
   parentid integer DEFAULT NULL
         CONSTRAINT rttickets_parentid_fkey REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  mergedinto integer DEFAULT NULL
+        CONSTRAINT rttickets_mergedinto_fkey REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   invprojectid integer DEFAULT NULL
         CONSTRAINT rttickets_invprojectid_fkey REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id)
@@ -2220,6 +2222,7 @@ CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
+CREATE INDEX rttickets_mergedinto_idx ON rttickets (mergedinto);
 
 DROP TABLE IF EXISTS rtticketlastview CASCADE;
 CREATE TABLE rtticketlastview (
@@ -4755,6 +4758,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026101600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102000');
 
 COMMIT;

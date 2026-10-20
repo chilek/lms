@@ -43,6 +43,7 @@
 
 </style>
 <H1>{$layout.pagetitle}</H1>
+{include file="rt/rtticketmergednotice.html"}
 <FORM method="POST" name="message" id="message-form" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
