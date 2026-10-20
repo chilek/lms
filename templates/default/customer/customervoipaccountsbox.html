@@ -6,6 +6,18 @@
 	{tab_header content_id="voipaccountspanel"}
 		{tab_header_cell icon="lms-ui-icon-phone"}
 			<strong>{t a=$customervoipaccounts|size}VoIP Accounts ($a){/t}</strong>
+			{if !empty($voipaccountlocations)}
+				<label>
+					{trans("Location")}
+					<select class="voip-account-location">
+						<option value="">{trans("— all —")}</option>
+						<option value="-1">{trans("— without location address —")}</option>
+						{foreach $voipaccountlocations as $voipaccountlocation}
+							<option value="{$voipaccountlocation|escape}">{$voipaccountlocation|escape}</option>
+						{/foreach}
+					</select>
+				</label>
+			{/if}
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
@@ -56,7 +68,7 @@
 			</div>
 			{foreach $customervoipaccounts as $voipaccount}
 				{block name="customervoipaccountsbox-list-row"}
-				<div class="lms-ui-tab-table-row" data-target-url="?m=voipaccountinfo&id={$voipaccount.id}">
+				<div class="lms-ui-tab-table-row" data-target-url="?m=voipaccountinfo&id={$voipaccount.id}" data-location="{$voipaccount.location|escape}">
 					<div class="lms-ui-tab-table-wrapper col-6">
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column login">
@@ -103,13 +115,67 @@
 					</div>
 				</div>
 				{/block}
-			{foreachelse}
-				{block name="customervoipaccountsbox-list-empty-row"}
-				<div class="lms-ui-tab-empty-table">
-					{trans("That customer does not own any VoIP account.")}
-				</div>
-				{/block}
 			{/foreach}
+			{block name="customervoipaccountsbox-list-empty-row"}
+				<div class="lms-ui-tab-empty-table" style="display: none;">
+					{trans("This customer does not have any VoIP accounts matching the filter criteria.")}
+				</div>
+			{/block}
 		{/tab_table}
 	{/tab_contents}
 {/tab_container}
+
+<script>
+
+	$(function() {
+		function applyFilter(filter) {
+			var defaultFilter = {
+				location: ''
+			}
+
+			var currentFilter = $.extend(defaultFilter, filter);
+
+			var rows = $('#customervoipaccountsbox .lms-ui-tab-table-row');
+			rows.filter('[data-location]').hide()
+				.removeClass('lucid light')
+				.filter(function() {
+					return currentFilter.location === ''
+						? true
+						: $(this).is('[data-location="' + (currentFilter.location === '-1' ? '' : currentFilter.location) + '"]');
+				}).show()
+				.end().filter(':visible')
+				.even().addClass('lucid')
+				.odd().addClass('light');
+
+			rows.filter('.header').toggle(rows.filter('[data-location]:visible').length > 0);
+
+			$('#customervoipaccountsbox .lms-ui-tab-empty-table').toggle(
+				!rows.filter('[data-location]:visible').length
+			);
+		}
+
+		var selectedVoipAccountLocation = getStorageItem('{$tab_id}_voip_account_location_{$customerinfo.id}');
+		if (selectedVoipAccountLocation) {
+			$('#customervoipaccountsbox .voip-account-location').val(selectedVoipAccountLocation);
+
+			applyFilter({
+				location: selectedVoipAccountLocation
+			});
+		}
+
+		$('#customervoipaccountsbox .voip-account-location').change(function() {
+			var selectedVoipAccountLocation = $(this).val();
+
+			applyFilter({
+				location: selectedVoipAccountLocation
+			});
+
+			if (selectedVoipAccountLocation.length) {
+				setStorageItem('{$tab_id}_voip_account_location_{$customerinfo.id}', selectedVoipAccountLocation);
+			} else {
+				removeStorageItem('{$tab_id}_voip_account_location_{$customerinfo.id}');
+			}
+		});
+	});
+
+</script>

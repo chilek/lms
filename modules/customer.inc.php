@@ -102,6 +102,16 @@ if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('
 }
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
+
+    $voipaccountlocations = [];
+    if (!empty($customervoipaccounts)) {
+        foreach ($customervoipaccounts as $voipaccount) {
+            $voipaccountlocations[$voipaccount['location']] = $voipaccount['location'];
+        }
+        sort($voipaccountlocations, SORT_LOCALE_STRING);
+    }
+
+    $SMARTY->assign('voipaccountlocations', $voipaccountlocations);
 }
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
