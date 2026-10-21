@@ -99,6 +99,38 @@ if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('
     }
 
     $balancelist = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
+
+    $registries = [];
+    if (!empty($balancelist['list'])) {
+        foreach ($balancelist['list'] as $row) {
+            if (!empty($row['cashsourceid'])) {
+                $cashSourceKey = 'cashsource#' . $row['cashsourceid'];
+                if (!isset($registries[$cashSourceKey])) {
+                    $registries[$cashSourceKey] = [
+                        'id' => $row['cashsourceid'],
+                        'name' => $row['cashsourcename'],
+                        'type' => 'cashsource',
+                    ];
+                }
+            }
+            if (!empty($row['cashregid'])) {
+                $cashRegKey = 'cashreg#' . $row['cashregid'];
+                if (!isset($registries[$cashRegKey])) {
+                    $registries[$cashRegKey] = [
+                        'id' => $row['cashregid'],
+                        'name' => $row['cashregname'],
+                        'type' => 'cashreg',
+                    ];
+                }
+            }
+        }
+
+        $collator = new Collator(Localisation::getCurrentUiLanguage());
+        $collator->setStrength(Collator::SECONDARY);
+        usort($registries, fn($a, $b) => $collator->compare($a['name'], $b['name']));
+    }
+
+    $SMARTY->assign('registries', $registries);
 }
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);

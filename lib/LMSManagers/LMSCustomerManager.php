@@ -328,7 +328,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
                 (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 documents.cdate, documents.number, numberplans.template,
+                cr.id AS cashregid,
+                cr.name AS cashregname,
                 COALESCE(cr.disabled, 0) AS cashregdisabled,
+                cash.sourceid AS cashsourceid,
+                cs.name AS cashsourcename,
                 kd2.status AS ksefstatus,
                 kd2.statusdescription AS ksefstatusdescription,
                 kd2.statusdetails AS ksefstatusdetails,
@@ -375,6 +379,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
+            LEFT JOIN cashsources cs ON cs.id = cash.sourceid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
@@ -389,7 +394,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
                     0 AS documentreferenced,
                     d.cdate, d.number, numberplans.template,
+                    null AS cashregid,
+                    null AS cashregname,
                     0 AS cashregdisabled,
+                    null AS cashsourceid,
+                    null AS cashsourcename,
                     null AS ksefstatus,
                     null AS ksefstatusdescription,
                     null AS ksefstatusdetails,
