@@ -4070,9 +4070,27 @@ BEGIN
             DELETE FROM customerbalances WHERE customerid = OLD.customerid;
         ELSE
             IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
-                UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
+                UPDATE customerbalances
+                SET balance = (
+                    SELECT
+                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                    FROM cash
+                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                    LEFT JOIN cashregs cr ON cr.id = rc.regid
+                    WHERE customerid = OLD.customerid
+                ) WHERE customerid = OLD.customerid;
             ELSE
-                INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
+                INSERT INTO customerbalances (customerid, balance) VALUES (
+                    OLD.customerid,
+                    (
+                        SELECT
+                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        FROM cash
+                        LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                        LEFT JOIN cashregs cr ON cr.id = rc.regid
+                        WHERE customerid = OLD.customerid
+                    )
+                );
             END IF;
         END IF;
         RETURN NULL;
@@ -4082,18 +4100,54 @@ BEGIN
         END IF;
         IF OLD.customerid IS NOT NULL AND OLD.customerid <> NEW.customerid THEN
             IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
-                UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
+                UPDATE customerbalances
+                SET balance = (
+                    SELECT
+                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                    FROM cash
+                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                    LEFT JOIN cashregs cr ON cr.id = rc.regid
+                    WHERE customerid = OLD.customerid
+                ) WHERE customerid = OLD.customerid;
             ELSE
-                INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
+                INSERT INTO customerbalances (customerid, balance) VALUES (
+                    OLD.customerid,
+                    (
+                        SELECT
+                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        FROM cash
+                        LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                        LEFT JOIN cashregs cr ON cr.id = rc.regid
+                        WHERE customerid = OLD.customerid
+                    )
+                );
             END IF;
         END IF;
         IF NEW.customerid IS NULL THEN
             RETURN NEW;
         END IF;
         IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
-            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+            UPDATE customerbalances
+            SET balance = (
+                SELECT
+                    SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                FROM cash
+                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                LEFT JOIN cashregs cr ON cr.id = rc.regid
+                WHERE customerid = NEW.customerid
+            ) WHERE customerid = NEW.customerid;
         ELSE
-            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+            INSERT INTO customerbalances (customerid, balance) VALUES (
+                NEW.customerid,
+                (
+                    SELECT
+                        SUM(CASE WHEN COALESCE(cr.disabled, 0) THEN cash.value * currencyvalue ELSE 0 END)
+                    FROM cash
+                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                    LEFT JOIN cashregs cr ON cr.id = rc.regid
+                    WHERE customerid = NEW.customerid
+                )
+            );
         END IF;
         RETURN NEW;
     ELSE
@@ -4101,9 +4155,27 @@ BEGIN
             RETURN NEW;
         END IF;
         IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
-            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+            UPDATE customerbalances
+            SET balance = (
+                SELECT
+                    SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                FROM cash
+                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                LEFT JOIN cashregs cr ON cr.id = rc.regid
+                WHERE customerid = NEW.customerid
+            ) WHERE customerid = NEW.customerid;
         ELSE
-            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid,  (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+            INSERT INTO customerbalances (customerid, balance) VALUES (
+                NEW.customerid,
+                (
+                    SELECT
+                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                    FROM cash
+                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                    LEFT JOIN cashregs cr ON cr.id = rc.regid
+                    WHERE customerid = NEW.customerid
+                )
+            );
         END IF;
         RETURN NEW;
     END IF;
@@ -4116,6 +4188,25 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER INSERT OR UPDATE OR DE
 
 CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
     EXECUTE PROCEDURE customerbalances_update();
+
+CREATE OR REPLACE FUNCTION customerbalances_refresh()
+    RETURNS void
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM customerbalances;
+    INSERT INTO customerbalances (customerid, balance) (
+        SELECT
+            cash.customerid,
+            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+        FROM cash
+        LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+        LEFT JOIN cashregs cr ON cr.id = rc.regid
+        WHERE cash.customerid IS NOT NULL
+        GROUP BY cash.customerid
+    );
+END;
+$$;
 
 /* ---------------------------------------------------
  Data records
