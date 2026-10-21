@@ -134,7 +134,7 @@ class Auth
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
             } elseif (isset($loginform['login'])) {
                 $this->SESSION->save('session_browser_fingerprint', null);
-                $components = explode('#', $loginform['login']);
+                $components = array_map('trim', explode('#', $loginform['login']));
                 $this->login = $login = $components[0];
                 $targetLogin = count($components) == 2 ? $components[1] : null;
                 // 'login#targetlogin' lets an admin instantly switch into another
