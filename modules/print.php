@@ -91,6 +91,26 @@ switch ($type) {
 					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
 				    ORDER BY time', array($id, $id))
         ) {
+            // totals are calculated from raw records, so they don't depend on documents aggregation;
+            // summary is the balance at the end of the period (including records before 'from')
+            foreach ($tslist as $row) {
+                if ($row['time'] > $date['to']) {
+                    continue;
+                }
+                $value = $row['value'] * $row['currencyvalue'];
+                $list['summary'] += $value;
+                if ($row['time'] < $date['from']) {
+                    continue;
+                }
+                if (!$row['type']) {
+                    $list['liability'] -= $value;
+                } elseif ($value > 0) {
+                    $list['income'] += $value;
+                } else {
+                    $list['expense'] -= $value;
+                }
+            }
+
             if ($aggregate_documents) {
                 $tslist = $LMS->AggregateDocuments(array('customerid' => $id, 'list' => $tslist));
                 $tslist = $tslist['list'];
@@ -121,18 +141,6 @@ switch ($type) {
                     $list['username'][] = $saldolist['username'][$i];
                     $list['comment'][] = $saldolist['comment'][$i];
                     $list['currency'][] = $saldolist['currency'][$i];
-                    $list['summary'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-
-                    if ($saldolist['type'][$i]) {
-                        if ($saldolist['value'][$i] > 0) {
-                                //income
-                                $list['income'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                        } else { //expense
-                                $list['expense'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                        }
-                    } else {
-                        $list['liability'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                    }
                 }
             }
 
