@@ -1271,8 +1271,8 @@ version 28-git (????-??-??):
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
   - improvement: added location address filter in customer voip account box [chilan]
   - improvement: added 'show on map' icon button in network ranges list (near gps coordinates) [chilan]
-  - improvement: financial operations assigned to disabled cash registries don't change customer
-    balance [chilan]
+  - improvement: financial operations assigned to 'exclude from balance' cash registries don't change
+    customer balance [chilan]
   - enhancement: added registry filter in customer balance box [chilan]
 
 version 27.0 (2021-08-20):
