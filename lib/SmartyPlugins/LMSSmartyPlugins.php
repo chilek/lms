@@ -1336,6 +1336,22 @@ class LMSSmartyPlugins
         return self::buttonFunction($args, $template) . $script;
     }
 
+    public static function showOnMapAllButtonsFunction(array $params, $template)
+    {
+        $types = $params['types'] ?? 'default,netstork,geoportal,sidusis';
+        unset($params['types']);
+        if (!is_array($types)) {
+            $types = preg_split('/\s*,\s*/', $types, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        $result = '';
+        foreach ($types as $type) {
+            $result .= self::showOnMapButtonFunction(array('type' => $type) + $params, $template);
+        }
+
+        return $result;
+    }
+
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];
