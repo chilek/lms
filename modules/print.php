@@ -107,8 +107,12 @@ switch ($type) {
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                     WHERE e.userid = lms_current_user() AND a.customerid = ?
                 )
-            ORDER BY time', array($id, $id))
-        ) {
+            ORDER BY time',
+            array(
+                $id,
+                $id,
+            )
+        )) {
             if ($aggregate_documents) {
                 $tslist = $LMS->AggregateDocuments(array('customerid' => $id, 'list' => $tslist));
                 $tslist = $tslist['list'];
