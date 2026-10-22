@@ -1274,6 +1274,11 @@ version 28-git (????-??-??):
   - improvement: financial operations assigned to 'exclude from balance' cash registries don't change
     customer balance [chilan]
   - enhancement: added registry filter in customer balance box [chilan]
+  - enhancement: new configuration variables 'finances.customer_balance_excluded_registry_operation_comment'
+    (default value: '%comment% (transaction excluded from customer balance)')
+    and 'finances.customer_balance_included_registry_operation_comment' (default value: '%comment%')
+    allow to reformat text comment for bank and cash registry operations (balance excluded configuration
+    variable corresponds to operations from cash registry with set 'exclude from balance' flag) [chilan]
 
 version 27.0 (2021-08-20):
 
