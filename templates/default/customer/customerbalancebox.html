@@ -133,7 +133,7 @@
 					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
-				<TR>
+				<TR class="fbottom">
 					<TH>{trans("Date:")}</TH>
 					<TH>{trans("User:")}</TH>
 					<TH class="text-right" data-searchable="false">{trans("Liability:")}</TH>
@@ -177,7 +177,29 @@
 					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{Utils::formatMoney($item.value, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{Utils::formatMoney($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
-					<TD class="text-right nobr{if $item.after < 0} red{/if}">{Utils::formatMoney($item.after)}</TD>
+					<td class="text-right nobr">
+						{strip}
+							<span class="registry-after-global{if $item.after < 0} red{/if}">
+								{Utils::formatMoney($item.after)}
+							</span>
+							{if !empty($item.cashregid)}
+								{capture assign="cashregkey"}{strip}
+									cashreg-{$item.cashregid}
+								{/strip}{/capture}
+								<span class="registry-after-cash-registry{if $item.afters[$cashregkey] < 0} red{/if}" style="display: none;">
+									{Utils::formatMoney($item.afters[$cashregkey])}
+								</span>
+							{/if}
+							{if !empty($item.cashsourceid)}
+								{capture assign="cashsourcekey"}{strip}
+									cashsource-{$item.cashsourceid}
+								{/strip}{/capture}
+								<span class="registry-after-cash-source{if $item.afters[$cashsourcekey] < 0} red{/if}" style="display: none;">
+									{Utils::formatMoney($item.afters[$cashsourcekey])}
+								</span>
+							{/if}
+						{/strip}
+					</td>
 					<TD class="comment"
 						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
 						>{$item.comment|escape}</TD>
@@ -1050,47 +1072,85 @@
 			transfer_balance_dialog.open();
 		});
 
-		var table = $('#customerbalancebox-datatable').DataTable();
+		var table = $('#customerbalancebox-datatable');
+		var dataTable = null;
+		if (table.is('.dataTable')) {
+			dataTable = table.DataTable();
 
-		$.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-			if (settings.nTable !== table.table().node()) {
-				return true;
-			}
+			$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+				if (settings.nTable !== dataTable.table().node()) {
+					return true;
+				}
 
-			const row = table.row(dataIndex).node();
+				const row = dataTable.row(dataIndex).node();
 
-			return $(row).attr('data-hidden') !== '1';
-		});
+				return $(row).attr('data-hidden') !== '1';
+			});
+		}
 
 		function applyFilter(filter) {
 			if (!filter.hasOwnProperty('registryId') || !filter.hasOwnProperty('registryType')) {
 				return;
 			}
 
-			var rows = $(table.rows().nodes());
+			var dataTableRows = dataTable ? $(dataTable.rows().nodes()) : null;
+			var rows;
 
 			if (filter.registryId.length) {
 				var registryId = parseInt(filter.registryId);
 				if (registryId) {
-					rows.attr('data-hidden', '1');
+					if (dataTableRows) {
+						dataTableRows.attr('data-hidden', '1');
+					}
+
 					var cssFilter = '';
+					var afterFilter = '';
 
 					switch (filter.registryType) {
 						case 'cashreg':
 							cssFilter = '[data-cash-registry-id="' + registryId + '"]';
+							afterFilter = '.registry-after-cash-registry';
 							break;
 						case 'cashsource':
 							cssFilter = '[data-cash-source-id="' + registryId + '"]';
+							afterFilter = '.registry-after-cash-source';
 							break;
 					}
 
-					rows.filter(cssFilter).attr('data-hidden', '0');
+					if (dataTableRows) {
+						dataTableRows.filter(cssFilter).attr('data-hidden', '0')
+						dataTable.draw();
+
+						rows = table.find('[data-id]');
+						rows.find('.registry-after-global,.registry-after-cash-registry,.registry-after-cash-source').hide()
+							.filter(afterFilter).show();
+					} else {
+						rows = table.find('[data-id]');
+						rows.hide();
+						rows.find('.registry-after-global,.registry-after-cash-registry,.registry-after-cash-source').hide();
+						rows.find(afterFilter).show();
+						rows.filter(cssFilter).show()
+							.even().addClass('lucid')
+							.odd().addClass('light');
+					}
 				}
 			} else {
-				rows.attr('data-hidden', '0');
-			}
+				if (dataTableRows) {
+					dataTableRows.attr('data-hidden', '0');
+					dataTable.draw();
 
-			table.draw();
+					rows = table.find('[data-id]');
+					rows.find('.registry-after-cash-registry,.registry-after-cash-source').hide();
+					rows.find('.registry-after-global').show();
+				} else {
+					rows = table.find('[data-id]');
+					rows.find('.registry-after-cash-registry,.registry-after-cash-source').hide();
+					rows.find('.registry-after-global').show();
+					rows.show()
+						.even().addClass('lucid')
+						.odd().addClass('light');
+				}
+			}
 		}
 
 		$('#customerbalancebox .registry-selection').change(function() {
