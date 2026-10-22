@@ -62,15 +62,32 @@
 			<TEXTAREA NAME="registry[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$registry.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/wait.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">{trans("Disabled summary:")}</TD>
-		<TD>
-			<INPUT type="checkbox" name="registry[disabled]" value="1"{if $registry.disabled} checked{/if}>
-		</TD>
-	</TR>
+	<tr>
+		<td>
+			{icon name="configuration"}
+		</td>
+		<td class="nobr">
+			<label for="disabled">
+				<strong>{trans("Disabled")}</strong>
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" id="disabled" name="registry[disabled]" value="1"{if !empty($registry.disabled)} checked{/if}>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{icon name="money"}
+		</td>
+		<td class="nobr">
+			<label for="balanceexclude">
+				<strong>{trans("Exclude from balance")}</strong>
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" id="balanceexclude" name="registry[balanceexclude]" value="1"{if !empty($registry.balanceexclude)} checked{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD>
 			<IMG src="img/users.gif" ALT="">

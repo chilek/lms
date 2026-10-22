@@ -298,7 +298,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         LEFT JOIN (
             SELECT
                 cash.customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -477,7 +477,7 @@ function GetCustomers($customers)
         LEFT JOIN (
             SELECT
                 cash.customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid

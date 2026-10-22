@@ -4243,7 +4243,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 documents.published,
                 documents.archived, '
                 . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
-                COALESCE(cr.disabled, 0) AS cashregdisabled,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kd.ksefnumber AS ksefnumber,
@@ -4280,7 +4280,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
                     WHERE 1 = 1 '
                     . $where
-                    . ' AND (cr.disabled IS NULL OR cr.disabled = 0)'
+                    . ' AND (cr.balanceexclude IS NULL OR cr.balanceexclude = 0)'
                     . (!empty($group) ?
                         ' AND ' . (!empty($exclude) ? 'NOT' : '') . ' EXISTS (
                         SELECT 1 FROM vcustomerassignments WHERE customergroupid = ' . intval($group) . '
@@ -4294,10 +4294,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $row['user'] = $userlist[$row['userid']]['name'] ?? '';
                 $row['before'] = $after;
 
-                if ($row['customerid'] && $row['type'] == 0 || !empty($row['cashregdisabled'])) {
+                if ($row['customerid'] && $row['type'] == 0 || !empty($row['balanceexclude'])) {
                     // customer covenant
                     $row['after'] = $row['before'];
-                    if (empty($row['cashregdisabled'])) {
+                    if (empty($row['balanceexclude'])) {
                         $row['covenant'] = true;
                     }
                 } else {

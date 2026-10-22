@@ -48,15 +48,28 @@
 	    </TD>
 	</TR>
 	{/if}
-	<TR>
-	    <TD width="1%">
-		<IMG src="img/wait.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Disabled summary:")}</B></TD>
-	    <TD width="98%">
-		    {if $registry.disabled}{trans("yes")}{else}{trans("no")}{/if}
-	    </TD>
-	</TR>
+	<tr>
+		<td>
+			{icon name="configuration"}
+		</td>
+		<td class="nobr">
+			<strong>{trans("Disabled")}</strong>
+		</td>
+		<td>
+			{if !empty($registry.disabled)}{icon name="checked"}{/if}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{icon name="money"}
+		</td>
+		<td class="nobr">
+			<strong>{trans("Exclude from balance")}</strong>
+		</td>
+		<td>
+			{if !empty($registry.balanceexclude)}{icon name="checked"}{/if}
+		</td>
+	</tr>
 	<TR>
 	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">

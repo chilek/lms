@@ -853,6 +853,7 @@ CREATE TABLE cashregs (
 	in_numberplanid int(11) DEFAULT NULL,
 	out_numberplanid int(11) DEFAULT NULL,
 	disabled tinyint(1)     DEFAULT '0' NOT NULL,
+	balanceexclude tinyint(1)     DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name),
 	CONSTRAINT cashregs_in_numberplanid_fkey
@@ -4035,7 +4036,7 @@ CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
                 UPDATE customerbalances
                 SET balance = (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4046,7 +4047,7 @@ CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
                     NEW.customerid,
                     (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4068,7 +4069,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                     UPDATE customerbalances
                     SET balance = (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4079,7 +4080,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                         OLD.customerid,
                         (
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4093,7 +4094,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                     UPDATE customerbalances
                     SET balance = (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4104,7 +4105,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                         NEW.customerid,
                         (
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4129,7 +4130,7 @@ CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
                     UPDATE customerbalances
                     SET balance = (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4140,7 +4141,7 @@ CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
                         OLD.customerid,
                         (
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4162,7 +4163,7 @@ BEGIN
     INSERT INTO customerbalances (customerid, balance)
     SELECT
         cash.customerid,
-        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END)
+        SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END)
     FROM cash
     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4806,4 +4807,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102200');

@@ -670,6 +670,7 @@ CREATE TABLE cashregs (
 	out_numberplanid 	integer 	DEFAULT NULL
 		CONSTRAINT cashregs_out_numberplanid_fkey REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	disabled 		smallint	DEFAULT 0 NOT NULL,
+    balanceexclude  smallint    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -4073,7 +4074,7 @@ BEGIN
                 UPDATE customerbalances
                 SET balance = (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4084,7 +4085,7 @@ BEGIN
                     OLD.customerid,
                     (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4103,7 +4104,7 @@ BEGIN
                 UPDATE customerbalances
                 SET balance = (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4114,7 +4115,7 @@ BEGIN
                     OLD.customerid,
                     (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4130,7 +4131,7 @@ BEGIN
             UPDATE customerbalances
             SET balance = (
                 SELECT
-                    SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                    SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                 FROM cash
                 LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                 LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4141,7 +4142,7 @@ BEGIN
                 NEW.customerid,
                 (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4158,7 +4159,7 @@ BEGIN
             UPDATE customerbalances
             SET balance = (
                 SELECT
-                    SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                    SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                 FROM cash
                 LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                 LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4169,7 +4170,7 @@ BEGIN
                 NEW.customerid,
                 (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4198,7 +4199,7 @@ BEGIN
     INSERT INTO customerbalances (customerid, balance) (
         SELECT
             cash.customerid,
-            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
         FROM cash
         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4846,6 +4847,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102200');
 
 COMMIT;

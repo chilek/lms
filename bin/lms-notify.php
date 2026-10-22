@@ -1408,7 +1408,7 @@ if (empty($types) || in_array('documents', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -1599,7 +1599,7 @@ if (empty($types) || in_array('contracts', $types)) {
             c.pin,
             c.lastname,
             c.name,
-            SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance,
+            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance,
             d.number,
             d.template,
             d.cdate,
@@ -1932,7 +1932,7 @@ if (empty($types) || in_array('debtors', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
                 FROM cash
                 LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                 LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -1941,7 +1941,7 @@ if (empty($types) || in_array('debtors', $types)) {
         LEFT JOIN (
             SELECT
                 cash.customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -2189,7 +2189,7 @@ if (empty($types) || in_array('reminder', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -2198,7 +2198,7 @@ if (empty($types) || in_array('reminder', $types)) {
         LEFT JOIN (
             SELECT
                 cash.customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -2481,7 +2481,7 @@ if (empty($types) || in_array('income', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -2490,7 +2490,7 @@ if (empty($types) || in_array('income', $types)) {
         LEFT JOIN (
             SELECT
                 cash.customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -2762,7 +2762,7 @@ if (empty($types) || in_array('invoices', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -3018,7 +3018,7 @@ if (empty($types) || in_array('notes', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -3442,7 +3442,7 @@ if (empty($types) || in_array('warnings', $types)) {
         LEFT JOIN (
             SELECT
                 customerid,
-                SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance
             FROM cash
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid

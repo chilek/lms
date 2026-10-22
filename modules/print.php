@@ -93,7 +93,7 @@ switch ($type) {
                 d.cdate,
                 d.type AS doctype,
                 numberplans.template,
-                COALESCE(cr.disabled, 0) AS cashregdisabled
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid
             LEFT JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
@@ -123,7 +123,7 @@ switch ($type) {
             $saldolist['balance'] = 0;
 
             foreach ($saldolist['id'] as $i => $v) {
-                if (empty($saldolist['cashregdisabled'])) {
+                if (empty($saldolist['balanceexclude'])) {
                     $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                     $saldolist['balance'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                 } else {
@@ -290,7 +290,7 @@ switch ($type) {
                 c.comment,
                 c.type AS type,
                 cs.name AS sourcename,
-                COALESCE(cr.disabled, 0) AS cashregdisabled
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude
             FROM cash c
             JOIN customerview ON customerview.id = c.customerid
             LEFT JOIN documents d ON d.id = c.docid
@@ -319,7 +319,7 @@ switch ($type) {
             foreach ($balancelist as $idx => $row) {
                 if ($user) {
                     if ($row['userid'] != $user) {
-                        if (empty($row['cashregdisabled']) && ($row['value'] > 0 || !$row['customerid'])) {  // skip cust. covenants
+                        if (empty($row['balanceexclude']) && ($row['value'] > 0 || !$row['customerid'])) {  // skip cust. covenants
                             $lastafter += $row['value'];
                         }
                         unset($balancelist[$idx]);
@@ -337,7 +337,7 @@ switch ($type) {
                     $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
                     //customer payment
-                    $list[$x]['after'] = $lastafter + (empty($row['cashregdisabled']) ? $list[$x]['value'] * $row['currencyvalue'] : 0);
+                    $list[$x]['after'] = $lastafter + (empty($row['balanceexclude']) ? $list[$x]['value'] * $row['currencyvalue'] : 0);
 
                     if ($row['value'] > 0) {
                         //income

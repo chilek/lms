@@ -256,7 +256,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     GROUP BY docid
                 ) tv ON tv.docid = cash.docid
                 WHERE cust.id = ?
-                    AND (cr.disabled IS NULL OR cr.disabled = 0)
+                    AND (cr.balanceexclude IS NULL OR cr.balanceexclude = 0)
                     AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
                     OR (cash.type = 0 AND cash.value > 0 AND cash.time < ' . $totime . ')
                     OR (cash.type = 0 AND cash.time +
@@ -293,9 +293,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 LEFT JOIN receiptcontents rc ON rc.docid = cash.docid
                 LEFT JOIN cashregs cr ON cr.id = rc.regid
                 WHERE customerid = ?
-                    AND (cr.disabled IS NULL OR cr.disabled = 0)'
+                    AND (cr.balanceexclude IS NULL OR cr.balanceexclude = 0)'
                     . (empty($totime) ? '' : ' AND time < ' . intval($totime))
-                    . (empty($docid) ? '' : ' AND (docid IS NULL OR docid <= ' . $docid . ')'),
+                    . (empty($docid) ? '' : ' AND (cash.docid IS NULL OR cash.docid <= ' . $docid . ')'),
                 array($id)
             );
         }
@@ -330,7 +330,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 documents.cdate, documents.number, numberplans.template,
                 cr.id AS cashregid,
                 cr.name AS cashregname,
-                COALESCE(cr.disabled, 0) AS cashregdisabled,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude,
                 cash.sourceid AS cashsourceid,
                 cs.name AS cashsourcename,
                 kd2.status AS ksefstatus,
@@ -396,7 +396,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     d.cdate, d.number, numberplans.template,
                     null AS cashregid,
                     null AS cashregname,
-                    0 AS cashregdisabled,
+                    0 AS balanceexclude,
                     null AS cashsourceid,
                     null AS cashsourcename,
                     null AS ksefstatus,
@@ -440,7 +440,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
-                if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') || !empty($row['cashregdisabled'])) {
+                if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') || !empty($row['balanceexclude'])) {
                     $row['after'] = $result['balance'];
                 } else {
                     $row['after'] = round($result['balance'] + ($row['value'] * $row['currencyvalue']), 2);
@@ -491,7 +491,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 np.template,
                 d.cdate,
                 d.fullnumber,
-                COALESCE(cr.disabled, 0) AS cashregdisabled
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude
             FROM cash
             LEFT JOIN documents d ON d.id = cash.docid
             LEFT JOIN numberplans np ON np.id = d.numberplanid
@@ -523,7 +523,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         foreach ($result as &$record) {
             $record['after'] = $balance;
-            if (empty($record['cashregdisabled'])) {
+            if (empty($record['balanceexclude'])) {
                 $balance -= $record['value'] * $record['currencyvalue'];
             }
         }
@@ -1935,7 +1935,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN (
                 SELECT
                     cash.customerid,
-                    SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+                    SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
                 FROM cash
                 LEFT JOIN customers ON customers.id = cash.customerid
                 LEFT JOIN divisions ON divisions.id = customers.divisionid
@@ -2024,7 +2024,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . (isset($time) && $time ?
                 'LEFT JOIN (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.disabled, 0) = 0 THEN value * currencyvalue ELSE 0 END) AS balance,
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN value * currencyvalue ELSE 0 END) AS balance,
                         customerid
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid

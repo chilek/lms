@@ -1109,7 +1109,7 @@ if (!empty($assigns)) {
                 AND c.value <> 0
                 AND c.time >= ?
                 AND c.time < ?
-                AND COALESCE(cr.disabled, 0) = 0
+                AND COALESCE(cr.balanceexclude, 0) = 0
             ORDER BY deadline, c.value DESC',
             array(
                 $reward_penalty_deadline_grace_days,
