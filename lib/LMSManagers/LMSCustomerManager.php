@@ -491,12 +491,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 np.template,
                 d.cdate,
                 d.fullnumber,
-                COALESCE(cr.balanceexclude, 0) AS balanceexclude
+                cr.id AS cashregid,
+                cr.name AS cashregname,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude,
+                cash.sourceid AS cashsourceid,
+                cs.name AS cashsourcename
             FROM cash
             LEFT JOIN documents d ON d.id = cash.docid
             LEFT JOIN numberplans np ON np.id = d.numberplanid
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
+            LEFT JOIN cashsources cs ON cs.id = cash.sourceid
             WHERE cash.customerid = ?
             ORDER BY cash.time ' . $order
             . (empty($limit) ? '' : ' LIMIT ' . intval($limit)),
@@ -578,6 +583,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             if (empty($lastN)) {
                 $lN = '';
             } else {
+                $customer_balance_excluded_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_excluded_registry_operation_comment', trans('%comment% (transaction excluded from customer balance)'));
+                $customer_balance_included_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_included_registry_operation_comment', '%comment%');
+
                 // ok, now we are going to rise up system's load
                 if ($format == 'html') {
                     $lN = '<table class="customer-last-balance-table"><thead><tr>' . PHP_EOL;
@@ -608,6 +616,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         $cols['payment']['value'] = moneyf($row_s['value'], $row_s['currency']);
                     }
                     $cols['balance']['value'] = moneyf($row_s['after'], Localisation::getCurrentCurrency());
+
+                    if (empty($row_s['cashregid']) && empty($row_s['cashsourceid'])) {
+                        $comment = $row_s['comment'];
+                    } else {
+                        $comment = str_replace(
+                            [
+                                '%comment%',
+                                '%registry%',
+                            ],
+                            [
+                                $row_s['comment'],
+                                empty($row_s['cashregid']) ? $row_s['cashsourcename'] : $row_s['cashregname'],
+                            ],
+                            empty($row_s['balanceexclude'])
+                                ? $customer_balance_included_registry_operation_comment
+                                : $customer_balance_excluded_registry_operation_comment
+                        );
+                    }
+
                     $cols['description']['value'] = str_replace(
                         array(
                             '%comment',
@@ -615,7 +642,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             '%docnumber',
                         ),
                         array(
-                            $row_s['comment'],
+                            $comment,
                             empty($row_s['doctype']) ? '-' : $DOCTYPES[$row_s['doctype']],
                             empty($row_s['fullnumber']) ? '' : $row_s['fullnumber'],
                         ),
@@ -633,7 +660,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             <td style="text-align: ' . $cols['balance']['align'] . ';'
                                 . ($cols['balance']['value'] < 0 ? ' color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
                             <td style="text-align: ' . $cols['description']['align'] . '">'
-                                . $cols['description']['value'] . '</td>' . PHP_EOL
+                                . htmlspecialchars($cols['description']['value']) . '</td>' . PHP_EOL
                         . '</tr>' . PHP_EOL;
                     } else {
                         $chunks = array();

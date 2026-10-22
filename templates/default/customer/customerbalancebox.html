@@ -7,6 +7,8 @@
 {$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 {$notification = ConfigHelper::checkConfig('finances.customer_notify', true)}
 {$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
+{$customer_balance_excluded_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_excluded_registry_operation_comment', trans('%comment% (transaction excluded from customer balance)'))}
+{$customer_balance_included_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_included_registry_operation_comment', '%comment%')}
 
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
@@ -200,9 +202,35 @@
 							{/if}
 						{/strip}
 					</td>
-					<TD class="comment"
-						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
-						>{$item.comment|escape}</TD>
+					<td class="comment"
+						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}>{strip}
+						{if empty($item.cashregid) && empty($item.cashsourceid)}
+							{$item.comment|escape}
+						{else}
+							{if empty($item.cashregname)}
+								{$registry_name = $item.cashsourcename}
+							{else}
+								{$registry_name = $item.cashregname}
+							{/if}
+							{if empty($item.balanceexclude)}
+								{$operation_comment = $customer_balance_included_registry_operation_comment}
+							{else}
+								{$operation_comment = $customer_balance_excluded_registry_operation_comment}
+							{/if}
+							{$comment = str_replace(
+								array(
+									'%comment%',
+									'%registry%'
+								),
+								array(
+									$item.comment,
+									$registry_name
+								),
+								$operation_comment
+							)}
+							{$comment|escape}
+						{/if}
+					{/strip}</td>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>

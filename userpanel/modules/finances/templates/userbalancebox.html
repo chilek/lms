@@ -2,6 +2,8 @@
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
 {$offline_support = ConfigHelper::checkConfig('ksef.offline_support')}
+{$customer_balance_excluded_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_excluded_registry_operation_comment', trans('%comment% (transaction excluded from customer balance)'))}
+{$customer_balance_included_registry_operation_comment = ConfigHelper::getConfig('finances.customer_balance_included_registry_operation_comment', '%comment%')}
 <form name="invoices" action="?m=finances&f=invoice" method="POST" target="_blank">
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
@@ -28,7 +30,34 @@
 				<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{moneyf($item.value, $item.currency)}</td>
 				<td width="1%" align="center">&raquo;</td>
 				<td width="1%" align="right" class="nobr">{if $item.after < 0}<span style="color: red;">{/if}{moneyf($item.after)}{if $item.after < 0}</span>{/if}</td>
-				<td width="95%">{$item.comment}</td>
+				<td>{strip}
+					{if empty($item.cashregid) && empty($item.cashsourceid)}
+						{$item.comment|escape}
+					{else}
+						{if empty($item.cashregid)}
+							{$registry_name = $item.cashsourcename}
+						{else}
+							{$registry_name = $item.cashregname}
+						{/if}
+						{if empty($item.balanceexclude)}
+							{$operation_comment = $customer_balance_included_registry_operation_comment}
+						{else}
+							{$operation_comment = $customer_balance_excluded_registry_operation_comment}
+						{/if}
+						{$comment = str_replace(
+							array(
+								'%comment%',
+								'%registry%'
+							),
+							array(
+								$item.comment,
+								$registry_name
+							),
+							$operation_comment
+						)}
+						{$comment|escape}
+					{/if}
+				{/strip}</td>
 				{if !$disable_invoices}
 					<td width="1%" class="nobr">
 						{foreach $item.customlinks as $link}

@@ -6492,3 +6492,5 @@ $_LANG['— select tariff —'] = '— wybierz taryfę —';
 
 $_LANG['import source'] = 'źródło importu';
 $_LANG['cash registry'] = 'rejestr kasowy';
+
+$_LANG['%comment% (transaction excluded from customer balance)'] = '%comment% (operacja niewliczana do salda klienta)';
