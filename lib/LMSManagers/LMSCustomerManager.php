@@ -290,7 +290,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 'SELECT
                     SUM(cash.value * currencyvalue)
                 FROM cash
-                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid
+                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                 LEFT JOIN cashregs cr ON cr.id = rc.regid
                 WHERE customerid = ?
                     AND (cr.balanceexclude IS NULL OR cr.balanceexclude = 0)'
