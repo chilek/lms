@@ -1279,6 +1279,8 @@ version 28-git (????-??-??):
     and 'finances.customer_balance_included_registry_operation_comment' (default value: '%comment%')
     allow to reformat text comment for bank and cash registry operations (balance excluded configuration
     variable corresponds to operations from cash registry with set 'exclude from balance' flag) [chilan]
+  - improvement: added '%nodesessionid%' substitution support for 'phpui.radius_disconnect_helper'
+    configuration variable usage [chilan]
 
 version 27.0 (2021-08-20):
 
