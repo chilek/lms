@@ -1281,6 +1281,16 @@ version 28-git (????-??-??):
     variable corresponds to operations from cash registry with set 'exclude from balance' flag) [chilan]
   - improvement: added '%nodesessionid%' substitution support for 'phpui.radius_disconnect_helper'
     configuration variable usage [chilan]
+  - enhancement: new 'rt.parser_max_date_age' configuration variable (days, default 3) [interduo]
+  - enhancement: lms-rtparser: send customer notifications as html when the received message is html [interduo]
+  - enhancement: lms-rtparser: log skipped automatic messages and messages without a matching queue [interduo]
+  - enhancement: lms-rtparser: find an existing ticket by In-Reply-To and any References entry [interduo]
+  - enhancement: lms-rtparser: link a new ticket to its resolved parent outside the reopen window [interduo]
+  - bugfix: lms-rtparser: In-Reply-To and References appends require a ticket party unless
+    'rt.parser_verify_reference_sender' is false; unset 'rt.parser_trusted_authserv_id' ignores
+    Authentication-Results and trusts From (a missing header still trusts From) [interduo]
+  - enhancement: lms-rtparser: --test (-t) parses and matches mail without database writes,
+    outgoing mail or IMAP flag changes [interduo]
   - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
 
 version 27.0 (2021-08-20):
