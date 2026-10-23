@@ -51,7 +51,6 @@ if ($LMS->CountNetDevLinks($id) > 0) {
     $body .= '<P><A HREF="?m=netdevdel&id=' . $id . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
 } else {
     if (!$api) {
-        header('Location: ?m=netdevlist');
         $body = '<P>' . trans('Device has been deleted.') . '</P>';
     }
 
@@ -81,6 +80,7 @@ if ($LMS->CountNetDevLinks($id) > 0) {
             $SESSION->close();
             die;
         }
+        $SESSION->redirect('?m=netdevlist');
     } else {
         $body = $hook_data['body'];
     }

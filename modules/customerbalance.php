@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 if (!$LMS->CustomerExists($id)) {
-    header('Location: ?m=customerlist');
+    $SESSION->redirect('?m=customerlist');
 }
 
 $SESSION->add_history_entry();

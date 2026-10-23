@@ -34,7 +34,7 @@ if (isset($_POST['channel'])) {
     if ($channel['name'] == '' &&
         $channel['upceil'] == '' && $channel['upceil_n'] == '' &&
         $channel['downceil'] == '' && $channel['downceil_n'] == '') {
-        header('Location: ?m=ewxchlist');
+        $SESSION->redirect('?m=ewxchlist');
     }
 
     if ($channel['name'] == '') {

@@ -35,13 +35,13 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
-        global $SMARTY,$DB;
+        global $SMARTY, $DB, $SESSION;
         if ($_POST['owner_stats']) {
             $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'owner_stats\'');
         } else {
             $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'owner_stats\'');
         }
-        header('Location: ?m=userpanel&module=stats');
+        $SESSION->redirect('?m=userpanel&module=stats');
     }
 }
                                     
