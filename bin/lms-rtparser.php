@@ -275,6 +275,9 @@ if ($mode == MODE_IMAP) {
         exit(6);
     }
 
+    imap_timeout(IMAP_OPENTIMEOUT, 30);
+    imap_timeout(IMAP_READTIMEOUT, 30);
+
     $ih = @imap_open("{" . $rtparser_server . "}" . $rtparser_folder, $rtparser_username, $rtparser_password);
     if (!$ih) {
         fprintf($stderr, 'Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
@@ -291,7 +294,7 @@ if ($mode == MODE_IMAP) {
         $search_filter[] = 'UNFLAGGED';
         $set_flags[] = "\\Flagged";
     }
-    $posts = imap_search($ih, empty($search_filter) ? 'ALL' : implode(' ', $search_filter));
+    $posts = imap_search($ih, empty($search_filter) ? 'ALL' : implode(' ', $search_filter), SE_UID | SE_FREE);
     if (empty($posts)) {
         imap_close($ih);
         die;
@@ -312,9 +315,32 @@ if ($mode == MODE_IMAP) {
 
 $defaultQueue = $queue;
 
-while (isset($buffer) || ($postid !== false && $postid !== null)) {
+function handleRtparserMessage()
+{
+    global $DB, $LMS, $_ccemails, $address, $address_id, $attachment, $attachments, $autoSubmitted;
+    global $autoSubmittedValue, $autoSubmittedValues, $auto_open, $autoreply, $autoreplyHeaders;
+    global $autoreply_body_template, $autoreply_format, $autoreply_from, $autoreply_name, $autoreply_subject_template;
+    global $body, $body_customer_phone_number_regexp_match, $body_date_regexp_match, $body_template, $buffer;
+    global $categories, $category, $catid, $cats, $ccaddress, $ccdisplay, $ccemails, $check_mail, $config_section;
+    global $contact, $contenttype, $current_autoreply_body, $current_autoreply_subject, $custmail_body;
+    global $custmail_headers, $custmail_subject, $customCreateTime, $customerinfo, $date, $decoded_mail_header;
+    global $decoded_mail_headers, $defaultQueue, $detect_customer_location_address, $display, $e, $email;
+    global $emailContacts, $emails, $file, $file_content, $file_name, $files, $fromAddresses, $fromemail, $fromname;
+    global $headerName, $headers, $height, $helpdesk_sender_name, $hm_purifier, $hostname, $html, $ignore_sender_email;
+    global $ih, $imageSize, $image_max_size, $imagick, $inReplyIds, $info, $inreplytoid, $isAttachment, $lms_url, $m;
+    global $mail, $mail_body, $mail_customerinfo, $mail_header, $mail_headers, $mail_mh_subject, $mailfname, $mailfrom;
+    global $mailto, $mailto_qp_encoded, $matches, $message, $messageAutoreplyFrom, $messageAutoreplyName, $message_id;
+    global $mh_from, $mh_msgid, $mh_references, $mh_replyto, $mh_subject, $mode, $modify_ticket_timeframe, $msgid;
+    global $new_ticket, $notify, $now, $params, $parsedDate, $parserMaxDateAge, $part, $partdata, $partid, $parts;
+    global $phone, $phones, $postid, $posts, $precedenceValues, $prefer_html, $prev_tid, $prev_tid_contents, $queue;
+    global $queue_autoreply, $queuedata, $queueid, $ref, $refcandidates, $referenceIds, $replyToAddresses;
+    global $replytoemail, $replytoname, $reqcustid, $requserid, $resolvedParentId, $return_paths, $set_flags;
+    global $sms_body, $sms_customerinfo, $smtp_options, $stderr, $subject_template, $subject_ticket_regexp_match;
+    global $subpart, $subpartdata, $subpartid, $ticket, $ticket_id, $ticketbody_variable, $ticketsubject_variable;
+    global $timestamp, $toemails, $transfer_encoding, $use_html, $value, $var, $width;
+
     if ($postid !== false && $postid !== null) {
-        $buffer = imap_fetchbody($ih, $postid, '', FT_PEEK);
+        $buffer = imap_fetchbody($ih, $postid, '', FT_PEEK | FT_UID);
     }
 
     unset($msgid, $mail_customerinfo, $sms_customerinfo, $info, $emails, $queuedata, $prev_tid_contents);
@@ -390,9 +416,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             if ($postid !== false && $postid !== null) {
                 if (!empty($set_flags)) {
-                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
                 } else {
-                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
                 }
 
                 $postid = next($posts);
@@ -400,7 +426,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             unset($buffer);
 
-            continue;
+            return;
         }
 
         $customCreateTime = null;
@@ -668,13 +694,13 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     LOG_WARNING
                 );
                 if (!empty($set_flags)) {
-                    imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+                    imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
                 } else {
-                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
+                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
                 }
                 $postid = next($posts);
                 $buffer = null;
-                continue;
+                return;
             }
             fprintf($stderr, "Fatal error: Queue ID not found, exiting." . PHP_EOL);
             exit(5);
@@ -1094,15 +1120,36 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
     if ($postid !== false && $postid !== null) {
         if (!empty($set_flags)) {
-            imap_setflag_full($ih, $postid, implode(' ', $set_flags));
+            imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
         } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged");
+            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
         }
 
         $postid = next($posts);
     }
 
     unset($buffer);
+}
+
+while (isset($buffer) || ($postid !== false && $postid !== null)) {
+    try {
+        handleRtparserMessage();
+    } catch (\Throwable $e) {
+        writesyslog('Message processing failed: ' . decodeHeader($e->getMessage()), LOG_ERR);
+        if ($mode != MODE_IMAP) {
+            exit(75);
+        }
+        if ($postid !== false && $postid !== null) {
+            $failFlags = ['\\Flagged'];
+            if ($rtparser_use_seen_flag) {
+                $failFlags[] = '\\Seen';
+            }
+            imap_setflag_full($ih, $postid, implode(' ', $failFlags), ST_UID);
+            $postid = next($posts);
+        }
+        unset($buffer);
+        continue;
+    }
 }
 
 if (!empty($ih)) {
