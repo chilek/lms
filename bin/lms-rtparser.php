@@ -325,6 +325,10 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $precedence = isset($headers['precedence']) ? strtolower(trim((string) $headers['precedence'])) : '';
         if (!empty($return_paths) || $autoSubmitted != 'no' || in_array($precedence, ['bulk', 'junk', 'list', 'auto_reply'])) {
             mailparse_msg_free($mail);
+            writesyslog(
+                'Skipping automatic message (Message-ID: ' . decodeHeader($headers['message-id'] ?? '-') . ').',
+                LOG_INFO
+            );
 
             if ($postid !== false && $postid !== null) {
                 if (!empty($set_flags)) {
@@ -671,6 +675,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         if (!$queue) {
             if ($mode == MODE_IMAP) {
+                writesyslog(
+                    'Queue not found, skipping message (Message-ID: ' . decodeHeader($mh_msgid)
+                        . ', To: ' . decodeHeader(implode(', ', array_merge($toemails, array_keys($ccemails)))) . ').',
+                    LOG_WARNING
+                );
                 if (!empty($set_flags)) {
                     imap_setflag_full($ih, $postid, implode(' ', $set_flags));
                 } else {
