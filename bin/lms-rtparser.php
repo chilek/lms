@@ -591,24 +591,34 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $prev_tid = 0;
         $inreplytoid = null;
+        $resolvedParentId = 0;
         // check In-Reply-To and References, newest first, at most 10 lookups
-        $refcandidates = array_reverse(preg_split('/\s+/', trim($mh_references), -1, PREG_SPLIT_NO_EMPTY));
+        $referenceIds = [];
+        $inReplyIds = [];
+        preg_match_all('/<[^<>\s]+>/', $mh_references, $referenceIds);
         if (!empty($headers['in-reply-to'])) {
-            array_unshift($refcandidates, trim($headers['in-reply-to']));
+            preg_match_all('/<[^<>\s]+>/', $headers['in-reply-to'], $inReplyIds);
         }
+        $refcandidates = array_merge($inReplyIds[0] ?? [], array_reverse($referenceIds[0] ?? []));
         foreach (array_slice(array_unique($refcandidates), 0, 10) as $ref) {
             $message = $DB->GetRow(
                 "SELECT m.id, m.ticketid, t.state, t.resolvetime
                 FROM rtmessages m
                 JOIN rttickets t ON t.id = m.ticketid
-                WHERE m.messageid = ?",
-                array($ref)
+                WHERE m.messageid = ?
+                ORDER BY m.id DESC LIMIT 1",
+                [$ref]
             );
-            if (!empty($message)
-                && ($message['state'] != RT_RESOLVED || $message['resolvetime'] + $modify_ticket_timeframe > time())) {
+            if (empty($message)) {
+                continue;
+            }
+            if ($message['state'] != RT_RESOLVED || $message['resolvetime'] + $modify_ticket_timeframe > time()) {
                 $prev_tid = $message['ticketid'];
                 $inreplytoid = $message['id'];
                 break;
+            }
+            if (!$resolvedParentId) {
+                $resolvedParentId = $message['ticketid'];
             }
         }
 
@@ -800,6 +810,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $ticket_id = $prev_tid;
             $new_ticket = false;
         } else {
+            if ($prev_tid && !$resolvedParentId) {
+                $resolvedParentId = $prev_tid;
+            }
             $cats = array();
             foreach ($categories as $category) {
                 if (preg_match('/^[0-9]+$/', $category) && $LMS->CategoryExists($category)) {
@@ -855,7 +868,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         $body_template
                     ),
                 'phonefrom' => empty($phone) ? '' : $phone,
-                'categories' => $cats), $files);
+                'categories' => $cats,
+                'parentid' => $resolvedParentId ?: null,
+            ), $files);
 
             $message_id = $LMS->GetLastMessageID();
 
