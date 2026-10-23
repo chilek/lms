@@ -1480,9 +1480,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         if (isset($params['nodesessionid'])) {
             $result = $this->db->GetRow(
-                'SELECT s.nasipaddr, INET_NTOA(s.nasipaddr) AS nasip,
+                'SELECT
+                    s.nasipaddr,
+                    INET_NTOA(s.nasipaddr) AS nasip,
                     nd.secret,
-                    s.ipaddr, INET_NTOA(s.ipaddr) AS ip
+                    s.ipaddr,
+                    s.nassessionid,
+                    INET_NTOA(s.ipaddr) AS ip
                 FROM nodesessions s
                 LEFT JOIN nodes n ON n.ipaddr = s.nasipaddr AND n.ownerid IS NULL AND n.netdev IS NOT NULL
                 LEFT JOIN netdevices nd ON nd.id = n.netdev
