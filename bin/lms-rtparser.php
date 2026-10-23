@@ -629,10 +629,14 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $queueid = $queue;
             $queue = $DB->GetRow(
                 "SELECT id, LOWER(email) AS email FROM rtqueues WHERE LOWER(email) IN ?"
-                    . ($check_mail && $queueid ? ' AND id = ' . intval($queueid) : '') . " LIMIT 1",
-                array(array_merge(array_keys($toemails), array_keys($ccemails)))
+                    . ($check_mail && $queueid ? ' AND id = ' . intval($queueid) : '')
+                    . " ORDER BY (CASE WHEN LOWER(email) IN ? THEN 0 ELSE 1 END), id LIMIT 1",
+                array(
+                    array_merge(array_keys($toemails), array_keys($ccemails)),
+                    $toemails ? array_keys($toemails) : array(''),
+                )
             );
-            if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
+            if (!empty($queue) && (!$check_mail || !$queueid || $queue['id'] == $queueid)) {
                 $_ccemails = array();
                 foreach ($ccemails as $ccaddress => $ccdisplay) {
                     if ($ccaddress != $queue['email']) {
