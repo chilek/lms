@@ -33,6 +33,7 @@ $script_parameters = array(
     'prefer-html' => null,
     'imap' => null,
     'check-mail' => null,
+    'test' => 't',
 );
 
 $script_help = <<<EOF
@@ -49,6 +50,8 @@ $script_help = <<<EOF
                                 fetch posts using imap protocol
     --check-mail
                                 check if mail from 'To' header matches selected queue mail address
+-t, --test                      parse and match tickets without database writes, outgoing
+                                mail or IMAP flag, delete or move changes
 EOF;
 
 require_once('script-options.php');
@@ -151,6 +154,7 @@ $stderr = fopen('php://stderr', 'w');
 $prefer_html = isset($options['prefer-html']);
 $use_html = isset($options['use-html']) || $prefer_html;
 $check_mail = isset($options['check-mail']);
+$test = isset($options['test']);
 
 define('MODE_FILE', 1);
 define('MODE_IMAP', 2);
@@ -526,7 +530,7 @@ function handleRtparserMessage()
     global $queue_autoreply, $queuedata, $queueid, $ref, $refcandidates, $referenceIds, $replyToAddresses;
     global $replytoemail, $replytoname, $reqcustid, $requserid, $resolvedParentId, $return_paths, $set_flags;
     global $sms_body, $sms_customerinfo, $smtp_options, $stderr, $subject_template, $subject_ticket_regexp_match;
-    global $subpart, $subpartdata, $subpartid, $ticket, $ticket_id, $ticketbody_variable, $ticketsubject_variable;
+    global $subpart, $subpartdata, $subpartid, $test, $ticket, $ticket_id, $ticketbody_variable, $ticketsubject_variable;
     global $timestamp, $toemails, $transfer_encoding, $use_html, $value, $var, $width;
 
     if ($postid !== false && $postid !== null) {
@@ -605,16 +609,18 @@ function handleRtparserMessage()
             );
 
             if ($postid !== false && $postid !== null) {
-                if (!empty($set_flags)) {
-                    imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
-                } else {
-                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+                if (!$test) {
+                    if (!empty($set_flags)) {
+                        imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
+                    } else {
+                        imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+                    }
                 }
 
                 $postid = next($posts);
             }
 
-            unset($buffer);
+            $buffer = null;
 
             return;
         }
@@ -885,10 +891,12 @@ function handleRtparserMessage()
                         . ', To: ' . decodeHeader(implode(', ', array_merge($toemails, array_keys($ccemails)))) . ').',
                     LOG_WARNING
                 );
-                if (!empty($set_flags)) {
-                    imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
-                } else {
-                    imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+                if (!$test) {
+                    if (!empty($set_flags)) {
+                        imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
+                    } else {
+                        imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+                    }
                 }
                 $postid = next($posts);
                 $buffer = null;
@@ -1003,11 +1011,25 @@ function handleRtparserMessage()
             );
             $ticketAcceptsReply = false;
         }
+        $messageCustomerId = $ticketAcceptsReply && $fromMayIdentify && senderIsTicketCustomerContact($fromemail, $prev_tid_contents)
+            ? $prev_tid_contents['customerid']
+            : null;
+        if ($test) {
+            $reportedCustomerId = $ticketAcceptsReply ? $messageCustomerId : $reqcustid;
+            printf(
+                '%s queue=%d customer=%s attachments=%d' . PHP_EOL,
+                $ticketAcceptsReply ? 'append to #' . intval($prev_tid) : 'new ticket',
+                intval($queue),
+                $reportedCustomerId ? '#' . intval($reportedCustomerId) : '-',
+                count($files)
+            );
+            if ($postid !== false && $postid !== null) {
+                $postid = next($posts);
+            }
+            $buffer = null;
+            return;
+        }
         if ($ticketAcceptsReply) {
-            $messageCustomerId = $fromMayIdentify && senderIsTicketCustomerContact($fromemail, $prev_tid_contents)
-                ? $prev_tid_contents['customerid']
-                : null;
-
             $msgid = $LMS->TicketMessageAdd(array(
                 'ticketid' => $prev_tid,
                 'mailfrom' => $mh_from,
@@ -1352,16 +1374,18 @@ function handleRtparserMessage()
     }
 
     if ($postid !== false && $postid !== null) {
-        if (!empty($set_flags)) {
-            imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+        if (!$test) {
+            if (!empty($set_flags)) {
+                imap_setflag_full($ih, $postid, implode(' ', $set_flags), ST_UID);
+            } else {
+                imap_clearflag_full($ih, $postid, "\\Seen \\Flagged", ST_UID);
+            }
         }
 
         $postid = next($posts);
     }
 
-    unset($buffer);
+    $buffer = null;
 }
 
 while (isset($buffer) || ($postid !== false && $postid !== null)) {
@@ -1373,14 +1397,16 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             exit(75);
         }
         if ($postid !== false && $postid !== null) {
-            $failFlags = ['\\Flagged'];
-            if ($rtparser_use_seen_flag) {
-                $failFlags[] = '\\Seen';
+            if (!$test) {
+                $failFlags = ['\\Flagged'];
+                if ($rtparser_use_seen_flag) {
+                    $failFlags[] = '\\Seen';
+                }
+                imap_setflag_full($ih, $postid, implode(' ', $failFlags), ST_UID);
             }
-            imap_setflag_full($ih, $postid, implode(' ', $failFlags), ST_UID);
             $postid = next($posts);
         }
-        unset($buffer);
+        $buffer = null;
         continue;
     }
 }
