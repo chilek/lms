@@ -21,16 +21,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("DELETE FROM customerbalances");
-
-$this->Execute("
-    INSERT INTO customerbalances (customerid, balance)
-    SELECT customerid, SUM(value * currencyvalue)
-    FROM cash
-    WHERE customerid IS NOT NULL
-        AND customerid IN (SELECT id FROM customers)
-    GROUP BY customerid
-");
+$this->Execute("SELECT customerbalances_refresh()");
 
 $this->Execute("ALTER TABLE customerbalances ADD PRIMARY KEY (customerid)");
 
