@@ -240,16 +240,22 @@ function autoreplyDestinations($row)
     return array_values(array_unique($destinations));
 }
 
-function recentAutoreplyDestinationCounts()
+function &autoreplyTicketsBySender()
 {
     global $DB, $parserAutoreplyLimit, $parserAutoreplyLimitPeriod;
 
+    static $ticketsBySender = null;
+    if ($ticketsBySender !== null) {
+        return $ticketsBySender;
+    }
+
+    $ticketsBySender = [];
     if ($parserAutoreplyLimit <= 0 || $parserAutoreplyLimitPeriod <= 0) {
-        return [];
+        return $ticketsBySender;
     }
 
     $rows = $DB->GetAll(
-        'SELECT m.customerid, m.mailfrom, m.replyto, m.headers
+        'SELECT m.ticketid, m.customerid, m.mailfrom, m.replyto, m.headers
         FROM rtmessages m
         WHERE m.createtime >= ?
             AND m.type = ?
@@ -264,14 +270,38 @@ function recentAutoreplyDestinationCounts()
         ]
     ) ?: [];
 
-    $counts = [];
     foreach ($rows as $row) {
         foreach (autoreplyDestinations($row) as $address) {
-            $counts[$address] = ($counts[$address] ?? 0) + 1;
+            $ticketsBySender[$address][$row['ticketid']] = true;
         }
     }
 
+    return $ticketsBySender;
+}
+
+function recentAutoreplyDestinationCounts()
+{
+    $counts = [];
+    foreach (autoreplyTicketsBySender() as $address => $tickets) {
+        $counts[$address] = count($tickets);
+    }
+
     return $counts;
+}
+
+function rememberAutoreplyTicket($ticketId, $addresses)
+{
+    if (!$ticketId) {
+        return;
+    }
+    $ticketsBySender = &autoreplyTicketsBySender();
+    foreach ($addresses as $address) {
+        $address = strtolower($address);
+        if ($address === '') {
+            continue;
+        }
+        $ticketsBySender[$address][$ticketId] = true;
+    }
 }
 
 function autoreplyDestinationAllowed($address, $counts)
@@ -1191,6 +1221,12 @@ function handleRtparserMessage()
                     }
 
                     $LMS->SendMail($mailto, $autoreplyHeaders, $current_autoreply_body, null, null, $smtp_options);
+                    rememberAutoreplyTicket($ticket_id, autoreplyDestinations([
+                        'customerid' => $reqcustid,
+                        'mailfrom' => $mh_from,
+                        'replyto' => $mh_replyto,
+                        'headers' => $mail_headers,
+                    ]));
                 }
             }
 
