@@ -516,135 +516,46 @@ if (isset($_POST['message'])) {
 
             // User notifications
             if (isset($message['notify']) || isset($message['customernotify']) || !empty($message['verifierid'])) {
-                $mailfname = '';
-                if (!empty($notification_sender_name)) {
-                    $mailfname = $notification_sender_name;
-
-                    if ($mailfname == 'queue') {
-                        $mailfname = $queue['name'];
-                    } elseif ($mailfname == 'user') {
-                        $mailfname = $user['name'];
-                    }
-
-                    $mailfname = '"' . $mailfname . '"';
+                $userNotification = $LMS->TicketNotifyUsers([
+                    'type' => 'message',
+                    'ticketid' => $ticketid,
+                    'body' => $message['body'],
+                    'subject' => $message['subject'],
+                    'messageid' => $msgid ?? null,
+                    'notify' => $message['notify'] ?? false,
+                    'notifyUsers' => isset($message['notify']),
+                    'verifierid' => $message['verifierid'] ?? null,
+                    'propsVerifierid' => $props['verifierid'] ?? null,
+                    'attachments' => $attachments,
+                    'contenttype' => $message['contenttype'],
+                    'headers' => $headers,
+                    'queue' => $queue,
+                    'user' => $user,
+                    'requestorMail' => $requestor_mail,
+                    'senderName' => $notification_sender_name,
+                    'senderEmail' => $notification_sender_email ?? null,
+                    'customerInfoEnabled' => $notification_customerinfo,
+                    'mailCustomerInfoFormat' => $notification_mail_body_customerinfo_format,
+                    'smsCustomerInfoFormat' => $notification_sms_body_customerinfo_format,
+                    'mailSubjectTemplate' => $notification_mail_subject,
+                    'mailBodyTemplate' => $notification_mail_body,
+                    'smsBodyTemplate' => $notification_sms_body,
+                    'smtpOptions' => $smtp_options,
+                    'authorNotify' => $author_notify,
+                    'customerid' => $message['customerid'] ?? null,
+                    'mailCustomerInfo' => $mail_customerinfo ?? null,
+                    'smsCustomerInfo' => $sms_customerinfo ?? null,
+                ]);
+                $ticketdata = $userNotification['ticket'];
+                $headers = $userNotification['headers'];
+                if (array_key_exists('customer', $userNotification)) {
+                    $info = $userNotification['customer'];
+                    $emails = $userNotification['emails'];
+                    $mobile_phones = $userNotification['mobilePhones'];
                 }
-
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail, $notification_sender_email ?? null);
-                $ticketdata = $LMS->GetTicketContents($ticketid);
-
-                $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
-                $headers['Reply-To'] = $headers['From'];
-
-                if ($ticketdata['customerid']) {
-                    $info = $LMS->GetCustomer($ticketdata['customerid'], true);
-
-                    $emails = array_map(
-                        function ($contact) {
-                            return $contact['fullname'];
-                        },
-                        array_filter(
-                            $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL),
-                            function ($contact) {
-                                return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
-                            }
-                        )
-                    );
-
-                    $all_phones = array_filter(
-                        $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
-                        function ($contact) {
-                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
-                        }
-                    );
-
-                    $phones = array_map(function ($contact) {
-                        return $contact['fullname'];
-                    }, $all_phones);
-
-                    $mobile_phones = array_filter($all_phones, function ($contact) {
-                        return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
-                    });
-
-                    if ((isset($message['notify']) || !empty($message['verifierid'])) && $notification_customerinfo) {
-                        $params = array(
-                            'id' => $ticketid,
-                            'customerid' => $ticketdata['customerid'],
-                            'customer' => $info,
-                            'emails' => $emails,
-                            'phones' => $phones,
-                        );
-                        $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                            $notification_mail_body_customerinfo_format,
-                            $params
-                        );
-                        $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                            $notification_sms_body_customerinfo_format,
-                            $params
-                        );
-                    }
-                } elseif ((isset($message['notify']) || !empty($message['verifierid'])) && $notification_customerinfo) {
-                    $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
-                    $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
-                }
-
-                if (isset($message['notify'])) {
-                    $params = array(
-                        'id' => $ticketid,
-                        'author' => Auth::GetCurrentUserName(),
-                        'queue' => $queue['name'],
-                        'messageid' => $msgid ?? null,
-                        'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
-                        'status' => $ticketdata['status'],
-                        'categories' => $ticketdata['categorynames'],
-                        'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
-                        'deadline' => $ticketdata['deadline'],
-                        'subject' => $LMS->cleanupTicketSubject($message['subject']),
-                        'body' => $message['body'],
-                        'attachments' => &$attachments,
-                    );
-                    if ($ticketdata['priority']) {
-                        $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
-                    }
-                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols($notification_mail_subject, $params);
-
-                    $params['customerinfo'] = isset($mail_customerinfo)
-                        ? ($message['contenttype'] == 'text/html' ? str_replace("\n", '<br>', $mail_customerinfo) : $mail_customerinfo)
-                        : null;
-                    $params['contenttype'] = $message['contenttype'];
-                    $body = $LMS->ReplaceNotificationSymbols($notification_mail_body, $params);
-
-                    if ($message['contenttype'] == 'text/html') {
-                        $params['body'] = trans('(HTML content has been omitted)');
-                        $headers['X-LMS-Format'] = 'html';
-                    }
-
-                    $params['customerinfo'] = $sms_customerinfo ?? null;
-                    $params['contenttype'] = 'text/plain';
-                    $sms_body = $LMS->ReplaceNotificationSymbols($notification_sms_body, $params);
-
-                    // Don't notify verifier adding message
-                    $currentuser = $userid;
-                    if (empty($message['verifierid'])
-                        || !$author_notify
-                        || $props['verifierid'] == $currentuser
-                        || $message['verifierid'] == $currentuser) {
-                        $message['verifierid'] = null;
-                    }
-
-                    $LMS->NotifyUsers(array(
-                        'queue' => $queue['id'],
-                        'ticketid' => $ticketid,
-                        'verifierid' => $message['verifierid'],
-                        'mail_headers' => $headers,
-                        'mail_body' => $body,
-                        'sms_body' => $sms_body,
-                        'contenttype' => $message['contenttype'],
-                        'attachments' => &$attachments,
-                        'recipients' => ($message['notify'] ? RT_NOTIFICATION_USER : 0)
-                            | (empty($message['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
-                        'smtp_options' => $smtp_options,
-                    ));
-                }
+                $mail_customerinfo = $userNotification['mailCustomerInfo'];
+                $sms_customerinfo = $userNotification['smsCustomerInfo'];
+                $message['verifierid'] = $userNotification['verifierid'];
             }
 
             if (isset($message['customernotify']) && !empty($ticketdata['customerid']) && (!empty($emails) || !empty($mobile_phones))) {
