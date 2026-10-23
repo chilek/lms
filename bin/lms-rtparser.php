@@ -119,7 +119,10 @@ $parserMaxDateAge = intval(ConfigHelper::getConfig($config_section . '.parser_ma
 $parserAutoreplyLimit = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit', 10, true));
 $parserAutoreplyLimitPeriod = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit_period', 86400, true));
 $parserAutoreplyMaxCc = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_max_cc', 5, true));
+// Local MTA authserv-id. Empty ignores Authentication-Results and trusts From.
 $parserTrustedAuthservId = ConfigHelper::getConfig($config_section . '.parser_trusted_authserv_id', '', true);
+// Non-party In-Reply-To/References matches open a new ticket. Set false to append them.
+$parserVerifyReferenceSender = ConfigHelper::checkConfig($config_section . '.parser_verify_reference_sender', true);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
@@ -296,21 +299,42 @@ function limitAutoreplyCc($ccemails, $counts)
     return $limited;
 }
 
+function warnTrustedAuthservIdUnset()
+{
+    global $stderr;
+
+    static $warned = false;
+    if ($warned) {
+        return;
+    }
+    $warned = true;
+    $message = 'rt.parser_trusted_authserv_id is unset; Authentication-Results is ignored and From is trusted. Set it to the local MTA authserv-id.';
+    if (is_resource($stderr)) {
+        fprintf($stderr, 'Warning: ' . $message . PHP_EOL);
+    }
+    if (function_exists('writesyslog')) {
+        writesyslog($message, LOG_WARNING);
+    }
+}
+
 function fromAddressAuthenticated($mailHeaders)
 {
     global $parserTrustedAuthservId;
 
+    $authservId = strtolower(trim((string) $parserTrustedAuthservId));
+    if ($authservId === '') {
+        // Header order is sender-controlled, so an unset authserv-id cannot select a trusted result.
+        warnTrustedAuthservIdUnset();
+        return true;
+    }
+
     if (!preg_match_all('/^authentication-results:[ \t]*(.*)$/im', str_replace("\r", '', (string) $mailHeaders), $matches)) {
+        // A missing Authentication-Results header is trusted (legacy).
         return true;
     }
 
     $chosen = null;
-    $authservId = strtolower(trim((string) $parserTrustedAuthservId));
     foreach ($matches[1] as $value) {
-        if ($authservId === '') {
-            $chosen = $value;
-            break;
-        }
         if (preg_match('/^\s*([^\s;]+)/', $value, $id) && strtolower($id[1]) === $authservId) {
             $chosen = $value;
             break;
@@ -321,6 +345,17 @@ function fromAddressAuthenticated($mailHeaders)
     }
 
     return (bool) preg_match('/(?:^|[;\s])(?:dmarc|spf)\s*=\s*pass\b/i', $chosen);
+}
+
+function unrelatedSenderOpensNewTicket($subjectMatchedTicket, $referenceMatchedTicket, $senderIsTicketParty)
+{
+    global $parserVerifyReferenceSender;
+
+    if ($senderIsTicketParty) {
+        return false;
+    }
+
+    return $subjectMatchedTicket || ($parserVerifyReferenceSender && $referenceMatchedTicket);
 }
 
 function senderIsTicketCustomerContact($fromemail, $ticket)
@@ -487,7 +522,7 @@ function handleRtparserMessage()
     global $mailto, $mailto_qp_encoded, $matches, $message, $messageAutoreplyFrom, $messageAutoreplyName, $message_id;
     global $mh_from, $mh_msgid, $mh_references, $mh_replyto, $mh_subject, $mode, $modify_ticket_timeframe, $msgid;
     global $new_ticket, $notify, $now, $params, $parsedDate, $parserMaxDateAge, $part, $partdata, $partid, $parts;
-    global $phone, $phones, $postid, $posts, $precedenceValues, $prefer_html, $prev_tid, $prev_tid_contents, $queue;
+    global $parserVerifyReferenceSender, $phone, $phones, $postid, $posts, $precedenceValues, $prefer_html, $prev_tid, $prev_tid_contents, $queue;
     global $queue_autoreply, $queuedata, $queueid, $ref, $refcandidates, $referenceIds, $replyToAddresses;
     global $replytoemail, $replytoname, $reqcustid, $requserid, $resolvedParentId, $return_paths, $set_flags;
     global $sms_body, $sms_customerinfo, $smtp_options, $stderr, $subject_template, $subject_ticket_regexp_match;
@@ -958,9 +993,11 @@ function handleRtparserMessage()
 
         // add new message or create new ticket
         $ticketAcceptsReply = $prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time());
-        if ($ticketAcceptsReply && $subjectMatchedTicket && !$senderIsTicketParty) {
+        $referenceMatchedTicket = $prev_tid && !$subjectMatchedTicket;
+        if ($ticketAcceptsReply && unrelatedSenderOpensNewTicket($subjectMatchedTicket, $referenceMatchedTicket, $senderIsTicketParty)) {
             writesyslog(
-                'Subject ticket ' . intval($prev_tid) . ' not appended, sender <' . decodeHeader($fromemail)
+                ($subjectMatchedTicket ? 'Subject' : 'Reference') . ' ticket ' . intval($prev_tid)
+                    . ' not appended, sender <' . decodeHeader($fromemail)
                     . '> is not a party to the ticket (Message-ID: ' . decodeHeader($mh_msgid ?? '-') . ').',
                 LOG_INFO
             );
