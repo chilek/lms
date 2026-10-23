@@ -187,7 +187,7 @@ if (!isset($_POST['ng'])) {
 } else if ($_POST['ng'] == 'all') {
     $nodegroup = array();
 } else {
-    if (count($_POST['ng']) == 1 && intval($_POST['ng'][0]) <= 0) {
+    if (is_array($_POST['ng']) && count($_POST['ng']) == 1 && intval($_POST['ng'][0]) <= 0) {
         $nodegroup = reset($_POST['ng']);
     } else {
         $nodegroup = $_POST['ng'];

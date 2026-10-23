@@ -33,7 +33,8 @@ $current_registry = $DB->GetRow(
         description,
         in_numberplanid,
         out_numberplanid,
-        disabled
+        disabled,
+        balanceexclude
     FROM cashregs
     WHERE id = ?',
     array($id)
@@ -79,6 +80,8 @@ if (isset($_POST['registry'])) {
 
     $current_registry['name'] = $registry['name'];
     $current_registry['description'] = $registry['description'];
+    $current_registry['disabled'] = empty($registry['disabled']) ? 0 : 1;
+    $current_registry['balanceexclude'] = empty($registry['balanceexclude']) ? 0 : 1;
 
     if (isset($registry['users'])) {
         foreach ($registry['users'] as $key => $value) {
@@ -94,14 +97,15 @@ if (isset($_POST['registry'])) {
             'description' => $registry['description'],
             'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
             'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
-            'disabled' => isset($registry['disabled']) ? 1 : 0,
+            'disabled' => empty($registry['disabled']) ? 0 : 1,
+            'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
             SYSLOG::RES_CASHREG => $registry['id'],
         );
         $DB->Execute(
             'UPDATE cashregs
-            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?
+            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?, balanceexclude = ?
             WHERE id = ?',
-            array_values($args)
+            $args
         );
 
         if ($SYSLOG) {

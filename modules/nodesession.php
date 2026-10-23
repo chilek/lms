@@ -46,11 +46,13 @@ switch ($_GET['action']) {
             array(
                 '%ip%',
                 '%nasip%',
+                '%nassessionid%',
                 '%secret%',
             ),
             array(
                 $nodesession['ip'],
                 $nodesession['nasip'],
+                $nodesession['nassessionid'],
                 $nodesession['secret'],
             ),
             $cmd

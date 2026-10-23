@@ -263,7 +263,7 @@ switch ($action) {
 
         break;
     case 'transfer-file':
-        $encoding = $_POST['encoding'] ?? 'UTF-8';
+        $encoding = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_POST['encoding'] ?? 'UTF-8');
         $splitPayment = !empty($_POST['split-payment']);
 
         $invoices = $DB->GetAll(

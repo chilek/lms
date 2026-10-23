@@ -51,10 +51,15 @@ if (isset($_POST['registry'])) {
             'description' => $registry['description'],
             'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
             'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
-            'disabled' => isset($registry['disabled']) ? 1 : 0,
+            'disabled' => empty($registry['disabled']) ? 0 : 1,
+            'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
         );
-        $DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid, disabled)
-			VALUES(?, ?, ?, ?, ?)', array_values($args));
+        $DB->Execute(
+            'INSERT INTO cashregs
+            (name, description, in_numberplanid, out_numberplanid, disabled, balanceexclude)
+            VALUES (?, ?, ?, ?, ?, ?)',
+            $args
+        );
 
         $id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));
 

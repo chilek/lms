@@ -4207,9 +4207,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($count) {
             $summary = $this->db->GetRow('SELECT COUNT(cash.id) AS total,
-					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -value * cash.currencyvalue ELSE 0 END) AS liability,
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value * cash.currencyvalue ELSE 0 END) AS income, 
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value * cash.currencyvalue ELSE 0 END) AS expense 
+					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -cash.value * cash.currencyvalue ELSE 0 END) AS liability,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS income,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -cash.value * cash.currencyvalue ELSE 0 END) AS expense
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
@@ -4226,55 +4226,80 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return $summary;
         }
 
-        if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value,
-                cash.currency, cash.currencyvalue, 
-				cash.customerid AS customerid, cash.comment, cash.docid, cash.type AS type,
-				documents.type AS doctype, documents.closed AS closed,
-				documents.published, documents.archived, '
-            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+        if ($balancelist = $this->db->GetAll(
+            'SELECT
+                cash.id AS id,
+                time,
+                cash.userid AS userid,
+                cash.value AS value,
+                cash.currency,
+                cash.currencyvalue,
+                cash.customerid AS customerid,
+                cash.comment,
+                cash.docid,
+                cash.type AS type,
+                documents.type AS doctype,
+                documents.closed AS closed,
+                documents.published,
+                documents.archived, '
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude,
                 kd.status AS ksefstatus,
                 kd.hash AS ksefhash,
                 kd.ksefnumber AS ksefnumber,
                 kc.delay AS ksefdelay
-				FROM cash
-				LEFT JOIN customerview c ON (cash.customerid = c.id)
-				LEFT JOIN documents ON (documents.id = cash.docid)
-                LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN (' . implode(',', [0, 200]) . ')
-                LEFT JOIN ksefconfig kc ON kc.divisionid = documents.divisionid
-				WHERE 1=1 '
-            .$where
-            .(!empty($group) ?
-                ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
-					AND customerid = cash.customerid)' : '')
+            FROM cash
+            LEFT JOIN customerview c ON (cash.customerid = c.id)
+            LEFT JOIN documents ON (documents.id = cash.docid)
+            LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
+            LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN (' . implode(',', [0, 200]) . ')
+            LEFT JOIN ksefconfig kc ON kc.divisionid = documents.divisionid
+            WHERE 1 = 1 '
+            . $where
+            . (!empty($group) ?
+                ' AND ' . (!empty($exclude) ? 'NOT' : '') . ' EXISTS (
+                    SELECT 1 FROM vcustomerassignments WHERE customergroupid = ' . intval($group) . '
+                    AND customerid = cash.customerid)' : '')
             .' ORDER BY time, cash.id'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
-            . (isset($offset) ? ' OFFSET ' . $offset : ''))) {
+            . (isset($offset) ? ' OFFSET ' . $offset : '')
+        )) {
             $userlist = $this->db->GetAllByKey('SELECT id, name FROM vusers', 'id');
 
-            $after = $this->db->GetOne('SELECT SUM(value) FROM (
-				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value * cash.currencyvalue ELSE 0 END) AS value
-				FROM cash
-				LEFT JOIN customerview c ON (cash.customerid = c.id)
-				LEFT JOIN documents ON (documents.id = docid)
-				WHERE 1=1 '
-                .$where
-                .(!empty($group) ?
-                    ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
-					AND customerid = cash.customerid)' : '')
-                .' ORDER BY time, cash.id '
-                . (isset($offset) ? ' LIMIT ' . $offset : '')
-                . ') a');
+            $after = $this->db->GetOne(
+                'SELECT
+                    SUM(a.value)
+                FROM (
+                    SELECT
+                        (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS value
+                    FROM cash
+                    LEFT JOIN customerview c ON (cash.customerid = c.id)
+                    LEFT JOIN documents ON (documents.id = docid)
+                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+                    LEFT JOIN cashregs cr ON cr.id = rc.regid
+                    WHERE 1 = 1 '
+                    . $where
+                    . ' AND (cr.balanceexclude IS NULL OR cr.balanceexclude = 0)'
+                    . (!empty($group) ?
+                        ' AND ' . (!empty($exclude) ? 'NOT' : '') . ' EXISTS (
+                        SELECT 1 FROM vcustomerassignments WHERE customergroupid = ' . intval($group) . '
+                        AND customerid = cash.customerid)' : '')
+                    . ' ORDER BY time, cash.id '
+                    . (isset($offset) ? ' LIMIT ' . $offset : '')
+                . ') a'
+            );
 
             foreach ($balancelist as &$row) {
                 $row['user'] = $userlist[$row['userid']]['name'] ?? '';
                 $row['before'] = $after;
 
-                if ($row['customerid'] && $row['type'] == 0) {
+                if ($row['customerid'] && $row['type'] == 0 || !empty($row['balanceexclude'])) {
                     // customer covenant
                     $row['after'] = $row['before'];
-                    $row['covenant'] = true;
+                    if (empty($row['balanceexclude'])) {
+                        $row['covenant'] = true;
+                    }
                 } else {
                     $row['after'] = $row['before'] + ($row['value'] * $row['currencyvalue']);
                 }

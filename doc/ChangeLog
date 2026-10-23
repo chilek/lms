@@ -1269,6 +1269,19 @@ version 28-git (????-??-??):
   - enhancement: customer search can be limited by active tariff maximum download and upload speed range
     (Mbit/s) [interduo]
   - improvement: in paytype field of invoice header panel show effective default value in brackets [chilan]
+  - improvement: added location address filter in customer voip account box [chilan]
+  - improvement: added 'show on map' icon button in network ranges list (near gps coordinates) [chilan]
+  - improvement: financial operations assigned to 'exclude from balance' cash registries don't change
+    customer balance [chilan]
+  - enhancement: added registry filter in customer balance box [chilan]
+  - enhancement: new configuration variables 'finances.customer_balance_excluded_registry_operation_comment'
+    (default value: '%comment% (transaction excluded from customer balance)')
+    and 'finances.customer_balance_included_registry_operation_comment' (default value: '%comment%')
+    allow to reformat text comment for bank and cash registry operations (balance excluded configuration
+    variable corresponds to operations from cash registry with set 'exclude from balance' flag) [chilan]
+  - improvement: added '%nodesessionid%' substitution support for 'phpui.radius_disconnect_helper'
+    configuration variable usage [chilan]
+  - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
   - enhancement: suggest similar open tickets (same customer, phone or e-mail, and a similar subject
     or recently created) when adding a ticket; new 'rt.similar_tickets' (default: true),
     'rt.similar_tickets_limit' (default: 8) and 'rt.similar_tickets_days' (default: 30)

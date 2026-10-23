@@ -389,6 +389,9 @@
                     <a href="{$gps_coordinate_url|replace:"%longitude":$building.longitude|replace:"%latitude":$building.latitude}">
                         {icon name="location" class="fa-fw"}
                     </a>
+                    <a href="?m=netdevmap&lon={$building.longitude}&lat={$building.latitude}">
+                        {icon name="map" class="fa-fw" tip="Show on map"}
+                    </a>
                     {$building.longitude}, {$building.latitude}
                     <br>
                     {if !empty($building.netrangeid)}

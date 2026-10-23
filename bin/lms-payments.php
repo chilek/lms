@@ -1097,15 +1097,20 @@ if (!empty($assigns)) {
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL OR c.value > 0 THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
+            'SELECT
+                (CASE WHEN d.id IS NULL OR c.value > 0 THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+            LEFT JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
             WHERE c.customerid = ?
                 AND c.value <> 0
-                AND c.time >= ? AND c.time < ?
-            ORDER BY deadline, value DESC',
+                AND c.time >= ?
+                AND c.time < ?
+                AND COALESCE(cr.balanceexclude, 0) = 0
+            ORDER BY deadline, c.value DESC',
             array(
                 $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),

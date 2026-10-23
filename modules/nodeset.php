@@ -78,5 +78,5 @@ if ($id && $LMS->NodeExists($id)) {
 if (!empty($_GET['shortlist'])) {
     header('Location: ?m=nodelistshort&id=' . $LMS->GetNodeOwner($id));
 } else {
-    header('Location: ?' . $SESSION->remove_history_entry() . (isset($backid) ? '#' . $backid : ''));
+    header('Location: ?' . $SESSION->remove_history_entry() . (isset($backid) ? '#' . intval($backid) : ''));
 }

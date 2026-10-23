@@ -296,10 +296,15 @@ function GetRecipients($filter, $type = MSG_MAIL)
         ) acc ON acc.customerid = c.id
         LEFT JOIN customerbalances b ON b.customerid = c.id
         LEFT JOIN (
-            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            SELECT
+                cash.customerid,
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+            FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
             LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
             LEFT JOIN (
                 SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
                 JOIN documents ON documents.id = cash.docid
@@ -470,10 +475,15 @@ function GetCustomers($customers)
         ) acc ON acc.customerid = c.id
         LEFT JOIN customerbalances b ON b.customerid = c.id
         LEFT JOIN (
-            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            SELECT
+                cash.customerid,
+                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS balance
+            FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
             LEFT JOIN divisions ON divisions.id = customers.divisionid
             LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
             LEFT JOIN (
                 SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
                 JOIN documents ON documents.id = cash.docid

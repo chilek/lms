@@ -75,22 +75,64 @@ switch ($type) {
         $list['summary'] = 0;
         $list['customerid'] = $id;
 
-        if ($tslist = $DB->GetAll('SELECT c.id AS id, time, c.type, c.value AS value,
-                    c.currency, c.currencyvalue,
-				    taxes.label AS taxlabel, c.customerid, c.comment, vusers.name AS username,
-				    c.docid, d.number, d.fullnumber, d.cdate, d.type AS doctype, numberplans.template
-				    FROM cash c
-				    LEFT JOIN documents d ON d.id = c.docid
-				    LEFT JOIN numberplans ON numberplans.id = d.numberplanid
-				    LEFT JOIN taxes ON (c.taxid = taxes.id)
-				    LEFT JOIN vusers ON (vusers.id = c.userid)
-				    WHERE c.customerid = ?
-					    AND NOT EXISTS (
-				                    SELECT 1 FROM vcustomerassignments a
-					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
-				    ORDER BY time', array($id, $id))
-        ) {
+        if ($tslist = $DB->GetAll(
+            'SELECT
+                c.id AS id,
+                c.time,
+                c.type,
+                c.value AS value,
+                c.currency,
+                c.currencyvalue,
+                taxes.label AS taxlabel,
+                c.customerid,
+                c.comment,
+                vusers.name AS username,
+                c.docid,
+                d.number,
+                d.fullnumber,
+                d.cdate,
+                d.type AS doctype,
+                numberplans.template,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude
+            FROM cash c
+            LEFT JOIN documents d ON d.id = c.docid
+            LEFT JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
+            LEFT JOIN numberplans ON numberplans.id = d.numberplanid
+            LEFT JOIN taxes ON (c.taxid = taxes.id)
+            LEFT JOIN vusers ON (vusers.id = c.userid)
+            WHERE c.customerid = ?
+                AND NOT EXISTS (
+                    SELECT 1 FROM vcustomerassignments a
+                    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                    WHERE e.userid = lms_current_user() AND a.customerid = ?
+                )
+            ORDER BY time',
+            array(
+                $id,
+                $id,
+            )
+        )) {
+            // totals are calculated from raw records, so they don't depend on documents aggregation;
+            // summary is the balance at the end of the period (including records before 'from')
+            foreach ($tslist as $row) {
+                if ($row['time'] > $date['to']) {
+                    continue;
+                }
+                $value = $row['value'] * $row['currencyvalue'];
+                $list['summary'] += $value;
+                if ($row['time'] < $date['from']) {
+                    continue;
+                }
+                if (!$row['type']) {
+                    $list['liability'] -= $value;
+                } elseif ($value > 0) {
+                    $list['income'] += $value;
+                } else {
+                    $list['expense'] -= $value;
+                }
+            }
+
             if ($aggregate_documents) {
                 $tslist = $LMS->AggregateDocuments(array('customerid' => $id, 'list' => $tslist));
                 $tslist = $tslist['list'];
@@ -105,8 +147,12 @@ switch ($type) {
             $saldolist['balance'] = 0;
 
             foreach ($saldolist['id'] as $i => $v) {
-                $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                $saldolist['balance'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
+                if (empty($saldolist['balanceexclude'])) {
+                    $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
+                    $saldolist['balance'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
+                } else {
+                    $saldolist['after'][$i] = $saldolist['balance'];
+                }
                 $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 
                 if ($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to']) {
@@ -121,18 +167,6 @@ switch ($type) {
                     $list['username'][] = $saldolist['username'][$i];
                     $list['comment'][] = $saldolist['comment'][$i];
                     $list['currency'][] = $saldolist['currency'][$i];
-                    $list['summary'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-
-                    if ($saldolist['type'][$i]) {
-                        if ($saldolist['value'][$i] > 0) {
-                                //income
-                                $list['income'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                        } else { //expense
-                                $list['expense'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                        }
-                    } else {
-                        $list['liability'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                    }
                 }
             }
 
@@ -267,10 +301,13 @@ switch ($type) {
                 c.customerid,
                 c.comment,
                 c.type AS type,
-                cs.name AS sourcename
+                cs.name AS sourcename,
+                COALESCE(cr.balanceexclude, 0) AS balanceexclude
             FROM cash c
             JOIN customerview ON customerview.id = c.customerid
             LEFT JOIN documents d ON d.id = c.docid
+            LEFT JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
             LEFT JOIN cashsources cs ON cs.id = c.sourceid
             LEFT JOIN taxes ON taxid = taxes.id
             WHERE time <= ?'
@@ -294,7 +331,7 @@ switch ($type) {
             foreach ($balancelist as $idx => $row) {
                 if ($user) {
                     if ($row['userid'] != $user) {
-                        if ($row['value'] > 0 || !$row['customerid']) {  // skip cust. covenants
+                        if (empty($row['balanceexclude']) && ($row['value'] > 0 || !$row['customerid'])) {  // skip cust. covenants
                             $lastafter += $row['value'];
                         }
                         unset($balancelist[$idx]);
@@ -312,7 +349,7 @@ switch ($type) {
                     $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
                     //customer payment
-                    $list[$x]['after'] = $lastafter + $list[$x]['value'] * $row['currencyvalue'];
+                    $list[$x]['after'] = $lastafter + (empty($row['balanceexclude']) ? $list[$x]['value'] * $row['currencyvalue'] : 0);
 
                     if ($row['value'] > 0) {
                         //income
@@ -520,8 +557,8 @@ switch ($type) {
         $layout['pagetitle'] = trans('Invoices');
 
         header(
-            'Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . $_GET['jpk'] : '')
-                . (isset($_GET['jpk_format']) ? '&jpk_format=' . $_GET['jpk_format'] : '')
+            'Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . urlencode($_GET['jpk']) : '')
+                . (isset($_GET['jpk_format']) ? '&jpk_format=' . urlencode($_GET['jpk_format']) : '')
                 .$type
                 .'&from='.$date['from']
                 .'&to='.$date['to']

@@ -1006,6 +1006,8 @@ $_LANG['DHCP range:'] = 'Zakres DHCP:';
 $_LANG['DHCP range'] = 'Zakres DHCP';
 $_LANG['Disable'] = 'Wyłącz';
 $_LANG['disabled'] = 'wyłączony';
+$_LANG['Disabled'] = 'Wyłączony';
+$_LANG['Exclude from balance'] = 'Wyklucz z salda';
 $_LANG['Disabled<!plural>:'] = 'Niedostępne<!plural>:';
 $_LANG['Disable notice'] = 'Wyłącz powiadomienie';
 $_LANG['Disable notices'] = 'Wyłącz powiadomienia';
@@ -3265,6 +3267,7 @@ $_LANG['Phone numbers:'] = 'Numery telefonów:';
 $_LANG['Phone numbers'] = 'Numery telefonów';
 $_LANG['No such VoIP accounts in database.'] = 'Brak kont VoIP w bazie.';
 $_LANG['That customer does not own any VoIP account.'] = 'Klient nie posiada kont VoIP.';
+$_LANG['This customer does not have any VoIP accounts matching the filter criteria.'] = 'Klient nie ma przypisanych żadnych kont VoIP spełniających kryteria wskazane filtrem.';
 $_LANG['No such VoIP accounts matching search criteria.'] = 'Brak kont VoIP spełniających zadane kryteria.';
 $_LANG['Find VoIP accounts matching the following search criteria:'] = 'Znajdź konta VoIP spełniające zadane kryteria:';
 $_LANG['Enter phone number or it\'s fragment'] = 'Wprowadź numer telefonu lub jego fragment';
@@ -6064,6 +6067,7 @@ $_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzo
 $_LANG['Show all customer tickets'] = 'Pokaż wszystkie zgłoszenia klienta';
 
 $_LANG['without location address'] = 'bez adresu lokalizacyjnego';
+$_LANG['— without location address —'] = '— bez adresu lokalizacyjnego —';
 
 $_LANG['Group name can contain letters (with national characters), digits, dots, underscores and dashes.'] = 'Nazwa grupy może składać się z liter (wraz ze znakami narodowymi), cyfr, kropek, podkreśleń i myślników.';
 
@@ -6487,3 +6491,7 @@ $_LANG['Maximum reason length is 255 characters!'] = 'Maksymalna długość powo
 $_LANG['— select tariff —'] = '— wybierz taryfę —';
 
 $_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';
+$_LANG['import source'] = 'źródło importu';
+$_LANG['cash registry'] = 'rejestr kasowy';
+
+$_LANG['%comment% (transaction excluded from customer balance)'] = '%comment% (operacja niewliczana do salda klienta)';
