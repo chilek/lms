@@ -178,7 +178,8 @@ function parseAddressList($header)
     }
     foreach (mailparse_rfc822_parse_addresses($header) as $item) {
         $address = trim($item['address']);
-        if (!empty($item['is_group']) || !check_email($address)) {
+        // filter_var() (check_email) rejects valid internal addresses like rt@localhost
+        if (!empty($item['is_group']) || !preg_match('/^[^@\s]+@[^@\s]+$/', $address)) {
             continue;
         }
         $display = $item['display'] == $item['address'] ? '' : (string) @iconv_mime_decode($item['display'], 0, 'UTF-8');
