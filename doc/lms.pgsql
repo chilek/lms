@@ -4064,7 +4064,7 @@ BEGIN
     IF (TG_OP = 'TRUNCATE') THEN
         DELETE FROM customerbalances;
         RETURN NULL;
-    ELSEIF (TG_OP = 'DELETE') THEN
+    ELSIF (TG_OP = 'DELETE') THEN
         IF OLD.customerid IS NULL THEN
             RETURN NULL;
         END IF;
@@ -4096,7 +4096,7 @@ BEGIN
             END IF;
         END IF;
         RETURN NULL;
-    ELSEIF (TG_OP = 'UPDATE') THEN
+    ELSIF (TG_OP = 'UPDATE') THEN
         IF OLD.value = NEW.value AND OLD.currencyvalue = NEW.currencyvalue THEN
             RETURN NEW;
         END IF;
