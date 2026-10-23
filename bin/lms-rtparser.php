@@ -119,6 +119,7 @@ $parserMaxDateAge = intval(ConfigHelper::getConfig($config_section . '.parser_ma
 $parserAutoreplyLimit = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit', 10, true));
 $parserAutoreplyLimitPeriod = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_limit_period', 86400, true));
 $parserAutoreplyMaxCc = intval(ConfigHelper::getConfig($config_section . '.parser_autoreply_max_cc', 5, true));
+$parserTrustedAuthservId = ConfigHelper::getConfig($config_section . '.parser_trusted_authserv_id', '', true);
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
@@ -293,6 +294,71 @@ function limitAutoreplyCc($ccemails, $counts)
     }
 
     return $limited;
+}
+
+function fromAddressAuthenticated($mailHeaders)
+{
+    global $parserTrustedAuthservId;
+
+    if (!preg_match_all('/^authentication-results:[ \t]*(.*)$/im', str_replace("\r", '', (string) $mailHeaders), $matches)) {
+        return true;
+    }
+
+    $chosen = null;
+    $authservId = strtolower(trim((string) $parserTrustedAuthservId));
+    foreach ($matches[1] as $value) {
+        if ($authservId === '') {
+            $chosen = $value;
+            break;
+        }
+        if (preg_match('/^\s*([^\s;]+)/', $value, $id) && strtolower($id[1]) === $authservId) {
+            $chosen = $value;
+            break;
+        }
+    }
+    if ($chosen === null) {
+        return false;
+    }
+
+    return (bool) preg_match('/(?:^|[;\s])(?:dmarc|spf)\s*=\s*pass\b/i', $chosen);
+}
+
+function senderIsTicketCustomerContact($fromemail, $ticket)
+{
+    global $LMS;
+
+    if ($fromemail === '' || empty($ticket['customerid'])) {
+        return false;
+    }
+    $fromemail = strtolower($fromemail);
+    foreach ($LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL) as $contact) {
+        if (($contact['type'] & CONTACT_DISABLED) != 0) {
+            continue;
+        }
+        if (strtolower(trim($contact['contact'])) === $fromemail) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function senderIsTicketRequestor($fromemail, $ticket)
+{
+    if ($fromemail === '') {
+        return false;
+    }
+    $fromemail = strtolower($fromemail);
+    $requestor = trim((string) ($ticket['requestor_mail'] ?? ''));
+    if ($requestor === '') {
+        return false;
+    }
+    if (strtolower($requestor) === $fromemail) {
+        return true;
+    }
+    $parsed = parseAddressList($requestor);
+
+    return $parsed && strtolower($parsed[0]['address']) === $fromemail;
 }
 
 function decodeMailBody($part, $message, $partData, $useHtml, $purifier)
@@ -713,8 +779,10 @@ function handleRtparserMessage()
         }
 
         // check email subject
+        $subjectMatchedTicket = false;
         if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches) && isset($matches['ticketid'])) {
             $prev_tid = intval($matches['ticketid']);
+            $subjectMatchedTicket = true;
         }
 
         if ($prev_tid) {
@@ -830,23 +898,36 @@ function handleRtparserMessage()
             }
         }
 
+        $fromMayIdentify = fromAddressAuthenticated($mail_headers);
         if (!empty($phone) && !empty($reqcustid) && count($reqcustid) == 1) {
             $reqcustid = reset($reqcustid);
-        } else {
+        } elseif ($fromMayIdentify && $fromemail !== '') {
             // find customerid
             $reqcustid = $DB->GetCol(
                 "SELECT c.id FROM customers c
                 JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
                 WHERE LOWER(cc.contact) = LOWER(?)",
-                array(
+                [
                     CONTACT_EMAIL,
                     $fromemail,
-                )
+                ]
             );
             if (empty($reqcustid) || count($reqcustid) > 1) {
                 $reqcustid = 0;
             } else {
                 $reqcustid = reset($reqcustid);
+            }
+        } else {
+            $reqcustid = 0;
+        }
+
+        if ($fromMayIdentify && $fromemail !== '') {
+            $requserid = $DB->GetOne(
+                "SELECT id FROM vusers WHERE LOWER(email) = LOWER(?)",
+                [$fromemail]
+            );
+            if (empty($requserid)) {
+                $requserid = null;
             }
         }
 
@@ -865,21 +946,32 @@ function handleRtparserMessage()
             }
         }
 
+        $senderIsTicketParty = false;
+        if ($fromMayIdentify && $prev_tid && !empty($prev_tid_contents)) {
+            $senderIsTicketParty = senderIsTicketCustomerContact($fromemail, $prev_tid_contents)
+                || senderIsTicketRequestor($fromemail, $prev_tid_contents)
+                || !empty($requserid);
+        }
+
         // add new message or create new ticket
-        if ($prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time())) {
-            // find userid
-            $requserid = $DB->GetOne(
-                "SELECT id FROM vusers WHERE LOWER(email) = LOWER(?)",
-                array($fromemail)
+        $ticketAcceptsReply = $prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time());
+        if ($ticketAcceptsReply && $subjectMatchedTicket && !$senderIsTicketParty) {
+            writesyslog(
+                'Subject ticket ' . intval($prev_tid) . ' not appended, sender <' . decodeHeader($fromemail)
+                    . '> is not a party to the ticket (Message-ID: ' . decodeHeader($mh_msgid ?? '-') . ').',
+                LOG_INFO
             );
-            if (empty($requserid)) {
-                $requserid = null;
-            }
+            $ticketAcceptsReply = false;
+        }
+        if ($ticketAcceptsReply) {
+            $messageCustomerId = $fromMayIdentify && senderIsTicketCustomerContact($fromemail, $prev_tid_contents)
+                ? $prev_tid_contents['customerid']
+                : null;
 
             $msgid = $LMS->TicketMessageAdd(array(
                 'ticketid' => $prev_tid,
                 'mailfrom' => $mh_from,
-                'customerid' => $reqcustid,
+                'customerid' => $messageCustomerId,
                 'userid' => $requserid,
                 'subject' => $mh_subject,
                 'messageid' => $mh_msgid,
