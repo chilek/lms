@@ -923,16 +923,17 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if ($ticket['customerid'] && $reqcustid) {
                 $info = $LMS->GetCustomer($ticket['customerid'], true);
 
+                $emailContacts = array_filter(
+                    $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                    function ($contact) {
+                        return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
+                    }
+                );
                 $emails = array_map(
                     function ($contact) {
                         return $contact['fullname'];
                     },
-                    array_filter(
-                        $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
-                        function ($contact) {
-                            return ($contact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS;
-                        }
-                    )
+                    $emailContacts
                 );
                 $phones = array_map(
                     function ($contact) {
@@ -1052,7 +1053,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'Reply-To' => $headers['From'],
                     'Subject' => $custmail_subject,
                 );
-                foreach ($emails as $email) {
+                if ($contenttype == 'text/html') {
+                    $custmail_headers['X-LMS-Format'] = 'html';
+                }
+                // fullname is "address (name)"; send to the bare address
+                foreach (array_column($emailContacts, 'contact') as $email) {
                     $custmail_headers['To'] = '<' . $email . '>';
                     $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
                 }
