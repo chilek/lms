@@ -6490,6 +6490,7 @@ $_LANG['Maximum reason length is 255 characters!'] = 'Maksymalna długość powo
 
 $_LANG['— select tariff —'] = '— wybierz taryfę —';
 
+$_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';
 $_LANG['import source'] = 'źródło importu';
 $_LANG['cash registry'] = 'rejestr kasowy';
 

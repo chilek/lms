@@ -3071,4 +3071,82 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             )
         );
     }
+
+    public function GetSimilarOpenTickets(array $params)
+    {
+        $subject = trim((string) ($params['subject'] ?? ''));
+        $customerId = intval($params['customerid'] ?? 0);
+        $email = trim((string) ($params['email'] ?? ''));
+        $phone = (string) preg_replace('/[^0-9]/', '', (string) ($params['phone'] ?? ''));
+
+        $filters = array();
+        if ($customerId) {
+            $filters['t.customerid = ?'] = $customerId;
+        }
+        if ($email !== '' && check_email($email)) {
+            $filters['LOWER(t.requestor_mail) = LOWER(?)'] = $email;
+        }
+        if (strlen($phone) >= 9) {
+            $filters["RIGHT(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(t.requestor_phone, ' ', ''), '-', ''), '+', ''), '(', ''), ')', ''), '.', ''), 9) = ?"] = substr($phone, -9);
+        }
+        if (!$filters) {
+            return array();
+        }
+
+        $limit = intval(ConfigHelper::getConfig('rt.similar_tickets_limit', 8));
+        if ($limit < 1) {
+            $limit = 8;
+        }
+        $days = intval(ConfigHelper::getConfig('rt.similar_tickets_days', 30));
+        if ($days < 0) {
+            $days = 30;
+        }
+        $since = time() - $days * 86400;
+        if (mb_strlen($subject) >= 3) {
+            $narrowSql = '(t.subject ?LIKE? ? OR t.createtime >= ?)';
+            $narrowArgs = array('%' . strtr($subject, array('\\' => '\\\\', '%' => '\\%', '_' => '\\_')) . '%', $since);
+        } else {
+            $narrowSql = 't.createtime >= ?';
+            $narrowArgs = array($since);
+        }
+
+        $rightsJoin = '';
+        $rightsArgs = array();
+        if (!ConfigHelper::checkPrivilege('full_access')) {
+            $rightsJoin = 'JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND (r.rights & ?) > 0';
+            $rightsArgs = array(Auth::GetCurrentUser(), RT_RIGHT_READ);
+        }
+
+        $byId = array();
+        foreach ($filters as $sql => $arg) {
+            foreach ((array) $this->db->GetAll(
+                'SELECT t.id, t.modtime, t.subject, q.name AS queuename, t.requestor, t.requestor_mail, t.requestor_phone,
+                    ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
+                FROM rttickets t
+                JOIN rtqueues q ON q.id = t.queueid
+                ' . $rightsJoin . '
+                LEFT JOIN customers c ON c.id = t.customerid
+                WHERE ' . $sql . '
+                    AND t.deleted = 0
+                    AND t.state <> ' . RT_RESOLVED . '
+                    AND ' . $narrowSql . '
+                ORDER BY t.modtime DESC
+                LIMIT ' . $limit,
+                array_merge($rightsArgs, array($arg), $narrowArgs)
+            ) as $ticket) {
+                if (empty($ticket['id'])) {
+                    continue;
+                }
+                $byId[$ticket['id']] = $ticket;
+            }
+        }
+        if (!$byId) {
+            return array();
+        }
+        usort($byId, function ($a, $b) {
+            return $b['modtime'] <=> $a['modtime'];
+        });
+
+        return array_slice($byId, 0, $limit);
+    }
 }
