@@ -343,9 +343,16 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
-        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'in-reply-to', 'date', 'auto-submitted', 'precedence'] as $headerName) {
-            if (isset($headers[$headerName]) && is_array($headers[$headerName])) {
-                $headers[$headerName] = implode($headerName == 'to' || $headerName == 'cc' ? ', ' : ' ', $headers[$headerName]);
+        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'in-reply-to', 'date'] as $headerName) {
+            if (!isset($headers[$headerName]) || !is_array($headers[$headerName])) {
+                continue;
+            }
+            if ($headerName == 'date' || $headerName == 'message-id') {
+                $headers[$headerName] = reset($headers[$headerName]);
+            } elseif ($headerName == 'from' || $headerName == 'to' || $headerName == 'cc' || $headerName == 'reply-to') {
+                $headers[$headerName] = implode(', ', $headers[$headerName]);
+            } else {
+                $headers[$headerName] = implode(' ', $headers[$headerName]);
             }
         }
 
@@ -361,9 +368,20 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             });
         }
 
-        $autoSubmitted = isset($headers['auto-submitted']) ? strtolower(trim((string) $headers['auto-submitted'])) : 'no';
-        $precedence = isset($headers['precedence']) ? strtolower(trim((string) $headers['precedence'])) : '';
-        if (!empty($return_paths) || $autoSubmitted != 'no' || in_array($precedence, ['bulk', 'junk', 'list', 'auto_reply'])) {
+        $autoSubmittedValues = array_map(function ($value) {
+            return strtolower(trim($value));
+        }, (array) ($headers['auto-submitted'] ?? 'no'));
+        $precedenceValues = array_map(function ($value) {
+            return strtolower(trim($value));
+        }, (array) ($headers['precedence'] ?? []));
+        $autoSubmitted = false;
+        foreach ($autoSubmittedValues as $autoSubmittedValue) {
+            if (strtok($autoSubmittedValue, ';') !== 'no') {
+                $autoSubmitted = true;
+                break;
+            }
+        }
+        if (!empty($return_paths) || $autoSubmitted || array_intersect($precedenceValues, ['bulk', 'junk', 'list', 'auto_reply'])) {
             mailparse_msg_free($mail);
             writesyslog(
                 'Skipping automatic message (Message-ID: ' . decodeHeader($headers['message-id'] ?? '-') . ').',
