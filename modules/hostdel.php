@@ -63,4 +63,4 @@ if ($id) {
     }
 }
 
-header('Location: ?m=hostlist');
+$SESSION->redirect_to_history_entry('m=hostlist');

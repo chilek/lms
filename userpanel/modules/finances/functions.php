@@ -48,7 +48,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 
     function module_submit_setup()
     {
-        global $SMARTY,$DB;
+        global $SMARTY, $DB, $SESSION;
         if ($_POST['disable_transferform']) {
             $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'disable_transferform\'');
         } else {
@@ -137,7 +137,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             );
         }
 
-        header('Location: ?m=userpanel&module=finances');
+        $SESSION->redirect('?m=userpanel&module=finances');
     }
 }
 
