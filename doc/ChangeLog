@@ -1281,6 +1281,7 @@ version 28-git (????-??-??):
     variable corresponds to operations from cash registry with set 'exclude from balance' flag) [chilan]
   - improvement: added '%nodesessionid%' substitution support for 'phpui.radius_disconnect_helper'
     configuration variable usage [chilan]
+  - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
 
 version 27.0 (2021-08-20):
 
