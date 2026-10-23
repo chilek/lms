@@ -303,7 +303,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
-        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'date', 'auto-submitted', 'precedence'] as $headerName) {
+        foreach (['from', 'to', 'cc', 'message-id', 'reply-to', 'subject', 'references', 'in-reply-to', 'date', 'auto-submitted', 'precedence'] as $headerName) {
             if (isset($headers[$headerName]) && is_array($headers[$headerName])) {
                 $headers[$headerName] = implode($headerName == 'to' || $headerName == 'cc' ? ', ' : ' ', $headers[$headerName]);
             }
@@ -591,22 +591,24 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $prev_tid = 0;
         $inreplytoid = null;
-        $reftab = explode(' ', $mh_references);
-        $lastref = array_pop($reftab);
-
-        // check 'References'
-        if ($lastref) {
+        // check In-Reply-To and References, newest first, at most 10 lookups
+        $refcandidates = array_reverse(preg_split('/\s+/', trim($mh_references), -1, PREG_SPLIT_NO_EMPTY));
+        if (!empty($headers['in-reply-to'])) {
+            array_unshift($refcandidates, trim($headers['in-reply-to']));
+        }
+        foreach (array_slice(array_unique($refcandidates), 0, 10) as $ref) {
             $message = $DB->GetRow(
                 "SELECT m.id, m.ticketid, t.state, t.resolvetime
                 FROM rtmessages m
                 JOIN rttickets t ON t.id = m.ticketid
                 WHERE m.messageid = ?",
-                array($lastref)
+                array($ref)
             );
             if (!empty($message)
                 && ($message['state'] != RT_RESOLVED || $message['resolvetime'] + $modify_ticket_timeframe > time())) {
                 $prev_tid = $message['ticketid'];
                 $inreplytoid = $message['id'];
+                break;
             }
         }
 
