@@ -912,6 +912,7 @@ $_LANG['MAC address'] = 'MAC adresas';
 $_LANG['MAC address:'] = 'MAC adresas:';
 $_LANG['MAC address is in use!'] = 'MAC adresas yra naudojamas!';
 $_LANG['MAC address is required!'] = 'Reikia MAC adreso!';
+$_LANG['MAC address already exists!'] = 'Toks MAC adresas jau naudojamas!';
 $_LANG['mail'] = 'mail';
 $_LANG['Mailing'] = 'Mailing';
 $_LANG['mailing access'] = 'prieiga prie serijinės korespondecijos';
