@@ -378,6 +378,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $html = strpos($partdata['content-type'], 'html') !== false;
                 $isAttachment = isset($partdata['content-disposition']) && $partdata['content-disposition'] == 'attachment';
                 if (!$isAttachment
+                    && !isset($partdata['disposition-filename']) && !isset($partdata['content-name'])
                     && preg_match('#^text/(plain|html)$#i', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
