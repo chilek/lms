@@ -159,7 +159,6 @@ $this->Execute("
 ");
 
 $this->Execute("
-    DELIMITER $$
     CREATE PROCEDURE customerbalances_refresh()
     BEGIN
         DELETE FROM customerbalances;
@@ -172,8 +171,7 @@ $this->Execute("
         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
         LEFT JOIN cashregs cr ON cr.id = rc.regid
         GROUP BY cash.customerid;
-    END$$
-    DELIMITER ;
+    END
 ");
 
 $this->Execute("CALL customerbalances_refresh()");
