@@ -608,7 +608,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 if ($row['enddate'] && ($row['enddate'] - $row['date'])) {
                     $days = round(($row['enddate'] - $row['date']) / 86400);
                     $row['multiday'] = $days > 0;
-                    if ($forward = -1) {
+                    if ($forward == -1) {
                         $row['enddate'] = strtotime("tomorrow", $row['date']);
                     }
                     //$row['endtime'] = 0;
