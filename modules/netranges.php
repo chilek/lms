@@ -859,12 +859,15 @@ if (!empty($total)) {
 
 $SMARTY->assign('buildings', $buildings);
 //$foreign_entities = array();
-$SMARTY->assign('foreign_entities', $foreign_entities);
-
-$SMARTY->assign('boroughs', getTerritoryUnits());
-$SMARTY->assign('cities', empty($filter['boroughid']) ? array() : getCities($filter['boroughid']));
-$SMARTY->assign('streets', $streets);
-$SMARTY->assign('pagination', $pagination);
+$SMARTY->assign(
+    array(
+        'foreign_entities' => $foreign_entities,
+        'boroughs' => getTerritoryUnits(),
+        'cities' => empty($filter['boroughid']) ? array() : getCities($filter['boroughid']),
+        'streets' => $streets,
+        'pagination' => $pagination,
+    )
+);
 
 $SMARTY->assign(array(
     'filter' => $filter,

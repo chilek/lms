@@ -25,7 +25,7 @@ class lms2nagios
     
     public function __construct($db_ip, $db_name, $db_user, $db_pass, $start_id_netdevices, $mapimages, $logoimages, $nagios_path_conf, $nagios_hosts_file, $pnp4nagios, $link_to_LMS)
     {
-        if (isset($db_ip) && isset($db_name) && isset($db_user) && isset($db_pass)) {
+        if (isset($db_ip, $db_name, $db_user, $db_pass)) {
             $this->db_ip=$db_ip;
             $this->db_name=$db_name;
             $this->db_user=$db_user;

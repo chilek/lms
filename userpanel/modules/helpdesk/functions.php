@@ -39,16 +39,20 @@ if (defined('USERPANEL_SETUPMODE')) {
         }
         $categories = $ncategories;
 
-        $SMARTY->assign('userlist', $LMS->GetUserNames());
-        $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-        $SMARTY->assign('queues', explode(';', ConfigHelper::getConfig('userpanel.queues')));
-        $SMARTY->assign('sources', explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
-        $SMARTY->assign('tickets_from_selected_queues', ConfigHelper::getConfig('userpanel.tickets_from_selected_queues'));
-        $SMARTY->assign('allow_message_add_to_closed_tickets', intval(ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1)));
-        $SMARTY->assign('limit_ticket_movements_to_selected_queues', ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues'));
-        $SMARTY->assign('default_userid', ConfigHelper::getConfig('userpanel.default_userid'));
-        $SMARTY->assign('lms_url', ConfigHelper::getConfig('userpanel.lms_url'));
-        $SMARTY->assign('categories', $categories);
+        $SMARTY->assign(
+            array(
+                'userlist' => $LMS->GetUserNames(),
+                'queuelist' => $LMS->GetQueueNames(),
+                'queues' => explode(';', ConfigHelper::getConfig('userpanel.queues')),
+                'sources' => explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources')),
+                'tickets_from_selected_queues' => ConfigHelper::getConfig('userpanel.tickets_from_selected_queues'),
+                'allow_message_add_to_closed_tickets' => intval(ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1)),
+                'limit_ticket_movements_to_selected_queues' => ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues'),
+                'default_userid' => ConfigHelper::getConfig('userpanel.default_userid'),
+                'lms_url' => ConfigHelper::getConfig('userpanel.lms_url'),
+                'categories' => $categories,
+            )
+        );
 
         $allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0));
 
@@ -362,8 +366,12 @@ function module_main()
             header('Location: ?m=helpdesk&op=view&id=' . $id);
             die;
         } else {
-            $SMARTY->assign('error', $error);
-            $SMARTY->assign('helpdesk', $ticket);
+            $SMARTY->assign(
+                array(
+                    'error' => $error,
+                    'helpdesk' => $ticket,
+                )
+            );
         }
     } elseif ($id && isset($_POST['helpdesk'])
         && ($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id)) != RT_RESOLVED
@@ -685,8 +693,12 @@ function module_main()
     } else {
         $queues = array();
     }
-    $SMARTY->assign('queues', $queues);
-    $SMARTY->assign('helpdesklist', $helpdesklist);
+    $SMARTY->assign(
+        array(
+            'queues' => $queues,
+            'helpdesklist' => $helpdesklist,
+        )
+    );
     $SMARTY->display('module:helpdesk.html');
 }
 

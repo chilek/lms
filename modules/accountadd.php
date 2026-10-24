@@ -220,9 +220,13 @@ if (!isset($account['type'])) {
     $account['type'] = 32767;
 }
 
-$SMARTY->assign('quota', $quota);
-$SMARTY->assign('account', $account);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'quota' => $quota,
+        'account' => $account,
+        'customers' => $LMS->GetCustomerNames(),
+        'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+    )
+);
 
 $SMARTY->display('account/accountadd.html');

@@ -36,13 +36,21 @@ if (!$result) {
     $SESSION->redirect('?m=netnodelist');
 }
 
-$SMARTY->assign('nodeinfo', $result);
-$SMARTY->assign('objectid', $result['id']);
+$SMARTY->assign(
+    array(
+        'nodeinfo' => $result,
+        'objectid' => $result['id'],
+    )
+);
 
 $attachmenttype = 'netnodeid';
 $attachmentresourceid = $id;
-$SMARTY->assign('attachmenttype', $attachmenttype);
-$SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+$SMARTY->assign(
+    array(
+        'attachmenttype' => $attachmenttype,
+        'attachmentresourceid' => $attachmentresourceid,
+    )
+);
 
 $filecontainers = array(
     'netnodeid' => array(
@@ -81,8 +89,12 @@ if (!empty($netdevlist)) {
     }
     unset($netdev);
 }
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('netnodeevents', $LMS->GetEventList(array('netnodeid' => $id)));
+$SMARTY->assign(
+    array(
+        'netdevlist' => $netdevlist,
+        'netnodeevents' => $LMS->GetEventList(array('netnodeid' => $id)),
+    )
+);
 
 $queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id, 'short' => 1));
 
@@ -93,8 +105,12 @@ $pagelimit = ConfigHelper::getConfig(
     'rt.ticketlist_pagelimit',
     ConfigHelper::getConfig('phpui.ticketlist_pagelimit', empty($queue) ? -1 : count($queue))
 );
-$SMARTY->assign('start', $start);
-$SMARTY->assign('pagelimit', $pagelimit);
+$SMARTY->assign(
+    array(
+        'start' => $start,
+        'pagelimit' => $pagelimit,
+    )
+);
 
 $foreign_entities = Utils::getForeignEntities();
 if (!empty($result['coowner']) && !empty($foreign_entities[$result['coowner']])) {

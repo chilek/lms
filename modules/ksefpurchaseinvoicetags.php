@@ -56,8 +56,12 @@ if (empty($tags)) {
     $tags = [];
 }
 
-$SMARTY->assign('id', $id);
-$SMARTY->assign('invoice_tags', $tags);
-$SMARTY->assign('tags', $DB->GetAll('SELECT * FROM ksefinvoicetags ORDER BY UPPER(name)'));
+$SMARTY->assign(
+    array(
+        'id' => $id,
+        'invoice_tags' => $tags,
+        'tags' => $DB->GetAll('SELECT * FROM ksefinvoicetags ORDER BY UPPER(name)'),
+    )
+);
 
 $SMARTY->display('ksef/ksefpurchaseinvoicetags.html');

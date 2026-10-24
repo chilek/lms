@@ -59,8 +59,12 @@ if (!$error) {
     }
 } else {
     $networks = $LMS->GetNetworks();
-    $SMARTY->assign('network', $network['source']);
-    $SMARTY->assign('networks', $networks);
-    $SMARTY->assign('error', $error);
+    $SMARTY->assign(
+        array(
+            'network' => $network['source'],
+            'networks' => $networks,
+            'error' => $error,
+        )
+    );
     $SMARTY->display('net/netinfo.html');
 }

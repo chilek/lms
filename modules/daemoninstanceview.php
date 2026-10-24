@@ -51,6 +51,10 @@ $optionlist = GetOptionList($instance['id']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('optionlist', $optionlist);
-$SMARTY->assign('instance', $instance);
+$SMARTY->assign(
+    array(
+        'optionlist' => $optionlist,
+        'instance' => $instance,
+    )
+);
 $SMARTY->display('daemon/daemoninstanceview.html');

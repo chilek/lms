@@ -465,11 +465,14 @@ $numberplanlist = $LMS->GetNumberPlans($args);
 if (!$numberplanlist) {
     $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
 }
-$SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->assign('planDocumentType', DOC_DNOTE);
-
-$SMARTY->assign('error', $error);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', empty($customer) ? array() : $customer);
-$SMARTY->assign('note', $note);
+$SMARTY->assign(
+    array(
+        'numberplanlist' => $numberplanlist,
+        'planDocumentType' => DOC_DNOTE,
+        'error' => $error,
+        'contents' => $contents,
+        'customer' => empty($customer) ? array() : $customer,
+        'note' => $note,
+    )
+);
 $SMARTY->display('note/noteedit.html');

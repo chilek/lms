@@ -48,8 +48,12 @@ if (isset($_POST['searchnodedev']) && $_POST['searchnodedev']) {
 										ORDER BY
 											n.name');
 
-    $SMARTY->assign('searchnodedev', $search);
-    $SMARTY->assign('netdevices', $netdevices);
+    $SMARTY->assign(
+        array(
+            'searchnodedev' => $search,
+            'netdevices' => $netdevices,
+        )
+    );
 }
 
 $SMARTY->assign('part', $p);

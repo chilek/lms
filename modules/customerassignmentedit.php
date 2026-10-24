@@ -616,23 +616,30 @@ $LMS->executeHook(
     )
 );
 
-$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($customer['id']));
-$SMARTY->assign('customernetdevnodes', $LMS->getCustomerNetDevNodes($customer['id']));
-$SMARTY->assign('voipaccounts', $LMS->GetCustomerVoipAccounts($customer['id']));
-$SMARTY->assign('customeraddresses', $LMS->getCustomerAddresses($customer['id']));
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_INVOICE,
-    'cdate' => null,
-    'division' => $customer['divisionid'],
-    'next' => false,
-)));
+$SMARTY->assign(
+    array(
+        'customernodes' => $LMS->GetCustomerNodes($customer['id']),
+        'customernetdevnodes' => $LMS->getCustomerNetDevNodes($customer['id']),
+        'voipaccounts' => $LMS->GetCustomerVoipAccounts($customer['id']),
+        'customeraddresses' => $LMS->getCustomerAddresses($customer['id']),
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_INVOICE,
+            'cdate' => null,
+            'division' => $customer['divisionid'],
+            'next' => false,
+        )),
+    )
+);
 
 // -----
 
-$SMARTY->assign('tags', $LMS->TarifftagGetAll());
-
-$SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$SMARTY->assign(
+    array(
+        'tags' => $LMS->TarifftagGetAll(),
+        'tariffs' => $LMS->GetTariffs($a['tariffid']),
+        'taxeslist' => $LMS->GetTaxes(),
+    )
+);
 $defaultTaxIds = $LMS->GetTaxes(null, null, true);
 if (is_array($defaultTaxIds)) {
     $defaultTaxId = reset($defaultTaxIds);
@@ -646,8 +653,12 @@ if (!empty($a['nodes']) && is_array($a['nodes'])) {
 }
 $SMARTY->assign('assignment', $a);
 $assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
-$SMARTY->assign('assignments', $assignments);
-$SMARTY->assign('customerinfo', $customer);
+$SMARTY->assign(
+    array(
+        'assignments' => $assignments,
+        'customerinfo' => $customer,
+    )
+);
 
 $document_separation_groups = array();
 foreach ($assignments as $assignment) {

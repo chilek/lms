@@ -121,7 +121,7 @@ function get_loc_cities($districtid)
 
 if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
     header('Content-type: application/json');
-    if (isset($_GET['what']) && isset($_GET['mode'])) {
+    if (isset($_GET['what'], $_GET['mode'])) {
         $what = trim($_GET['what']);
         $mode = trim($_GET['mode']);
         if (!strlen($what)) {
@@ -178,7 +178,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
                 $result[$row['id']] = compact('name', 'name_alternative', 'name_class', 'description', 'description_class', 'action');
             }
         }
-    } elseif (isset($_GET['id']) && isset($_GET['what'])) {
+    } elseif (isset($_GET['id'], $_GET['what'])) {
         $id = trim($_GET['id']);
         $what = trim($_GET['what']);
         if ($what == 'state') {
@@ -337,7 +337,11 @@ $data['allow_empty_streets'] = !empty($_GET['allow_empty_streets']);
 $data['allow_empty_building_numbers'] = !empty($_GET['allow_empty_building_numbers']);
 $data['countries'] = $DB->GetAll('SELECT id, name FROM countries');
 
-$SMARTY->assign('data', $data);
-$SMARTY->assign('states', $states);
+$SMARTY->assign(
+    array(
+        'data' => $data,
+        'states' => $states,
+    )
+);
 
 $SMARTY->display('file:choose/chooselocation.html');

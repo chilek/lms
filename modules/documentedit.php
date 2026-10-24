@@ -370,8 +370,12 @@ $numberplans = GetDocumentNumberPlans($document['type'], $document['customerid']
 if (empty($numberplans)) {
     $numberplans = $LMS->getSystemDefaultNumberPlan(array('doctype' => $document['type']));
 }
-$SMARTY->assign('numberplans', $numberplans);
-$SMARTY->assign('planDocumentType', $document['type']);
+$SMARTY->assign(
+    array(
+        'numberplans' => $numberplans,
+        'planDocumentType' => $document['type'],
+    )
+);
 
 /*
 if($dirs = getdir(DOC_DIR.'/templates', '^[a-zA-Z0-9_-]+$'))
@@ -397,7 +401,11 @@ $layout['pagetitle'] = trans('Edit Document: $a', docnumber(array(
 )));
 
 //$SMARTY->assign('docengines', $docengines);
-$SMARTY->assign('docrights', $rights);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('document', $document);
+$SMARTY->assign(
+    array(
+        'docrights' => $rights,
+        'error' => $error,
+        'document' => $document,
+    )
+);
 $SMARTY->display('document/documentedit.html');

@@ -204,13 +204,17 @@ $params['stats'] = true;
 $billing_stats = $LMS->getVoipBillings($params);
 $params['stats'] = false;
 
-$SMARTY->assign('voipaccounts', $voipaccountlist);
-$SMARTY->assign('voipownerlist', $voipownerlist);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('billings', $bill_list);
-$SMARTY->assign('total', $total);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('pagelimit', $limit);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('stats', $billing_stats);
+$SMARTY->assign(
+    array(
+        'voipaccounts' => $voipaccountlist,
+        'voipownerlist' => $voipownerlist,
+        'pagination' => $pagination,
+        'billings' => $bill_list,
+        'total' => $total,
+        'page' => $page,
+        'pagelimit' => $limit,
+        'listdata' => $listdata,
+        'stats' => $billing_stats,
+    )
+);
 $SMARTY->display('voipaccount/voipaccountbillinglist.html');
