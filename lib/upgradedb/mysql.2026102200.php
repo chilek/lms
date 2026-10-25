@@ -23,7 +23,10 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE cashregs ADD COLUMN balanceexclude tinyint(1) DEFAULT 0 NOT NULL");
+$this->Execute("
+    ALTER TABLE cashregs
+    ADD COLUMN IF NOT EXISTS balanceexclude tinyint(1) DEFAULT 0 NOT NULL
+");
 
 $this->Execute("DROP TRIGGER cash_customerbalances_delete_trigger");
 $this->Execute("DROP TRIGGER cash_customerbalances_update_trigger");
