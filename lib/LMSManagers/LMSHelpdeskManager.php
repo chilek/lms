@@ -1277,6 +1277,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['extid'] ?? null,
         ));
 
+        $msgid = $this->db->GetLastInsertID('rtmessages');
+
         if (isset($ticket['note']) && $ticket['note']) {
             $this->db->Execute('INSERT INTO rtmessages (ticketid, userid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
@@ -1294,8 +1296,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 RTMESSAGE_NOTE,
             ));
         }
-
-        $msgid = $this->db->GetLastInsertID('rtmessages');
 
         if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/html') {
             $body = str_replace(
