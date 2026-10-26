@@ -1867,7 +1867,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (isset($props['categories'])) {
             $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
-            $categories = $this->GetCategoryList(false);
+            $categories = array_column($this->GetCategoryList(false) ?: array(), null, 'id');
 
             $category_change = $props['category_change'] ?? null;
             switch ($category_change) {
