@@ -735,7 +735,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ' ORDER BY name')) {
             if ($stats) {
                 foreach ($result as &$row) {
-                    $stats = $this->GetQueueStats($row['id'], $deleted_tickets);
+                    $stats = $this->GetQueueStats($row['id'], $deleted_tickets ?? true);
                     if ($stats) {
                         $row = array_merge($row, $stats);
                     }
@@ -2604,7 +2604,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         );
 
         if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
-            $result = array(
+            $result = array_merge($result, array(
                     'critical' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
                     'urgent' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
                     'unread' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1, 'rights' => RT_RIGHT_INDICATOR)),
@@ -2613,7 +2613,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     'verify' => $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
                     'left' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
                     'watching' => $this->GetQueueContents(array('count' => true, 'watching' => 1, 'rights' => RT_RIGHT_INDICATOR)),
-            );
+            ));
         }
 
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
