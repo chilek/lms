@@ -556,8 +556,8 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Invoices');
 
-        header(
-            'Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . urlencode($_GET['jpk']) : '')
+        $SESSION->redirect(
+            '?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . urlencode($_GET['jpk']) : '')
                 . (isset($_GET['jpk_format']) ? '&jpk_format=' . urlencode($_GET['jpk_format']) : '')
                 .$type
                 .'&from='.$date['from']

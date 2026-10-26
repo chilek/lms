@@ -320,9 +320,9 @@ if ($SESSION->islogged) {
         }
     } elseif ($module=='') {
         if (!empty($module)) {
-            header('Location: ?m=' . $module);
+            $SESSION->redirect('?m=' . $module);
         } else {
-            header('Location: ?m=' . $startupmodule);
+            $SESSION->redirect('?m=' . $startupmodule);
         }
     } else {
         $layout['error'] = trans('Module <b>$a</b> not found!', $module);
