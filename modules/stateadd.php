@@ -63,6 +63,10 @@ $layout['pagetitle'] = trans('New State');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('stateadd', $stateadd);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'stateadd' => $stateadd,
+        'error' => $error,
+    )
+);
 $SMARTY->display('state/stateadd.html');

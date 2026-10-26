@@ -56,6 +56,10 @@ if (!$p) {
     $SMARTY->assign('maclist', $maclist);
 }
 
-$SMARTY->assign('part', $p);
-$SMARTY->assign('js', $js);
+$SMARTY->assign(
+    array(
+        'part' => $p,
+        'js' => $js,
+    )
+);
 $SMARTY->display('choose/choosemac.html');

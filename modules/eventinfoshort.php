@@ -28,7 +28,11 @@ $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86
 
 $event = $LMS->GetEvent(intval($_GET['id']));
 
-$SMARTY->assign('aet', $aet);
-$SMARTY->assign('event', $event);
+$SMARTY->assign(
+    array(
+        'aet' => $aet,
+        'event' => $event,
+    )
+);
 
 $SMARTY->display('event/eventinfoshort.html');

@@ -495,7 +495,7 @@ function parse_file($filename, $contents)
 
     if ($patterns_cnt && !empty($sum)) {
         foreach ($patterns as $idx => $pattern) {
-            if (isset($pattern['pattern_sum']) && isset($pattern['pattern_sum_check']) && !$pattern['pattern_sum_check']($data, $sum)) {
+            if (isset($pattern['pattern_sum'], $pattern['pattern_sum_check']) && !$pattern['pattern_sum_check']($data, $sum)) {
                 $error['sum'] = true;
             }
         }

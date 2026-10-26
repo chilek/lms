@@ -37,6 +37,10 @@ if (!$p) {
     include(MODULES_DIR.'/map.inc.php');
 }
 
-$SMARTY->assign('part', $p);
-$SMARTY->assign('js', $js);
+$SMARTY->assign(
+    array(
+        'part' => $p,
+        'js' => $js,
+    )
+);
 $SMARTY->display('choose/choosenetdevfrommap.html');

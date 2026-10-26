@@ -38,9 +38,13 @@ if (isset($_GET['oper'])) {
                         'details' => true,
                     )
                 );
-                $SMARTY->assign('transactions', $trans);
-                $SMARTY->assign('resourcetype', SYSLOG::RES_NETDEV);
-                $SMARTY->assign('resourceid', $id);
+                $SMARTY->assign(
+                    array(
+                        'transactions' => $trans,
+                        'resourcetype' => SYSLOG::RES_NETDEV,
+                        'resourceid' => $id,
+                    )
+                );
                 die($SMARTY->fetch('transactionlist.html'));
             }
 
@@ -342,8 +346,12 @@ function getNodeStats($nodeid)
 
     $SMARTY->assign('nodeid', $nodeid);
     $nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM vnodes WHERE id = ?', array($nodeid));
-    $SMARTY->assign('nodeip', $nodeip);
-    $SMARTY->assign('nodestats', $nodestats);
+    $SMARTY->assign(
+        array(
+            'nodeip' => $nodeip,
+            'nodestats' => $nodestats,
+        )
+    );
     $contents = $SMARTY->fetch('node/nodestats.html');
     $result->append('netdevipinfo', 'innerHTML', $contents);
 

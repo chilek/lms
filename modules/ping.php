@@ -167,8 +167,12 @@ if (isset($_GET['ip']) && check_ip($_GET['ip'])) {
 
     $SESSION->save('ping_type', $type);
 
-    $SMARTY->assign('type', $type);
-    $SMARTY->assign('ipaddr', $_GET['ip']);
+    $SMARTY->assign(
+        array(
+            'type' => $type,
+            'ipaddr' => $_GET['ip'],
+        )
+    );
 
     $netid = $LMS->GetNetIDByIP($_GET['ip']);
 

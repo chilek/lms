@@ -39,7 +39,7 @@ function select_producer($id)
     return $JSResponse;
 }
 
-if (isset($_GET['ajax']) && isset($_GET['what'])) {
+if (isset($_GET['ajax'], $_GET['what'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
     if (!strlen($search)) {
@@ -131,7 +131,11 @@ if (isset($data['producerid'])) {
 $data['varname'] = $_GET['name'];
 $data['formname'] = $_GET['form'];
 
-$SMARTY->assign('data', $data);
-$SMARTY->assign('producers', $producers);
-$SMARTY->assign('models', $models);
+$SMARTY->assign(
+    array(
+        'data' => $data,
+        'producers' => $producers,
+        'models' => $models,
+    )
+);
 $SMARTY->display('choose/choosenetdevmodel.html');

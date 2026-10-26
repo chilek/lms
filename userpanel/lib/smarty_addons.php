@@ -82,7 +82,7 @@ function _smarty_function_userpaneltip($params, $template)
     $text = trans(array_merge(isset($params['test']) ? array($params['text']) : array(), $params));
 
     $tpl = $template->getTemplateVars('error');
-    if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
+    if (isset($params['trigger'], $tpl[$params['trigger']])) {
         $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
         $error = str_replace('"', '&quot;', $error);
         $error = str_replace("\r", '', $error);
@@ -103,29 +103,29 @@ function _smarty_function_userpaneltip($params, $template)
 
     if (ConfigHelper::getConfig('userpanel.style') == 'bclean') {
         $result = ' class="' . (empty($class) ? '' : $class)
-            . (isset($params['trigger']) && isset($tpl[$params['trigger']])
+            . (isset($params['trigger'], $tpl[$params['trigger']])
                 ? (isset($params['bold']) && $params['bold'] ? ' alert bold' : ' alert')
                 : (isset($params['bold']) && $params['bold'] ? ' bold' : ''))
             . '" ';
     } elseif (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
-        if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
+        if (isset($params['trigger'], $tpl[$params['trigger']])) {
             $result = ' onmouseover="return overlib(\'<b><font color=red>' . $error . '</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
         } elseif ($params['text'] != '') {
             $result = 'onmouseover="return overlib(\'' . $text . '\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
         }
         $result .= ' class="' . (empty($class) ? '' : $class)
-            . (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+            . (isset($params['trigger'], $tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
             . '" ';
     } elseif (ConfigHelper::getConfig('userpanel.hint') == 'none') {
         $result = "";
     } else {
-        if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
+        if (isset($params['trigger'], $tpl[$params['trigger']])) {
             $result = "onmouseover=\"javascript:displayhint('<font style=&quot;color: red&quot;>" . $error . "</font>')\" onmouseout=\"javascript:hidehint()\" ";
         } else {
             $result = "onmouseover=\"javascript:displayhint('" . $text . "')\" onmouseout=\"javascript:hidehint()\" ";
         }
         $result .= ' class="' . (empty($class) ? '' : $class)
-            . (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+            . (isset($params['trigger'], $tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
             . '" ';
     }
 

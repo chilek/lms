@@ -29,7 +29,11 @@ $id = intval($_GET['id']);
 $customerinfo = $LMS->GetCustomer($id, true);
 $customergroups = $LMS->CustomergroupGetForCustomer($id);
 
-$SMARTY->assign('customergroups', $customergroups);
-$SMARTY->assign('customerinfo', $customerinfo);
+$SMARTY->assign(
+    array(
+        'customergroups' => $customergroups,
+        'customerinfo' => $customerinfo,
+    )
+);
 
 $SMARTY->display('customer/customerinfoshort.html');

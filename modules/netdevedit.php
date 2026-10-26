@@ -971,8 +971,12 @@ if (isset($netdev)) {
 
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
-    $SMARTY->assign('attachmenttype', $attachmenttype);
-    $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+    $SMARTY->assign(
+        array(
+            'attachmenttype' => $attachmenttype,
+            'attachmentresourceid' => $attachmentresourceid,
+        )
+    );
 
     $filecontainers = array(
         'netdevid' => array(
@@ -1043,8 +1047,12 @@ if (empty($netdevlist)) {
     $srcNetDev = reset($netdevlist);
     $srcPorts = $LMS->getNetDevPorts($srcNetDev['id']);
 }
-$SMARTY->assign('srcports', $srcPorts);
-$SMARTY->assign('dstports', $LMS->getNetDevPorts($netdev['id']));
+$SMARTY->assign(
+    array(
+        'srcports' => $srcPorts,
+        'dstports' => $LMS->getNetDevPorts($netdev['id']),
+    )
+);
 
 $foreign_entities = Utils::getForeignEntities();
 if (!empty($netdevconnected) && !empty($foreign_entities)) {
@@ -1058,36 +1066,38 @@ if (!empty($netdevconnected) && !empty($foreign_entities)) {
     }
     unset($netdevconn);
 }
-$SMARTY->assign('foreign_entities', $foreign_entities);
-
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
-$SMARTY->assign('NNnodes', $LMS->GetNetNodes());
-$SMARTY->assign('producers', $LMS->GetProducers());
-$SMARTY->assign('models', $LMS->GetModels());
-
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netdev', $netdev);
-$SMARTY->assign('objectid', $netdev['id']);
-$SMARTY->assign('netdevlist', $netdevconnected);
-$SMARTY->assign('netcomplist', $netcomplist);
-$SMARTY->assign('nodelist', $nodelist);
-$SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']));
-$SMARTY->assign('radiosectors', $LMS->GetRadioSectors($netdev['id']));
-$SMARTY->assign('netdevcontype', $netdevcontype ?? null);
-$SMARTY->assign('netdevauthtype', $netdevauthtype ?? null);
-$SMARTY->assign('netdevips', $netdevips);
-$SMARTY->assign('restnetdevlist', $netdevlist);
-$SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
-$SMARTY->assign('devlinksrcradiosector', $SESSION->get('devlinksrcradiosector'));
-$SMARTY->assign('devlinkdstradiosector', $SESSION->get('devlinkdstradiosector'));
-$SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
-$SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
-$SMARTY->assign('devlinkroutetype', $SESSION->get('devlinkroutetype'));
-$SMARTY->assign('devlinklinecount', $SESSION->get('devlinklinecount'));
-$SMARTY->assign('devlinkusedlines', $SESSION->get('devlinkusedlines'));
-$SMARTY->assign('devlinkavailablelines', $SESSION->get('devlinkavailablelines'));
-$SMARTY->assign('devlinkforeignentity', $SESSION->get('devlinkforeignentity'));
+$SMARTY->assign(
+    array(
+        'foreign_entities' => $foreign_entities,
+        'divisions' => $LMS->GetDivisions(),
+        'NNprojects' => $LMS->GetProjects(),
+        'NNnodes' => $LMS->GetNetNodes(),
+        'producers' => $LMS->GetProducers(),
+        'models' => $LMS->GetModels(),
+        'error' => $error,
+        'netdev' => $netdev,
+        'objectid' => $netdev['id'],
+        'netdevlist' => $netdevconnected,
+        'netcomplist' => $netcomplist,
+        'nodelist' => $nodelist,
+        'mgmurls' => $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']),
+        'radiosectors' => $LMS->GetRadioSectors($netdev['id']),
+        'netdevcontype' => $netdevcontype ?? null,
+        'netdevauthtype' => $netdevauthtype ?? null,
+        'netdevips' => $netdevips,
+        'restnetdevlist' => $netdevlist,
+        'devlinktype' => $SESSION->get('devlinktype'),
+        'devlinksrcradiosector' => $SESSION->get('devlinksrcradiosector'),
+        'devlinkdstradiosector' => $SESSION->get('devlinkdstradiosector'),
+        'devlinktechnology' => $SESSION->get('devlinktechnology'),
+        'devlinkspeed' => $SESSION->get('devlinkspeed'),
+        'devlinkroutetype' => $SESSION->get('devlinkroutetype'),
+        'devlinklinecount' => $SESSION->get('devlinklinecount'),
+        'devlinkusedlines' => $SESSION->get('devlinkusedlines'),
+        'devlinkavailablelines' => $SESSION->get('devlinkavailablelines'),
+        'devlinkforeignentity' => $SESSION->get('devlinkforeignentity'),
+    )
+);
 
 if ($SESSION->is_set('nodelinktype')) {
     $nodelinktype = $SESSION->get('nodelinktype');
@@ -1108,12 +1118,15 @@ if ($SESSION->is_set('nodelinkspeed')) {
 } else {
     $nodelinkspeed = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
 }
-$SMARTY->assign('nodelinkspeed', $nodelinkspeed);
-
-$SMARTY->assign('nodelinkradiosector', $SESSION->get('nodelinkradiosector'));
-$SMARTY->assign('nastypes', $LMS->GetNAStypes());
-$SMARTY->assign('macs', $LMS->GetNetdevMacs($netdev['id']));
-$SMARTY->assign('maclabels', $LMS->GetNetdevsMacLabels());
+$SMARTY->assign(
+    array(
+        'nodelinkspeed' => $nodelinkspeed,
+        'nodelinkradiosector' => $SESSION->get('nodelinkradiosector'),
+        'nastypes' => $LMS->GetNAStypes(),
+        'macs' => $LMS->GetNetdevMacs($netdev['id']),
+        'maclabels' => $LMS->GetNetdevsMacLabels(),
+    )
+);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
@@ -1140,19 +1153,26 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevedit.html');
         break;
     case 'ip':
-        $SMARTY->assign('networks', $LMS->GetNetworks());
-        $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
-        $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
-
-        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
-        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
-        $SMARTY->assign('nodeid', $_GET['ip']);
+        $SMARTY->assign(
+            array(
+                'networks' => $LMS->GetNetworks(),
+                'nodesessions' => $LMS->GetNodeSessions($_GET['ip']),
+                'netdevvipedit_sortable_order' => $SESSION->get_persistent_setting('netdevipedit-sortable-order'),
+                'routednetworks' => $LMS->getNodeRoutedNetworks($_GET['ip']),
+                'notroutednetworks' => $LMS->getNodeNotRoutedNetworks($_GET['ip']),
+                'nodeid' => $_GET['ip'],
+            )
+        );
 
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':
-        $SMARTY->assign('networks', $LMS->GetNetworks());
-        $SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
+        $SMARTY->assign(
+            array(
+                'networks' => $LMS->GetNetworks(),
+                'netdevvipadd_sortable_order' => $SESSION->get_persistent_setting('netdevipadd-sortable-order'),
+            )
+        );
         $SMARTY->display('netdev/netdevipadd.html');
         break;
     default:

@@ -46,6 +46,10 @@ $listdata['total'] = empty($promolist) ? 0 : count($promolist);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('promotionlist', $promolist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'promotionlist' => $promolist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('promotion/promotionlist.html');

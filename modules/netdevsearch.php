@@ -242,11 +242,15 @@ if (isset($_GET['search'])) {
 
         $SESSION->save('ndlsp', $page);
 
-        $SMARTY->assign('page', $page);
-        $SMARTY->assign('pagelimit', $pagelimit);
-        $SMARTY->assign('start', $start);
-        $SMARTY->assign('netdevlist', $netdevlist);
-        $SMARTY->assign('listdata', $listdata);
+        $SMARTY->assign(
+            array(
+                'page' => $page,
+                'pagelimit' => $pagelimit,
+                'start' => $start,
+                'netdevlist' => $netdevlist,
+                'listdata' => $listdata,
+            )
+        );
 
         $SMARTY->display('netdev/netdevsearchresults.html');
     }

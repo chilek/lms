@@ -62,7 +62,7 @@ if (isset($_GET['search'])) {
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
-        || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']]))
+        || ($_GET['oper'] == 'changestatus' && isset($_GET['status'], $CSTATUSES[$_GET['status']]))
         || ($_GET['oper'] == 'restore')
     )) {
         foreach ($customerlist as $row) {
@@ -291,7 +291,7 @@ if (!isset($_POST['xjxfun'])) {
 
             if (isset($customerdata['ssn'])) {
                 if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
-                    if (isset($customerdata['ssnwarning']) && isset($customerdata['oldssn']) && $customerdata['oldssn'] != $customerdata['ssn']) {
+                    if (isset($customerdata['ssnwarning'], $customerdata['oldssn']) && $customerdata['oldssn'] != $customerdata['ssn']) {
                         unset($customerdata['ssnwarning']);
                     }
                     if (!isset($customerdata['ssnwarning'])) {
@@ -610,8 +610,12 @@ $customerinfo = $hook_data['customerinfo'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign($LMS->getCustomerPinRequirements());
-$SMARTY->assign('customerinfo', $customerinfo);
-$SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
-$SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));
-$SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
+$SMARTY->assign(
+    array(
+        'customerinfo' => $customerinfo,
+        'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+        'recover' => ($action == 'recover' ? 1 : 0),
+        'customeredit_sortable_order' => $SESSION->get_persistent_setting('customeredit-sortable-order'),
+    )
+);
 $SMARTY->display('customer/customeredit.html');

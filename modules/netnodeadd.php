@@ -84,7 +84,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if (isset($netnodedata['terc']) && isset($netnodedata['simc']) && isset($netnodedata['ulic'])) {
+    if (isset($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic'])) {
         $teryt = $LMS->TerytToLocation($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic']);
         $netnodedata['teryt'] = 1;
         $netnodedata['location_state'] = $teryt['location_state'];
@@ -180,9 +180,13 @@ if (!empty($netnodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('netnode', $netnodedata);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
-$SMARTY->assign('foreign_entities', Utils::getForeignEntities());
+$SMARTY->assign(
+    array(
+        'netnode' => $netnodedata,
+        'divisions' => $LMS->GetDivisions(),
+        'NNprojects' => $LMS->GetProjects(),
+        'foreign_entities' => Utils::getForeignEntities(),
+    )
+);
 
 $SMARTY->display('netnode/netnodemodify.html');

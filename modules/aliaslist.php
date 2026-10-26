@@ -122,11 +122,15 @@ $SESSION->save('allp', $page);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('aliaslist', $aliaslist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'aliaslist' => $aliaslist,
+        'listdata' => $listdata,
+        'customerlist' => $LMS->GetCustomerNames(),
+        'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+    )
+);
 $SMARTY->display('alias/aliaslist.html');

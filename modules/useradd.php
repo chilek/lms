@@ -181,8 +181,12 @@ if (count($useradd)) {
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
     } else {
-        $SMARTY->assign('selectedusergroups', array_flip($useradd['usergroups'] ?? array()));
-        $SMARTY->assign('selectedgroups', array_flip($useradd['customergroups'] ?? array()));
+        $SMARTY->assign(
+            array(
+                'selectedusergroups' => array_flip($useradd['usergroups'] ?? array()),
+                'selectedgroups' => array_flip($useradd['customergroups'] ?? array()),
+            )
+        );
     }
 } else {
     $useradd['ntype'] = MSG_MAIL | MSG_SMS;
@@ -198,12 +202,16 @@ if ($AUTH->nousers == true) {           // if there is no users
 
 $layout['pagetitle'] = trans('New User');
 
-$SMARTY->assign('useradd', $useradd);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('usergroups', $LMS->getAllUserGroups());
-$SMARTY->assign('customergroups', $LMS->getAllCustomerGroups());
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('users', $LMS->GetUserNames());
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
-$SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign(
+    array(
+        'useradd' => $useradd,
+        'error' => $error,
+        'usergroups' => $LMS->getAllUserGroups(),
+        'customergroups' => $LMS->getAllCustomerGroups(),
+        'accesslist' => $accesslist,
+        'users' => $LMS->GetUserNames(),
+        'available' => $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'),
+        'divisions' => $LMS->GetDivisions(),
+    )
+);
 $SMARTY->display('user/useradd.html');

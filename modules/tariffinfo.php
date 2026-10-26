@@ -62,8 +62,12 @@ if ($tariff['type'] == SERVICE_PHONE) {
                                                     t.id = ?", array($id)));
 }
 
-$SMARTY->assign('netid', $netid);
-$SMARTY->assign('tariff', $tariff);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('networks', $LMS->GetNetworks());
+$SMARTY->assign(
+    array(
+        'netid' => $netid,
+        'tariff' => $tariff,
+        'tariffs' => $LMS->GetTariffs(),
+        'networks' => $LMS->GetNetworks(),
+    )
+);
 $SMARTY->display('tariff/tariffinfo.html');

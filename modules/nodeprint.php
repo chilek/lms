@@ -183,8 +183,12 @@ switch ($type) {
                     unset($node);
                 }
 
-                $SMARTY->assign('options', $options);
-                $SMARTY->assign('nodelist', $nodelist);
+                $SMARTY->assign(
+                    array(
+                        'options' => $options,
+                        'nodelist' => $nodelist,
+                    )
+                );
 
                 if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
                     $output = $SMARTY->fetch('print/printindebtnodelist.html');
@@ -226,8 +230,12 @@ switch ($type) {
             unset($node);
         }
 
-        $SMARTY->assign('options', $options);
-        $SMARTY->assign('nodelist', $nodelist);
+        $SMARTY->assign(
+            array(
+                'options' => $options,
+                'nodelist' => $nodelist,
+            )
+        );
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf' && $type == 'print') {
             $output = $SMARTY->fetch('print/printnodelist.html');
@@ -251,9 +259,13 @@ switch ($type) {
     default:
         $layout['pagetitle'] = trans('Reports');
 
-        $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-        $SMARTY->assign('networks', $LMS->GetNetworks());
-        $SMARTY->assign('printmenu', 'node');
+        $SMARTY->assign(
+            array(
+                'customergroups' => $LMS->CustomergroupGetAll(),
+                'networks' => $LMS->GetNetworks(),
+                'printmenu' => 'node',
+            )
+        );
         $SMARTY->display('print/printindex.html');
         break;
 }

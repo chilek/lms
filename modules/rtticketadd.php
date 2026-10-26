@@ -174,7 +174,7 @@ if (isset($_POST['ticket'])) {
     }
 
     if (!$error && !$warning) {
-        $ticket['contenttype'] = isset($ticket['wysiwyg']) && isset($ticket['wysiwyg']['body']) && ConfigHelper::checkValue($ticket['wysiwyg']['body'])
+        $ticket['contenttype'] = isset($ticket['wysiwyg'], $ticket['wysiwyg']['body']) && ConfigHelper::checkValue($ticket['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
 
         if (!$ticket['customerid']) {
@@ -550,8 +550,12 @@ if (isset($_POST['ticket'])) {
 
         $SESSION->redirect('?m=rtticketview&id='.$id);
     }
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('warning', $warning);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'warning' => $warning,
+        )
+    );
 
     $queuelist = $LMS->GetQueueList(array('stats' => false));
 
@@ -675,11 +679,15 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 }
 
 if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
-    $SMARTY->assign('nodes', $LMS->GetNodeLocations(
-        $ticket['customerid'],
-        isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null
-    ));
-    $SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+    $SMARTY->assign(
+        array(
+            'nodes' => $LMS->GetNodeLocations(
+                $ticket['customerid'],
+                isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null
+            ),
+            'customerinfo' => $LMS->GetCustomer($ticket['customerid']),
+        )
+    );
 }
 
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');

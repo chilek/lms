@@ -146,6 +146,10 @@ if (isset($_POST['payment'])) {
     
 $layout['pagetitle'] = trans('Payment Edit: $a', $payment['name']);
 
-$SMARTY->assign('payment', $payment);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'payment' => $payment,
+        'error' => $error,
+    )
+);
 $SMARTY->display('payment/paymentedit.html');

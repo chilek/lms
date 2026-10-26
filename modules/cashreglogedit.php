@@ -84,6 +84,10 @@ if (isset($_POST['reglog'])) {
 
 $layout['pagetitle'] = trans('Cash History Entry Edit');
 
-$SMARTY->assign('reglog', $reglog);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'reglog' => $reglog,
+        'error' => $error,
+    )
+);
 $SMARTY->display('cash/cashreglogedit.html');

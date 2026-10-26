@@ -255,8 +255,12 @@ function getNodeStats($nodeid)
 
     $SMARTY->assign('nodeid', $nodeid);
     $nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM vnodes WHERE id = ?', array($nodeid));
-    $SMARTY->assign('nodeip', $nodeip);
-    $SMARTY->assign('nodestats', $nodestats);
+    $SMARTY->assign(
+        array(
+            'nodeip' => $nodeip,
+            'nodestats' => $nodestats,
+        )
+    );
 
     $contents = $SMARTY->fetch('node/nodestats.html');
 
@@ -329,7 +333,7 @@ if (isset($_GET['action'])) {
         case 'get_throughput':
             header('Content-type: text/html');
 
-            if (!isset($_GET['ip']) || !isset($_GET['id'])) {
+            if (!isset($_GET['ip'], $_GET['id'])) {
                 die;
             }
             die(getThroughput($_GET['ip']));

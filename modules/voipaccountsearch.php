@@ -73,11 +73,15 @@ if (isset($_GET['search'])) {
     $start = ($page - 1) * $pagelimit;
     $SESSION->save('vaslp', $page);
 
-    $SMARTY->assign('page', $page);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('start', $start);
-    $SMARTY->assign('voipaccountlist', $voipaccountlist);
-    $SMARTY->assign('listdata', $listdata);
+    $SMARTY->assign(
+        array(
+            'page' => $page,
+            'pagelimit' => $pagelimit,
+            'start' => $start,
+            'voipaccountlist' => $voipaccountlist,
+            'listdata' => $listdata,
+        )
+    );
 
     if (isset($_GET['print'])) {
         $SMARTY->display('print/printvoipaccountlist.html');

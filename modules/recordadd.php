@@ -90,6 +90,10 @@ if (empty($record['ttl'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('record', $record);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'record' => $record,
+        'error' => $error,
+    )
+);
 $SMARTY->display('record/recordedit.html');

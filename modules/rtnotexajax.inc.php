@@ -50,8 +50,12 @@ function queue_changed($queue)
 
     $userlist = $LMS->GetUserNames();
 
-    $SMARTY->assign('userlist', $userlist);
-    $SMARTY->assign('ticket', array('verifierid'=>$vid));
+    $SMARTY->assign(
+        array(
+            'userlist' => $userlist,
+            'ticket' => array('verifierid'=>$vid),
+        )
+    );
     $content = $SMARTY->fetch('rt/rtverifiers.html');
 
     $JSResponse->assign('rtverifiers', 'innerHTML', $content);

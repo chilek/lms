@@ -80,6 +80,10 @@ if (isset($_POST['sourceedit'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('sourceedit', $source);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'sourceedit' => $source,
+        'error' => $error,
+    )
+);
 $SMARTY->display('cash/cashsourceedit.html');
