@@ -203,7 +203,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 break;
         }
 
-        if (empty($state) || $state == -2) {
+        if ($state === null || $state === '' || $state === array() || $state == -2) {
             $statefilter = '';
         } elseif (is_array($state)) {
             $statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
@@ -431,6 +431,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         } else {
             $parentfilter = '';
+        }
+
+        if (!empty($catids) && !is_array($catids)) {
+            $catids = array($catids);
         }
 
         if (!empty($catids) && !in_array('all', $catids)) {
