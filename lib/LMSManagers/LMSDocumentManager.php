@@ -2597,14 +2597,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $args = [
                     SYSLOG::RES_DOC => $documentid,
                     'filename' => $file['filename'],
-                    'type' => $file['type'],
+                    'contenttype' => $file['type'],
                     'md5sum' => $file['md5sum'],
-                    'attachmenttype' => $file['attachmenttype'] ?? 0,
+                    'type' => $file['attachmenttype'] ?? 0,
+                    'cdate' => time(),
                 ];
 
                 if ($this->db->Execute(
                     'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type, cdate)
-                    VALUES (?, ?, ?, ?, ?, ?NOW?)',
+                    VALUES (?, ?, ?, ?, ?, ?)',
                     $args
                 )) {
                     $attachmentId = $this->db->GetLastInsertID('documentattachments');
