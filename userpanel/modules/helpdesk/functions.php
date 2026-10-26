@@ -117,12 +117,12 @@ function module_main()
                         'name' => $filename,
                         'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
                         'type' => $_FILES['files']['type'][$fileidx],
-                        'contents' => &$filecontents,
+                        'contents' => $filecontents,
                     );
                     $attachments[] = array(
                         'content_type' => $_FILES['files']['type'][$fileidx],
                         'filename' => $filename,
-                        'data' => &$filecontents,
+                        'data' => $filecontents,
                     );
                 } else { // upload errors
                     if (isset($error['files'])) {
