@@ -83,7 +83,7 @@ switch ($type) {
             $dateto = 0;
         }
 
-        if ($list = $DB->GetAll('SELECT COUNT(*) AS total, customerid, '
+        if ($list = $DB->GetAll('SELECT COUNT(DISTINCT rttickets.id) AS total, customerid, '
                     .$DB->Concat('UPPER(customers.lastname)', "' '", 'customers.name').' AS customername
 		               	    FROM rttickets
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
@@ -91,15 +91,15 @@ switch ($type) {
 				    WHERE customerid IS NOT NULL'
                     .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
                     .' GROUP BY customerid, customers.lastname, customers.name'
-                    .($times ? ' HAVING COUNT(*) > '.$times : '')
+                    .($times ? ' HAVING COUNT(DISTINCT rttickets.id) > '.$times : '')
                     .' ORDER BY total DESC')) {
-            $customer = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
+            $customer = $DB->GetAllByKey('SELECT COUNT(DISTINCT rttickets.id) AS total, customerid
 		               	    FROM rttickets 
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 1'
                 .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
                 .' GROUP BY customerid', 'customerid');
-            $company = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
+            $company = $DB->GetAllByKey('SELECT COUNT(DISTINCT rttickets.id) AS total, customerid
 		               	    FROM rttickets 
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 2'
@@ -161,17 +161,19 @@ switch ($type) {
             } else {
                 $filter['catids'] = Utils::filterIntegers($categories);
                 if (in_array(-1, $filter['catids'])) {
-                    if (count($filter['catids']) > 1) {
-                        $catidsfilter = '(';
+                    $catids = array();
+                    foreach ($filter['catids'] as $catid) {
+                        if (intval($catid) != -1) {
+                            $catids[] = $catid;
+                        }
                     }
-                    $catidsfilter .= 'tc.categoryid IS NULL';
-                    $filter['catids'] = array_diff($filter['catids'], ["-1"]);
-                    if (!empty($filter['catids'])) {
-                        $catidsfilter .= ' OR tc.categoryid IN (' . implode(',', $filter['catids']) . '))';
+                    if ($catids) {
+                        $where[] = '(tc.categoryid IS NULL OR tc.categoryid IN ' . $DB->Escape(Utils::filterIntegers($catids)) . ')';
+                    } else {
+                        $where[] = 'tc.categoryid IS NULL';
                     }
-                    $where[] = $catidsfilter;
-                } else {
-                    $where[] = 'tc.categoryid IN (' . implode(',', $filter['catids']) . ')';
+                } elseif ($filter['catids']) {
+                    $where[] = 'tc.categoryid IN ' . $DB->Escape(Utils::filterIntegers($filter['catids']));
                 }
             }
         }
