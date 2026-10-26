@@ -1251,7 +1251,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/plain') {
+        if (($ticket['contenttype'] ?? 'text/plain') == 'text/plain') {
             $body = str_replace("\r", "", $ticket['body']);
         } else {
             $body = Utils::removeInsecureHtml($ticket['body']);
