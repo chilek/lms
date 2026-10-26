@@ -1372,7 +1372,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             LEFT JOIN vusers o ON (t.owner = o.id)
             LEFT JOIN vusers c ON (t.creatorid = c.id)
             LEFT JOIN vusers d ON (t.requestor_userid = d.id)
-            LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid)
+            LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid' . (!empty($userid) ? ' AND w.userid = ?' : '') . ')
             LEFT JOIN customers ON (customers.id = t.customerid)
             LEFT JOIN vaddresses va ON va.id = t.address_id
             LEFT JOIN vnodes n ON n.id = t.nodeid
@@ -1386,7 +1386,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             ) ev ON ev.ticketid = t.id
             WHERE 1=1 '
             . ($helpdesk_advanced_operations ? '' : ' AND t.deleted = 0')
-            . (' AND t.id = ?'), array($id));
+            . (' AND t.id = ?'), !empty($userid) ? array($userid, $id) : array($id));
 
         if (empty($ticket)) {
             return null;
