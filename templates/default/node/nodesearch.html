@@ -276,7 +276,9 @@
 	<TR>
 		<td class="lms-ui-box-buttons" colspan="2">
 			{button icon="search" label="Search" onclick="Search()"}
-			{button icon="print" label="Print" onclick="PrintList()"}
+			{if !ConfigHelper::checkPrivilege('hide_data_summaries')}
+				{button icon="print" label="Print" onclick="PrintList()"}
+			{/if}
 		</td>
 	</TR>
 	</TBODY>

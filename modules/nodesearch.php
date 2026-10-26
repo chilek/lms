@@ -65,6 +65,10 @@ if (isset($_GET['ajax'])) {
     exit;
 }
 
+if (isset($_GET['print']) && ConfigHelper::checkPrivilege('hide_data_summaries')) {
+    access_denied();
+}
+
 function get_loc_boroughs($districtid)
 {
     global $DB, $BOROUGHTYPES;

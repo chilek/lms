@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+if ((isset($_GET['print']) || isset($_GET['export'])) && ConfigHelper::checkPrivilege('hide_data_summaries')) {
+    access_denied();
+}
+
 $SESSION->add_history_entry();
 
 if (isset($_POST['search'])) {

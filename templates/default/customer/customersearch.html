@@ -1093,8 +1093,10 @@
 	<TR>
 		<TD class="lms-ui-box-buttons" colspan="2">
 			{button id="submit-btn" class="form-btn" icon="search" label="Search"}
-			{button id="download-btn" class="form-btn" icon="csv" label="Download (CSV)"}
-			{button id="print-btn" class="form-btn" icon="print" label="Print"}
+			{if !ConfigHelper::checkPrivilege('hide_data_summaries')}
+				{button id="download-btn" class="form-btn" icon="csv" label="Download (CSV)"}
+				{button id="print-btn" class="form-btn" icon="print" label="Print"}
+			{/if}
 		</TD>
 	</TR>
 	</TBODY>

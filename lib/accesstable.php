@@ -378,6 +378,9 @@ $access_table = array(
     'hide_customer_sensitive_data' => array(
         'label' => trans('hide customer sensitive data'),
     ),
+    'hide_data_summaries' => array(
+        'label' => trans('hide data summaries'),
+    ),
     'reports' => array(
         'label' => trans('reports'),
     ),
