@@ -2713,7 +2713,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
     }
 
-    public function CheckTicketAccess($ticketid)
+    public function CheckTicketAccess($ticketid, $rights = 0, $requireAll = false)
     {
         $userid = Auth::GetCurrentUser();
 
@@ -2721,7 +2721,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
         if ($user_permission_checks) {
-            return $this->db->GetOne(
+            $access = $this->db->GetOne(
                 'SELECT (CASE WHEN r.rights IS NULL THEN '
                     . (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ' ELSE r.rights END) FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
@@ -2740,7 +2740,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 array($userid, $ticketid, $userid, $userid, $userid, $ticketid)
             );
         } else {
-            return $this->db->GetOne(
+            $access = $this->db->GetOne(
                 'SELECT rights FROM rtrights r
 				JOIN rttickets t ON t.queueid = r.queueid
 				WHERE r.userid = ? AND t.id = ?
@@ -2758,6 +2758,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 array($userid, $ticketid, $userid, $ticketid)
             );
         }
+
+        if (empty($rights)) {
+            return $access;
+        }
+
+        $access = intval($access);
+        if ($requireAll) {
+            return ($access & $rights) == $rights;
+        }
+
+        return ($access & $rights) != 0;
     }
 
     public function GetRelatedTickets($ticketid)

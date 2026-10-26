@@ -2603,10 +2603,10 @@ class LMS
         return $manager->GetTicketRequestorPhone($ticketid);
     }
 
-    public function CheckTicketAccess($ticketid)
+    public function CheckTicketAccess($ticketid, $rights = 0, $requireAll = false)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->CheckTicketAccess($ticketid);
+        return $manager->CheckTicketAccess($ticketid, $rights, $requireAll);
     }
 
     public function GetRelatedTickets($ticketid)

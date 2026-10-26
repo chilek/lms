@@ -30,7 +30,7 @@ if (! $LMS->TicketExists($_GET['id'])) {
     $id = intval($_GET['id']);
 }
 
-if (!$LMS->CheckTicketAccess($id)) {
+if (!$LMS->CheckTicketAccess($id, RT_RIGHT_READ)) {
     access_denied();
 }
 
@@ -63,7 +63,7 @@ if (!empty($ticket['childtickets'])) {
 
 if (!empty($ticket['relatedtickets'])) {
     foreach ($ticket['relatedtickets'] as $rticket) {
-        if ($LMS->CheckTicketAccess($rticket['id'])) {
+        if ($LMS->CheckTicketAccess($rticket['id'], RT_RIGHT_READ)) {
             $relatedticketscontent[] = $LMS->GetTicketContents($rticket['id']);
         }
     }
@@ -71,7 +71,7 @@ if (!empty($ticket['relatedtickets'])) {
 
 if (!empty($ticket['parentid'])) {
     $parentticket = true;
-    if ($LMS->CheckTicketAccess($ticket['parentid'])) {
+    if ($LMS->CheckTicketAccess($ticket['parentid'], RT_RIGHT_READ)) {
         $parentticketcontent[] = $LMS->GetTicketContents($ticket['parentid']);
     }
 }

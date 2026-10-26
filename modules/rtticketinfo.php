@@ -30,7 +30,7 @@ if (! $LMS->TicketExists($id)) {
     $SESSION->redirect('?m=rtqueuelist');
 }
 
-if (!$LMS->CheckTicketAccess($id)) {
+if (!$LMS->CheckTicketAccess($id, RT_RIGHT_READ)) {
     access_denied();
 }
 
