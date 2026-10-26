@@ -93,9 +93,9 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $cstring = implode(' ', array(
             ($host != '' ? 'host=' . $host : ''),
             ($port != '' ? 'port=' . $port : ''),
-            ($dbuser != '' ? 'user=' . $dbuser : ''),
-            ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),
-            ($dbname != '' ? 'dbname=' . $dbname : ''),
+            ($dbuser != '' ? 'user=\'' . addcslashes($dbuser, '\'\\') . '\'' : ''),
+            ($dbpasswd != '' ? 'password=\'' . addcslashes($dbpasswd, '\'\\') . '\'' : ''),
+            ($dbname != '' ? 'dbname=\'' . addcslashes($dbname, '\'\\') . '\'' : ''),
             'connect_timeout=10'
         ));
 
@@ -108,6 +108,8 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             $this->_loaded = true;
         } else {
             $this->_error = true;
+            $lastError = error_get_last();
+            $this->_connection_error = $lastError['message'] ?? 'PostgreSQL connection failed';
         }
 
         return $this->_dblink;
@@ -131,6 +133,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $this->_loaded = false;
         if (!empty($this->_dblink)) {
             @pg_close($this->_dblink);
+            $this->_dblink = null;
         }
     }
 
@@ -252,8 +255,8 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             return 'NULL';
         } elseif (gettype($input) == 'string') {
             if (strpos($input, '?') !== false) {
-                $input = @pg_escape_literal($this->_dblink, $input);
-                return (strpos($input, 'E\'') !== false ? '' : 'E') . str_replace('?', '\u003f', $input);
+                $input = ltrim(@pg_escape_literal($this->_dblink, $input));
+                return ($input[0] === 'E' ? '' : 'E') . str_replace('?', '\u003f', $input);
             } else {
                 return '\'' . @pg_escape_string($this->_dblink, $input) . '\'';
             }
@@ -385,7 +388,11 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_lastinsertid($table = null)
     {
-        return $this->GetOne('SELECT currval(\'' . $table . '_id_seq\')');
+        if ($table === null) {
+            return $this->GetOne('SELECT lastval()');
+        } else {
+            return $this->GetOne('SELECT currval(?)', array($table . '_id_seq'));
+        }
     }
 
     /**
@@ -457,7 +464,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_regexp($field, $regexp)
     {
-        return $field . ' ~ \'' . $regexp . '\'';
+        return $field . ' ~ ' . $this->_quote_value($regexp);
     }
 
     /**
@@ -469,7 +476,20 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_substringbyregexp($field, $regexp)
     {
-        return 'SUBSTRING(' . $field . ' FROM \'' . $regexp . '\')';
+        return 'SUBSTRING(' . $field . ' FROM ' . $this->_quote_value($regexp) . ')';
+    }
+
+    /**
+     * Regular expression replace for selected field.
+     *
+     * @param string $field
+     * @param string $pattern
+     * @param string $replacement
+     * @return regexp replace string
+     */
+    public function _driver_regexpreplace($field, $pattern, $replacement)
+    {
+        return 'regexp_replace(' . $field . ', ' . $this->_quote_value($pattern) . ', ' . $this->_quote_value($replacement) . ', \'g\')';
     }
 
     /**
@@ -503,7 +523,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 }
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.tables
-					WHERE table_catalog=? AND table_name=? AND table_type=?',
+					WHERE table_catalog=? AND table_name=? AND table_type=? AND table_schema = current_schema()',
                     array($this->_dbname, $name, $table_type)
                 ) > 0;
                 break;
@@ -511,26 +531,26 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 [$table_name, $column_name] = explode('.', $name);
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.columns
-					WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
+					WHERE table_catalog = ? AND table_name = ? AND column_name = ? AND table_schema = current_schema()',
                     array($this->_dbname, $table_name, $column_name)
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_CONSTRAINT:
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.table_constraints
-					WHERE table_catalog = ? AND constraint_name = ?',
+					WHERE table_catalog = ? AND constraint_name = ? AND constraint_schema = current_schema()',
                     array($this->_dbname, $name)
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_INDEX:
                 return $this->GetOne(
-                    'SELECT COUNT(*) FROM pg_indexes WHERE indexname = ?',
+                    'SELECT COUNT(*) FROM pg_indexes WHERE indexname = ? AND schemaname = current_schema()',
                     array($name)
                 ) > 0;
                 break;
             case LMSDB::RESOURCE_TYPE_COLUMN_TYPE:
                 [$table_name, $column_name, $column_type] = explode('.', $name);
-                if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+)\))?$/', $column_type, $m)) {
+                if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+(?:\s*,\s*[0-9]+)?)\))?$/', $column_type, $m)) {
                     $column_type = $m['type'];
                     $column_length = $m['length'] ?? null;
                 }
@@ -539,6 +559,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                         return $this->GetOne(
                             'SELECT COUNT(*) FROM information_schema.columns
                             WHERE table_catalog = ?
+                                AND table_schema = current_schema()
                                 AND table_name = ?
                                 AND column_name = ?
                                 AND udt_name = ?
@@ -549,6 +570,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                         return $this->GetOne(
                             'SELECT COUNT(*) FROM information_schema.columns
                             WHERE table_catalog = ?
+                                AND table_schema = current_schema()
                                 AND table_name = ?
                                 AND column_name = ?
                                 AND udt_name = ?
@@ -560,7 +582,8 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 } else {
                     return $this->GetOne(
                         'SELECT COUNT(*) FROM information_schema.columns
-                        WHERE table_catalog = ? AND table_name = ? AND column_name = ? AND udt_name = ?',
+                        WHERE table_catalog = ? AND table_schema = current_schema()
+                            AND table_name = ? AND column_name = ? AND udt_name = ?',
                         array($this->_dbname, $table_name, $column_name, $column_type)
                     ) > 0;
                 }
@@ -569,7 +592,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 return $this->GetOne(
                     'SELECT COUNT(*) FROM information_schema.triggers
                     WHERE trigger_catalog = ?
-                        AND trigger_name = ?',
+                        AND trigger_name = ? AND trigger_schema = current_schema()',
                     array($this->_dbname, $name)
                 ) > 0;
                 break;

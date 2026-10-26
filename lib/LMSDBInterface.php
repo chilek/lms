@@ -70,6 +70,8 @@ interface LMSDBInterface
 
     public function SubstringByRegExp($field, $regexp);
 
+    public function RegExpReplace($field, $pattern, $replacement);
+
     public function Cast($field, $type);
 
     public function ListTables();
