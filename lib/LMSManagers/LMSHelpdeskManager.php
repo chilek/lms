@@ -2057,7 +2057,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['customresolvetime'] = $ticket['customresolvetime'];
         }
 
-        if ($type) {
+        if ($type
+            || ($props['requestor'] ?? '') != ($ticket['requestor'] ?? '')
+            || (empty($props['requestor_userid']) ? null : $props['requestor_userid']) != (empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'])
+            || ($props['requestor_mail'] ?? null) != ($ticket['requestor_mail'] ?? null)
+            || ($props['requestor_phone'] ?? null) != ($ticket['requestor_phone'] ?? null)
+            || ($props['customcreatetime'] ?? null) != ($ticket['customcreatetime'] ?? null)
+            || ($props['customresolvetime'] ?? null) != ($ticket['customresolvetime'] ?? null)
+            || ($props['nodeid'] ?? null) != ($ticket['nodeid'] ?? null)) {
             $note = implode("\n", $notes);
             $modtime = time();
             if ($props['state'] == RT_RESOLVED) {
@@ -2105,7 +2112,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticketid
                 )
             );
-            if (!empty($note)) {
+            if ($type && !empty($note)) {
                 $this->db->Execute(
                     'INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
                     VALUES(?, ?, ?, ?, ?)',
