@@ -1549,16 +1549,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
             $references = array();
             $reply = $message;
-            while ($reply['inreplyto']) {
-                if ($reply['messageid']) {
+            $visited = array();
+            while (!empty($reply['inreplyto']) && !isset($visited[$reply['inreplyto']])) {
+                $visited[$reply['inreplyto']] = true;
+                if (!empty($reply['messageid'])) {
                     $references[] = $reply['messageid'];
                 }
                 $reply = $this->db->GetRow(
                     'SELECT messageid, inreplyto FROM rtmessages WHERE id = ?',
                     array($reply['inreplyto'])
                 );
+                if (empty($reply)) {
+                    break;
+                }
             }
-            if ($reply['messageid']) {
+            if (!empty($reply['messageid']) && (empty($reply['inreplyto']) || !isset($visited[$reply['inreplyto']]))) {
                 $references[] = $reply['messageid'];
             }
             $message['references'] = array_reverse($references);
