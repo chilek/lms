@@ -182,7 +182,11 @@ class ULMS extends LMS
 				LEFT JOIN rtqueues ON (queueid = rtqueues.id)
 				LEFT JOIN vusers ON (owner = vusers.id)
 				LEFT JOIN customers ON (customers.id = customerid)
-				WHERE rttickets.id = ?', array($id));
+				WHERE rttickets.id = ? AND rttickets.deleted = 0', array($id));
+
+        if (empty($ticket)) {
+            return null;
+        }
 
         $ticket['categories'] = $this->DB->GetAllByKey('SELECT categoryid AS id, c.name
 			FROM rtticketcategories tc
