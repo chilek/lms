@@ -133,6 +133,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $this->_loaded = false;
         if (!empty($this->_dblink)) {
             @pg_close($this->_dblink);
+            $this->_dblink = null;
         }
     }
 
