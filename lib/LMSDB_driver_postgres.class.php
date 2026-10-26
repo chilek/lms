@@ -93,9 +93,9 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $cstring = implode(' ', array(
             ($host != '' ? 'host=' . $host : ''),
             ($port != '' ? 'port=' . $port : ''),
-            ($dbuser != '' ? 'user=' . $dbuser : ''),
-            ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),
-            ($dbname != '' ? 'dbname=' . $dbname : ''),
+            ($dbuser != '' ? 'user=\'' . addcslashes($dbuser, '\'\\') . '\'' : ''),
+            ($dbpasswd != '' ? 'password=\'' . addcslashes($dbpasswd, '\'\\') . '\'' : ''),
+            ($dbname != '' ? 'dbname=\'' . addcslashes($dbname, '\'\\') . '\'' : ''),
             'connect_timeout=10'
         ));
 
