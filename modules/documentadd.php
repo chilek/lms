@@ -542,64 +542,79 @@ if (isset($_POST['document'])) {
             }
         }
 
+        $args = [
+            'type' => $document['type'],
+            'number' => $document['number'],
+            SYSLOG::RES_NUMPLAN => empty($document['numberplanid']) ? null : $document['numberplanid'],
+            'cdate' => $document['cdate'],
+            'sdate' => empty($closed) ? 0 : $time,
+            'confirm_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => empty($closed) ? null : Auth::GetCurrentUser(),
+            'confirmdate' => empty($closed) && !empty($document['confirmdate']) ? strtotime('+ 1 day', $document['confirmdate']) - 1 : 0,
+            SYSLOG::RES_CUST => $document['customerid'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            'name' => $customer['customername'],
+            'address' => $customer['address'] ?: '',
+            'zip' => $customer['zip'] ?: '',
+            'city' => $customer['city'] ?: '',
+            'ten' => $customer['ten'] ?: '',
+            'ssn' => $customer['ssn'] ?: '',
+            SYSLOG::RES_DIV => $customer['divisionid'] ?: null,
+            'div_name' => $division['name'] ?: '',
+            'div_shortname' => $division['shortname'] ?: '',
+            'div_address' => $division['address'] ?: '',
+            'div_city' => $division['city'] ?: '',
+            'div_zip' => $division['zip'] ?: '',
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => $division['countryid'] ?: null,
+            'div_ten' => $division['ten'] ?: '',
+            'div_regon' => $division['regon'] ?: '',
+            'div_account' => $division['account'] ?: '',
+            'div_inv_header' => $division['inv_header'] ?: '',
+            'div_inv_footer' => $division['inv_footer'] ?: '',
+            'div_inv_author' => $division['inv_author'] ?: '',
+            'div_inv_cplace' => $division['inv_cplace'] ?: '',
+            'closed' => empty($closed) ? DOC_OPEN : DOC_CLOSED,
+            'fullnumber' => $fullnumber,
+            'reference' => empty($document['reference']) ? null : $document['reference']['id'],
+            'template' => empty($document['templ']) ? null : $document['templ'],
+            'commitflags' => $commit_flags,
+        ];
+
         $DB->Execute(
             'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid, confirmdate,
-			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
-			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
-			reference, template, commitflags)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            array($document['type'],
-                $document['number'],
-                empty($document['numberplanid']) ? null : $document['numberplanid'],
-                $document['cdate'],
-                empty($closed) ? 0 : $time,
-                empty($closed) ? null : Auth::GetCurrentUser(),
-                empty($closed) && !empty($document['confirmdate']) ? strtotime('+ 1 day', $document['confirmdate']) - 1 : 0,
-                $document['customerid'],
-                Auth::GetCurrentUser(),
-                $customer['customername'],
-                $customer['address'] ?: '',
-                $customer['zip'] ?: '',
-                $customer['city'] ?: '',
-                $customer['ten'] ?: '',
-                $customer['ssn'] ?: '',
-                $customer['divisionid'] ?: null,
-                ($division['name'] ?: ''),
-                ($division['shortname'] ?: ''),
-                ($division['address'] ?: ''),
-                ($division['city'] ?: ''),
-                ($division['zip'] ?: ''),
-                ($division['countryid'] ?: null),
-                ($division['ten'] ?: ''),
-                ($division['regon'] ?: ''),
-                ($division['account'] ?: ''),
-                ($division['inv_header'] ?: ''),
-                ($division['inv_footer'] ?: ''),
-                ($division['inv_author'] ?: ''),
-                ($division['inv_cplace'] ?: ''),
-                empty($closed) ? DOC_OPEN : DOC_CLOSED,
-                $fullnumber,
-                empty($document['reference']) ? null : $document['reference']['id'],
-                empty($document['templ']) ? null : $document['templ'],
-                $commit_flags,
-            )
+            customerid, userid, name, address, zip, city, ten, ssn, divisionid,
+            div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+            div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
+            reference, template, commitflags)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            $args
         );
 
         $docid = $DB->GetLastInsertID('documents');
 
+        $args[SYSLOG::RES_DOC] = $docid;
+
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
+        }
+
+        $args = [
+            SYSLOG::RES_DOC => $docid,
+            'title' => $document['title'],
+            'fromdate' => $document['fromdate'],
+            'todate' => $document['todate'],
+            'description' => $document['description'],
+            'dynamicperiod' => empty($document['dynamicperiod']) ? 0 : 1,
+        ];
+
         $DB->Execute(
             'INSERT INTO documentcontents (docid, title, fromdate, todate, description, dynamicperiod)
             VALUES (?, ?, ?, ?, ?, ?)',
-            array(
-                $docid,
-                $document['title'],
-                $document['fromdate'],
-                $document['todate'],
-                $document['description'],
-                empty($document['dynamicperiod']) ? 0 : 1,
-            )
+            $args
         );
+
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(SYSLOG::RES_DOCCONTENT, SYSLOG::OPER_ADD, $args);
+        }
 
         $LMS->AddDocumentAttachments($docid, $files);
 
@@ -656,13 +671,19 @@ if (isset($_POST['document'])) {
                 } else {
                     $selected_assignment['commited'] = 1;
 
+                    $args = [
+                        'attributes' => serialize($selected_assignment),
+                        SYSLOG::RES_DOC => $docid,
+                    ];
+
                     $DB->Execute(
                         'UPDATE documentcontents SET attributes = ? WHERE docid = ?',
-                        array(
-                            serialize($selected_assignment),
-                            $docid,
-                        )
+                        $args
                     );
+
+                    if ($SYSLOG) {
+                        $SYSLOG->AddMessage(SYSLOG::RES_DOCCONTENT, SYSLOG::OPER_UPDATE, $args);
+                    }
                 }
             }
 

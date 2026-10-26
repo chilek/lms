@@ -54,7 +54,8 @@ $document = $DB->GetRow(
 		archived, confirmdate, adate, auserid,
 		type, number, numberplans.template,
 		cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid,
-		r.rights AS docrights
+		r.rights AS docrights,
+		customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
@@ -265,41 +266,58 @@ if (isset($_POST['document'])) {
 
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
 
-        $DB->Execute(
-            'UPDATE documents SET type = ?, closed = ?, cdate = ?, sdate = ?, cuserid = ?, confirmdate = ?,
-                archived = ?, adate = ?, auserid = ?, number = ?, numberplanid = ?, fullnumber = ?
-                WHERE id = ?',
-            array(
-                $documentedit['type'],
-                $documentedit['closed'],
-                $documentedit['cdate'],
-                ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? time() : $document['sdate'],
-                ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? $userid : $document['cuserid'],
-                $closing && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
-                $allowed_archiving ? $documentedit['archived'] : $document['archived'],
-                $allowed_archiving
-                    ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
-                    : $document['adate'],
-                $allowed_archiving
-                    ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
-                    : $document['auserid'],
-                $documentedit['number'],
-                empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
-                $fullnumber,
-                $documentedit['id'],
-            )
-        );
+        $args = [
+            'type' => $documentedit['type'],
+            'closed' => $documentedit['closed'],
+            'cdate' => $documentedit['cdate'],
+            'sdate' => ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? time() : $document['sdate'],
+            'confirm_ ' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? $userid : $document['cuserid'],
+            'confirmdate' => $closing && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
+            'archived' => $allowed_archiving ? $documentedit['archived'] : $document['archived'],
+            'adate' => $allowed_archiving
+                ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
+                : $document['adate'],
+            'archive_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $allowed_archiving
+                ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
+                : $document['auserid'],
+            'number' => $documentedit['number'],
+            SYSLOG::RES_NUMPLAN => empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
+            'fullnumber' => $fullnumber,
+            SYSLOG::RES_DOC => $documentedit['id'],
+        ];
 
         $DB->Execute(
-            'UPDATE documentcontents SET title=?, fromdate=?, todate=?, description=?
-				WHERE docid=?',
-            array(  $documentedit['title'],
-                    $documentedit['fromdate'],
-                    $documentedit['todate'],
-                    $documentedit['description'],
-                    $documentedit['id']
-                    )
+            'UPDATE documents
+            SET type = ?, closed = ?, cdate = ?, sdate = ?, cuserid = ?, confirmdate = ?,
+                archived = ?, adate = ?, auserid = ?, number = ?, numberplanid = ?, fullnumber = ?
+            WHERE id = ?',
+            $args
         );
+
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_CUST] = $document['customerid'];
+
+            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        $args = [
+            'title' => $documentedit['title'],
+            'fromdate' => $documentedit['fromdate'],
+            'todate' => $documentedit['todate'],
+            'description' => $documentedit['description'],
+            SYSLOG::RES_DOC => $documentedit['id'],
+        ];
+
+        $DB->Execute(
+            'UPDATE documentcontents
+            SET title=?, fromdate=?, todate=?, description=?
+            WHERE docid=?',
+            $args
+        );
+
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(SYSLOG::RES_DOCCONTENT, SYSLOG::OPER_UPDATE, $args);
+        }
 
         if (isset($documentedit['attachments']) && is_array($documentedit['attachments'])) {
             foreach ($documentedit['attachments'] as $attachmentid => $attachment) {
@@ -309,6 +327,17 @@ if (isset($_POST['document'])) {
                         @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
                     }
                     $DB->Execute('DELETE FROM documentattachments WHERE id = ?', array($attachmentid));
+
+                    if ($SYSLOG) {
+                        $SYSLOG->AddMessage(
+                            SYSLOG::RES_DOCATTACH,
+                            SYSLOG::OPER_DELETE,
+                            [
+                                SYSLOG::RES_DOCATTACH => $attachmentid,
+                                SYSLOG::RES_DOC => $documentedit['id'],
+                            ]
+                        );
+                    }
                 }
             }
         }

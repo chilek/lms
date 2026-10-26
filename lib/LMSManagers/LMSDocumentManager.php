@@ -1708,18 +1708,27 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         foreach ($docs as $docid => $doc) {
+            $args = [
+                'sdate' => time(),
+                'confirm_' . SYSLOG::getResourceKey(SYSLOG::RES_DOC) => $userid,
+                'closed' => empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SMS : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SCAN,
+                'confirmdate' => $doc['customerawaits'] ? 0 : $doc['confirmdate'],
+                'adate' => 0,
+                'archive_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => null,
+                SYSLOG::RES_DOC => $docid,
+            ];
+
             $this->db->Execute(
-                'UPDATE documents SET sdate = ?NOW?, cuserid = ?, closed = ?, confirmdate = ?,
+                'UPDATE documents SET sdate = ?, cuserid = ?, closed = ?, confirmdate = ?,
                 adate = ?, auserid = ? WHERE id = ?',
-                array(
-                    $userid,
-                    empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SMS : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SCAN,
-                    $doc['customerawaits'] ? 0 : $doc['confirmdate'],
-                    0,
-                    null,
-                    $docid
-                )
+                $args
             );
+
+            if ($this->syslog) {
+                $args[SYSLOG::RES_CUST] = $doc['customerid'];
+
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+            }
 
             $args = array(
                 'reference' => $doc['reference'],
@@ -1732,10 +1741,43 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             );
             $finance_manager->UpdateExistingAssignments($args);
 
+            if ($this->syslog) {
+                $assigns = $this->db->GetAll(
+                    'SELECT
+                        a.id,
+                        a.tariffid,
+                        a.liabilityid
+                    FROM assignments a
+                    WHERE a.docid = ?
+                        AND a.commited = ?',
+                    [
+                        $docid,
+                        0,
+                    ]
+                );
+            }
+
             $this->db->Execute(
                 'UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
                 array($docid)
             );
+
+            if ($this->syslog && !empty($assigns)) {
+                foreach ($assigns as $assign) {
+                    $this->syslog->AddMessage(
+                        SYSLOG::RES_ASSIGN,
+                        SYSLOG::OPER_UPDATE,
+                        [
+                            SYSLOG::RES_ASSIGN => $assign['id'],
+                            SYSLOG::RES_CUST => $doc['customerid'],
+                            SYSLOG::RES_TARIFF => $assign['tariffid'],
+                            SYSLOG::RES_LIAB => $assign['liabilityid'],
+                            'commited' => 1,
+                            SYSLOG::RES_DOC => $docid,
+                        ]
+                    );
+                }
+            }
 
             if (isset($doc['attributes']) && strlen($doc['attributes'])) {
                 $selected_assignment = unserialize($doc['attributes']);
@@ -1788,14 +1830,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         }
                     }
 
+                    $args = [
+                        'datefrom' => $datefrom,
+                        'todate' => $dateto,
+                        SYSLOG::RES_DOC => $docid,
+                    ];
+
                     $this->db->Execute(
                         'UPDATE documentcontents SET fromdate = ?, todate = ? WHERE docid = ?',
-                        array(
-                            $datefrom,
-                            $dateto,
-                            $docid,
-                        )
+                        $args
                     );
+
+                    if ($this->syslog) {
+                        $this->syslog->AddMessage(SYSLOG::RES_DOCCONTENT, SYSLOG::OPER_UPDATE, $args);
+                    }
                 }
             }
 
@@ -2323,8 +2371,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $allowUnapprovedDocumentArchiving = ConfigHelper::checkConfig('documents.allow_unapproved_document_archiving');
 
-        $docs = $this->db->GetCol(
-            'SELECT d.id
+        $docs = $this->db->GetAll(
+            'SELECT
+                d.id,
+                d.customerid
             FROM documents d
             ' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
             WHERE ' . ($allowUnapprovedDocumentArchiving ? '1 = 1' : 'd.closed > ' . DOC_OPEN) . '
@@ -2338,12 +2388,30 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $this->db->BeginTrans();
 
+        $args = [
+            'archived' => 1,
+            'adate' => time(),
+            'archive_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $userid,
+            'id' => Utils::array_column($docs, 'id'),
+        ];
+
         $this->db->Execute(
             'UPDATE documents
-            SET archived = 1, adate = ?NOW?, auserid = ?
-            WHERE id IN (' . implode(',', $docs) . ')',
-            array($userid)
+            SET archived = ?, adate = ?, auserid = ?
+            WHERE id IN ?',
+            $args
         );
+
+        if ($this->syslog) {
+            unset($args['id']);
+
+            foreach ($docs as $doc) {
+                $args[SYSLOG::RES_DOC] = $doc['id'];
+                $args[SYSLOG::RES_CUST] = $doc['customerid'];
+
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+            }
+        }
 
         $this->db->CommitTrans();
     }
@@ -2519,35 +2587,67 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function AddDocumentAttachments($documentid, array $files)
     {
-        $attachmentids = array();
+        $attachmentIds = array();
 
         foreach ($files as $file) {
             if (!$this->db->GetOne(
                 'SELECT id FROM documentattachments WHERE docid = ? AND md5sum = ?',
                 array($documentid, $file['md5sum'])
             )) {
+                $args = [
+                    SYSLOG::RES_DOC => $documentid,
+                    'filename' => $file['filename'],
+                    'type' => $file['type'],
+                    'md5sum' => $file['md5sum'],
+                    'attachmenttype' => $file['attachmenttype'] ?? 0,
+                ];
+
                 if ($this->db->Execute(
                     'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type, cdate)
-					VALUES (?, ?, ?, ?, ?, ?NOW?)',
-                    array(
-                        $documentid,
-                        $file['filename'],
-                        $file['type'],
-                        $file['md5sum'],
-                        $file['attachmenttype'] ?? 0,
-                    )
+                    VALUES (?, ?, ?, ?, ?, ?NOW?)',
+                    $args
                 )) {
-                    $attachmentids[] = $this->db->GetLastInsertID('documentattachments');
+                    $attachmentId = $this->db->GetLastInsertID('documentattachments');
+
+                    $attachmentIds[] = $attachmentId;
+
+                    if ($this->syslog) {
+                        $args[SYSLOG::RES_DOCATTACH] = $attachmentId;
+
+                        $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_ADD, $args);
+                    }
                 }
             }
         }
 
-        return $attachmentids;
+        return $attachmentIds;
     }
 
     public function AddDocumentScans($documentid, array $files)
     {
-        $this->db->Execute('UPDATE documents SET confirmdate = ? WHERE id = ?', array(-1, $documentid));
+        $args = [
+            'confirmdate' => -1,
+            SYSLOG::RES_DOC => $documentid,
+        ];
+
+        $this->db->Execute(
+            'UPDATE documents
+            SET confirmdate = ?
+            WHERE id = ?',
+            $args
+        );
+
+        if ($this->syslog) {
+            $customerId = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', [$documentid]);
+
+            $args[SYSLOG::RES_CUST] = $customerId;
+
+            $this->syslog->AddMessage(
+                SYSLOG::RES_DOC,
+                SYSLOG::OPER_UPDATE,
+                $args
+            );
+        }
 
         return $this->AddDocumentAttachments($documentid, $files);
     }
@@ -3660,7 +3760,24 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
 
                     if ($status == MSG_SENT) {
-                        $this->db->Execute('UPDATE documents SET published = 1, senddate = ?NOW? WHERE id = ?', array($doc['id']));
+                        $args = [
+                            'published' => 1,
+                            'senddate' => time(),
+                            SYSLOG::RES_DOC => $doc['id'],
+                        ];
+
+                        $this->db->Execute(
+                            'UPDATE documents
+                            SET published = ?, senddate = ?
+                            WHERE id = ?',
+                            $args
+                        );
+
+                        if ($this->syslog) {
+                            $args[SYSLOG::RES_CUST] = $doc['customerid'];
+
+                            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+                        }
                     }
 
                     if ($add_message) {
@@ -3744,10 +3861,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function DeleteDocument($docid, array $attachmentIds = [])
     {
         $document = $this->db->GetRow(
-            'SELECT d.id, d.type, d.customerid FROM documents d
-			JOIN docrights r ON (r.doctype = d.type)
-			WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
-            array($docid, Auth::GetCurrentUser(), DOCRIGHT_DELETE)
+            'SELECT
+                d.id,
+                d.type,
+                d.customerid
+            FROM documents d
+            JOIN docrights r ON r.doctype = d.type
+            WHERE d.id = ?
+                AND r.userid = ?
+                AND (r.rights & ?) > 0',
+            [
+                $docid,
+                Auth::GetCurrentUser(),
+                DOCRIGHT_DELETE,
+            ]
         );
         if (!$document) {
             return false;
@@ -3757,24 +3884,37 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if ($documentDelete) {
             $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+
             if ($this->syslog) {
                 $args = array(
                     SYSLOG::RES_DOC => $docid,
                     SYSLOG::RES_CUST => $document['customerid'],
                     'type' => $document['type'],
                 );
+
                 $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
             }
         } elseif (!empty($attachmentIds)) {
             $this->db->Execute(
                 'DELETE FROM documentattachments
-                    WHERE docid = ?
-                        AND id IN ?',
+                WHERE docid = ?
+                    AND id IN ?',
                 array(
                     $docid,
                     $attachmentIds,
                 )
             );
+
+            if ($this->syslog) {
+                foreach ($attachmentIds as $attachmentId) {
+                    $args = [
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_DOCATTACH => $attachmentId,
+                    ];
+
+                    $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
+                }
+            }
         }
 
         return true;
