@@ -46,10 +46,11 @@ $ticket = array_merge(
     $ticket,
     $DB->GetRow(
         'SELECT contenttype, body AS message FROM rtmessages
-                WHERE ticketid = ?
-                ORDER BY createtime DESC LIMIT 1',
+                WHERE ticketid = ?'
+        . (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '' : ' AND deleted = 0')
+        . ' ORDER BY createtime DESC LIMIT 1',
         array($id)
-    )
+    ) ?: array()
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
