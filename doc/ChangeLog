@@ -1292,6 +1292,8 @@ version 28-git (????-??-??):
   - enhancement: lms-rtparser: --test (-t) parses and matches mail without database writes,
     outgoing mail or IMAP flag changes [interduo]
   - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
+  - devel/cleanup: renamed '--dry-run' option to '--test' in lms-vat-payers.php (-t) and
+    lms-gus-regon.php (-d) backend scripts [interduo]
 
 version 27.0 (2021-08-20):
 
