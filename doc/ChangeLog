@@ -1282,6 +1282,8 @@ version 28-git (????-??-??):
   - improvement: added '%nodesessionid%' substitution support for 'phpui.radius_disconnect_helper'
     configuration variable usage [chilan]
   - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
+  - devel/cleanup: renamed '--dry-run' option to '--test' in lms-vat-payers.php (-t) and
+    lms-gus-regon.php (-d) backend scripts [interduo]
 
 version 27.0 (2021-08-20):
 
