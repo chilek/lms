@@ -464,7 +464,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_regexp($field, $regexp)
     {
-        return $field . ' ~ \'' . $regexp . '\'';
+        return $field . ' ~ ' . $this->_quote_value($regexp);
     }
 
     /**
@@ -476,7 +476,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_substringbyregexp($field, $regexp)
     {
-        return 'SUBSTRING(' . $field . ' FROM \'' . $regexp . '\')';
+        return 'SUBSTRING(' . $field . ' FROM ' . $this->_quote_value($regexp) . ')';
     }
 
     /**
