@@ -176,6 +176,16 @@ $SESSION = new Session(
     ConfigHelper::getConfig('phpui.timeout'),
     ConfigHelper::getConfig('phpui.settings_timeout')
 );
+// Check expiration without refreshing atime or saving session data (mtime).
+// Handle this before Auth and module hooks, which may modify the session.
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'session_status') {
+    header('Content-Type: application/json');
+    header('Cache-Control: no-store');
+    die(json_encode(array(
+        'remaining' => $SESSION->get('session_id') ? $SESSION->getTimeToExpire() : 0,
+    )));
+}
+
 // new browser tab can be opened as hidden or tabid of new tab can be not initialised
 // so we have to be careful and handle 'backto' session variable in special way and
 // correct this variable when new tab id has been determined before the moment

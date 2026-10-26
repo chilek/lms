@@ -493,21 +493,44 @@ var lms_login_timeout_value,
     lms_sticky_popup,
 	lms_session_expire_elem;
 
-function start_login_timeout(sec) {
+function check_login_timeout() {
+	$.ajax({
+		url: '?ajax=session_status&api=1',
+		timeout: 10000,
+		dataType: 'json',
+		cache: false,
+		success: function (status) {
+			if (!status || typeof status.remaining !== 'number' || status.remaining < 0) {
+				lms_login_timeout = setTimeout(check_login_timeout, 5000);
+			} else if (status.remaining === 0) {
+				window.location.assign(window.location.href);
+			} else {
+				start_login_timeout(lms_login_timeout_value, status.remaining);
+			}
+		},
+		error: function () {
+			// A failed status request must not turn into a session-renewing reload.
+			lms_login_timeout = setTimeout(check_login_timeout, 5000);
+		}
+	});
+}
+
+function start_login_timeout(sec, remaining) {
 	if (!sec) {
 		sec = 600;
 	}
 	lms_login_timeout_value = sec;
-	lms_login_timeout_ts = Date.now() + sec * 1000;
+	if (typeof remaining === 'undefined') {
+		remaining = sec;
+	}
+	lms_login_timeout_ts = Date.now() + remaining * 1000;
 	if (lms_login_timeout) {
 		clearTimeout(lms_login_timeout);
 	}
 	if (lms_login_timeout_update) {
 		clearInterval(lms_login_timeout_update);
 	}
-	lms_login_timeout = setTimeout(function () {
-		window.location.assign(window.location.href);
-	}, (sec + 1) * 1000);
+	lms_login_timeout = setTimeout(check_login_timeout, (remaining + 1) * 1000);
 	lms_session_expire_elem = $('#lms-ui-session-expire');
 	if (lms_session_expire_elem.length) {
 		var time_to_expire = lms_login_timeout_ts - Date.now();

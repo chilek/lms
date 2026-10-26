@@ -155,7 +155,7 @@
 					// check if login timeout condition is met - in newer web browser
 					// timers are not active when window is not visible
 					if (Date.now() > lms_login_timeout_ts) {
-						window.location.assign(window.location.href);
+						check_login_timeout();
 					}
 				} else {
 					start_login_timeout(loginTimeout);
