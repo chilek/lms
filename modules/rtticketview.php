@@ -141,7 +141,8 @@ $layout['pagetitle'] = trans('Ticket Review: $a', sprintf("%06d", $ticket['ticke
 
 $SESSION->add_history_entry();
 
-if (isset($_GET['highlight'])) {
+if (isset($_GET['highlight']) && is_array($_GET['highlight'])
+    && is_string($_GET['highlight']['pattern'] ?? null) && $_GET['highlight']['pattern'] !== '') {
     $highlight = $_GET['highlight'];
     if (isset($highlight['regexp'])) {
         foreach ($ticket['messages'] as &$message) {
