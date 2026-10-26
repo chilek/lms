@@ -108,6 +108,8 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             $this->_loaded = true;
         } else {
             $this->_error = true;
+            $lastError = error_get_last();
+            $this->_connection_error = $lastError['message'] ?? 'PostgreSQL connection failed';
         }
 
         return $this->_dblink;
