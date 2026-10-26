@@ -26,13 +26,13 @@
  */
 
 $script_parameters = array(
-    'dry-run' => 'd',
+    'test' => 't',
     'customerid:' => null,
     'customergroups:' => 'g:',
 );
 
 $script_help = <<<EOF
--d, --dry-run                   dont change customer 'VAT payer' flag;
+-t, --test                      dont change customer 'VAT payer' flag;
     --customerid=<id>           limit assignments to to specifed customer
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
@@ -45,7 +45,7 @@ $SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
-$dry_run = array_key_exists('dry-run', $options);
+$test = isset($options['test']);
 
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
@@ -168,7 +168,7 @@ foreach ($customers as $customer) {
                 $customer_ccode . $customer_ten
             );
 
-            if (!$dry_run) {
+            if (!$test) {
                 $DB->Execute(
                     'UPDATE customers SET flags = flags | ? WHERE id = ?',
                     array(
@@ -196,7 +196,7 @@ foreach ($customers as $customer) {
                 $customer_ccode . $customer_ten
             );
 
-            if (!$dry_run) {
+            if (!$test) {
                 $DB->Execute(
                     'UPDATE customers SET flags = flags & ? WHERE id = ?',
                     array(

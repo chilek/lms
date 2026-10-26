@@ -26,7 +26,7 @@
  */
 
 $script_parameters = array(
-    'dry-run' => 'd',
+    'test' => 'd',
     'customerid:' => null,
     'customergroups:' => 'g:',
     'properties:' => 'p:',
@@ -34,7 +34,7 @@ $script_parameters = array(
 );
 
 $script_help = <<<EOF
--d, --dry-run                   dont change customer properties;
+-d, --test                      dont change customer properties;
     --customerid=<id>           limit process to single customer with specified id;
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which customers should belong to;
@@ -53,7 +53,7 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-$dry_run = array_key_exists('dry-run', $options);
+$test = isset($options['test']);
 
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
@@ -205,7 +205,7 @@ foreach ($customers as $customer) {
         }
     }
 
-    if ($dry_run) {
+    if ($test) {
         echo PHP_EOL;
     } else {
         $args = array();
