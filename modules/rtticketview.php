@@ -47,7 +47,7 @@ $LMS->getTicketImageGalleries($ticket);
 
 if (isset($_GET['ajax']) && isset($_GET['op'])) {
     header('Content-Type: application/json');
-    if ($_GET['op'] = 'get-image-gallery') {
+    if ($_GET['op'] == 'get-image-gallery') {
         echo json_encode($ticket['images']);
     } else {
         echo '[]';
