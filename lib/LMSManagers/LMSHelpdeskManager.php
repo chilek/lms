@@ -2060,7 +2060,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($type) {
             $note = implode("\n", $notes);
             $modtime = time();
-            $resolvetime = ($props['state'] == RT_RESOLVED) ? $modtime : 0;
+            if ($props['state'] == RT_RESOLVED) {
+                $resolvetime = ($ticket['state'] == RT_RESOLVED) ? $ticket['resolvetime'] : $modtime;
+            } else {
+                $resolvetime = 0;
+            }
             $newticketowner = ($props['state'] == RT_RESOLVED && empty($props['owner'])) ?
                 $userid : $props['owner'];
             $this->db->Execute(
