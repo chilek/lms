@@ -1297,7 +1297,8 @@ DROP TABLE IF EXISTS customerbalances;
 CREATE TABLE customerbalances (
     customerid integer NOT NULL
         CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    balance numeric(12,2) NOT NULL
+    balance numeric(12,2) NOT NULL,
+    PRIMARY KEY (customerid)
 );
 
 /* --------------------------------------------------------
@@ -4063,7 +4064,7 @@ BEGIN
     IF (TG_OP = 'TRUNCATE') THEN
         DELETE FROM customerbalances;
         RETURN NULL;
-    ELSEIF (TG_OP = 'DELETE') THEN
+    ELSIF (TG_OP = 'DELETE') THEN
         IF OLD.customerid IS NULL THEN
             RETURN NULL;
         END IF;
@@ -4095,7 +4096,7 @@ BEGIN
             END IF;
         END IF;
         RETURN NULL;
-    ELSEIF (TG_OP = 'UPDATE') THEN
+    ELSIF (TG_OP = 'UPDATE') THEN
         IF OLD.value = NEW.value AND OLD.currencyvalue = NEW.currencyvalue THEN
             RETURN NEW;
         END IF;
@@ -4847,6 +4848,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102300');
 
 COMMIT;
