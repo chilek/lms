@@ -336,7 +336,7 @@ if (!empty($_GET['parentids'])) {
 }
 
 if (isset($_GET['rights'])) {
-    $filter['rights'] = $_GET['rights'];
+    $filter['rights'] = intval($_GET['rights']) | RT_RIGHT_READ;
 } else {
     $filter['rights'] = RT_RIGHT_READ;
 }
