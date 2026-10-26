@@ -104,6 +104,7 @@ function RTSearch($search, $order = 'createtime,desc')
             . ' AND ' . (isset($search['body']['regexp']) ? $DB->RegExp('body', $search['body']['pattern'])
                 : 'body ?LIKE? ' . $DB->Escape('%' . $search['body']['pattern'] . '%')) . '
 			GROUP BY ticketid) m3 ON m3.ticketid = t.id';
+        $where[] = 'm3.messageid IS NOT NULL';
     } else {
         $join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
     }
