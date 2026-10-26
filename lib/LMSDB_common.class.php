@@ -563,6 +563,19 @@ abstract class LMSDB_common implements LMSDBInterface
     }
 
     /**
+     * Regular expression replace for selected field.
+     *
+     * @param string $field
+     * @param string $pattern
+     * @param string $replacement
+     * @return regexp replace string
+     */
+    public function RegExpReplace($field, $pattern, $replacement)
+    {
+        return $this->_driver_regexpreplace($field, $pattern, $replacement);
+    }
+
+    /**
      * Convert field variable to specified type.
      *
      * @param string $field

@@ -457,6 +457,19 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Regular expression replace for selected field.
+     *
+     * @param string $field
+     * @param string $pattern
+     * @param string $replacement
+     * @return regexp replace string
+     */
+    public function _driver_regexpreplace($field, $pattern, $replacement)
+    {
+        return 'REGEXP_REPLACE(' . $field . ', \'' . $pattern . '\', \'' . $replacement . '\')';
+    }
+
+    /**
      * Convert field variable to specified type.
      *
      * @param string $field

@@ -480,6 +480,19 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     }
 
     /**
+     * Regular expression replace for selected field.
+     *
+     * @param string $field
+     * @param string $pattern
+     * @param string $replacement
+     * @return regexp replace string
+     */
+    public function _driver_regexpreplace($field, $pattern, $replacement)
+    {
+        return 'regexp_replace(' . $field . ', ' . $this->_quote_value($pattern) . ', ' . $this->_quote_value($replacement) . ', \'g\')';
+    }
+
+    /**
      * Convert field variable to specified type.
      *
      * @param string $field
