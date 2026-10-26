@@ -1294,6 +1294,8 @@ version 28-git (????-??-??):
   - enhancement: add bin/lms-fping.php as alternative to old perl script [interduo]
   - devel/cleanup: renamed '--dry-run' option to '--test' in lms-vat-payers.php (-t) and
     lms-gus-regon.php (-d) backend scripts [interduo]
+  - enhacement: 'hide_data_summaries' permission block access to customer and node search result presenation
+    in tabelar or csv format [chilan]
 
 version 27.0 (2021-08-20):
 
