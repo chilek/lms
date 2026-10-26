@@ -135,7 +135,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetTicketRequestorPhone($ticketid);
 
-    public function CheckTicketAccess($ticketid);
+    public function CheckTicketAccess($ticketid, $rights = 0, $requireAll = false);
 
     public function GetRelatedTickets($ticketid);
 
