@@ -574,7 +574,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
                     . str_replace('t.', 't2.', $statefilter)
                     . str_replace('t.', 't2.', $removedfilter)
-                    . ' AND lv2.vdate < t2.modtime
+                    . ' AND (lv2.ticketid IS NULL OR m4.createtime > lv2.vdate) AND m4.deleted = 0
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
             LEFT JOIN (
