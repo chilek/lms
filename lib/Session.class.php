@@ -38,6 +38,7 @@ class Session
     public $timeout = 600;          // timeout since session will
                         // be destroyed
     private $expired = false;
+    private $timeToExpire = 0;
     private $settings_timeout = 28800;          // timeout since user settings will
                         // be cleared
     public $autoupdate = false;     // do automatic update on each
@@ -82,6 +83,11 @@ class Session
     public function isExpired()
     {
         return $this->expired;
+    }
+
+    public function getTimeToExpire()
+    {
+        return $this->timeToExpire;
     }
 
     public function close()
@@ -405,6 +411,8 @@ class Session
                 $this->expired = true;
                 $this->_destroySession();
             } else {
+                // Expiration uses a strict comparison, so the boundary second is still valid.
+                $this->timeToExpire = max(1, max($row['mtime'], $row['atime']) + $this->timeout - $row['tt']);
                 if (!isset($_POST['xjxfun']) && !isset($_GET['ajax'])) {
                     $this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
                 }
