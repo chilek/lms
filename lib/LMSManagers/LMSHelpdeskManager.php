@@ -2983,6 +2983,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function deleteTicket($ticketid, $persistent = true)
     {
+        $userid = Auth::GetCurrentUser();
+
         if ($this->syslog) {
             $ticket = $this->db->GetRow(
                 'SELECT
@@ -2997,8 +2999,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticketid,
                 )
             );
-
-            $userid = Auth::GetCurrentUser();
 
             $args = array(
                 SYSLOG::RES_USER => $userid,
