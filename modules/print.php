@@ -169,8 +169,8 @@ switch ($type) {
                     $list['currency'][] = $saldolist['currency'][$i];
                 }
             }
-
-            $list['total'] = count($list['id']);
+			
+            $list['total'] = isset($list['id']) ? count($list['id']) : 0;
         }
 
         $SMARTY->assign('balancelist', $list);
