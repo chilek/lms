@@ -23,7 +23,7 @@
  */
 
 $(function() {
-	$('[name="ticket[requestor_userid]').change(function () {
+	$('[name="ticket[requestor_userid]"]').change(function () {
 		var disabled = $(this).val() != '0';
 		$('.indicated-person').find('input').prop('disabled', disabled)
 			.end().find('label').toggleClass('lms-ui-disabled', disabled);
