@@ -2201,8 +2201,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%requestor_userid', $params['requestor_userid'] ?? '', $text);
         $text = str_replace('%requestor', $params['requestor'] ?? '', $text);
         $text = str_replace('%parentid', $params['parentid'] ?? '', $text);
-        $text = str_replace('%node', $params['node'] ?? '', $text);
         $text = str_replace('%nodeid', $params['nodeid'] ?? '', $text);
+        $text = str_replace('%node', $params['node'] ?? '', $text);
         $text = str_replace('%netnodeid', $params['netnodeid'] ?? '', $text);
         $text = str_replace('%netnode', $params['netnode'] ?? '', $text);
         $text = str_replace('%netdevid', $params['netdevid'] ?? '', $text);
