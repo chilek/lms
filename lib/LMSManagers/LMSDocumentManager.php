@@ -1710,7 +1710,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         foreach ($docs as $docid => $doc) {
             $args = [
                 'sdate' => time(),
-                'confirm_' . SYSLOG::getResourceKey(SYSLOG::RES_DOC) => $userid,
+                'confirm_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $userid,
                 'closed' => empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SMS : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SCAN,
                 'confirmdate' => $doc['customerawaits'] ? 0 : $doc['confirmdate'],
                 'adate' => 0,

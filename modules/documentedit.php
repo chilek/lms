@@ -271,7 +271,7 @@ if (isset($_POST['document'])) {
             'closed' => $documentedit['closed'],
             'cdate' => $documentedit['cdate'],
             'sdate' => ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? time() : $document['sdate'],
-            'confirm_ ' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? $userid : $document['cuserid'],
+            'confirm_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => ($document['docrights'] & DOCRIGHT_CONFIRM) && $closing ? $userid : $document['cuserid'],
             'confirmdate' => $closing && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
             'archived' => $allowed_archiving ? $documentedit['archived'] : $document['archived'],
             'adate' => $allowed_archiving
