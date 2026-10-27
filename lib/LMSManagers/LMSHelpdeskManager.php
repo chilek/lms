@@ -2662,7 +2662,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE id = ? AND requestor_mail <> ?',
             array($ticketid, '')
         );
-        if (empty($phone)) {
+        if (empty($mail)) {
             return $this->db->GetOne(
                 'SELECT mailfrom FROM rtmessages
                     WHERE ticketid = ? AND mailfrom <> ?
