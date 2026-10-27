@@ -688,9 +688,16 @@ if (isset($_POST['range'])) {
 
 $layout['pagetitle'] = trans('Network Ranges');
 
-$oldfilter = $SESSION->get('netranges_filter');
-$oldfilter = $oldfilter ?? array();
-$filter = $_POST['filter'] ?? array();
+if (isset($filter['persistent_filter']) && $filter['persistent_filter'] == -1) {
+    $oldfilter = $SESSION->get('netranges_filter');
+    $oldfilter = $oldfilter ?? array();
+}
+
+if (isset($_POST['filter'])) {
+    $filter = $_POST['filter'];
+} elseif (!isset($filter)) {
+    $filter = [];
+}
 
 if (isset($filter['project'])) {
     $filter['project'] = strlen($filter['project']) ? intval($filter['project']) : '';
@@ -814,6 +821,8 @@ if (isset($filter['foreign-entity'])) {
 } else {
     $filter['foreign-entity'] = $oldfilter['foreign-entity'] ?? '';
 }
+
+$SESSION->saveFilter($filter);
 
 $SESSION->save('netranges_filter', $filter);
 
