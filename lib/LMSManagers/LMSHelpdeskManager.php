@@ -2804,14 +2804,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function IsTicketLoop($ticketid, $parentid)
     {
-        if ($ticketid == $parentid) {
-            return true;
+        $visited = [];
+
+        while (!empty($parentid)) {
+            if ($ticketid == $parentid) {
+                return true;
+            }
+
+            if (isset($visited[$parentid])) {
+                return false;
+            }
+
+            $visited[$parentid] = true;
+
+            $parentid = $this->GetTicketParentID($parentid);
         }
-        if (empty($parentid)) {
-            return false;
-        }
-        $parentid = $this->GetTicketParentID($parentid);
-        return $this->IsTicketLoop($ticketid, $parentid);
+
+        return false;
     }
 
     public function GetRTSmtpOptions($config_section = 'rt')
