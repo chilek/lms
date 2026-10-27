@@ -169,7 +169,7 @@ switch ($type) {
                     $list['currency'][] = $saldolist['currency'][$i];
                 }
             }
-			
+
             $list['total'] = isset($list['id']) ? count($list['id']) : 0;
         }
 
