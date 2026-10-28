@@ -742,7 +742,6 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
 
                 if ($row['enddate']) {
-                    $days = intval(($row['enddate'] - $row['date']) / 86400);
                     //$row['endtime'] = 0;
                     if ((!$datefrom || $row['date'] >= $datefrom) &&
                         (!$dateto || $row['date'] <= $dateto)) {
@@ -752,10 +751,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                         }
                     }
 
-                    while ($days) {
+                    while (($nextDate = strtotime('+1 day', $row['date'])) <= $row['enddate']) {
                         //if ($days == 1)
                         $row['endtime'] = $endtime;
-                        $row['date'] += 86400;
+                        $row['date'] = $nextDate;
 
                         if ((!$datefrom || $row['date'] >= $datefrom) &&
                             (!$dateto || $row['date'] <= $dateto)) {
@@ -764,8 +763,6 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                                 $list3[] = $row;
                             }
                         }
-
-                        $days--;
                     }
                 } else if ((!$datefrom || $row['date'] >= $datefrom) &&
                     (!$dateto || $row['date'] <= $dateto)) {
