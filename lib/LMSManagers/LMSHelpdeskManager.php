@@ -2644,8 +2644,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     break;
                 }
             } elseif ($attribute == 'ticket') {
-                $mailfrom = $ticket_email;
-                break;
+                if ($ticket_email) {
+                    $mailfrom = $ticket_email;
+                    break;
+                }
             } else {
                 $mailfrom = $attribute;
                 break;
