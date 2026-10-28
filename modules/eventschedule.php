@@ -148,7 +148,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     if (isset($_GET['closed'])) {
-        $filter['closed'] = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+        $filter['closed'] = $_GET['closed'] == 'all' ? '' : $_GET['closed'];
     } elseif (!isset($filter['closed'])) {
         $allevents = ConfigHelper::checkConfig(
             'timetable.default_show_closed_events',
