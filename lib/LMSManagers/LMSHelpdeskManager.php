@@ -1251,7 +1251,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/plain') {
+        if (($ticket['contenttype'] ?? 'text/plain') == 'text/plain') {
             $body = str_replace("\r", "", $ticket['body']);
         } else {
             $body = Utils::removeInsecureHtml($ticket['body']);
@@ -1277,6 +1277,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['extid'] ?? null,
         ));
 
+        $msgid = $this->db->GetLastInsertID('rtmessages');
+
         if (isset($ticket['note']) && $ticket['note']) {
             $this->db->Execute('INSERT INTO rtmessages (ticketid, userid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
@@ -1294,8 +1296,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 RTMESSAGE_NOTE,
             ));
         }
-
-        $msgid = $this->db->GetLastInsertID('rtmessages');
 
         if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/html') {
             $body = str_replace(
@@ -1867,7 +1867,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (isset($props['categories'])) {
             $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
-            $categories = $this->GetCategoryList(false);
+            $categories = array_column($this->GetCategoryList(false) ?: array(), null, 'id');
 
             $category_change = $props['category_change'] ?? null;
             switch ($category_change) {
@@ -2057,10 +2057,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['customresolvetime'] = $ticket['customresolvetime'];
         }
 
-        if ($type) {
+        if ($type
+            || ($props['requestor'] ?? '') != ($ticket['requestor'] ?? '')
+            || (empty($props['requestor_userid']) ? null : $props['requestor_userid']) != (empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'])
+            || ($props['requestor_mail'] ?? null) != ($ticket['requestor_mail'] ?? null)
+            || ($props['requestor_phone'] ?? null) != ($ticket['requestor_phone'] ?? null)
+            || ($props['customcreatetime'] ?? null) != ($ticket['customcreatetime'] ?? null)
+            || ($props['customresolvetime'] ?? null) != ($ticket['customresolvetime'] ?? null)
+            || ($props['nodeid'] ?? null) != ($ticket['nodeid'] ?? null)) {
             $note = implode("\n", $notes);
             $modtime = time();
-            $resolvetime = ($props['state'] == RT_RESOLVED) ? $modtime : 0;
+            if ($props['state'] == RT_RESOLVED) {
+                $resolvetime = ($ticket['state'] == RT_RESOLVED) ? $ticket['resolvetime'] : $modtime;
+            } else {
+                $resolvetime = 0;
+            }
             $newticketowner = ($props['state'] == RT_RESOLVED && empty($props['owner'])) ?
                 $userid : $props['owner'];
             $this->db->Execute(
@@ -2101,7 +2112,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticketid
                 )
             );
-            if (!empty($note)) {
+            if ($type && !empty($note)) {
                 $this->db->Execute(
                     'INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
                     VALUES(?, ?, ?, ?, ?)',
