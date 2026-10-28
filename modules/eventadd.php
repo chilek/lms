@@ -167,7 +167,7 @@ if (isset($_POST['event'])) {
         }
     }
 
-    if ($enddate && $date > $enddate) {
+    if ($enddate && ($date > $enddate || ($date == $enddate && $begintime > $endtime))) {
         $error['end'] = trans('End time must not precede start time!');
     }
 
