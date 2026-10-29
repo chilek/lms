@@ -298,9 +298,9 @@ abstract class LMSDB_common implements LMSDBInterface
 
         $result = null;
 
-        [$result] = $this->_driver_fetchrow_num();
+        $row = $this->_driver_fetchrow_num();
 
-        return $result;
+        return is_array($row) ? reset($row) : $row;
     }
 
     /**
