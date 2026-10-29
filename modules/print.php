@@ -148,10 +148,10 @@ switch ($type) {
 
             foreach ($saldolist['id'] as $i => $v) {
                 if (empty($saldolist['balanceexclude'])) {
+                    $saldolist['after'][$i] = $saldolist['balance'];
+                } else {
                     $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                     $saldolist['balance'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
-                } else {
-                    $saldolist['after'][$i] = $saldolist['balance'];
                 }
                 $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 
@@ -349,7 +349,7 @@ switch ($type) {
                     $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
                     //customer payment
-                    $list[$x]['after'] = $lastafter + (empty($row['balanceexclude']) ? $list[$x]['value'] * $row['currencyvalue'] : 0);
+                    $list[$x]['after'] = $lastafter + (empty($row['balanceexclude']) ? 0 : $list[$x]['value'] * $row['currencyvalue']);
 
                     if ($row['value'] > 0) {
                         //income
