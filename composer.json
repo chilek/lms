@@ -104,6 +104,22 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phine/observer",
+                "version": "2.0.1-p1",
+                "dist": {
+                    "url": "https://chilan.com/lms-plus/phine-observer-2.0.1-p1.zip",
+                    "type": "zip"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Phine\\Observer\\": "src/lib/Phine/Observer/"
+                    }
+                }
+            }
         }
     ],
     "require": {
