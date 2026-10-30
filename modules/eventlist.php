@@ -283,5 +283,6 @@ $SMARTY->assign(array(
     'getHolidays', getHolidays($year ?? null),
     'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
     'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
+    'user_row_limit' => ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)),
 ));
 $SMARTY->display('event/eventlist.html');

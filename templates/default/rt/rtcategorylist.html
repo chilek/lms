@@ -1,6 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$user_row_limit = ConfigHelper::getConfig('rt.row_user_limit', 4)}
+
 <!-- $Id$ -->
 <h1>{$layout.pagetitle}</h1>
 <table class="lmsbox lms-ui-background-cycle">
@@ -59,9 +61,7 @@
 					</div>
 				</td>
 				<td class="lms-ui-buttons">
-					{foreach $category.owners as $key => $owner}
-						<a href="?m=userinfo&id={$owner.id}">{$owner.name}</a>{if $key+1<count($category.owners)}, {/if}
-					{/foreach}
+				{user_compact_list limit=$user_row_limit userlist=$category.owners}
 				</td>
 				<td class="text-center">
 					{$category.new|default:0}
