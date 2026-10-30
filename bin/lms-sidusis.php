@@ -77,7 +77,7 @@ $sidusisOperatorPhone = ConfigHelper::getConfig('uke.sidusis_operator_phone', Co
 $internet_demands_queueid = ConfigHelper::getConfig('sidusis.internet_demands_queueid', 1);
 $internet_demands_categoryids = ConfigHelper::getConfig('sidusis.internet_demands_categoryids');
 
-$did = in_array('division', $options) ? intval($options['division']) : $sidusisSelectedDivision;
+$did = array_key_exists('division', $options) ? intval($options['division']) : $sidusisSelectedDivision;
 
 function getSidusisRangesReport($divisionid)
 {
