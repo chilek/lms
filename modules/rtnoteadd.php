@@ -64,7 +64,7 @@ if (empty($categories)) {
 if (isset($_GET['ticketid'])) {
     $note['ticketid'] = intval($_GET['ticketid']);
 
-    if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE)) {
+    if (!$LMS->CheckTicketAccess($note['ticketid'], RT_RIGHT_WRITE)) {
         access_denied();
     }
 
@@ -86,11 +86,17 @@ if (isset($_GET['ticketid'])) {
 } elseif (isset($_POST['note'])) {
     $note = $_POST['note'];
 
-    if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE)) {
+    if (!$LMS->CheckTicketAccess($note['ticketid'], RT_RIGHT_WRITE)) {
         access_denied();
     }
 
     $ticket = $LMS->GetTicketContents($note['ticketid']);
+
+    if (!empty($note['queueid']) && !empty($ticket['queueid'])
+        && intval($note['queueid']) != intval($ticket['queueid'])
+        && !($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $note['queueid']) & RT_RIGHT_WRITE)) {
+        access_denied();
+    }
 
     if (ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
         && $note['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {

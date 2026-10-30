@@ -77,12 +77,17 @@ if (isset($_POST['message'])) {
         if (empty($tickets)) {
             die;
         }
+        foreach ($tickets as $ticketid) {
+            if (!$LMS->CheckTicketAccess($ticketid, RT_RIGHT_WRITE)) {
+                access_denied();
+            }
+        }
 
         $message['destination'] = '';
         $message['inreplyto'] = null;
         $message['sender'] = 'user';
     } else {
-        if (!intval($message['ticketid']) || !($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_WRITE)) {
+        if (!intval($message['ticketid']) || !$LMS->CheckTicketAccess($message['ticketid'], RT_RIGHT_WRITE)) {
             access_denied();
         }
 
@@ -104,6 +109,13 @@ if (isset($_POST['message'])) {
             if ($message['state'] == RT_RESOLVED && !empty($oec)) {
                 $error['state'] = trans('Ticket has open assigned events!');
             }
+        }
+    }
+
+    if (isset($message['queueid']) && intval($message['queueid']) != -100) {
+        $changesQueue = $group_reply || intval($message['queueid']) != intval($ticket['queueid']);
+        if ($changesQueue && !($LMS->GetUserRightsRT($userid, intval($message['queueid'])) & RT_RIGHT_WRITE)) {
+            access_denied();
         }
     }
 
@@ -804,6 +816,11 @@ if (isset($_POST['message'])) {
             if (empty($ticketid)) {
                 die;
             }
+            foreach ($ticketid as $id) {
+                if (!$LMS->CheckTicketAccess($id, RT_RIGHT_WRITE)) {
+                    access_denied();
+                }
+            }
             $message['customernotify'] = 1;
             $message['state'] = -1;
             $message['cause'] = -1;
@@ -813,7 +830,7 @@ if (isset($_POST['message'])) {
             $message['deadline'] = 0;
             $message['verifierid'] = -1;
         } else {
-            if (!($LMS->CheckTicketAccess($_GET['ticketid']) & RT_RIGHT_WRITE)) {
+            if (!$LMS->CheckTicketAccess($_GET['ticketid'], RT_RIGHT_WRITE)) {
                 access_denied();
             }
             $ticketid = intval($_GET['ticketid']);

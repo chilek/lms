@@ -73,6 +73,22 @@ function RTSearch($search, $order = 'createtime,desc')
 
     $where = $where_AND = array();
 
+    $userid = Auth::GetCurrentUser();
+    $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+    $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+    $where_AND[] = '(t.queueid IN (
+            SELECT r.queueid FROM rtrights r
+            WHERE r.userid = ' . $userid . ' AND (r.rights & ' . RT_RIGHT_READ . ') > 0
+        )' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
+    $where_AND[] = '(EXISTS (
+            SELECT 1 FROM rtticketcategories tc_acl
+            JOIN rtcategoryusers cu ON cu.categoryid = tc_acl.categoryid AND cu.userid = ' . $userid . '
+            WHERE tc_acl.ticketid = t.id
+        )' . ($allow_empty_categories ? ' OR NOT EXISTS (
+            SELECT 1 FROM rtticketcategories tc_empty
+            WHERE tc_empty.ticketid = t.id
+        )' : '') . ')';
+
     if (!empty($search['owner']) && intval($search['owner'])) {
         $where[] = 'owner = '.intval($search['owner']);
     }
@@ -88,6 +104,7 @@ function RTSearch($search, $order = 'createtime,desc')
             . ' AND ' . (isset($search['body']['regexp']) ? $DB->RegExp('body', $search['body']['pattern'])
                 : 'body ?LIKE? ' . $DB->Escape('%' . $search['body']['pattern'] . '%')) . '
 			GROUP BY ticketid) m3 ON m3.ticketid = t.id';
+        $where[] = 'm3.messageid IS NOT NULL';
     } else {
         $join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
     }
@@ -132,16 +149,25 @@ function RTSearch($search, $order = 'createtime,desc')
     }
     if (!empty($search['queue'])) {
         if (is_array($search['queue'])) {
-            $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
+            $queueids = Utils::filterIntegers($search['queue']);
+            if ($queueids) {
+                $where_queue = '(t.queueid IN ' . $DB->Escape($queueids);
+            } else {
+                $where_queue = '(1 = 0';
+            }
         } else {
             $where_queue = '(t.queueid = ' . intval($search['queue']);
         }
-        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
-        $userid = Auth::GetCurrentUser();
         $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
     }
-    if (isset($search['catids'])) {
-        $where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
+    if (!empty($search['catids'])) {
+        if (!is_array($search['catids'])) {
+            $search['catids'] = array($search['catids']);
+        }
+        $catids = Utils::filterIntegers($search['catids']);
+        if ($catids) {
+            $where[] = 'tc.categoryid IN ' . $DB->Escape($catids);
+        }
     }
 
     if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
@@ -194,7 +220,6 @@ function RTSearch($search, $order = 'createtime,desc')
         return $DB->GetOne(
             'SELECT COUNT(DISTINCT t.id)
             FROM rttickets t
-            JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . Auth::GetCurrentUser() . '
             ' . implode(' ', $join) . '
             LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
             LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
@@ -205,7 +230,7 @@ function RTSearch($search, $order = 'createtime,desc')
             LEFT JOIN vaddresses va ON va.id = t.address_id
             WHERE '
             . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
-            . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
+            . (!empty($where_AND) ? ' AND (' . implode(' AND ', $where_AND) . ')' : '')
         );
     }
 
@@ -245,7 +270,7 @@ function RTSearch($search, $order = 'createtime,desc')
         ) ev ON ev.ticketid = t.id
         WHERE '
         . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
-        . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
+        . (!empty($where_AND) ? ' AND (' . implode(' AND ', $where_AND) . ')' : '')
         . ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
 			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,

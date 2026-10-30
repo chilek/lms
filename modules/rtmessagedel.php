@@ -27,9 +27,8 @@
 $msg = intval($_GET['id']);
 $maction = ($_GET['maction']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
-$rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $ticket);
 
-if (($rights & 4) != 4) {
+if (!$LMS->CheckTicketAccess($ticket, RT_RIGHT_DELETE)) {
     $SMARTY->display('noaccess.html');
     $SESSION->close();
     die;

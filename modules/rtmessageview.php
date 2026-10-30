@@ -27,16 +27,34 @@
 $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
 
 if (isset($_GET['file']) || isset($_GET['cid'])) {
-    if (!($LMS->CheckTicketAccess($_GET['tid']) & RT_RIGHT_READ)) {
+    if (!$LMS->CheckTicketAccess($_GET['tid'], RT_RIGHT_READ)) {
         access_denied();
     }
 
+    $deletedSql = ConfigHelper::checkPrivilege('helpdesk_advanced_operations')
+        ? ''
+        : ' AND m.deleted = 0 AND t.deleted = 0';
+
     if (isset($_GET['file'])) {
         $filename = urldecode($_GET['file']);
-        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
+        $attach = $DB->GetRow(
+            'SELECT a.* FROM rtattachments a
+            JOIN rtmessages m ON m.id = a.messageid
+            JOIN rttickets t ON t.id = m.ticketid
+            WHERE a.messageid = ? AND a.filename = ? AND m.ticketid = ?'
+            . $deletedSql,
+            array($_GET['mid'], $filename, $_GET['tid'])
+        );
     } else {
         $filename = $cid = urldecode($_GET['cid']);
-        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND cid = ?', array(intval($_GET['mid']), $cid));
+        $attach = $DB->GetRow(
+            'SELECT a.* FROM rtattachments a
+            JOIN rtmessages m ON m.id = a.messageid
+            JOIN rttickets t ON t.id = m.ticketid
+            WHERE a.messageid = ? AND a.cid = ? AND m.ticketid = ?'
+            . $deletedSql,
+            array($_GET['mid'], $cid, $_GET['tid'])
+        );
     }
 
     if ($attach) {
@@ -72,8 +90,21 @@ if (!isset($_GET['id'])) {
 }
 
 $message = $LMS->GetMessage($_GET['id']);
+if (empty($message)) {
+    access_denied();
+}
 
-if (!($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_READ)) {
+$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+if (!$helpdesk_advanced_operations && !empty($message['deleted'])) {
+    access_denied();
+}
+
+if (!$LMS->CheckTicketAccess($message['ticketid'], RT_RIGHT_READ)) {
+    access_denied();
+}
+
+if (!$helpdesk_advanced_operations
+    && $DB->GetOne('SELECT deleted FROM rttickets WHERE id = ?', array($message['ticketid']))) {
     access_denied();
 }
 

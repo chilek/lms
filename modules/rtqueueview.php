@@ -34,6 +34,9 @@ if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'assign':
             if (!empty($_GET['ticketid'])) {
+                if (!$LMS->CheckTicketAccess($_GET['ticketid'], RT_RIGHT_WRITE)) {
+                    access_denied();
+                }
                 if (isset($_GET['check-conflict'])) {
                     header('Content-Type: application/json');
                     die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
@@ -44,11 +47,17 @@ if (isset($_GET['action'])) {
             }
             break;
         case 'assign2':
+            if (empty($_GET['ticketid']) || !$LMS->CheckTicketAccess($_GET['ticketid'], RT_RIGHT_WRITE)) {
+                access_denied();
+            }
             $LMS->TicketChange($_GET['ticketid'], array('verifierid' => $currentuser));
             $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
             break;
         case 'unlink':
+            if (empty($_GET['ticketid']) || !$LMS->CheckTicketAccess($_GET['ticketid'], RT_RIGHT_WRITE)) {
+                access_denied();
+            }
             $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
             $SESSION->redirect_to_history_entry('m=rtqueuelist');
             break;
@@ -336,7 +345,7 @@ if (!empty($_GET['parentids'])) {
 }
 
 if (isset($_GET['rights'])) {
-    $filter['rights'] = $_GET['rights'];
+    $filter['rights'] = intval($_GET['rights']) | RT_RIGHT_READ;
 } else {
     $filter['rights'] = RT_RIGHT_READ;
 }

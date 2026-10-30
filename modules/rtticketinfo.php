@@ -30,7 +30,7 @@ if (! $LMS->TicketExists($id)) {
     $SESSION->redirect('?m=rtqueuelist');
 }
 
-if (!$LMS->CheckTicketAccess($id)) {
+if (!$LMS->CheckTicketAccess($id, RT_RIGHT_READ)) {
     access_denied();
 }
 
@@ -46,10 +46,11 @@ $ticket = array_merge(
     $ticket,
     $DB->GetRow(
         'SELECT contenttype, body AS message FROM rtmessages
-                WHERE ticketid = ?
-                ORDER BY createtime DESC LIMIT 1',
+                WHERE ticketid = ?'
+        . (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '' : ' AND deleted = 0')
+        . ' ORDER BY createtime DESC LIMIT 1',
         array($id)
-    )
+    ) ?: array()
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
