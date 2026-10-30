@@ -177,7 +177,7 @@ foreach ($posts as $postid) {
                 $body = imap_fetchbody($ih, $postid, '1');
                 if ($post->encoding == 3) {
                     $body = imap_base64($body);
-                } elseif ($part->encoding == 4) {
+                } elseif ($post->encoding == 4) {
                     $body = quoted_printable_decode($body);
                 }
                 $files[] = array(
