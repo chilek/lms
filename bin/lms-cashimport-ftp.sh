@@ -21,7 +21,7 @@ function check_dependencies {
 		exit 0;
 	fi
 
-	if $backup_dir
+	if [ -n "$backup_dir" ]
 	then
 		mkdir -p $backup_dir
 	else
@@ -37,7 +37,7 @@ function check_dependencies {
 
 function get_payments {
 	echo "Pobieram raporty z Banku";
-	lftp ftp://$login:$pass@$host -e "mget *.txt $import_dir; mrm *.txt;"
+	lftp "ftp://$login:$pass@${host#ftp://}" -e "mget -O '$import_dir' *.txt; mrm *.txt;"
 
 	files_count=`find $import_dir -type f | wc -l`
 
@@ -52,8 +52,8 @@ function get_payments {
 
 function import_payments {
 	echo "Wykonuję import plikow do bazy";
-	find $backup_dir -type f -name *txt -exec $lmscashimportscript --import-file {} \;
-	find $backup_dir -type f -name *txt -exec mv {} {}_imported \;
+	find $backup_dir -type f -name '*txt' -exec $lmscashimportscript --import-file {} \;
+	find $backup_dir -type f -name '*txt' -exec mv {} {}_imported \;
 }
 
 check_dependencies;
