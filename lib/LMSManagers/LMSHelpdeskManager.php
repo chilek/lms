@@ -203,7 +203,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 break;
         }
 
-        if (empty($state) || $state == -2) {
+        if ($state === null || $state === '' || $state === array() || $state == -2) {
             $statefilter = '';
         } elseif (is_array($state)) {
             $statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
@@ -433,6 +433,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $parentfilter = '';
         }
 
+        if (!empty($catids) && !is_array($catids)) {
+            $catids = array($catids);
+        }
+
         if (!empty($catids) && !in_array('all', $catids)) {
             if (in_array(-1, $catids)) {
                 if (count($catids) > 1) {
@@ -570,7 +574,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
                     . str_replace('t.', 't2.', $statefilter)
                     . str_replace('t.', 't2.', $removedfilter)
-                    . ' AND lv2.vdate < t2.modtime
+                    . ' AND (lv2.ticketid IS NULL OR m4.createtime > lv2.vdate) AND m4.deleted = 0
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
             LEFT JOIN (
@@ -731,7 +735,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ' ORDER BY name')) {
             if ($stats) {
                 foreach ($result as &$row) {
-                    $stats = $this->GetQueueStats($row['id'], $deleted_tickets);
+                    $stats = $this->GetQueueStats($row['id'], $deleted_tickets ?? true);
                     if ($stats) {
                         $row = array_merge($row, $stats);
                     }
@@ -1372,7 +1376,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             LEFT JOIN vusers o ON (t.owner = o.id)
             LEFT JOIN vusers c ON (t.creatorid = c.id)
             LEFT JOIN vusers d ON (t.requestor_userid = d.id)
-            LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid)
+            LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid' . (!empty($userid) ? ' AND w.userid = ' . $userid : '') . ')
             LEFT JOIN customers ON (customers.id = t.customerid)
             LEFT JOIN vaddresses va ON va.id = t.address_id
             LEFT JOIN vnodes n ON n.id = t.nodeid
@@ -1545,16 +1549,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
             $references = array();
             $reply = $message;
-            while ($reply['inreplyto']) {
-                if ($reply['messageid']) {
+            $visited = array();
+            while (!empty($reply['inreplyto']) && !isset($visited[$reply['inreplyto']])) {
+                $visited[$reply['inreplyto']] = true;
+                if (!empty($reply['messageid'])) {
                     $references[] = $reply['messageid'];
                 }
                 $reply = $this->db->GetRow(
                     'SELECT messageid, inreplyto FROM rtmessages WHERE id = ?',
                     array($reply['inreplyto'])
                 );
+                if (empty($reply)) {
+                    break;
+                }
             }
-            if ($reply['messageid']) {
+            if (!empty($reply['messageid']) && (empty($reply['inreplyto']) || !isset($visited[$reply['inreplyto']]))) {
                 $references[] = $reply['messageid'];
             }
             $message['references'] = array_reverse($references);
@@ -2611,7 +2620,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         );
 
         if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
-            $result = array(
+            $result = array_merge($result, array(
                     'critical' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
                     'urgent' => $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -3, 'rights' => RT_RIGHT_INDICATOR)),
                     'unread' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1, 'rights' => RT_RIGHT_INDICATOR)),
@@ -2620,7 +2629,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     'verify' => $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
                     'left' => $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR)),
                     'watching' => $this->GetQueueContents(array('count' => true, 'watching' => 1, 'rights' => RT_RIGHT_INDICATOR)),
-            );
+            ));
         }
 
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
