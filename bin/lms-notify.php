@@ -117,7 +117,7 @@ if (isset($options['force-date'])) {
     $fakedate = null;
 }
 
-$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? intval($options['customerid']) : null;
 
 $types = array();
 if (isset($options['type'])) {
