@@ -1275,19 +1275,31 @@ function osm_geocode($params)
 
 function exchangeratesapi_get_currency_value($currency, $date = null)
 {
-    $result = file_get_contents('https://api.exchangeratesapi.io/'
-        . (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . Localisation::getCurrentCurrency());
-    if ($result === false) {
-        return null;
+    $query = (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . Localisation::getCurrentCurrency();
+
+    // api.exchangeratesapi.io now rejects requests without an access key, so a keyless
+    // exchangeratesapi.io-compatible endpoint (ECB reference rates, by AllRatesToday -
+    // https://allratestoday.com) is tried when it returns no rate.
+    $urls = array(
+        'https://api.exchangeratesapi.io/',
+        'https://allratestoday.com/api/compat/exchangeratesapi/',
+    );
+
+    foreach ($urls as $url) {
+        $result = file_get_contents($url . $query);
+        if ($result === false) {
+            continue;
+        }
+
+        $result = json_decode($result, true);
+        if ($result === null) {
+            continue;
+        }
+
+        if (isset($result['rates'][Localisation::getCurrentCurrency()])) {
+            return $result['rates'][Localisation::getCurrentCurrency()];
+        }
     }
 
-    $result = json_decode($result, true);
-    if ($result === null) {
-        return null;
-    }
-
-    if (!isset($result['rates'][Localisation::getCurrentCurrency()])) {
-        return null;
-    }
-    return $result['rates'][Localisation::getCurrentCurrency()];
+    return null;
 }
