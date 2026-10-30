@@ -235,6 +235,24 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
+            case 'fastnote':
+                $fastNoteBody = trim($_POST['fastnote'] ?? '');
+                if ($fastNoteBody === '') {
+                    break;
+                }
+                $fastNoteMessageId = $LMS->TicketMessageAdd([
+                    'ticketid' => $id,
+                    'body' => $fastNoteBody,
+                    'type' => RTMESSAGE_NOTE,
+                ]);
+                $LMS->TicketNotifyUsers([
+                    'type' => 'note',
+                    'ticketid' => $id,
+                    'body' => $fastNoteBody,
+                    'messageid' => $fastNoteMessageId,
+                    'notify' => true,
+                ]);
+                break;
             case 'resolve':
                 $notification_options_by_division_ids = array(
                     0 => array(
