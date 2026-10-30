@@ -332,7 +332,7 @@ if (isset($options['actions'])) {
                 || ($supported_actions[$action]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
                 die('Invalid format of actions parameter!' . PHP_EOL);
             }
-            $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+            $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], -1, PREG_SPLIT_NO_EMPTY);
 
             if (!empty($actions[$action]) && (($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$action]['params'] == ACTION_PARAM_OPTIONAL)
                 && isset($supported_actions[$action]['param_validator']) && !($supported_actions[$action]['param_validator']($actions[$action])))) {
@@ -365,7 +365,7 @@ if (isset($options['block-prechecks'])) {
                     || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
                     die('Invalid format of block_prechecks parameter!' . PHP_EOL);
                 }
-                $block_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+                $block_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], -1, PREG_SPLIT_NO_EMPTY);
 
                 if (!empty($block_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
                     && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($block_prechecks[$precheck])))) {
@@ -395,7 +395,7 @@ if (isset($options['unblock-prechecks'])) {
                     || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
                     die('Invalid format of actions parameter!' . PHP_EOL);
                 }
-                $unblock_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+                $unblock_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], -1, PREG_SPLIT_NO_EMPTY);
 
                 if (!empty($unblock_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
                     && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($unblock_prechecks[$precheck])))) {
