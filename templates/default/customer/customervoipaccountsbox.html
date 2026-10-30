@@ -96,7 +96,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column password">
-								{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
+								{if ConfigHelper::checkPrivilege('hide_voip_passwords', false)}{'*'|str_repeat:8}{else}{$voipaccount.passwd}{/if}
 							</div>
 							<div class="lms-ui-tab-table-column number">
 								{foreach $voipaccount.phones as $phone}
