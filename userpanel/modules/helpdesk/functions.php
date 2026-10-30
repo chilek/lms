@@ -117,12 +117,12 @@ function module_main()
                         'name' => $filename,
                         'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
                         'type' => $_FILES['files']['type'][$fileidx],
-                        'contents' => &$filecontents,
+                        'contents' => $filecontents,
                     );
                     $attachments[] = array(
                         'content_type' => $_FILES['files']['type'][$fileidx],
                         'filename' => $filename,
-                        'data' => &$filecontents,
+                        'data' => $filecontents,
                     );
                 } else { // upload errors
                     if (isset($error['files'])) {
@@ -386,6 +386,13 @@ function module_main()
         $ticket['inreplyto'] = intval($ticket['inreplyto']);
         $ticket['id'] = intval($_GET['id']);
 
+        if (!empty($ticket['inreplyto']) && !$DB->GetOne(
+            'SELECT id FROM rtmessages WHERE id = ? AND ticketid = ? AND type = ? AND deleted = ?',
+            array($ticket['inreplyto'], $ticket['id'], RTMESSAGE_REGULAR, 0)
+        )) {
+            $error['body'] = trans('Reply to message does not exist!');
+        }
+
         if ($ticket['subject'] == '') {
             $error['subject'] = trans('Ticket must have its title!');
         }
@@ -398,7 +405,7 @@ function module_main()
         $sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
         if (!$DB->GetOne(
             'SELECT 1 FROM rttickets WHERE source IN (' . $sources . ')
-			AND queueid IN ('. $queues . ') AND id = ? AND customerid = ?',
+			AND queueid IN ('. $queues . ') AND id = ? AND customerid = ? AND deleted = 0',
             array($ticket['id'], $SESSION->id)
         )) {
             $error = true;
@@ -599,7 +606,7 @@ function module_main()
 
             $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
             $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-            if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
+            if (!empty($ticket) && $ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
                 && in_array($ticket['source'], $sources)) {
                 if (count($queues) == 1) {
                     $SMARTY->assign('title', trans(
@@ -624,16 +631,21 @@ function module_main()
             $ticket = $LMS->GetTicketContents($_GET['id']);
         }
 
+        if (empty($ticket)) {
+            $ticket = array();
+        }
+
         $ticket['id'] = $ticketId = intval($_GET['id']);
 
         $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
         $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-        if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
+        if (!empty($ticket['customerid']) && $ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
             && in_array($ticket['source'], $sources)) {
             if (isset($_GET['msgid']) && intval($_GET['msgid'])) {
                 $reply = $LMS->GetMessage($_GET['msgid']);
 
-                if (empty($reply['ticketid']) || $reply['ticketid'] != $ticketId) {
+                if (empty($reply['ticketid']) || $reply['ticketid'] != $ticketId
+                    || intval($reply['type']) != RTMESSAGE_REGULAR || !empty($reply['deleted'])) {
                     die('Access denied');
                 }
 
@@ -696,17 +708,31 @@ function module_attachment()
 {
     global $DB, $SESSION;
 
+    $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
+    $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
+
+    if (!$queues || !$sources) {
+        die;
+    }
+
     if (isset($_GET['file'])) {
         $filename = urldecode($_GET['file']);
         $attach = $DB->GetRow(
-            'SELECT ticketid, filename, a.contenttype FROM rtattachments a
+            'SELECT m.ticketid, a.filename, a.contenttype FROM rtattachments a
             JOIN rtmessages m ON m.id = a.messageid
             JOIN rttickets t ON t.id = m.ticketid
-            WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',
+            WHERE t.customerid = ? AND a.messageid = ? AND a.filename = ?
+                AND m.type = ? AND m.deleted = ? AND t.deleted = ?
+                AND t.queueid IN ? AND t.source IN ?',
             array(
                 $SESSION->id,
                 intval($_GET['msgid']),
-                $filename
+                $filename,
+                RTMESSAGE_REGULAR,
+                0,
+                0,
+                $queues,
+                $sources,
             )
         );
     } else {
@@ -715,11 +741,18 @@ function module_attachment()
             'SELECT m.ticketid, a.* FROM rtattachments a
             JOIN rtmessages m ON m.id = a.messageid
             JOIN rttickets t ON t.id = m.ticketid
-            WHERE t.customerid = ? AND a.messageid = ? AND a.cid = ?',
+            WHERE t.customerid = ? AND a.messageid = ? AND a.cid = ?
+                AND m.type = ? AND m.deleted = ? AND t.deleted = ?
+                AND t.queueid IN ? AND t.source IN ?',
             array(
                 $SESSION->id,
                 intval($_GET['msgid']),
-                $cid
+                $cid,
+                RTMESSAGE_REGULAR,
+                0,
+                0,
+                $queues,
+                $sources,
             )
         );
     }
