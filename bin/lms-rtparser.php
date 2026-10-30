@@ -1388,8 +1388,8 @@ function handleRtparserMessage()
                     $custmail_body
                 );
                 $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
-                $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                $custmail_body = str_replace('%pin', $info['pin'] ?? '', $custmail_body);
+                $custmail_body = str_replace('%customername', $info['customername'] ?? '', $custmail_body);
                 $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
                 $custmail_body = str_replace('%body', $mail_body, $custmail_body);
                 $custmail_headers = array(
