@@ -2278,7 +2278,7 @@ foreach ($assigns as $assign) {
 
                             $error = $LMS->AddDocumentFileAttachments($files);
 
-                            if (file_exists($file)) {
+                            if (!empty($file) && file_exists($file)) {
                                 @unlink($file);
                             }
                         } else {
