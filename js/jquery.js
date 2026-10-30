@@ -2848,6 +2848,9 @@ $(function() {
 	}
 
 	function init_visual_editor(id) {
+		const width = window.screen.width * window.devicePixelRatio;
+		const fontSize = width >= 3840 ? 12 : (width >= 2560 ? 11 : (width >= 1920 ? 9 : 8));
+
 		tinymce.init({
 			selector: '#' + id,
 			deprecation_warnings: false,
@@ -2892,6 +2895,13 @@ $(function() {
 			remove_script_host : false,
 			forced_root_block : false,
 			entity_encoding: 'raw',
+			browser_spellcheck: true,
+			//context_menu: false,
+			content_style: 'body {' +
+					'font-family: Arial, Helvetica, sans-serif;' +
+					'font-size: ' + fontSize + 'pt;' +
+					'line-height: 1.5;' +
+				'}',
 
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
