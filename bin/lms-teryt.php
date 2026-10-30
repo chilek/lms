@@ -514,9 +514,14 @@ if (isset($options['fetch'])) {
 
     foreach ($teryt_files as $file) {
         $filename = $teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip';
-        echo $file['name'] . $teryt_filename_suffix . '.zip' . PHP_EOL;
+        if (!$quiet) {
+            echo $file['name'] . $teryt_filename_suffix . '.zip' . PHP_EOL;
+        }
         if ($zip->open($filename) === true) {
-            $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR, array($file['archived_name'] . '_' . date('Y-m-d') . '.xml'));
+            if (!$zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR, array($file['archived_name'] . '_' . date('Y-m-d') . '.xml'))) {
+                fwrite($stderr, 'Error: Can\'t extract ' . $file['archived_name'] . '_' . date('Y-m-d') . '.xml from ' . $file['name'] . '!' . PHP_EOL);
+                exit(1);
+            }
             rename(
                 $teryt_dir . DIRECTORY_SEPARATOR . $file['archived_name'] . '_' . date('Y-m-d') . '.xml',
                 $teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . '.xml'
