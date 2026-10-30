@@ -224,10 +224,12 @@ function convert_pna_to_teryt($data)
                 $streets[] = $street_without_common_parts = trim(strtr($street, $replaces));
 
                 // streets with suffix used as prefix and prefix used as suffix
-                $streets[] = $street_without_common_parts . ' ' . $street_common_part;
-                $streets[] = $street_without_common_parts . ' ' . strtr($street_common_part, $street_short_to_long_part_replaces);
-                $streets[] = $street_common_part . ' ' . $street_without_common_parts;
-                $streets[] = strtr($street_common_part, $street_short_to_long_part_replaces) . ' ' . $street_without_common_parts;
+                if (!empty($replaces)) {
+                    $streets[] = $street_without_common_parts . ' ' . $street_common_part;
+                    $streets[] = $street_without_common_parts . ' ' . strtr($street_common_part, $street_short_to_long_part_replaces);
+                    $streets[] = $street_common_part . ' ' . $street_without_common_parts;
+                    $streets[] = strtr($street_common_part, $street_short_to_long_part_replaces) . ' ' . $street_without_common_parts;
+                }
             }
         }
     }
