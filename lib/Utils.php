@@ -1988,4 +1988,78 @@ class Utils
 
         return isset($euCountryCodes[$countryCode]);
     }
+
+    public static function substituteShellPlaceholders($command, array $placeholders)
+    {
+        $names = array_keys($placeholders);
+        usort($names, function ($left, $right) {
+            return strlen($right) - strlen($left);
+        });
+
+        $result = '';
+        $length = strlen($command);
+        $index = 0;
+        $quote = '';
+
+        while ($index < $length) {
+            $character = $command[$index];
+
+            if ($quote === '"' && $character === '\\' && $index + 1 < $length) {
+                $result .= $character . $command[$index + 1];
+                $index += 2;
+                continue;
+            }
+
+            if ($quote !== '' && $character === $quote) {
+                $quote = '';
+                $result .= $character;
+                $index++;
+                continue;
+            }
+
+            if ($quote === '' && ($character === "'" || $character === '"')) {
+                $quote = $character;
+                $result .= $character;
+                $index++;
+                continue;
+            }
+
+            $matched = false;
+            if ($character === '%') {
+                foreach ($names as $name) {
+                    $nameLength = strlen($name);
+                    if (substr($command, $index, $nameLength) === $name) {
+                        $result .= self::escapeShellPlaceholderValue((string) $placeholders[$name], $quote);
+                        $index += $nameLength;
+                        $matched = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$matched) {
+                $result .= $character;
+                $index++;
+            }
+        }
+
+        return $result;
+    }
+
+    private static function escapeShellPlaceholderValue($value, $quote)
+    {
+        if ($quote === "'") {
+            return str_replace("'", "'\\''", $value);
+        }
+
+        if ($quote === '"') {
+            return str_replace(
+                array('\\', '"', '$', '`'),
+                array('\\\\', '\\"', '\\$', '\\`'),
+                $value
+            );
+        }
+
+        return escapeshellarg($value);
+    }
 }

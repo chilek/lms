@@ -309,34 +309,10 @@ foreach ($dirs as $dir) {
                 die('Fatal error: error during file ' . $src_file . ' rename!' . PHP_EOL);
             }
         } else {
-            $cmd = str_replace(
-                array('%i', '%o'),
-                array(
-                    str_replace(
-                        array(
-                            '(',
-                            ')',
-                        ),
-                        array(
-                            '\\(',
-                            '\\)',
-                        ),
-                        $src_file
-                    ),
-                    str_replace(
-                        array(
-                            '(',
-                            ')',
-                        ),
-                        array(
-                            '\\(',
-                            '\\)',
-                        ),
-                        $dst_file
-                    ),
-                ),
-                $convert_command
-            );
+            $cmd = Utils::substituteShellPlaceholders($convert_command, array(
+                '%i' => $src_file,
+                '%o' => $dst_file,
+            ));
             $ret = 0;
             $output = array();
             $res = exec($cmd, $output, $ret);
@@ -355,34 +331,10 @@ foreach ($dirs as $dir) {
             if (empty($duration_command)) {
                 echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
             } else {
-                $cmd = str_replace(
-                    array('%i', '%o'),
-                    array(
-                        str_replace(
-                            array(
-                                '(',
-                                ')',
-                            ),
-                            array(
-                                '\\(',
-                                '\\)',
-                            ),
-                            $src_file
-                        ),
-                        str_replace(
-                            array(
-                                '(',
-                                ')',
-                            ),
-                            array(
-                                '\\(',
-                                '\\)',
-                            ),
-                            $dst_file
-                        ),
-                    ),
-                    $duration_command
-                );
+                $cmd = Utils::substituteShellPlaceholders($duration_command, array(
+                    '%i' => $src_file,
+                    '%o' => $dst_file,
+                ));
                 $ret = 0;
                 $output = array();
                 $res = exec($cmd, $output, $ret);
