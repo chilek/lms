@@ -579,7 +579,7 @@ if (isset($options['fetch'])) {
                 if ($st['comp_method'] === ZipArchive::CM_DEFLATE64) {
                     $output = array();
                     $result = null;
-                    exec('unzip -o -d ' . $teryt_dir . ' ' . $teryt_dir . DIRECTORY_SEPARATOR . $building_base_provider['filename'] . ' ' . $filename . ' 2>&1', $output, $result);
+                    exec('unzip -o -d ' . escapeshellarg($teryt_dir) . ' ' . escapeshellarg($teryt_dir . DIRECTORY_SEPARATOR . $building_base_provider['filename']) . ' ' . escapeshellarg($filename) . ' 2>&1', $output, $result);
                     if (!empty($result)) {
                         die('Fatal error: failed to run \'unzip\' command! Maybe \'unzip\' utility is not installed in your system?' . PHP_EOL);
                     }
