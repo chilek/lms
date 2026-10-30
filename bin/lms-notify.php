@@ -3993,7 +3993,7 @@ if (empty($types) || in_array('messages', $types)) {
             $idx = 0;
             foreach ($messageitems as $messageitem) {
                 if ($idx >= $start_idx && $idx <= $end_idx) {
-                    $attributes = unserialize($messageitem['attributes']);
+                    $attributes = unserialize($messageitem['attributes'], ['allowed_classes' => false]);
                 }
 
                 if (!$quiet) {
