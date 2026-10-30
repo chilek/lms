@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-function lmsFileView(file) {
+function lmsFileView(file, view_selector) {
     if (typeof(file) == 'undefined') {
         alert("404, Error: no file to view");
         return;
@@ -30,33 +30,47 @@ function lmsFileView(file) {
 
     var url = window.URL ? URL : webkitURL;
     var objUrl = url.createObjectURL(file);
-    var content;
     var object;
     var dialogOptions = {
         dialogClass: "lms-ui-fileview-dialog",
         width: $(window).width() * 0.8,
         title: file.name,
-        modal: true
-    }
+        modal: true,
+        close: function() {
+            url.revokeObjectURL(objUrl);
+            $(this).dialog('destroy').remove();
+        }
+    };
 
     ///put file in object if not image
     switch (file.type) {
         case 'image/png':
         case 'image/jpg':
         case 'image/jpeg':
-            content = $('<div/>').append(file.contentElem);
+            object = $(file.contentElem || file.imgElem).clone();
             break;
         default:
             object = $('<object/>').attr({
                 data: objUrl,
                 type: file.type
             });
-            content = $('<div/>').append(object);
             dialogOptions.height = $(window).height() * 0.8;
             break;
     }
 
-    $(content).dialog(dialogOptions);
-
-    url.revokeObjectURL(objUrl);
+    if (!view_selector) {
+        $('<div/>').append(object).dialog(dialogOptions);
+    } else {
+        var target = $(document.getElementById(view_selector));
+        if (!target.length) {
+            url.revokeObjectURL(objUrl);
+            return;
+        }
+        var previousUrl = target.data('fileview-url');
+        target.empty().append(object).removeClass('hidden')
+            .addClass('attachment-loaded lms-ui-fileview-container').data('fileview-url', objUrl);
+        if (previousUrl) {
+            url.revokeObjectURL(previousUrl);
+        }
+    }
 }
