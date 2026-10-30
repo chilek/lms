@@ -1,0 +1,95 @@
+{css}
+{js}
+
+<input type="hidden" name="netnode[contacts_present]" value="1">
+
+{$phone_contacts = $netnode.phones|default:[]}
+{$email_contacts = $netnode.emails|default:[]}
+
+<div id="netnode-contact-groups" class="netnode-contact-groups">
+	<fieldset class="netnode-contact-group">
+		<legend class="bold nobr">
+			{icon name="phone" label="Contact phones"}
+		</legend>
+		<div id="netnode-phone-contacts" class="netnode-contacts">
+			{foreach $phone_contacts as $key => $contact}
+				<div class="netnode-contact" data-contact-index="{$key|intval}">
+					<input type="tel" class="netnode-contact-value"
+						name="netnode[phones][{$key|intval}][contact]" maxlength="255"
+						value="{$contact.contact|escape}" placeholder="{trans("Phone number")}"
+						aria-label="{trans("Phone number")}"
+						{tip trigger="contact`$key`" text="Enter contact phone"}>
+					<label class="nobr">
+						<input type="checkbox" class="netnode-contact-mobile"
+							name="netnode[phones][{$key|intval}][type][]"
+							value="{$smarty.const.CONTACT_MOBILE}"
+							autocomplete="off"
+							{if $contact.type & $smarty.const.CONTACT_MOBILE} checked{/if}>
+						{trans("mobile")}
+					</label>
+					<input type="text" class="netnode-contact-name"
+						name="netnode[phones][{$key|intval}][name]"
+						value="{$contact.name|escape}" placeholder="{trans("Description")}"
+						aria-label="{trans("Description")}">
+					{button icon="trash" class="delete-netnode-contact" tip="Delete"}
+					{button icon="add" class="add-netnode-contact" data-contact-type="phone" tip="Add contact"}
+				</div>
+			{/foreach}
+		</div>
+	</fieldset>
+
+	<fieldset class="netnode-contact-group">
+		<legend class="bold nobr">
+			{icon name="mail" label="Email addresses"}
+		</legend>
+		<div id="netnode-email-contacts" class="netnode-contacts">
+			{foreach $email_contacts as $key => $contact}
+				<div class="netnode-contact" data-contact-index="{$key|intval}">
+					<input type="email" class="netnode-contact-value"
+						name="netnode[emails][{$key|intval}][contact]" maxlength="255"
+						value="{$contact.contact|escape}" placeholder="{trans("Email")}"
+						aria-label="{trans("Email")}"
+						{tip trigger="email`$key`" text="Enter e-mail address (optional)"}>
+					<input type="text" class="netnode-contact-name"
+						name="netnode[emails][{$key|intval}][name]"
+						value="{$contact.name|escape}" placeholder="{trans("Description")}"
+						aria-label="{trans("Description")}">
+					{button icon="trash" class="delete-netnode-contact" tip="Delete"}
+					{button icon="add" class="add-netnode-contact" data-contact-type="email" tip="Add contact"}
+				</div>
+			{/foreach}
+		</div>
+	</fieldset>
+</div>
+
+<script type="text/x-template" id="netnode-phone-contact-template">
+	<div class="netnode-contact" data-contact-index="__INDEX__">
+		<input type="tel" class="netnode-contact-value"
+			name="netnode[phones][__INDEX__][contact]" maxlength="255"
+			placeholder="{trans("Phone number")}" aria-label="{trans("Phone number")}">
+		<label class="nobr">
+			<input type="checkbox" class="netnode-contact-mobile"
+				name="netnode[phones][__INDEX__][type][]"
+				value="{$smarty.const.CONTACT_MOBILE}" autocomplete="off">
+			{trans("mobile")}
+		</label>
+		<input type="text" class="netnode-contact-name"
+			name="netnode[phones][__INDEX__][name]"
+			placeholder="{trans("Description")}" aria-label="{trans("Description")}">
+		{button icon="trash" class="delete-netnode-contact" tip="Delete"}
+		{button icon="add" class="add-netnode-contact" data-contact-type="phone" tip="Add contact"}
+	</div>
+</script>
+
+<script type="text/x-template" id="netnode-email-contact-template">
+	<div class="netnode-contact" data-contact-index="__INDEX__">
+		<input type="email" class="netnode-contact-value"
+			name="netnode[emails][__INDEX__][contact]" maxlength="255"
+			placeholder="{trans("Email")}" aria-label="{trans("Email")}">
+		<input type="text" class="netnode-contact-name"
+			name="netnode[emails][__INDEX__][name]"
+			placeholder="{trans("Description")}" aria-label="{trans("Description")}">
+		{button icon="trash" class="delete-netnode-contact" tip="Delete"}
+		{button icon="add" class="add-netnode-contact" data-contact-type="email" tip="Add contact"}
+	</div>
+</script>
