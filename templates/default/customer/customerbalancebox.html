@@ -217,7 +217,7 @@
 							{else}
 								{$operation_comment = $customer_balance_excluded_registry_operation_comment}
 							{/if}
-							{$comment = str_replace(
+							{$final_operation_comment = str_replace(
 								array(
 									'%comment%',
 									'%registry%'
@@ -228,7 +228,7 @@
 								),
 								$operation_comment
 							)}
-							{$comment|escape}
+							{$final_operation_comment|escape}
 						{/if}
 					{/strip}</td>
 					<TD class="text-right nobr">
