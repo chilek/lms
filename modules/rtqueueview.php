@@ -288,6 +288,19 @@ if (isset($_GET['priority'])) {
     }
 }
 
+// periodicity
+if (isset($_GET['periodicity'])) {
+    if (is_array($_GET['periodicity'])) {
+        $filter['periodicity'] = Utils::filterIntegers($_GET['periodicity']);
+    } elseif ($_GET['periodicity'] == 'all') {
+        $filter['periodicity'] = null;
+    } else {
+        $filter['periodicity'] = Utils::filterIntegers([$_GET['periodicity']]);
+    }
+} elseif (!isset($filter['periodicity'])) {
+    $filter['periodicity'] = null;
+}
+
 // source
 if (isset($_GET['source'])) {
     $filter['source'] = intval($_GET['source']);
@@ -380,7 +393,31 @@ $SESSION->add_history_entry();
 $filter['direction'] = $queue['direction'];
 $filter['order'] = $queue['order'];
 
-unset($queue['total'], $queue['state'], $queue['priority'], $queue['source'], $queue['order'], $queue['direction'], $queue['owner'], $queue['removed'], $queue['deadline'], $queue['service'], $queue['type'], $queue['unread'], $queue['parentids'], $queue['rights'], $queue['verifier'], $queue['netnode'], $queue['projectids'], $queue['cid'], $queue['subject'], $queue['fromdate'], $queue['todate'], $queue['watching']);
+unset(
+    $queue['total'],
+    $queue['state'],
+    $queue['priority'],
+    $queue['periodicity'],
+    $queue['source'],
+    $queue['order'],
+    $queue['direction'],
+    $queue['owner'],
+    $queue['removed'],
+    $queue['deadline'],
+    $queue['service'],
+    $queue['type'],
+    $queue['unread'],
+    $queue['parentids'],
+    $queue['rights'],
+    $queue['verifier'],
+    $queue['netnode'],
+    $queue['projectids'],
+    $queue['cid'],
+    $queue['subject'],
+    $queue['fromdate'],
+    $queue['todate'],
+    $queue['watching'],
+);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories($currentuser);

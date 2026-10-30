@@ -203,6 +203,16 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.periodicity}
+							<tr>
+								<td style="width: 1%;" class="bold nobr">
+									{icon name="reload" label="Scheduling"}
+								</td>
+								<td style="width: 99%;">
+									{trans($_EVENT_PERIODICITY[$ticket.periodicity].label)}
+								</td>
+							</tr>
+							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									{icon name="queue" label="Queue"}
