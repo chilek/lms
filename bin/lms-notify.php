@@ -962,7 +962,7 @@ function parse_customer_data($data, $format, $row)
                     . '|PL|'
                     . $first_account
                     . '|'
-                    . str_pad(($row['totalbalance'] < 0 ? -$row['totalbalance'] : 0) * 100, 6, 0, STR_PAD_LEFT)
+                    . str_pad((string) round(($row['totalbalance'] < 0 ? -$row['totalbalance'] : 0) * 100), 6, '0', STR_PAD_LEFT)
                     . '|'
                     . mb_substr($row['div_shortname'], 0, 20)
                     . '|'
