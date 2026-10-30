@@ -30,8 +30,10 @@ function module_main()
     
     $SESSION->LogOut();
 
-    if (ConfigHelper::getConfig('userpanel.logout_url')!='') {
-        header('Location: '.ConfigHelper::getConfig('userpanel.logout_url'));
+    $logoutUrl = (string) ConfigHelper::getConfig('userpanel.logout_url');
+    $logoutPattern = '#\A(https?://[A-Za-z0-9.-]+(?::[0-9]+)?(?:/[A-Za-z0-9._~:/?&=%+\-]*)?|/(?!/)[A-Za-z0-9._~:/?&=%+\-]*|\?[A-Za-z0-9._~:/?&=%+\-]*)\z#';
+    if (preg_match($logoutPattern, $logoutUrl, $logoutMatch)) {
+        header('Location: ' . $logoutMatch[1]);
     } else {
         header('Location: ?m=');
     }

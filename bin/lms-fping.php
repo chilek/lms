@@ -97,13 +97,15 @@ function parse_names_list($value)
  * by default), so total time is roughly proportional to number of hosts
  * divided by number of processes.
  *
- * @param string $command fping command, may contain additional options
+ * @param string[] $command fping command arguments, without shell redirects
  * @param string[] $hosts
  * @param int $jobs number of parallel fping processes
  * @return array|null array('hosts' => string[], 'status' => int) or null on failure
  */
-function fping_alive_hosts($command, array $hosts, $jobs = 4)
+function fping_alive_hosts(array $command, array $hosts, $jobs = 4)
 {
+    $command[] = '-a';
+    $command[] = '-r1';
     $hosts = array_values($hosts);
     $jobs = max(1, min((int) $jobs, count($hosts)));
 
@@ -121,7 +123,7 @@ function fping_alive_hosts($command, array $hosts, $jobs = 4)
             2 => ['file', '/dev/null', 'w'],
         ];
 
-        $process = proc_open($command . ' -a -r1', $descriptors, $pipes);
+        $process = proc_open($command, $descriptors, $pipes);
         if (!is_resource($process)) {
             foreach ($processes as $started) {
                 fclose($started['pipe']);
@@ -216,6 +218,24 @@ function fping_alive_hosts($command, array $hosts, $jobs = 4)
 // ---- configuration -------------------------------------------------------
 
 $fping_command = trim(ConfigHelper::getConfig($config_section . '.command', 'fping'));
+$fpingArgs = array();
+$fpingCommandError = 'Fatal error: fping command contains unsupported characters.';
+foreach (preg_split('/\s+/', $fping_command, -1, PREG_SPLIT_NO_EMPTY) as $fpingArg) {
+    if (preg_match('#\A[0-9]*>>?(?:/dev/null|&[0-9])\z#', $fpingArg)) {
+        continue;
+    }
+    if (strpos($fpingArg, '>') !== false || preg_match("/[;&|`$()<\n\r\\\\]/", $fpingArg)) {
+        fwrite(STDERR, $fpingCommandError . PHP_EOL);
+        writesyslog($fpingCommandError, LOG_ERR);
+        exit(1);
+    }
+    $fpingArgs[] = $fpingArg;
+}
+if (empty($fpingArgs)) {
+    fwrite(STDERR, $fpingCommandError . PHP_EOL);
+    writesyslog($fpingCommandError, LOG_ERR);
+    exit(1);
+}
 $included_names = array_map('mb_strtoupper', parse_names_list(ConfigHelper::getConfig($config_section . '.networks', '')));
 $excluded_names = array_map('mb_strtoupper', parse_names_list(ConfigHelper::getConfig($config_section . '.excluded_networks', '')));
 $included = array_flip($included_names);
@@ -299,7 +319,7 @@ if (empty($hosts)) {
 
 // ---- ping them -----------------------------------------------------------
 
-$result = fping_alive_hosts($fping_command, $hosts, $jobs);
+$result = fping_alive_hosts($fpingArgs, $hosts, $jobs);
 if ($result === null) {
     fwrite(STDERR, "Fatal error: unable to run '$fping_command'." . PHP_EOL);
     exit(1);

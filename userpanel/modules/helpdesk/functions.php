@@ -563,7 +563,7 @@ function module_main()
                 'attachments' => &$attachments,
             ));
 
-            header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);
+            header('Location: ?m=helpdesk&op=view&id=' . intval($ticket['id']));
             die;
         } else {
             $SMARTY->assign('error', $error);

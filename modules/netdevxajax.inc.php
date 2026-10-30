@@ -304,7 +304,9 @@ function getThroughput($ip)
         return $result;
     }
 
-    $cmd = str_replace('%i', $ip, $cmd);
+    $cmd = Utils::substituteShellPlaceholders($cmd, array(
+        '%i' => $ip,
+    ));
     exec($cmd, $output);
     if (!is_array($output) && count($output) != 1) {
         return $result;

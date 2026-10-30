@@ -2,6 +2,12 @@ $Id$
 
 version 28-git (????-??-??):
 
+  - devel: shell placeholders in radius disconnect, ping, traffic, session and customer-call
+    commands are quoted automatically; do not wrap them in extra quotes. Default
+    'phpui.radius_disconnect_command' is
+    'echo Framed-IP-Address=%ip% | radclient %nasip%:3799 disconnect %secret%' [interduo]
+  - devel: lms-fping runs the configured command without a shell. Only redirects to
+    /dev/null or another descriptor are ignored; other shell metacharacters are rejected [interduo]
   - security: client IP is taken from X-Forwarded-For only when REMOTE_ADDR is listed in new
     'phpui.trusted_proxies' (set it for reverse proxy!) [interduo]
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
