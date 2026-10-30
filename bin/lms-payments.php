@@ -207,7 +207,7 @@ if (empty($fakedate)) {
 $today = strtotime('today', $currtime);
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 [$year, $month, $dom] = explode('/', date('Y/n/j', $currtime));
-[$backward_year, $backward_month] = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
+[$backward_year, $backward_month] = explode('/', date('Y/m', mktime(0, 0, 0, $month - 1, 1, $year)));
 $weekday = date('N', $currtime);
 $yearday = date('z', $currtime) + 1;
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
