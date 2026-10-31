@@ -2621,6 +2621,12 @@ class LMS
         return $manager->GetRelatedTickets($ticketid);
     }
 
+    public function GetSimilarOpenTickets(array $params)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetSimilarOpenTickets($params);
+    }
+
     public function GetChildTickets($ticketid)
     {
         $manager = $this->getHelpdeskManager();

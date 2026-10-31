@@ -6500,3 +6500,4 @@ $_LANG['cash registry'] = 'rejestr kasowy';
 $_LANG['%comment% (transaction excluded from customer balance)'] = '%comment% (operacja niewliczana do salda klienta)';
 
 $_LANG['hide data summaries'] = 'ukryj dane zbiorcze';
+$_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';

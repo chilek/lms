@@ -1297,6 +1297,10 @@ version 28-git (????-??-??):
   - enhacement: 'hide_data_summaries' permission block access to customer and node search result presenation
     in tabelar or csv format [chilan]
   - improvement: added persistent filter support to netranges module [chilan]
+  - enhancement: suggest similar open tickets (same customer, phone or e-mail, and a similar subject
+    or recently created) when adding a ticket; new 'rt.similar_tickets' (default: true),
+    'rt.similar_tickets_limit' (default: 8) and 'rt.similar_tickets_days' (default: 30)
+    configuration variables [interduo]
 
 version 27.0 (2021-08-20):
 

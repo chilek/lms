@@ -141,6 +141,8 @@ interface LMSHelpdeskManagerInterface
 
     public function GetRelatedTickets($ticketid);
 
+    public function GetSimilarOpenTickets(array $params);
+
     public function GetChildTickets($ticketid);
 
     public function getTickets($ticketids);
