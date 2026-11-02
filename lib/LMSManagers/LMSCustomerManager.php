@@ -2029,7 +2029,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         ? 'nodegroupassignments.nodegroupid ' . (is_array($nodegroup) ? ' IN ' : ' = ') . $this->db->Escape($nodegroup)
                         : '1 = 1')
                     . ' GROUP BY nodes.ownerid
-                ) na ON na.customerid = c.id'
+                ) na ON na.customerid = c.id '
                 : '')
             . (!empty($nodegroup) && $nodegroupsqlskey == 'exact-match'
                 ? 'LEFT JOIN (
