@@ -1,0 +1,18 @@
+<fieldset class="lucid" style="width: auto;">
+	<legend class="bold nobr dark">
+		{icon name="helpdesk"}
+		{trans("Similar open tickets")}
+	</legend>
+	<table>
+		{foreach $tickets as $ticket}
+			<tr>
+				<td class="customer-contact">
+					<div>
+						<a href="?m=rtticketview&id={$ticket.id|escape}" target="_blank" rel="noopener">#{$ticket.id|escape} {$ticket.subject|escape}</a>
+						({$ticket.queuename|escape}{if $ticket.requestorlabel}, {$ticket.requestorlabel|escape}{/if})
+					</div>
+				</td>
+			</tr>
+		{/foreach}
+	</table>
+</fieldset>

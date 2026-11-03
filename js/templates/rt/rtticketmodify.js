@@ -111,6 +111,7 @@ function update_contacts(data) {
 	$('#requestor_mail_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', oldValue);
+	$('#requestor_mail, #requestor_customer_mail').trigger('change');
 
 	values = [];
 	$(data.phones).each(function(idx, item) {
@@ -124,6 +125,7 @@ function update_contacts(data) {
 	$('#requestor_phone_combobox')
 		.scombobox('fill', values)
 		.scombobox('val', oldValue);
+	$('#requestor_phone, #requestor_customer_phone').trigger('change');
 }
 
 function initCustomerSelection() {
