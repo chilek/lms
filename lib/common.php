@@ -360,9 +360,15 @@ function writesyslog($message, $type)
             // the log to standard error, and use a user defined
             // logging mechanism
             openlog('lms-php', LOG_PID | LOG_NDELAY, LOG_AUTH);
-            syslog($type, $message . ' (at ' . $access . ' from '
-                . (empty($_SERVER['REMOTE_ADDR']) ? 'backend' : $_SERVER['REMOTE_ADDR'])
-                . (isset($_SERVER['HTTP_USER_AGENT']) ? ' (' . $_SERVER['HTTP_USER_AGENT'] . '))' : ''));
+            $message = str_replace(array("\r", "\n"), ' ', (string) $message);
+            $remoteAddress = empty($_SERVER['REMOTE_ADDR'])
+                ? 'backend'
+                : str_replace(array("\r", "\n"), '', (string) $_SERVER['REMOTE_ADDR']);
+            $userAgent = isset($_SERVER['HTTP_USER_AGENT'])
+                ? str_replace(array("\r", "\n"), '', (string) $_SERVER['HTTP_USER_AGENT'])
+                : '';
+            syslog($type, $message . ' (at ' . $access . ' from ' . $remoteAddress
+                . ($userAgent === '' ? '' : ' (' . $userAgent . '))'));
             closelog();
             break;
         default:
