@@ -1297,6 +1297,8 @@ version 28-git (????-??-??):
   - enhacement: 'hide_data_summaries' permission block access to customer and node search result presenation
     in tabelar or csv format [chilan]
   - improvement: added persistent filter support to netranges module [chilan]
+  - improvement: 'mail.encoding' with '8bit' as default value allows to control transfer encoding used
+    in posts sent via PHPMailer library [chilan]
 
 version 27.0 (2021-08-20):
 
