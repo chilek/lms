@@ -145,12 +145,23 @@ if (isset($_GET['highlight']) && is_array($_GET['highlight'])
     && is_string($_GET['highlight']['pattern'] ?? null) && $_GET['highlight']['pattern'] !== '') {
     $highlight = $_GET['highlight'];
     if (isset($highlight['regexp'])) {
-        foreach ($ticket['messages'] as &$message) {
-            $message['body'] = preg_replace(
-                '/(' . $highlight['pattern'] . ')/i',
-                '[matched-text]$1[/matched-text]',
-                $message['body']
-            );
+        $pattern = str_replace(array("\0", '/'), array('', '\/'), $highlight['pattern']);
+        if ($pattern !== '' && strlen($pattern) <= 256) {
+            $previousBacktrackLimit = ini_get('pcre.backtrack_limit');
+            ini_set('pcre.backtrack_limit', '10000');
+            foreach ($ticket['messages'] as &$message) {
+                $highlightedBody = preg_replace(
+                    '/(' . $pattern . ')/i',
+                    '[matched-text]$1[/matched-text]',
+                    $message['body']
+                );
+                if (is_string($highlightedBody)) {
+                    $message['body'] = $highlightedBody;
+                }
+            }
+            if ($previousBacktrackLimit !== false) {
+                ini_set('pcre.backtrack_limit', $previousBacktrackLimit);
+            }
         }
     } else {
         foreach ($ticket['messages'] as &$message) {
