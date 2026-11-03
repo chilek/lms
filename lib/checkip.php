@@ -36,15 +36,16 @@ if ($allow_from) {
     if (!Utils::isAllowedIP($ipaddr, $allow_from)) {
         header('HTTP/1.1 403 Forbidden');
         echo '<!DOCTYPE html>
-		<HTML><HEAD>
-		<TITLE>403 Forbidden</TITLE>
-		</HEAD><BODY>
-		<H1>Forbidden</H1>
-		You don\'t have permission to access ' . $_SERVER['REQUEST_URI'] . '
-		on this server.<P>
-		<HR>
+		<html><head>
+		<title>403 Forbidden</title>
+		</head><body>
+		<h1>Forbidden</h1>
+		You don\'t have permission to access '
+            . htmlspecialchars((string) $_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8') . '
+		on this server.<p>
+		<hr>
 		' . $_SERVER['SERVER_SIGNATURE'] . '
-		</BODY></HTML>';
+		</body></html>';
         exit(0);
     }
 }
