@@ -3244,6 +3244,9 @@ $(function() {
 	});
 
 	window.addEventListener('message', function(e) {
+		if (e.origin !== window.location.origin || !e.data || typeof e.data !== 'object') {
+			return;
+		}
 		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
 			var elem = $(e.data.targetSelector);
 			elem.val(e.data.targetValue);
