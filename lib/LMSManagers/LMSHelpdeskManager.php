@@ -3257,6 +3257,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'ssl_verify_peer' => $config_section . '.smtp_ssl_verify_peer',
             'ssl_verify_peer_name' => $config_section . '.smtp_ssl_verify_peer_name',
             'ssl_allow_self_signed' => $config_section . '.smtp_ssl_allow_self_signed',
+            'encoding' => $config_section . '.encoding',
             'smime_certificate' => $config_section . '.smime_certificate',
             'smime_key' => $config_section . '.smime_key',
             'smime_ca_chain' => $config_section . '.smime_ca_chain',

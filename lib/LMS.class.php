@@ -3033,6 +3033,14 @@ class LMS
 
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
+        static $phpMailerEncodings = [
+            '7bit' => \PHPMailer\PHPMailer\ENCODING_7BIT,
+            '8bit' => \PHPMailer\PHPMailer\ENCODING_8BIT,
+            'base64' => \PHPMailer\PHPMailer\ENCODING_BASE64,
+            'binary' => \PHPMailer\PHPMailer\ENCODING_BINARY,
+            'quoted-printable' => \PHPMailer\PHPMailer\ENCODING_QUOTED_PRINTABLE,
+        ];
+
         $persist = is_null($persist) ? ConfigHelper::checkConfig('mail.smtp_persist', true) : $persist;
 
         $mail_backend = ConfigHelper::getConfig('mail.backend');
@@ -3049,6 +3057,8 @@ class LMS
         $smtp_ssl_verify_peer = ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer');
         $smtp_ssl_verify_peer_name = ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name');
         $smtp_ssl_allow_self_signed = ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true);
+
+        $mailEncoding = ConfigHelper::getConfig('mail.encoding', '8bit');
 
         $smime_certificate = ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert');
         $smime_key = ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key');
@@ -3235,6 +3245,9 @@ class LMS
                 $this->mail_object->addReplyTo($headers['Reply-To']);
             }
             $this->mail_object->CharSet = 'UTF-8';
+
+            $this->mail_object->Encoding = $phpMailerEncodings[$mailEncoding] ?? \PHPMailer\PHPMailer\ENCODING_8BIT;
+
             $this->mail_object->Subject = $headers['Subject'];
 
             $this->mail_object->SMTPDebug = $debug_level;
