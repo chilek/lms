@@ -682,7 +682,7 @@ $query = "SELECT
 			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					SUM(vc.billedtime) AS totaltime,
-					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
+					" . ($billing_invoice_separate_fractions ? ' COUNT(*) AS call_count, vc.fraction AS call_fraction, ' : '')
                     . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc

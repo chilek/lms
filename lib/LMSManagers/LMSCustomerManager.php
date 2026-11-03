@@ -1431,7 +1431,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE a.suspended = 0
                         AND a.commited = 1
                     GROUP BY a.customerid
-                    HAVING COUNT(a.*) = SUM(CASE WHEN a.dateto = 0 THEN 1 ELSE 0 END)';
+                    HAVING COUNT(*) = SUM(CASE WHEN a.dateto = 0 THEN 1 ELSE 0 END)';
                 break;
             case -16:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended <> 0 AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)';
@@ -4233,7 +4233,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($count) {
             return $this->db->GetOne(
-                'SELECT COUNT(c.*) FROM customercalls c '
+                'SELECT COUNT(*) FROM customercalls c '
                 . implode(' ', $join)
                 . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
             );
