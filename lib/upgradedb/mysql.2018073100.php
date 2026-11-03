@@ -39,7 +39,7 @@ $this->Execute("
 
 $this->Execute("
 	INSERT INTO rtticketlastview (ticketid, userid, vdate) (
-		SELECT t.id, u.id, ?NOW? FROM rttickets t, users u
+		SELECT t.id, u.id, UNIX_TIMESTAMP() FROM rttickets t, users u
 	);
 ");
 
