@@ -26,7 +26,7 @@ $this->BeginTrans();
 define('CCONSENT_TRANSFERFORM', 7);
 $this->Execute(
     'INSERT INTO customerconsents (customerid, cdate, type)
-        (SELECT id, ?NOW?, ? FROM customers)',
+        (SELECT id, UNIX_TIMESTAMP(), ? FROM customers)',
     array(CCONSENT_TRANSFERFORM)
 );
 
