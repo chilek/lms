@@ -33,6 +33,9 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
+    if (!empty($document['templ']) && preg_match('/\.\.|[\/\\\\\0]/', $document['templ'])) {
+        $document['templ'] = '';
+    }
 
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
@@ -864,7 +867,7 @@ if (isset($_POST['document'])) {
         }
     }
 
-    if (isset($_GET['templ'])) {
+    if (isset($_GET['templ']) && !preg_match('/\.\.|[\/\\\\\0]/', $_GET['templ'])) {
         $document['templ'] = $_GET['templ'];
 
         foreach ($documents_dirs as $doc) {
@@ -879,7 +882,9 @@ if (isset($_POST['document'])) {
         $script_result = '';
 
         // read template information
-        include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+        if (!empty($template_dir)) {
+            include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+        }
 
         if (!empty($engine['title'])) {
             $document['title'] = $engine['title'];

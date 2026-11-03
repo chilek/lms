@@ -34,6 +34,9 @@ $layout['pagetitle'] = trans('Documents Generator');
 
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
+    if (!empty($document['templ']) && preg_match('/\.\.|[\/\\\\\0]/', $document['templ'])) {
+        $document['templ'] = '';
+    }
 
     if (!$document['type']) {
         $error['type'] = trans('Document type is required!');
