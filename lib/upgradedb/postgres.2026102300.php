@@ -21,9 +21,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("SELECT customerbalances_refresh()");
-
 $this->Execute("ALTER TABLE customerbalances ADD PRIMARY KEY (customerid)");
+
+$this->Execute("SELECT customerbalances_refresh()");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026102300', 'dbversion'));
 

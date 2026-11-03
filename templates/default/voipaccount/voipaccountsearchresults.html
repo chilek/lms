@@ -73,7 +73,7 @@
                 {$voipaccountlist[voipaccountlist].phone}
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
-                {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
+                {if ConfigHelper::checkPrivilege('hide_voip_passwords', false)}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
             </td>
             <td class="text-right nobr" align="right">
                 <a class="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="{trans("Delete")}"></a>
