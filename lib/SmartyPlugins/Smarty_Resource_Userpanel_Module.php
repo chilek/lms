@@ -42,9 +42,10 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
 
         $i = strpos($name, ':');
         if ($i === false) {
-            $module = $_GET['m'];
+            $module = $this->userpanelModuleName($_GET['m'] ?? '');
         } else {
             [$module, $name] = explode(':', $name, 2);
+            $module = $this->userpanelModuleName($module);
 
             foreach ($modules_dirs as $suspected_module_dir) {
                 if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
@@ -54,8 +55,14 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
                 }
             }
         }
+        $name = $this->userpanelTemplateName($name);
+        if ($module === '' || $name === '') {
+            $mtime = 0;
+            $source = null;
+            return;
+        }
 
-        $style = ConfigHelper::getConfig('userpanel.style', 'default');
+        $style = $this->userpanelStyleName();
         $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
             . $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($template_path)) {
@@ -88,9 +95,10 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
 
         $i = strpos($name, ':');
         if ($i === false) {
-            $module = $_GET['m'];
+            $module = $this->userpanelModuleName($_GET['m'] ?? '');
         } else {
             [$module, $name] = explode(':', $name, 2);
+            $module = $this->userpanelModuleName($module);
 
             foreach ($modules_dirs as $suspected_module_dir) {
                 if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
@@ -100,8 +108,12 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
                 }
             }
         }
+        $name = $this->userpanelTemplateName($name);
+        if ($module === '' || $name === '') {
+            return 0;
+        }
 
-        $style = ConfigHelper::getConfig('userpanel.style', 'default');
+        $style = $this->userpanelStyleName();
         $template_path = $dir . $module . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR
             .  $style . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($template_path)) {
@@ -114,5 +126,32 @@ class Smarty_Resource_Userpanel_Module extends Smarty_Resource_Custom
                 return 0;
             }
         }
+    }
+
+    private function userpanelModuleName($module)
+    {
+        $module = preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $module);
+
+        return is_string($module) ? $module : '';
+    }
+
+    private function userpanelTemplateName($name)
+    {
+        $name = str_replace('\\', '/', (string) $name);
+        if ($name === '' || strpos($name, '..') !== false || !preg_match('/^[a-zA-Z0-9_.-]+$/D', $name)) {
+            return '';
+        }
+
+        return $name;
+    }
+
+    private function userpanelStyleName()
+    {
+        $style = ConfigHelper::getConfig('userpanel.style', 'default');
+        if (!is_string($style) || !preg_match('/^[a-zA-Z0-9_-]+$/D', $style)) {
+            return 'default';
+        }
+
+        return $style;
     }
 }
