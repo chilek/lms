@@ -2051,7 +2051,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . (isset($time) && $time ?
                 'LEFT JOIN (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN value * currencyvalue ELSE 0 END) AS balance,
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END) AS balance,
                         customerid
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
