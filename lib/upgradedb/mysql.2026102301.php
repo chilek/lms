@@ -21,6 +21,9 @@
  *
  */
 
+define('CONTACT_LANDLINE_2026102301', 4);
+define('CONTACT_EMAIL_2026102301', 8);
+
 $this->BeginTrans();
 
 if (!$this->ResourceExists('netnodecontacts', LMSDB::RESOURCE_TYPE_TABLE)) {
@@ -52,7 +55,7 @@ if ($this->ResourceExists('netnodes.admcontact', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $contacts = $this->GetAll('SELECT id, contact FROM netnodecontacts WHERE type IS NULL');
     if (!empty($contacts)) {
         foreach ($contacts as $contact) {
-            $type = check_email(trim($contact['contact'])) ? CONTACT_EMAIL : CONTACT_LANDLINE;
+            $type = check_email(trim($contact['contact'])) ? CONTACT_EMAIL_2026102301 : CONTACT_LANDLINE_2026102301;
             $this->Execute(
                 'UPDATE netnodecontacts SET type = ? WHERE id = ?',
                 [$type, $contact['id']]
