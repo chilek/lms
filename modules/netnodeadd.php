@@ -41,10 +41,17 @@ if ($api) {
 }
 
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
 if (isset($netnodedata)) {
     if ($netnodedata['name'] == '') {
         $error['name'] = trans('Network node name is required!');
     }
+
+    $contacts = [];
+    validate_customer_phones($netnodedata, $contacts, $error);
+    validate_customer_emails($netnodedata, $contacts, $error);
+    $netnodedata['contacts'] = $contacts;
 
     if ($api) {
         if (isset($netnodedata['division'])) {

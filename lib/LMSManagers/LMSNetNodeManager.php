@@ -26,6 +26,35 @@
 
 class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 {
+    private function replaceNetNodeContacts($netnodeid, array $contacts)
+    {
+        $this->db->BeginTrans();
+
+        try {
+            $result = $this->db->Execute(
+                'DELETE FROM netnodecontacts WHERE netnodeid = ?',
+                [$netnodeid]
+            );
+            if ($result === false) {
+                throw new RuntimeException('Unable to delete network node contacts.');
+            }
+
+            foreach ($contacts as $contact) {
+                $result = $this->db->Execute(
+                    'INSERT INTO netnodecontacts (netnodeid, contact, name, type) VALUES (?, ?, ?, ?)',
+                    [$netnodeid, $contact['contact'], $contact['name'], $contact['type']]
+                );
+                if ($result === false) {
+                    throw new RuntimeException('Unable to insert network node contact.');
+                }
+            }
+
+            $this->db->CommitTrans();
+        } catch (Throwable $e) {
+            $this->db->RollbackTrans();
+            throw $e;
+        }
+    }
 
     public function GetNetNodeList($search = array(), $order = 'name,asc')
     {
@@ -249,6 +278,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function NetNodeAdd($netnodedata)
     {
+        $contacts = $netnodedata['contacts'] ?? [];
+
         if (!empty($netnodedata['ownerid']) && $netnodedata['customer_address_id'] > 0) {
             $address_id = $netnodedata['customer_address_id'];
         } elseif (!empty($netnodedata['location_city_name'])) {
@@ -272,7 +303,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
             'invprojectid'    => intval($netnodedata['projectid']) ? $netnodedata['projectid'] : null,
             'info'        => $netnodedata['info'],
-            'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
             'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
             'address_id'       => $address_id,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
@@ -295,6 +325,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             . ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
 
         $id = $this->db->GetLastInsertID('netnodes');
+
+        $this->replaceNetNodeContacts($id, $contacts);
 
         return $id;
     }
@@ -321,6 +353,11 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
     public function NetNodeUpdate($netnodedata)
     {
         $args = array();
+        $contacts = null;
+        if (array_key_exists('contacts', $netnodedata) || !empty($netnodedata['contacts_present'])) {
+            $contacts = $netnodedata['contacts'] ?? [];
+        }
+
         if (array_key_exists('name', $netnodedata)) {
             $args['name'] = $netnodedata['name'];
         }
@@ -356,9 +393,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         }
         if (array_key_exists('info', $netnodedata)) {
             $args['info'] = $netnodedata['info'];
-        }
-        if (array_key_exists('admcontact', $netnodedata)) {
-            $args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
         }
         if (array_key_exists('lastinspectiontime', $netnodedata)) {
             $args['lastinspectiontime'] = empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'];
@@ -424,6 +458,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
         }
 
+        if (isset($contacts)) {
+            $this->replaceNetNodeContacts($netnodedata['id'], $contacts);
+        }
+
         return $res;
     }
 
@@ -480,6 +518,21 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         if ($result['ownerid']) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['owner'] = $customer_manager->getCustomerName($result['ownerid']);
+        }
+
+        $result['contacts'] = $this->db->GetAll(
+            'SELECT id, contact, name, type FROM netnodecontacts WHERE netnodeid = ? ORDER BY id',
+            [$id]
+        ) ?: [];
+
+        $result['phones'] = [];
+        $result['emails'] = [];
+        foreach ($result['contacts'] as $contact) {
+            if ($contact['type'] & CONTACT_EMAIL) {
+                $result['emails'][] = $contact;
+            } else {
+                $result['phones'][] = $contact;
+            }
         }
 
         return $result;
