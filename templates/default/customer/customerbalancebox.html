@@ -268,7 +268,8 @@
 									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
 										{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
 											tip="Clone"}
-										{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+										{button type="link" icon="correction" class="revise-invoice"
+											href="?m=invoicenote&id={$item.docid}&action=init"
 											tip="Revise"}
 									{/if}
 								{/if}
@@ -362,7 +363,8 @@
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
 									{if ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
-										{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+										{button type="link" icon="correction" class="revise-invoice"
+											href="?m=invoicenote&id={$item.docid}&action=init"
 											tip="Revise"}
 									{/if}
 								{/if}
@@ -730,6 +732,11 @@
 </div>
 
 <script>
+
+	$('.revise-invoice').click(function() {
+		location.href = $(this).attr('href') + '&form_tab_id=' + lmsTabId;
+		return false;
+	});
 
 {if !$limit}
 	$('#customerbalancepanel').show();

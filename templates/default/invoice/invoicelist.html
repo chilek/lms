@@ -294,7 +294,7 @@
 								{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$invoice.id}&clone=1"
 									tip="Clone"}
 							{/if}
-							{button type="link" icon="correction" href="?m=invoicenote&id={$invoice.id}&action=init" tip="Revise"}
+							{button type="link" icon="correction" class="revise-invoice" href="?m=invoicenote&id={$invoice.id}&action=init" tip="Revise"}
 						{/if}
 					{/if}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
@@ -528,6 +528,11 @@
 </FORM>
 
 <script>
+
+	$('.revise-invoice').click(function() {
+		location.href = $(this).attr('href') + '&form_tab_id=' + lmsTabId;
+		return false;
+	});
 
 	$('.delete-invoice').click(function () {
 		var published = parseInt($(this).closest('tr').attr('data-published'));
