@@ -877,7 +877,7 @@ class Session
             return false;
         }
 
-        return $this->passwd == $passwd;
+        return hash_equals((string) $passwd, (string) $this->passwd);
     }
 
     private function getAllowedCustomerStatus()
