@@ -3040,11 +3040,11 @@ class LMS
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
         static $phpMailerEncodings = [
-            '7bit' => \PHPMailer\PHPMailer\ENCODING_7BIT,
-            '8bit' => \PHPMailer\PHPMailer\ENCODING_8BIT,
-            'base64' => \PHPMailer\PHPMailer\ENCODING_BASE64,
-            'binary' => \PHPMailer\PHPMailer\ENCODING_BINARY,
-            'quoted-printable' => \PHPMailer\PHPMailer\ENCODING_QUOTED_PRINTABLE,
+            '7bit' => \PHPMailer\PHPMailer\PHPMailer::ENCODING_7BIT,
+            '8bit' => \PHPMailer\PHPMailer\PHPMailer::ENCODING_8BIT,
+            'base64' => \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+            'binary' => \PHPMailer\PHPMailer\PHPMailer::ENCODING_BINARY,
+            'quoted-printable' => \PHPMailer\PHPMailer\PHPMailer::ENCODING_QUOTED_PRINTABLE,
         ];
 
         $persist = is_null($persist) ? ConfigHelper::checkConfig('mail.smtp_persist', true) : $persist;
