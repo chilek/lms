@@ -786,7 +786,7 @@ switch ($mode) {
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match('~' . $regexSearch . '~i', $row['name'])) {
                         $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match('~' . $regexSearch . '~i', $row['serialnumber'])) {
-                        $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                        $description = trans('Serial number:') . ' ' . htmlspecialchars($row['serialnumber']);
                     } else if ((empty($properties) || isset($properties['ipaddr'])) && preg_match('~' . $regexSearch . '~i', $row['ipaddr'])) {
                         $description = trans('IP:') . ' ' . $row['ipaddr'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match('~' . $regexSearch . '~i', $row['location'])) {
@@ -930,9 +930,9 @@ switch ($mode) {
                         $description = trans('Phone') . ': '
                             . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor_phone']));
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match('~^' . $regexSearch . '~i', $row['name'])) {
-                        $description = trans('First/last name') . ': ' . $row['name'];
+                        $description = trans('First/last name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match('~^' . $regexSearch . '~i', $row['lastname'])) {
-                        $description = trans('First/last name') . ': ' . $row['lastname'];
+                        $description = trans('First/last name') . ': ' . htmlspecialchars($row['lastname']);
                     }
 
                     $result[$row['id']] = array_merge(
@@ -1200,7 +1200,7 @@ switch ($mode) {
     */
                     $name = $row['fullnumber'];
                     $name_class = '';
-                    $description = truncate_str($row['customername'], 35);
+                    $description = htmlspecialchars(truncate_str($row['customername'], 35));
                     //$description = trans('Document ID:') . ' ' . $row['id'];
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['cid'];
