@@ -33,7 +33,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
-    if (!empty($document['templ']) && preg_match('/\.\.|[\/\\\\\0]/', $document['templ'])) {
+    $template_dir = GetDocumentTemplateDirectory($document['templ'] ?? null, $doc_dir);
+    if ($template_dir === null) {
         $document['templ'] = '';
     }
 
@@ -242,14 +243,6 @@ if (isset($_POST['document'])) {
         $division = $LMS->GetDivision($customer['divisionid']);
 
         if (!empty($document['templ'])) {
-            foreach ($documents_dirs as $doc) {
-                if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
-                    $doc_dir = $doc;
-                    $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
-                    break;
-                }
-            }
-
             $result = '';
             $script_result = '';
 
@@ -867,16 +860,9 @@ if (isset($_POST['document'])) {
         }
     }
 
-    if (isset($_GET['templ']) && !preg_match('/\.\.|[\/\\\\\0]/', $_GET['templ'])) {
+    $template_dir = GetDocumentTemplateDirectory($_GET['templ'] ?? null, $doc_dir);
+    if ($template_dir !== null) {
         $document['templ'] = $_GET['templ'];
-
-        foreach ($documents_dirs as $doc) {
-            if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
-                $doc_dir = $doc;
-                $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
-                break;
-            }
-        }
 
         $result = '';
         $script_result = '';
