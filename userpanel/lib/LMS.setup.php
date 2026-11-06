@@ -54,7 +54,10 @@ foreach ($modules_dirs as $suspected_module_dir) {
 
 $SMARTY->assignByRef('menu', $USERPANEL->MODULES);
 
-$module = $_GET['module'] ?? 'userpanel';
+$module = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['module'] ?? 'userpanel');
+if ($module === '') {
+    $module = 'userpanel';
+}
 
 // Execute module
 $layout['pagetitle'] = trans('Configure Module: $a', $module);
@@ -79,6 +82,10 @@ if (isset($modulefile_include)) {
     include($modulefile_include);
 
     $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'setup';
+    $function = preg_replace('/[^a-zA-Z0-9_-]/', '', $function);
+    if ($function === '') {
+        $function = 'setup';
+    }
 
     if (function_exists('module_'.$function)) {
         $to_execute = 'module_'.$function;

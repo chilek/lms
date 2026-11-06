@@ -58,7 +58,9 @@ if (!$LMS->CustomerExists($customerid) || !$LMS->CustomerExists($old_customerid)
 if (isset($value)) {
     $currencyvalue = $LMS->getCurrencyValue($currency);
     if (!isset($currencyvalue)) {
-        die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!<br>');
+        die('Fatal error: couldn\'t get quote for '
+            . htmlspecialchars((string) $currency, ENT_QUOTES, 'UTF-8')
+            . ' currency!<br>');
     }
 
     $cashes = array(

@@ -2668,8 +2668,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         foreach ($authcodeSources as $source) {
             if (strpos($source, 'random') === 0) {
                 if (!empty($data['phone']) && preg_match('/^random(?<length>\d*)$/', $source, $matches)) {
-                    $min_value = pow(10, empty($matches['length']) ? 8 : $matches['length']);
-                    $authcode = mt_rand($min_value, $min_value * 10 - 1);
+                    $length = (int) (empty($matches['length']) ? 8 : $matches['length']);
+                    if ($length >= 1 && $length <= 17) {
+                        $minValue = 10 ** $length;
+                        $authcode = random_int($minValue, $minValue * 10 - 1);
+                    }
                 }
             } else {
                 switch ($source) {
@@ -2984,16 +2987,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         if (!empty($password)) {
                             $pdf_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-document-attachment-' . uniqid('', true);
                             file_put_contents($pdf_file_name, $contents);
-                            $protection_command = str_replace(
+                            $protection_command = Utils::substituteShellPlaceholders(
+                                $document_protection_command,
                                 array(
-                                    '%in-file',
-                                    '%password'
-                                ),
-                                array(
-                                    $pdf_file_name,
-                                    $password,
-                                ),
-                                $document_protection_command
+                                    '%in-file' => $pdf_file_name,
+                                    '%password' => $password,
+                                )
                             );
                             $pipes = null;
                             $process = proc_open(

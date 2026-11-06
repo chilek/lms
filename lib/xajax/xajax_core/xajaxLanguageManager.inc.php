@@ -143,6 +143,9 @@ final class xajaxLanguageManager
     public function configure($sName, $mValue)
     {
         if ('language' == $sName) {
+            if (!is_string($mValue) || !preg_match('/^[A-Za-z_-]+$/D', $mValue)) {
+                return;
+            }
             if ($mValue !== $this->sLanguage) {
                 $sFolder = __DIR__;
                 @include $sFolder . '/xajax_lang_' . $mValue . '.inc.php';

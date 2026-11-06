@@ -26,7 +26,7 @@
 
 $db = $_GET['db'] ?? '';
 
-if (!preg_match('/^[a-zA-Z0-9_.-]+$/', $db)) {
+if (!preg_match('/^[a-zA-Z0-9_-]+$/D', $db)) {
     $SESSION->redirect('?m=dblist');
 }
 

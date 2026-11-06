@@ -51,7 +51,7 @@
                         window.parent.parent.postMessage({
                                 targetValue: e.target.parentNode.getAttribute('data-netdevice-id'),
                                 targetSelector: "#" + targetfield.getAttribute('id')
-                            }, "*"
+                            }, window.location.origin
                         );
                         window.parent.parent.popclick();
                     }

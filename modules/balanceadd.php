@@ -84,7 +84,9 @@ $SESSION->save('addbst', $addbalance['servicetype']);
 if (isset($addbalance['mcustomerid'])) {
     $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
     if (!isset($addbalance['currencyvalue'])) {
-        die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+        die('Fatal error: couldn\'t get quote for '
+            . htmlspecialchars((string) $addbalance['currency'], ENT_QUOTES, 'UTF-8')
+            . ' currency!<br>');
     }
     foreach ($addbalance['mcustomerid'] as $value) {
         if ($LMS->CustomerExists($value)) {
@@ -166,7 +168,9 @@ if (isset($addbalance['mcustomerid'])) {
             } else {
                 $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
                 if (!isset($addbalance['currencyvalue'])) {
-                    die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+                    die('Fatal error: couldn\'t get quote for '
+                        . htmlspecialchars((string) $addbalance['currency'], ENT_QUOTES, 'UTF-8')
+                        . ' currency!<br>');
                 }
                 $LMS->AddBalance($addbalance);
             }
@@ -181,7 +185,9 @@ if (isset($addbalance['mcustomerid'])) {
         if (isset($addbalance['currency'])) {
             $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
             if (!isset($addbalance['currencyvalue'])) {
-                die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+                die('Fatal error: couldn\'t get quote for '
+                    . htmlspecialchars((string) $addbalance['currency'], ENT_QUOTES, 'UTF-8')
+                    . ' currency!<br>');
             }
         } else {
             $addbalance['currency'] = Localisation::getCurrentCurrency();

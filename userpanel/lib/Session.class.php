@@ -360,7 +360,7 @@ class Session
                                 }
 
                                 if (isset($phone)) {
-                                    $authcode = mt_rand(100000, 999999);
+                                    $authcode = random_int(100000, 999999);
                                     $this->save('session_authcode', $authcode);
                                     $this->save('session_authcode_dt', time());
 
@@ -499,7 +499,7 @@ class Session
                                                     } else {
                                                         $phones = explode(',', $authinfo['phones']);
                                                         if (count($phones) == 1) {
-                                                            $authcode = mt_rand(100000, 999999);
+                                                            $authcode = random_int(100000, 999999);
                                                             $this->save('session_authcode', $authcode);
                                                             $this->save('session_authcode_dt', time());
 
@@ -869,7 +869,7 @@ class Session
         }
 
         if (preg_match('/^[0-9a-f]{32}$/i', $passwd)) {
-            return md5($this->passwd) == $passwd;
+            return hash_equals(strtolower($passwd), md5($this->passwd));
         }
 
         if ($this->unsecure_pin_validity && time() - $passwdlastchange >= $this->unsecure_pin_validity) {
@@ -877,7 +877,7 @@ class Session
             return false;
         }
 
-        return $this->passwd == $passwd;
+        return hash_equals((string) $passwd, (string) $this->passwd);
     }
 
     private function getAllowedCustomerStatus()

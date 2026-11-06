@@ -34,6 +34,10 @@ $layout['pagetitle'] = trans('Documents Generator');
 
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
+    $template_dir = GetDocumentTemplateDirectory($document['templ'] ?? null, $doc_dir);
+    if ($template_dir === null) {
+        $document['templ'] = '';
+    }
 
     if (!$document['type']) {
         $error['type'] = trans('Document type is required!');
@@ -143,16 +147,6 @@ if (isset($_POST['document'])) {
     $result = handle_file_uploads('attachments', $error);
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
-
-    if ($document['templ']) {
-        foreach ($documents_dirs as $doc) {
-            if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
-                $doc_dir = $doc;
-                $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
-                break;
-            }
-        }
-    }
 
     $globalfiles = array();
     if (!empty($attachments)) {
@@ -469,14 +463,6 @@ if (isset($_POST['document'])) {
         die;
     } else {
         if ($document['templ']) {
-            foreach ($documents_dirs as $doc) {
-                if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php')) {
-                    $doc_dir = $doc;
-                    $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
-                    break;
-                }
-            }
-
             $result = '';
             $script_result = '';
 

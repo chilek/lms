@@ -167,7 +167,9 @@ if (isset($_POST['receipt'])) {
     if (!$error) {
         $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $cdate);
         if (!isset($receipt['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+            die('Fatal error: couldn\'t get quote for '
+                . htmlspecialchars((string) $receipt['currency'], ENT_QUOTES, 'UTF-8')
+                . ' currency!<br>');
         }
 
         $DB->BeginTrans();

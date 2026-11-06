@@ -24,17 +24,32 @@
  *  $Id$
  */
 
-// support for dynamic loading of plugin javascript code
-if (isset($_GET['template']) && preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['template'])) {
+function GetDocumentTemplateDirectory($template, &$doc_dir)
+{
+    global $documents_dirs;
+
+    $doc_dir = null;
+    // Use the same names as GetDocumentTemplates; reject request arrays as well.
+    if (!is_string($template) || !preg_match('/\A[a-zA-Z0-9_-]+\z/', $template)) {
+        return null;
+    }
+
     foreach ($documents_dirs as $doc) {
-        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'] . DIRECTORY_SEPARATOR . 'info.php')) {
+        $directory = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
+        if (is_readable($directory . DIRECTORY_SEPARATOR . 'info.php')) {
             $doc_dir = $doc;
-            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'];
-            break;
+            return $directory;
         }
     }
+
+    return null;
+}
+
+// support for dynamic loading of plugin javascript code
+if (isset($_GET['template'])) {
+    $template_dir = GetDocumentTemplateDirectory($_GET['template'], $doc_dir);
     // read template information
-    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
@@ -85,16 +100,11 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     $result = '';
 
-    foreach ($documents_dirs as $doc) {
-        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
-            $doc_dir = $doc;
-            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
-            break;
-        }
-    }
+    $engine = array();
+    $template_dir = GetDocumentTemplateDirectory($template, $doc_dir);
 
     // read template information
-    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
@@ -124,7 +134,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
 
     $JSResponse->assign('plugin', 'innerHTML', $result);
     if ($update_title) {
-        $JSResponse->assign('title', 'value', $engine['form_title'] ?? $engine['title']);
+        $JSResponse->assign('title', 'value', $engine['form_title'] ?? $engine['title'] ?? '');
     }
 
     if (isset($engine['default_number_plan_id']) && (ctype_digit($engine['default_number_plan_id']) || is_int($engine['default_number_plan_id']))) {
@@ -295,44 +305,41 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 
     $references = $LMS->GetDocuments($customerid, null, isset($doctemplate));
 
-    if (!empty($doctemplate)) {
+    $template_dir = GetDocumentTemplateDirectory($doctemplate, $doc_dir);
+    if ($template_dir !== null) {
         ob_start();
-        foreach ($documents_dirs as $doc_dir) {
-            $infofile = $doc_dir . '/templates/' . $doctemplate . '/info.php';
-            if (is_readable($infofile)) {
-                include($infofile);
-                if (isset($engine['reference_templates'])) {
-                    if (is_array($engine['reference_templates'])) {
-                        $reference_templates = $engine['reference_templates'];
-                    } else {
-                        $reference_templates = array($engine['reference_templates']);
-                    }
-                    foreach ($references as $idx => $reference) {
-                        if (!empty($reference['doctemplate']) && !in_array($reference['doctemplate'], $reference_templates)) {
-                            unset($references[$idx]);
-                        }
-                    }
-                }
-                if (isset($engine['reference_types'])) {
-                    if (is_array($engine['reference_types'])) {
-                        $reference_types = $engine['reference_types'];
-                    } else {
-                        $reference_types = array($engine['reference_types']);
-                    }
-                    foreach ($references as $idx => $reference) {
-                        if (!in_array($reference['doctype'], $reference_types)) {
-                            unset($references[$idx]);
-                        }
-                    }
+        $infofile = $template_dir . DIRECTORY_SEPARATOR . 'info.php';
+        if (is_readable($infofile)) {
+            include($infofile);
+            if (isset($engine['reference_templates'])) {
+                if (is_array($engine['reference_templates'])) {
+                    $reference_templates = $engine['reference_templates'];
                 } else {
-                    foreach ($references as $idx => $reference) {
-                        if ($reference['doctype'] >= 0) {
-                            unset($references[$idx]);
-                        }
+                    $reference_templates = array($engine['reference_templates']);
+                }
+                foreach ($references as $idx => $reference) {
+                    if (!empty($reference['doctemplate']) && !in_array($reference['doctemplate'], $reference_templates)) {
+                        unset($references[$idx]);
                     }
                 }
-
-                break;
+            }
+            if (isset($engine['reference_types'])) {
+                if (is_array($engine['reference_types'])) {
+                    $reference_types = $engine['reference_types'];
+                } else {
+                    $reference_types = array($engine['reference_types']);
+                }
+                foreach ($references as $idx => $reference) {
+                    if (!in_array($reference['doctype'], $reference_types)) {
+                        unset($references[$idx]);
+                    }
+                }
+            } else {
+                foreach ($references as $idx => $reference) {
+                    if ($reference['doctype'] >= 0) {
+                        unset($references[$idx]);
+                    }
+                }
             }
         }
         ob_end_clean();
@@ -368,16 +375,11 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
 
     $result = '';
 
-    foreach ($documents_dirs as $doc) {
-        if (is_readable($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . DIRECTORY_SEPARATOR . 'info.php')) {
-            $doc_dir = $doc;
-            $template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
-            break;
-        }
-    }
+    $engine = array();
+    $template_dir = GetDocumentTemplateDirectory($template, $doc_dir);
 
     // read template information
-    if (is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+    if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
         if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
