@@ -1144,7 +1144,8 @@ if (!empty($assigns)) {
             });
 
             $record_index = count($history);
-            foreach ($history as $record) {
+            $lastDeadline = null;
+            foreach ($history as $idx => $record) {
                 if ($record['deadline'] >= $period_end) {
                     break;
                 }
@@ -1152,11 +1153,29 @@ if (!empty($assigns)) {
                 $balance = round($balance, 2);
                 $record_index--;
                 if (empty($record['docid'])) {
+                    if (empty($record_index)
+                        && isset($lastDeadline)
+                        && $record['deadline'] >= $lastDeadline) {
+                        $rewards[$cid] = false;
+                        break;
+                    }
                     continue;
                 }
-                if ($balance < 0 && ($reward_penalty_last_deadline_check_only && !$record_index || !$reward_penalty_last_deadline_check_only)) {
-                    $rewards[$cid] = false;
-                    break;
+                if ($balance < 0) {
+                    if ($reward_penalty_last_deadline_check_only) {
+                        $documentsLeft = array_filter(
+                            array_splice($history, $idx + 1),
+                            function($record) {
+                                return !empty($record['docid']);
+                            }
+                        );
+                        if (empty($documentsLeft)) {
+                            $lastDeadline = $record['deadline'];
+                        }
+                    } else {
+                        $rewards[$cid] = false;
+                        break;
+                    }
                 }
             }
         }
