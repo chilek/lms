@@ -1143,7 +1143,6 @@ if (!empty($assigns)) {
                 return $a['deadline'] - $b['deadline'];
             });
 
-            $record_index = count($history);
             $lastDeadline = null;
             foreach ($history as $idx => $record) {
                 if ($record['deadline'] >= $period_end) {
@@ -1151,13 +1150,14 @@ if (!empty($assigns)) {
                 }
                 $balance += $record['value'];
                 $balance = round($balance, 2);
-                $record_index--;
                 if (empty($record['docid'])) {
-                    if (empty($record_index)
-                        && isset($lastDeadline)
-                        && $record['deadline'] >= $lastDeadline) {
-                        $rewards[$cid] = false;
-                        break;
+                    if (isset($lastDeadline)) {
+                        if ($record['deadline'] >= $lastDeadline) {
+                            $rewards[$cid] = false;
+                            break;
+                        } elseif ($balance >= 0) {
+                            $lastDeadline = null;
+                        }
                     }
                     continue;
                 }
