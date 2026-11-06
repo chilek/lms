@@ -25,14 +25,20 @@
  */
 
 if (isset($_GET['search'])) {
-    $SESSION->restore('customersearch', $search);
+    $SESSION->restore('customersearch', $search, true);
+    if (!isset($search)) {
+        $SESSION->restore('customersearch', $search);
+    }
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
     $SESSION->restore('cslsk', $statesqlskey);
     $SESSION->restore('csln', $network);
     $SESSION->restore('cslng', $nodegroup);
     $SESSION->restore('cslg', $customergroup);
-    $SESSION->restore('cslk', $sqlskey);
+    $SESSION->restore('cslk', $sqlskey, true);
+    if (!isset($sqlskey)) {
+        $SESSION->restore('cslk', $sqlskey);
+    }
     $SESSION->restore('csld', $division);
 
     $customerlist = $LMS->GetCustomerList(compact(
