@@ -51,7 +51,7 @@ if (isset($_GET['template'])) {
     // read template information
     if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
-        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+        if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
         }
         if (is_readable($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -106,7 +106,7 @@ function GetPlugin($template, $customerid, $update_title, $JSResponse)
     // read template information
     if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
-        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+        if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
         }
     }
@@ -174,7 +174,7 @@ function GetDocumentTemplates($rights, $type = null)
                 if (is_readable($infofile)) {
                     unset($engine);
                     include($infofile);
-                    if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                    if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
                         $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
                     }
 
@@ -244,8 +244,12 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
     $document['type'] = $doctype;
-    $SMARTY->assign('docengines', $docengines);
-    $SMARTY->assign('document', $document);
+    $SMARTY->assign(
+        array(
+            'docengines' => $docengines,
+            'document' => $document,
+        )
+    );
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
@@ -300,8 +304,12 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
 {
     global $SMARTY, $LMS, $documents_dirs;
 
-    $SMARTY->assign('cid', $customerid);
-    $SMARTY->assign('document', array('reference' => ''));
+    $SMARTY->assign(
+        array(
+            'cid' => $customerid,
+            'document' => array('reference' => ''),
+        )
+    );
 
     $references = $LMS->GetDocuments($customerid, null, isset($doctemplate));
 
@@ -381,7 +389,7 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
     // read template information
     if ($template_dir !== null && is_readable($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
-        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+        if (isset($engine['vhosts'], $engine['vhosts'][$_SERVER['HTTP_HOST']])) {
             $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
         }
     }
@@ -429,8 +437,12 @@ function GetCustomerConsents($template, $customerid, $JSResponse, $consents = nu
         );
     }
 
-    $SMARTY->assign('variable_prefix', 'document');
-    $SMARTY->assign('variables', $document);
+    $SMARTY->assign(
+        array(
+            'variable_prefix' => 'document',
+            'variables' => $document,
+        )
+    );
 
     $template = $SMARTY->fetch('customer/customerconsents.html');
 

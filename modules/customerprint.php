@@ -158,15 +158,18 @@ switch ($type) {
             ));
         }
 
-        $SMARTY->assign('contactlist', $DB->GetAllByKey(
-            'SELECT customerid, MIN(contact) AS phone
+        $SMARTY->assign(
+            array(
+                'contactlist' => $DB->GetAllByKey(
+                    'SELECT customerid, MIN(contact) AS phone
 				FROM customercontacts WHERE contact <> \'\' AND type & ' . (CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE) . ' > 0
 				GROUP BY customerid',
-            'customerid',
-            array()
-        ));
-
-        $SMARTY->assign('customernodes', $customernodes);
+                    'customerid',
+                    array()
+                ),
+                'customernodes' => $customernodes,
+            )
+        );
 
         if ($sendingregister) {
             $print_template = 'print/printcustomerlist-sendingbook.html';
@@ -710,16 +713,20 @@ switch ($type) {
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {
             $SMARTY->assign('customers', $LMS->GetCustomerNames());
         }
-        $SMARTY->assign('currmonth', date('n'));
-        $SMARTY->assign('curryear', date('Y'));
-        $SMARTY->assign('statyears', $statyears);
-        $SMARTY->assign('months', $months);
-        $SMARTY->assign('networks', $LMS->GetNetworks());
-        $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-        $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-        $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-        $SMARTY->assign('divisions', $LMS->GetDivisions());
-        $SMARTY->assign('printmenu', 'customer');
+        $SMARTY->assign(
+            array(
+                'currmonth' => date('n'),
+                'curryear' => date('Y'),
+                'statyears' => $statyears,
+                'months' => $months,
+                'networks' => $LMS->GetNetworks(),
+                'customergroups' => $LMS->CustomergroupGetAll(),
+                'nodegroups' => $LMS->GetNodeGroupNames(),
+                'cstateslist' => $LMS->GetCountryStates(),
+                'divisions' => $LMS->GetDivisions(),
+                'printmenu' => 'customer',
+            )
+        );
         $SMARTY->display('print/printindex.html');
         break;
 }

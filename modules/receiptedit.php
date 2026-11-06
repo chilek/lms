@@ -676,10 +676,14 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
 
-$SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', count($cashreglist));
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('receipt', $receipt);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'cashreglist' => $cashreglist,
+        'cashregcount' => count($cashreglist),
+        'contents' => $contents,
+        'customer' => $customer,
+        'receipt' => $receipt,
+        'error' => $error,
+    )
+);
 $SMARTY->display('receipt/receiptedit.html');

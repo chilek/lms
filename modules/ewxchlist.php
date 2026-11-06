@@ -112,9 +112,13 @@ $layout['pagetitle'] = trans('Channels List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('channels', $channels);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'channels' => $channels,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('ewxch/ewxchlist.html');

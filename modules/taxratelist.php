@@ -87,9 +87,13 @@ $SESSION->save('trlp', $page);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('taxratelist', $taxratelist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'taxratelist' => $taxratelist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('taxrate/taxratelist.html');

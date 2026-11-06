@@ -61,6 +61,10 @@ $layout['pagetitle'] = trans('State Edit: $a', $name);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('stateedit', $state);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'stateedit' => $state,
+        'error' => $error,
+    )
+);
 $SMARTY->display('state/stateedit.html');

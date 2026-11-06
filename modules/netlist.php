@@ -71,8 +71,12 @@ unset($netlist['direction']);
 
 $listdata['total'] = empty($netlist) ? 0 : count($netlist);
 
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('netlist', $netlist);
-$SMARTY->assign('search', false);
+$SMARTY->assign(
+    array(
+        'pagination' => $pagination,
+        'listdata' => $listdata,
+        'netlist' => $netlist,
+        'search' => false,
+    )
+);
 $SMARTY->display('net/netlist.html');

@@ -86,13 +86,16 @@ $users = $LMS->GetUsers(array(
     'order' => 'rname,asc',
 ));
 
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('divisionid', $divisionid);
-$SMARTY->assign('userid', $userid);
-$SMARTY->assign('users', $users);
-$SMARTY->assign('type', $type);
-
-$SMARTY->assign('numberplanlist', $numberplanlist);
+$SMARTY->assign(
+    array(
+        'pagination' => $pagination,
+        'divisions' => $divisions,
+        'divisionid' => $divisionid,
+        'userid' => $userid,
+        'users' => $users,
+        'type' => $type,
+        'numberplanlist' => $numberplanlist,
+    )
+);
 
 $SMARTY->display('numberplan/numberplanlist.html');

@@ -41,9 +41,13 @@ $layout['pagetitle'] = trans('States List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('statelist', $statelist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'statelist' => $statelist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('state/statelist.html');

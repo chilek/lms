@@ -158,11 +158,15 @@ $sellers = $DB->GetAll(
 
 $divisions = $LMS->GetDivisions();
 
-$SMARTY->assign('tags', $allTags);
-$SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('sellers', $sellers);
-$SMARTY->assign('start_date', $startDate);
-$SMARTY->assign('end_date', $endDate);
+$SMARTY->assign(
+    array(
+        'tags' => $allTags,
+        'divisions' => $divisions,
+        'sellers' => $sellers,
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+    )
+);
 //$SMARTY->assign('sort_order', 'issue-date asc');
 $SMARTY->assign('invoices', $invoices);
 

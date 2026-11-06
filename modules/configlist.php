@@ -286,14 +286,18 @@ $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($config
 $SESSION->add_history_entry();
 
 $LMS = LMS::getInstance();
-$SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
-$SMARTY->assign('sections', $LMS->GetConfigSections());
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('configlist', $configlist);
-$SMARTY->assign('section', htmlspecialchars($_GET['s'] ?? '', ENT_QUOTES));
-$SMARTY->assign('division', htmlspecialchars($_GET['d'] ?? '', ENT_QUOTES));
-$SMARTY->assign('user', htmlspecialchars($_GET['u'] ?? '', ENT_QUOTES));
-$SMARTY->assign('scope', htmlspecialchars($_GET['sc'] ?? '', ENT_QUOTES));
-$SMARTY->assign('name', htmlspecialchars($_GET['v'] ?? '', ENT_QUOTES));
+$SMARTY->assign(
+    array(
+        'users' => $LMS->getUsers(array('superuser' => 1)),
+        'sections' => $LMS->GetConfigSections(),
+        'divisions' => $LMS->GetDivisions(),
+        'pagelimit' => $pagelimit,
+        'configlist' => $configlist,
+        'section' => htmlspecialchars($_GET['s'] ?? '', ENT_QUOTES),
+        'division' => htmlspecialchars($_GET['d'] ?? '', ENT_QUOTES),
+        'user' => htmlspecialchars($_GET['u'] ?? '', ENT_QUOTES),
+        'scope' => htmlspecialchars($_GET['sc'] ?? '', ENT_QUOTES),
+        'name' => htmlspecialchars($_GET['v'] ?? '', ENT_QUOTES),
+    )
+);
 $SMARTY->display('config/configlist.html');

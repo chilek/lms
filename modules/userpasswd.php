@@ -68,8 +68,12 @@ if ($LMS->UserExists($id)) {
 
     $layout['pagetitle'] = trans('Password Change for User $a', $DB->GetOne('SELECT name FROM vusers WHERE id = ?', array($id)));
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('passwd', $passwd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'passwd' => $passwd,
+        )
+    );
     if ($id == Auth::GetCurrentUser()) {
         $SMARTY->assign('current_password_required', true);
     }

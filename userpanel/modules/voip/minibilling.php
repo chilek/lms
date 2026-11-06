@@ -109,7 +109,11 @@ if (!empty($cdr)) {
     }
 }
 
-$SMARTY->assign('datefrom', $params['frangefrom']);
-$SMARTY->assign('dateto', $params['frangeto']);
-$SMARTY->assign('minibilling', $minibilling);
+$SMARTY->assign(
+    array(
+        'datefrom' => $params['frangefrom'],
+        'dateto' => $params['frangeto'],
+        'minibilling' => $minibilling,
+    )
+);
 $SMARTY->display('module:minibilling.html');

@@ -585,8 +585,12 @@ if (!empty($nodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('node_empty_mac', $node_empty_mac);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('netdevices', $netdevices);
-$SMARTY->assign('nodedata', $nodedata);
+$SMARTY->assign(
+    array(
+        'node_empty_mac' => $node_empty_mac,
+        'networks' => $LMS->GetNetworks(),
+        'netdevices' => $netdevices,
+        'nodedata' => $nodedata,
+    )
+);
 $SMARTY->display('node/nodeadd.html');

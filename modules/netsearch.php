@@ -186,10 +186,14 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
             ConfigHelper::checkConfig('phpui.short_pagescroller')
         );
 
-        $SMARTY->assign('netlist', $netlist);
-        $SMARTY->assign('listdata', $listdata);
-        $SMARTY->assign('pagination', $pagination);
-        $SMARTY->assign('search', true);
+        $SMARTY->assign(
+            array(
+                'netlist' => $netlist,
+                'listdata' => $listdata,
+                'pagination' => $pagination,
+                'search' => true,
+            )
+        );
         $SMARTY->display('net/netlist.html');
     }
 } else {

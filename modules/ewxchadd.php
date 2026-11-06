@@ -93,8 +93,12 @@ if (isset($_POST['channel'])) {
         $SESSION->redirect('?m=ewxchinfo&id='.$id);
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('channel', $channel);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'channel' => $channel,
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('New Channel');

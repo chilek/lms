@@ -51,16 +51,24 @@ if ($ticket['customerid']
 }
 
 if ($ticket['customerid']) {
-    $SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
-    $SMARTY->assign('customernodes', $LMS->GetCustomerNodes($ticket['customerid']));
+    $SMARTY->assign(
+        array(
+            'customerinfo' => $LMS->GetCustomer($ticket['customerid']),
+            'customernodes' => $LMS->GetCustomerNodes($ticket['customerid']),
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('Ticket No. $a', sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('messages', isset($_GET['messages']) ? 1 : 0);
-$SMARTY->assign('notes', isset($_GET['notes']) ? 1 : 0);
-$SMARTY->assign('history', isset($_GET['history']) ? 1 : 0);
+$SMARTY->assign(
+    array(
+        'ticket' => $ticket,
+        'messages' => isset($_GET['messages']) ? 1 : 0,
+        'notes' => isset($_GET['notes']) ? 1 : 0,
+        'history' => isset($_GET['history']) ? 1 : 0,
+    )
+);
 $SMARTY->display('rt/' . ConfigHelper::getConfig('rt.ticket_template_file', ConfigHelper::getConfig('phpui.ticket_template_file')));

@@ -242,24 +242,25 @@ $LMS->executeHook(
     )
 );
 
-$SMARTY->assign('promotions', $LMS->GetPromotions());
-$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($customer['id']));
-$SMARTY->assign('customernetdevnodes', $LMS->getCustomerNetDevNodes($customer['id']));
-$SMARTY->assign('voipaccounts', $LMS->GetCustomerVoipAccounts($customer['id']));
-$SMARTY->assign('customeraddresses', $LMS->getCustomerAddresses($customer['id']));
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-    'doctype' => DOC_INVOICE,
-    'cdate' => null,
-    'division' => $customer['divisionid'],
-    'next' => false,
-)));
-
-$SMARTY->assign('tags', $LMS->TarifftagGetAll());
-
-$SMARTY->assign('assignment', $a);
-
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$SMARTY->assign(
+    array(
+        'promotions' => $LMS->GetPromotions(),
+        'customernodes' => $LMS->GetCustomerNodes($customer['id']),
+        'customernetdevnodes' => $LMS->getCustomerNetDevNodes($customer['id']),
+        'voipaccounts' => $LMS->GetCustomerVoipAccounts($customer['id']),
+        'customeraddresses' => $LMS->getCustomerAddresses($customer['id']),
+        'numberplanlist' => $LMS->GetNumberPlans(array(
+            'doctype' => DOC_INVOICE,
+            'cdate' => null,
+            'division' => $customer['divisionid'],
+            'next' => false,
+        )),
+        'tags' => $LMS->TarifftagGetAll(),
+        'assignment' => $a,
+        'tariffs' => $LMS->GetTariffs(),
+        'taxeslist' => $LMS->GetTaxes(),
+    )
+);
 $defaultTaxIds = $LMS->GetTaxes(null, null, true);
 if (is_array($defaultTaxIds)) {
     $defaultTaxId = reset($defaultTaxIds);
@@ -269,8 +270,12 @@ if (is_array($defaultTaxIds)) {
 }
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $assignments = $LMS->GetCustomerAssignments($customer['id'], true, false);
-$SMARTY->assign('assignments', $assignments);
-$SMARTY->assign('customerinfo', $customer);
+$SMARTY->assign(
+    array(
+        'assignments' => $assignments,
+        'customerinfo' => $customer,
+    )
+);
 
 $document_separation_groups = array();
 if (!empty($assignments)) {

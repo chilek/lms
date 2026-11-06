@@ -164,9 +164,13 @@ $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('queue', $queue);
-$SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('configsections', $LMS->getConfigSectionsByPattern('rt-%'));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'queue' => $queue,
+        'userlist' => $userlist,
+        'categories' => $categories,
+        'configsections' => $LMS->getConfigSectionsByPattern('rt-%'),
+        'error' => $error,
+    )
+);
 $SMARTY->display('rt/rtqueuemodify.html');

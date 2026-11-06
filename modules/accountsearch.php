@@ -192,14 +192,18 @@ if (count($search) || isset($_GET['s'])) {
 
         $layout['pagetitle'] = trans('Account Search Results');
 
-        $SMARTY->assign('listdata', $listdata);
-        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-        $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-        $SMARTY->assign('pagelimit', $pagelimit);
-        $SMARTY->assign('page', $page);
-        $SMARTY->assign('start', $start);
-        $SMARTY->assign('search', $search);
-        $SMARTY->assign('accountlist', $accountlist);
+        $SMARTY->assign(
+            array(
+                'listdata' => $listdata,
+                'customerlist' => $LMS->GetAllCustomerNames(),
+                'domainlist' => $DB->GetAll('SELECT id, name FROM domains ORDER BY name'),
+                'pagelimit' => $pagelimit,
+                'page' => $page,
+                'start' => $start,
+                'search' => $search,
+                'accountlist' => $accountlist,
+            )
+        );
         $SMARTY->display('account/accountlist.html');
         $SESSION->close();
         die;
@@ -208,6 +212,10 @@ if (count($search) || isset($_GET['s'])) {
 
 $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', $search ?? $SESSION->get('accountsearch'));
+$SMARTY->assign(
+    array(
+        'customerlist' => $LMS->GetAllCustomerNames(),
+        'search' => $search ?? $SESSION->get('accountsearch'),
+    )
+);
 $SMARTY->display('account/accountsearch.html');

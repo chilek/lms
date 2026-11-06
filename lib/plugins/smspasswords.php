@@ -58,8 +58,12 @@ class lms_smspasswords_plugin
         $LMS->SendSMS($phone, trans('Your one-time password is $a', $smspassword));
         $SESSION->save('session_smspassword', $smspassword);
         $SESSION->save('session_retries', $retries);
-        $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
-        $SMARTY->assign('retries', $retries);
+        $SMARTY->assign(
+            array(
+                'target' => '?' . $_SERVER['QUERY_STRING'],
+                'retries' => $retries,
+            )
+        );
         $SMARTY->display('smspassword.html');
     }
 
@@ -95,8 +99,12 @@ class lms_smspasswords_plugin
                         return $vars;
                     }
                     $SESSION->save('session_retries', $retries);
-                    $SMARTY->assign('retries', $retries);
-                    $SMARTY->assign('target', $_POST['smspasswordform']['target']);
+                    $SMARTY->assign(
+                        array(
+                            'retries' => $retries,
+                            'target' => $_POST['smspasswordform']['target'],
+                        )
+                    );
                     $SMARTY->display('smspassword.html');
                     $vars['abort'] = true;
                 }

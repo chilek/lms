@@ -107,6 +107,10 @@ $SMARTY->assign('error', $error);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('sourcelist', $LMS->getCashSources());
-$SMARTY->assign('sourcefiles', $sourcefiles);
+$SMARTY->assign(
+    array(
+        'sourcelist' => $LMS->getCashSources(),
+        'sourcefiles' => $sourcefiles,
+    )
+);
 $SMARTY->display('cash/cashimport.html');

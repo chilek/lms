@@ -687,7 +687,7 @@ switch ($action) {
         }
 
         $headerDiff = array();
-        if (isset($cnote['oldheader']) && isset($cnote['newheader'])) {
+        if (isset($cnote['oldheader'], $cnote['newheader'])) {
             $headerDiff = array_diff_assoc($cnote['oldheader'], $cnote['newheader']);
         }
         if (!isset($cnote['newheader']) || empty($headerDiff)) {
@@ -1101,18 +1101,21 @@ if (isset($invoice['recipient_address2'])) {
         $addresses2
     );
 }
-$SMARTY->assign('addresses2', $addresses2);
-
-$SMARTY->assign('error', $error);
-$SMARTY->assign('warning', $warning);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('cnote', $cnote);
-$SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('refdoc', $invoice);
-$SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
-$SMARTY->assign('planDocumentType', DOC_CNOTE);
+$SMARTY->assign(
+    array(
+        'addresses2' => $addresses2,
+        'error' => $error,
+        'warning' => $warning,
+        'contents' => $contents,
+        'cnote' => $cnote,
+        'invoice' => $invoice,
+        'refdoc' => $invoice,
+        'taxeslist' => $taxeslist,
+        'numberplanlist' => $numberplanlist,
+        'messagetemplates' => $LMS->GetMessageTemplates(TMPL_CNOTE_REASON),
+        'planDocumentType' => DOC_CNOTE,
+    )
+);
 
 $total_value = 0;
 if (!empty($contents)) {

@@ -47,22 +47,25 @@ function module_setup()
     }
 
     $layout['pagetitle'] = trans('Userpanel Configuration');
-    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
-    $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
-    $SMARTY->assign('shortcut_icon', ConfigHelper::getConfig('userpanel.shortcut_icon', ''));
-    $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
-    $SMARTY->assign('extra_style', ConfigHelper::getConfig('userpanel.extra_style', ''));
-    $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
-    $SMARTY->assign('startupmodule', ConfigHelper::getConfig('userpanel.startup_module', 'info'));
-    $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
-    $SMARTY->assign('hide_nodes_modules', ConfigHelper::getConfig('userpanel.hide_nodes_modules', 0));
-    $SMARTY->assign('reminder_mail_sender', ConfigHelper::getConfig('userpanel.reminder_mail_sender', ''));
-    $SMARTY->assign('reminder_mail_subject', ConfigHelper::getConfig('userpanel.reminder_mail_subject', trans('credential reminder')));
-    $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
-    $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
-
-    $SMARTY->assign('reminder_type', ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_ID));
-    $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN));
+    $SMARTY->assign(
+        array(
+            'page_header' => ConfigHelper::getConfig('userpanel.page_header', ''),
+            'company_logo' => ConfigHelper::getConfig('userpanel.company_logo', ''),
+            'shortcut_icon' => ConfigHelper::getConfig('userpanel.shortcut_icon', ''),
+            'stylelist' => getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'),
+            'extra_style' => ConfigHelper::getConfig('userpanel.extra_style', ''),
+            'style' => ConfigHelper::getConfig('userpanel.style', 'default'),
+            'startupmodule' => ConfigHelper::getConfig('userpanel.startup_module', 'info'),
+            'hint' => ConfigHelper::getConfig('userpanel.hint', 'modern'),
+            'hide_nodes_modules' => ConfigHelper::getConfig('userpanel.hide_nodes_modules', 0),
+            'reminder_mail_sender' => ConfigHelper::getConfig('userpanel.reminder_mail_sender', ''),
+            'reminder_mail_subject' => ConfigHelper::getConfig('userpanel.reminder_mail_subject', trans('credential reminder')),
+            'reminder_mail_body' => ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"),
+            'reminder_sms_body' => ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"),
+            'reminder_type' => ConfigHelper::getConfig('userpanel.reminder_type', USERPANEL_REMINDER_TYPE_ID),
+            'auth_type' => ConfigHelper::getConfig('userpanel.auth_type', USERPANEL_AUTH_TYPE_ID_PIN),
+        )
+    );
 
     $auth_options = array();
     foreach ($USERPANEL_AUTH_TYPES as $auth_type) {
@@ -82,24 +85,30 @@ function module_setup()
             }
         }
     }
-    $SMARTY->assign('reminder_options', $reminder_options);
-
-    $SMARTY->assign('twofactor_auth_type', ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true));
+    $SMARTY->assign(
+        array(
+            'reminder_options' => $reminder_options,
+            'twofactor_auth_type' => ConfigHelper::getConfig('userpanel.twofactor_auth_type', '', true),
+        )
+    );
 
     $allowed_customer_status =
         Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('userpanel.allowed_customer_status', ''), -1);
     if ($allowed_customer_status === -1) {
         $allowed_customer_status = array_keys($CSTATUSES);
     }
-    $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
-
-    $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
-    $SMARTY->assign('google_recaptcha_sitekey', ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''));
-    $SMARTY->assign('google_recaptcha_secret', ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''));
-    $SMARTY->assign('timeout', intval(ConfigHelper::getConfig('userpanel.timeout')));
-    $SMARTY->assign('sms_credential_reminders', ConfigHelper::checkConfig('userpanel.sms_credential_reminders'));
-    $SMARTY->assign('mail_credential_reminders', ConfigHelper::checkConfig('userpanel.mail_credential_reminders'));
-    $SMARTY->assign('pin_validation', ConfigHelper::checkConfig('userpanel.pin_validation'));
+    $SMARTY->assign(
+        array(
+            'allowed_customer_status' => $allowed_customer_status,
+            'force_ssl' => ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)),
+            'google_recaptcha_sitekey' => ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''),
+            'google_recaptcha_secret' => ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''),
+            'timeout' => intval(ConfigHelper::getConfig('userpanel.timeout')),
+            'sms_credential_reminders' => ConfigHelper::checkConfig('userpanel.sms_credential_reminders'),
+            'mail_credential_reminders' => ConfigHelper::checkConfig('userpanel.mail_credential_reminders'),
+            'pin_validation' => ConfigHelper::checkConfig('userpanel.pin_validation'),
+        )
+    );
     $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
     if (is_null($enabled_modules)) {
         $enabled_modules = array();
@@ -115,8 +124,12 @@ function module_setup()
     } else {
         $enabled_modules = explode(',', $enabled_modules);
     }
-    $SMARTY->assign('enabled_modules', $enabled_modules);
-    $SMARTY->assign('total', count($USERPANEL->MODULES));
+    $SMARTY->assign(
+        array(
+            'enabled_modules' => $enabled_modules,
+            'total' => count($USERPANEL->MODULES),
+        )
+    );
     $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
 }
 
@@ -402,8 +415,12 @@ function module_rights()
     $customerlist = $LMS->GetCustomerNames();
     $userpanelrights = $DB->GetAll('SELECT id, module, name, description, setdefault FROM up_rights');
 
-    $SMARTY->assign('customerlist', $customerlist);
-    $SMARTY->assign('userpanelrights', $userpanelrights);
+    $SMARTY->assign(
+        array(
+            'customerlist' => $customerlist,
+            'userpanelrights' => $userpanelrights,
+        )
+    );
     $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
 }
 
@@ -416,7 +433,7 @@ function module_submit_rights()
     }
 
     $setrights=$_POST['setrights'];
-    if (isset($setrights) && isset($setrights['mcustomerid'])) {
+    if (isset($setrights, $setrights['mcustomerid'])) {
         $newrights=$setrights['rights'];
         foreach ($setrights['mcustomerid'] as $customer) {
             $oldrights=$DB->GetAll(

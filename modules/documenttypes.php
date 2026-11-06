@@ -48,9 +48,13 @@ $layout['pagetitle'] = trans('Document Types List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('typelist', $typelist);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'listdata' => $listdata,
+        'typelist' => $typelist,
+    )
+);
 $SMARTY->display('document/documenttypes.html');

@@ -70,6 +70,10 @@ if (isset($_POST['hostedit'])) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('hostedit', $host);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'hostedit' => $host,
+        'error' => $error,
+    )
+);
 $SMARTY->display('host/hostedit.html');

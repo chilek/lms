@@ -317,15 +317,27 @@ if ($type == 'openlayers') {
 
     if (isset($_GET['netdevid'])) {
         $netdevid = intval($_GET['netdevid']);
-        $SMARTY->assign('lon', $devices[$netdevid]['lon'] ?? null);
-        $SMARTY->assign('lat', $devices[$netdevid]['lat'] ?? null);
+        $SMARTY->assign(
+            array(
+                'lon' => $devices[$netdevid]['lon'] ?? null,
+                'lat' => $devices[$netdevid]['lat'] ?? null,
+            )
+        );
     } else if (isset($_GET['nodeid'])) {
         $nodeid = intval($_GET['nodeid']);
-        $SMARTY->assign('lon', $nodes[$nodeid]['lon'] ?? null);
-        $SMARTY->assign('lat', $nodes[$nodeid]['lat'] ?? null);
+        $SMARTY->assign(
+            array(
+                'lon' => $nodes[$nodeid]['lon'] ?? null,
+                'lat' => $nodes[$nodeid]['lat'] ?? null,
+            )
+        );
     } else {
-        $SMARTY->assign('lon', isset($_GET['lon']) ? (float) $_GET['lon'] : null);
-        $SMARTY->assign('lat', isset($_GET['lat']) ? (float) $_GET['lat'] : null);
+        $SMARTY->assign(
+            array(
+                'lon' => isset($_GET['lon']) ? (float) $_GET['lon'] : null,
+                'lat' => isset($_GET['lat']) ? (float) $_GET['lat'] : null,
+            )
+        );
     }
 
     $SMARTY->assign('type', $type);
@@ -391,15 +403,19 @@ if ($type == 'openlayers') {
     
     $deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
     
-    $SMARTY->assign('devicemap', $devicemap ?? null);
-    $SMARTY->assign('nodemap', $nodemap);
-    $SMARTY->assign('deviceslist', $deviceslist);
-    $SMARTY->assign('start', $start);
-    $SMARTY->assign('mini', $mini);
-    $SMARTY->assign('type', $type);
-    $SMARTY->assign('emptydb', empty($deviceslist));
-    $SMARTY->assign('gd', function_exists('imagepng'));
-    $SMARTY->assign('ming', function_exists('ming_useswfversion'));
+    $SMARTY->assign(
+        array(
+            'devicemap' => $devicemap ?? null,
+            'nodemap' => $nodemap,
+            'deviceslist' => $deviceslist,
+            'start' => $start,
+            'mini' => $mini,
+            'type' => $type,
+            'emptydb' => empty($deviceslist),
+            'gd' => function_exists('imagepng'),
+            'ming' => function_exists('ming_useswfversion'),
+        )
+    );
     $SMARTY->display('netdev/netdevmap.html');
 } elseif ($graph == 'flash') {
     makemap($map, $seen, $start);
@@ -463,7 +479,7 @@ if ($type == 'openlayers') {
     $links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
     if ($links) {
         foreach ($links as $link) {
-            if (!isset($devicemap[$link['src']]['x']) || !isset($devicemap[$link['dst']]['x'])) {
+            if (!isset($devicemap[$link['src']]['x'], $devicemap[$link['dst']]['x'])) {
                 continue;
             }
             $src_celx = $devicemap[$link['src']]['x'];

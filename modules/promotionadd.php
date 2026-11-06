@@ -110,6 +110,10 @@ if ($promotion) {
 
 $layout['pagetitle'] = trans('New Promotion');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('promotion', $promotion);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'promotion' => $promotion,
+    )
+);
 $SMARTY->display('promotion/promotionadd.html');

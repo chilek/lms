@@ -27,8 +27,12 @@
 if (isset($_GET['nodegroups'])) {
     $nodegroups = $LMS->GetNodeGroupNamesByNode(intval($_GET['id']));
 
-    $SMARTY->assign('nodegroups', $nodegroups);
-    $SMARTY->assign('total', count($nodegroups));
+    $SMARTY->assign(
+        array(
+            'nodegroups' => $nodegroups,
+            'total' => count($nodegroups),
+        )
+    );
     $SMARTY->display('node/nodegrouplistshort.html');
     die;
 }
@@ -51,8 +55,12 @@ if (!$LMS->NodeExists($nodeid)) {
 
 if (isset($_GET['devid'])) {
     $error['netdev'] = trans('It scans for free ports in selected device!');
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('netdevice', $_GET['devid']);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'netdevice' => $_GET['devid'],
+        )
+    );
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
@@ -169,23 +177,39 @@ $SMARTY->assign(array(
     'linkspeed' => intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000)),
 ));
 
-$SMARTY->assign('netdevices', $netdevices);
-$SMARTY->assign('nodeauthtype', $nodeauthtype);
+$SMARTY->assign(
+    array(
+        'netdevices' => $netdevices,
+        'nodeauthtype' => $nodeauthtype,
+    )
+);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
-    $SMARTY->assign('nodegroups', $nodegroups);
-    $SMARTY->assign('othernodegroups', $othernodegroups);
+    $SMARTY->assign(
+        array(
+            'nodegroups' => $nodegroups,
+            'othernodegroups' => $othernodegroups,
+        )
+    );
 }
 if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
     $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeinfo['id']));
 }
 
 if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
-    $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeinfo['id']));
-    $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeinfo['id']));
-    $SMARTY->assign('nodeid', $nodeinfo['id']);
+    $SMARTY->assign(
+        array(
+            'routednetworks' => $LMS->getNodeRoutedNetworks($nodeinfo['id']),
+            'notroutednetworks' => $LMS->getNodeNotRoutedNetworks($nodeinfo['id']),
+            'nodeid' => $nodeinfo['id'],
+        )
+    );
 }
 
-$SMARTY->assign('nodeinfo', $nodeinfo);
-$SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->assign('nodeinfo_sortable_order', $SESSION->get_persistent_setting('nodeinfo-sortable-order'));
+$SMARTY->assign(
+    array(
+        'nodeinfo' => $nodeinfo,
+        'objectid' => $nodeinfo['id'],
+        'nodeinfo_sortable_order' => $SESSION->get_persistent_setting('nodeinfo-sortable-order'),
+    )
+);
 $SMARTY->display('node/nodeinfo.html');
