@@ -688,7 +688,8 @@ function module_main()
             $queues = $LMS->DB->GetAll(
                 'SELECT
                     id,
-                    name
+                    name,
+                    description
                 FROM rtqueues
                 WHERE id IN ?',
                 [
