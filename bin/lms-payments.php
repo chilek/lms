@@ -1143,39 +1143,39 @@ if (!empty($assigns)) {
                 return $a['deadline'] - $b['deadline'];
             });
 
-            $lastDeadline = null;
             foreach ($history as $idx => $record) {
                 if ($record['deadline'] >= $period_end) {
                     break;
                 }
+
+                if ($reward_penalty_last_deadline_check_only) {
+                    $documentsLeft = array_filter(
+                        array_splice($history, $idx + 1),
+                        function ($record) {
+                            return !empty($record['docid']);
+                        }
+                    );
+                }
+
                 $balance += $record['value'];
                 $balance = round($balance, 2);
                 if (empty($record['docid'])) {
-                    if (isset($lastDeadline)) {
-                        if ($record['deadline'] >= $lastDeadline) {
-                            $rewards[$cid] = false;
-                            break;
-                        } elseif ($balance >= 0) {
-                            $lastDeadline = null;
-                        }
-                    }
-                    continue;
-                }
-                if ($balance < 0) {
-                    if ($reward_penalty_last_deadline_check_only) {
-                        $documentsLeft = array_filter(
-                            array_splice($history, $idx + 1),
-                            function($record) {
-                                return !empty($record['docid']);
-                            }
-                        );
-                        if (empty($documentsLeft)) {
-                            $lastDeadline = $record['deadline'];
-                        }
-                    } else {
+                    if ($reward_penalty_last_deadline_check_only
+                        && empty($documentsLeft)
+                        && $balance < 0) {
                         $rewards[$cid] = false;
                         break;
                     }
+                    continue;
+                }
+                if ($balance < 0
+                    && (
+                        $reward_penalty_last_deadline_check_only && empty($documentsLeft)
+                        || !$reward_penalty_last_deadline_check_only
+                    )
+                ) {
+                    $rewards[$cid] = false;
+                    break;
                 }
             }
         }
