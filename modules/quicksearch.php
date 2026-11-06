@@ -286,8 +286,10 @@ switch ($mode) {
             $s['documentmemo'] = $search;
         }
 
-        $SESSION->save('customersearch', $s);
-        $SESSION->save('cslk', 'OR');
+        $SESSION->remove('customersearch');
+        $SESSION->remove('cslk');
+        $SESSION->save('customersearch', $s, true);
+        $SESSION->save('cslk', 'OR', true);
 
         $SESSION->remove('cslp');
         $SESSION->remove('csln');
@@ -488,8 +490,10 @@ switch ($mode) {
         // use customersearch module to find all customers
         $s['phone'] = $search;
 
-        $SESSION->save('customersearch', $s);
-        $SESSION->save('cslk', 'OR');
+        $SESSION->remove('customersearch');
+        $SESSION->remove('cslk');
+        $SESSION->save('customersearch', $s, true);
+        $SESSION->save('cslk', 'OR', true);
 
         $SESSION->remove('cslp');
         $SESSION->remove('csln');
