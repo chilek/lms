@@ -170,6 +170,7 @@ if ($id && !isset($_POST['ticket'])) {
                     'status' => $ticket['status'],
                     'categories' => $ticket['categorynames'],
                     'priority' => isset($ticket['priority']) && is_numeric($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans('undefined'),
+                    'periodicity' => $ticket['periodicity'] ?? null,
                     'deadline' => $ticket['deadline'],
                     'service' => $ticket['service'],
                     'type' => $ticket['type'],
@@ -527,6 +528,7 @@ if ($id && !isset($_POST['ticket'])) {
                             'status' => $ticket['status'],
                             'categories' => $ticket['categorynames'],
                             'priority' => isset($ticket['priority']) && is_numeric($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans('undefined'),
+                            'periodicity' => $ticket['periodicity'] ?? null,
                             'deadline' => $ticket['deadline'],
                             'service' => $ticket['service'],
                             'type' => $ticket['type'],
@@ -798,6 +800,7 @@ if (isset($_POST['ticket'])) {
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
             'priority' => $ticketedit['priority'] ?? null,
+            'periodicity' => $ticketedit['periodicity'] ?? null,
             'address_id' => $ticketedit['address_id'] <= 0 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
@@ -848,6 +851,7 @@ if (isset($_POST['ticket'])) {
                 || $ticket['owner'] != $ticketedit['owner']
                 || $ticket['deadline'] != $ticketedit['deadline']
                 || $ticket['priority'] != $ticketedit['priority']
+                || $ticket['periodicity'] != $ticketedit['periodicity']
                 || $ticket['parentid'] != $ticketedit['parentid']))
             || ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))
             || ($ticket['verifierid'] != $ticketedit['verifierid'] && !empty($ticketedit['verifierid'])))) {
@@ -934,6 +938,7 @@ if (isset($_POST['ticket'])) {
                 'subject' => $LMS->cleanupTicketSubject($ticket['subject']),
                 'body' => $message['body'],
                 'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                'periodicity' => $ticketdata['periodicity'] ?? null,
                 'deadline' => $ticketdata['deadline'],
                 'service' => $ticketdata['service'],
                 'type' => $ticketdata['type'],
@@ -1001,6 +1006,7 @@ if (isset($_POST['ticket'])) {
     $ticket['netdevid'] = $ticketedit['netdevid'];
     $ticket['invprojectid'] = empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'];
     $ticket['priority'] = $ticketedit['priority'];
+    $ticket['periodicity'] = $ticketedit['periodicity'];
     $ticket['requestor_userid'] = $ticketedit['requestor_userid'];
     $ticket['requestor_name'] = $ticketedit['requestor_name'] ?? null;
     $ticket['requestor_mail'] = $ticketedit['requestor_mail'] ?? null;
