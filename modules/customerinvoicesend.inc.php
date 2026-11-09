@@ -24,28 +24,7 @@
  *  $Id$
  */
 
-$invoiceSendContacts = $LMS->GetCustomerContacts($customerid, CONTACT_EMAIL);
-
-$customerDivisionId = $LMS->GetCustomerDivision($customerid);
-$currentDivisionId = LMSDivisionManager::getCurrentDivision();
-if ($customerDivisionId != $currentDivisionId) {
-    ConfigHelper::setFilter($customerDivisionId, Auth::GetCurrentUser());
-}
-
-$invoiceSendSubject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
-$invoiceSendBody = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
-
-if ($customerDivisionId != $currentDivisionId) {
-    ConfigHelper::setFilter($currentDivisionId, Auth::GetCurrentUser());
-}
-
-if (!empty($invoiceSendBody) && $invoiceSendBody[0] == DIRECTORY_SEPARATOR && is_readable($invoiceSendBody)) {
-    $invoiceSendBody = file_get_contents($invoiceSendBody);
-}
-
 $SMARTY->assign(array(
-    'invoiceSendContacts' => $invoiceSendContacts,
-    'invoiceSendSubject' => $invoiceSendSubject,
-    'invoiceSendBody' => $invoiceSendBody,
+    'invoiceSendContacts' => $LMS->GetCustomerContacts($customerid, CONTACT_EMAIL),
     'invoiceSendCustomerId' => $customerid,
 ));

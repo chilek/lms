@@ -28,34 +28,38 @@ use \Lms\KSeF\KSeF;
 
 $layout['pagetitle'] = trans('Invoice send');
 
+if (isset($_POST['marks'])) {
+    if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
+        $marks = [];
+        if (!empty($_POST['marks']['invoice'])) {
+            $marks = array_merge($marks, $_POST['marks']['invoice']);
+        }
+        if (!empty($_POST['marks']['note'])) {
+            $marks = array_merge($marks, $_POST['marks']['note']);
+        }
+    } else {
+        if ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note' || $_GET['marks'] == 'cash') {
+            $marks = $_POST['marks'];
+        }
+    }
+
+    $ids = Utils::filterIntegers($marks);
+
+    if ($_GET['marks'] == 'cash' && !empty($ids)) {
+        $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+    }
+} elseif (isset($_GET['id']) && intval($_GET['id'])) {
+    $ids = array(intval($_GET['id']));
+} else {
+    $ids = array();
+}
+
 $invoiceSendPreview = isset($_GET['action']) && $_GET['action'] == 'preview' && (isset($_GET['api']) || isset($_GET['ajax']));
 
 if ($invoiceSendPreview) {
     header('Content-Type: application/json');
 
     $invoiceSendCustomerId = intval($_POST['customerid'] ?? $_GET['customerid'] ?? 0);
-
-    if (isset($_POST['marks'])) {
-        if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
-            $marks = array();
-            if (!empty($_POST['marks']['invoice'])) {
-                $marks = array_merge($marks, $_POST['marks']['invoice']);
-            }
-            if (!empty($_POST['marks']['note'])) {
-                $marks = array_merge($marks, $_POST['marks']['note']);
-            }
-        } elseif (isset($_GET['marks']) && ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note' || $_GET['marks'] == 'cash')) {
-            $marks = $_POST['marks'];
-        } else {
-            $marks = array();
-        }
-        $ids = Utils::filterIntegers($marks);
-        if (isset($_GET['marks']) && $_GET['marks'] == 'cash' && !empty($ids)) {
-            $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
-        }
-    } else {
-        $ids = array();
-    }
 
     if (empty($ids) || empty($invoiceSendCustomerId)) {
         die(json_encode(array(
@@ -203,32 +207,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     set_time_limit(0);
 
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
-
-    if (isset($_POST['marks'])) {
-        if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
-            $marks = [];
-            if (!empty($_POST['marks']['invoice'])) {
-                $marks = array_merge($marks, $_POST['marks']['invoice']);
-            }
-            if (!empty($_POST['marks']['note'])) {
-                $marks = array_merge($marks, $_POST['marks']['note']);
-            }
-        } else {
-            if ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note' || $_GET['marks'] == 'cash') {
-                $marks = $_POST['marks'];
-            }
-        }
-
-        $ids = Utils::filterIntegers($marks);
-
-        if ($_GET['marks'] == 'cash' && !empty($ids)) {
-            $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
-        }
-    } elseif (isset($_GET['id']) && intval($_GET['id'])) {
-        $ids = array(intval($_GET['id']));
-    } else {
-        $ids = array();
-    }
 
     if (isset($_POST['invoicesend']) && is_array($_POST['invoicesend'])) {
         $invoiceSend = $_POST['invoicesend'];

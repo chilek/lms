@@ -5267,7 +5267,7 @@ class LMS
 
         extract($params);
 
-        $invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+        $invoice_number = (!empty($doc['template']) ? $doc['template'] : DEFAULT_NUMBER_TEMPLATE);
         $invoice_number = docnumber(array(
             'number' => $doc['number'],
             'template' => $invoice_number,
@@ -5557,7 +5557,7 @@ class LMS
             if (!empty($skip_mail_substitution)) {
                 $subject = $mail_subject;
                 $body = $mail_body;
-                $invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+                $invoice_number = (!empty($doc['template']) ? $doc['template'] : DEFAULT_NUMBER_TEMPLATE);
                 $invoice_number = docnumber(array(
                     'number' => $doc['number'],
                     'template' => $invoice_number,
@@ -5607,7 +5607,7 @@ class LMS
 
             if (!$quiet || $test) {
                 foreach ($sentDocs as $sentDoc) {
-                    $sentInvoiceNumber = (!empty($sentDoc['template']) ? $sentDoc['template'] : '%N/LMS/%Y');
+                    $sentInvoiceNumber = (!empty($sentDoc['template']) ? $sentDoc['template'] : DEFAULT_NUMBER_TEMPLATE);
                     $sentInvoiceNumber = docnumber(array(
                         'number' => $sentDoc['number'],
                         'template' => $sentInvoiceNumber,
@@ -5778,10 +5778,9 @@ class LMS
                     }
 
                     if ($status == MSG_SENT) {
-                        foreach ($sentDocs as $sentDoc) {
-                            $this->PublishDocuments($sentDoc['id']);
-                            $this->MarkDocumentsAsSent($sentDoc['id']);
-                        }
+                        $sentDocIds = array_column($sentDocs, 'id');
+                        $this->PublishDocuments($sentDocIds);
+                        $this->MarkDocumentsAsSent($sentDocIds);
 
                         if (!empty($referenced_documents)) {
                             $this->DB->Execute(

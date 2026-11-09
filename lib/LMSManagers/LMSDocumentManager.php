@@ -3966,6 +3966,42 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         ) > 0;
     }
 
+    public function getDocumentSentEmails(array $ids)
+    {
+        $ids = Utils::filterIntegers($ids);
+        if (empty($ids)) {
+            return array();
+        }
+
+        $sentEmails = $this->db->GetAll(
+            'SELECT DISTINCT d.id AS docid, mi.destination
+            FROM documents d
+            JOIN messageitems mi ON mi.customerid = d.customerid
+            JOIN messages m ON m.id = mi.messageid
+            WHERE d.id IN ?
+                AND d.senddate > 0
+                AND m.type = ' . MSG_MAIL . '
+                AND mi.status <> ' . MSG_ERROR . '
+                AND mi.lastdate >= d.senddate - 60
+                AND mi.lastdate <= d.senddate
+            ORDER BY d.id, mi.destination',
+            array($ids)
+        );
+
+        $result = array();
+        if (!empty($sentEmails)) {
+            foreach ($sentEmails as $sentEmail) {
+                $result[$sentEmail['docid']][] = $sentEmail['destination'];
+            }
+            foreach ($result as &$emails) {
+                $emails = implode(', ', $emails);
+            }
+            unset($emails);
+        }
+
+        return $result;
+    }
+
     public function getDocumentReferences($docid, $cashid = null)
     {
         $userid = Auth::GetCurrentUser();
