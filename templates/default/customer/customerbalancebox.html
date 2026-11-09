@@ -729,6 +729,10 @@
 	</div>
 </div>
 
+{if isset($invoiceSendContacts)}
+	{include file="customer/customerinvoicesenddialog.html"}
+{/if}
+
 <script>
 
 {if !$limit}
@@ -987,6 +991,11 @@
 			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
+
+		{if isset($invoiceSendContacts)}
+			openInvoiceSendDialog();
+			return;
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(function() {
 			var add = "";

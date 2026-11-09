@@ -141,6 +141,8 @@ if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('
     }
 
     $SMARTY->assign('registries', $registries);
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customerinvoicesend.inc.php');
 }
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);

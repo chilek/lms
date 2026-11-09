@@ -3396,6 +3396,7 @@ $_LANG['subject'] = 'temat';
 $_LANG['Subject must contain less than 255 characters!'] = 'Temat musi zawierać mniej niż 255 znaków!';
 $_LANG['traffic stats'] = 'statystyki ruchu sieciowego';
 $_LANG['traffic stats compacting'] = 'kompaktowanie statystyk ruchu sieciowego';
+$_LANG['Unable to send message. Invalid e-mail address: $a'] = 'Nie można wysłać wiadomości. Nieprawidłowy adres e-mail: $a';
 $_LANG['Unable to send message. No recipients selected!'] = 'Nie można wysłać wiadomości. Nie wybrano odbiorców!';
 $_LANG['user ID'] = 'ID użytkownika';
 $_LANG['user name'] = 'nazwisko użytkownika';
@@ -6501,3 +6502,5 @@ $_LANG['%comment% (transaction excluded from customer balance)'] = '%comment% (o
 
 $_LANG['hide data summaries'] = 'ukryj dane zbiorcze';
 $_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';
+
+$_LANG['Additional e-mail:'] = 'Dodatkowy e-mail:';

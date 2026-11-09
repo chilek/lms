@@ -28,6 +28,175 @@ use \Lms\KSeF\KSeF;
 
 $layout['pagetitle'] = trans('Invoice send');
 
+$invoiceSendPreview = isset($_GET['action']) && $_GET['action'] == 'preview' && (isset($_GET['api']) || isset($_GET['ajax']));
+
+if ($invoiceSendPreview) {
+    header('Content-Type: application/json');
+
+    $invoiceSendCustomerId = intval($_POST['customerid'] ?? $_GET['customerid'] ?? 0);
+
+    if (isset($_POST['marks'])) {
+        if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
+            $marks = array();
+            if (!empty($_POST['marks']['invoice'])) {
+                $marks = array_merge($marks, $_POST['marks']['invoice']);
+            }
+            if (!empty($_POST['marks']['note'])) {
+                $marks = array_merge($marks, $_POST['marks']['note']);
+            }
+        } elseif (isset($_GET['marks']) && ($_GET['marks'] == 'invoice' || $_GET['marks'] == 'note' || $_GET['marks'] == 'cash')) {
+            $marks = $_POST['marks'];
+        } else {
+            $marks = array();
+        }
+        $ids = Utils::filterIntegers($marks);
+        if (isset($_GET['marks']) && $_GET['marks'] == 'cash' && !empty($ids)) {
+            $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+        }
+    } else {
+        $ids = array();
+    }
+
+    if (empty($ids) || empty($invoiceSendCustomerId)) {
+        die(json_encode(array(
+            'error' => trans("Fatal error: No invoices nor debit notes were selected!"),
+        )));
+    }
+
+    $docs = $DB->GetAll(
+        "SELECT
+            d.id,
+            d.number,
+            d.cdate,
+            d.name,
+            d.customerid,
+            d.type AS doctype,
+            d.archived,
+            n.template,
+            d.divisionid,
+            d.div_name,
+            d.div_shortname,
+            d.div_account,
+            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
+            kd.ksefnumber,
+            kd.status AS ksefstatus,
+            kd.hash AS ksefhash,
+            kbs.environment AS ksefenvironment,
+            d.div_ten AS kseften
+        FROM documents d
+        LEFT JOIN customers c ON c.id = d.customerid
+        LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
+        LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
+        LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
+        LEFT JOIN numberplans n ON n.id = d.numberplanid
+        WHERE (
+                d.type IN ?
+                AND (
+                    d.cdate < kc.boundarydate
+                    OR kc.boundarydate IS NULL
+                    OR c.type = ? AND (COALESCE(kc.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
+                    OR c.type = ? AND kd.status IS NOT NULL
+                ) OR d.type IN ?
+            ) AND d.id IN (" . implode(',', $ids) . ")
+            AND d.customerid = ?
+        ORDER BY d.cdate, d.id",
+        [
+            [
+                0,
+                200,
+            ],
+            [
+                DOC_INVOICE,
+                DOC_CNOTE,
+            ],
+            CTYPES_PRIVATE,
+            0,
+            CCONSENT_KSEF_INVOICE,
+            CTYPES_COMPANY,
+            [
+                DOC_DNOTE,
+                DOC_INVOICE_PRO,
+            ],
+            $invoiceSendCustomerId,
+        ]
+    );
+
+    if (empty($docs)) {
+        die(json_encode(array(
+            'error' => trans("Fatal error: No invoices nor debit notes were selected!"),
+        )));
+    }
+
+    $doc = $docs[count($docs) - 1];
+
+    ConfigHelper::setFilter($doc['divisionid']);
+
+    $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
+    $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+    $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
+    $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
+    $financial_history_reverse_order = ConfigHelper::checkConfig(
+        'sendinvoices.financial_history_reverse_order',
+        ConfigHelper::checkConfig(
+            'finances.history_reverse_order',
+            true
+        )
+    );
+    $financial_history_item_description_format = ConfigHelper::getConfig(
+        'sendinvoices.financial_history_item_description_format',
+        ConfigHelper::getConfig(
+            'finances.history_item_description_format',
+            '%comment'
+        )
+    );
+
+    if (!empty($mail_body) && $mail_body[0] == DIRECTORY_SEPARATOR && is_readable($mail_body)) {
+        $mail_body = file_get_contents($mail_body);
+    }
+
+    if ($doc['doctype'] == DOC_DNOTE) {
+        $document = $LMS->GetNoteContent($doc['id']);
+    } else {
+        $document = $LMS->GetInvoiceContent($doc['id']);
+    }
+    if (empty($document) && !empty($doc['archived'])) {
+        $tradeDocument = $LMS->GetTradeDocument($doc);
+        $document = $tradeDocument['document'] ?? null;
+    }
+    if (empty($document)) {
+        die(json_encode(array(
+            'error' => trans("Fatal error: No invoices nor debit notes were selected!"),
+        )));
+    }
+
+    $mailPlaceholders = $LMS->substituteInvoiceMailPlaceholders(
+        $mail_subject,
+        $mail_body,
+        $doc,
+        $document,
+        array(
+            'currtime' => time(),
+            'mail_format' => $mail_format,
+            'aggregate_documents' => $aggregate_documents,
+            'financial_history_reverse_order' => $financial_history_reverse_order,
+            'financial_history_item_description_format' => $financial_history_item_description_format,
+        )
+    );
+
+    $subject = $mailPlaceholders['subject'];
+    $body = $mailPlaceholders['body'];
+    if (isset($mail_format) && $mail_format == 'html') {
+        $body = str_replace('<eol>', '<br>', $body);
+    } else {
+        $body = str_replace('<eol>', "\n", $body);
+    }
+
+    die(json_encode(array(
+        'subject' => $subject,
+        'body' => $body,
+    )));
+}
+
 $SMARTY->display('header.html');
 
 if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
@@ -61,8 +230,44 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         $ids = array();
     }
 
+    if (isset($_POST['invoicesend']) && is_array($_POST['invoicesend'])) {
+        $invoiceSend = $_POST['invoicesend'];
+        $invoiceSendCustomerId = intval($invoiceSend['customerid'] ?? 0);
+
+        $invoiceSendEmails = empty($invoiceSend['recipients']) ? array() : (array) $invoiceSend['recipients'];
+        if (!empty($invoiceSend['extraemail'])) {
+            $extraEmail = is_string($invoiceSend['extraemail']) ? trim($invoiceSend['extraemail']) : '';
+            if (check_email($extraEmail)) {
+                $invoiceSendEmails[] = $extraEmail;
+            } else {
+                $invoiceSendInvalidExtraEmail = true;
+            }
+        }
+        $invoiceSendRecipients = array();
+        foreach ($invoiceSendEmails as $email) {
+            $email = is_string($email) ? trim($email) : '';
+            if (check_email($email)) {
+                $invoiceSendRecipients[$email] = $email;
+            }
+        }
+
+        if (isset($invoiceSend['subject']) && is_string($invoiceSend['subject']) && strlen(trim($invoiceSend['subject']))) {
+            $invoiceSendSubject = trim($invoiceSend['subject']);
+        }
+        if (isset($invoiceSend['body']) && is_string($invoiceSend['body'])) {
+            $invoiceSendBody = str_replace("\r\n", "\n", $invoiceSend['body']);
+            if (strlen($invoiceSendBody) && $invoiceSendBody[0] == DIRECTORY_SEPARATOR && is_readable($invoiceSendBody)) {
+                unset($invoiceSendBody);
+            }
+        }
+    }
+
     if (empty($ids)) {
         echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
+    } elseif (!empty($invoiceSendInvalidExtraEmail)) {
+        echo '<span class="red">' . trans('Unable to send message. Invalid e-mail address: $a', htmlspecialchars($extraEmail)) . '</span><br>';
+    } elseif (isset($invoiceSendRecipients) && (empty($invoiceSendRecipients) || empty($invoiceSendCustomerId))) {
+        echo '<span class="red">' . trans("Unable to send message. No recipients selected!") . '</span><br>';
     } else {
         $docs = $DB->GetAll(
             "SELECT
@@ -90,7 +295,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             LEFT JOIN ksefdocuments kd ON kd.docid = d.id AND kd.status IN ?
             LEFT JOIN ksefbatchsessions kbs ON kbs.id = kd.batchsessionid
             LEFT JOIN ksefconfig kc ON kc.divisionid = d.divisionid
-            JOIN (
+            " . (isset($invoiceSendRecipients) ? 'LEFT ' : '') . "JOIN (
                 SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
                 FROM customercontacts
                 WHERE (type & ?) = ?
@@ -105,7 +310,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                         OR c.type = ? AND (COALESCE(kc.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
                         OR c.type = ? AND kd.status IS NOT NULL
                     ) OR d.type IN ?
-                ) AND d.id IN (" . implode(',', $ids) . ")
+                ) AND d.id IN (" . implode(',', $ids) . ")"
+            . (isset($invoiceSendRecipients) ? ' AND d.customerid = ' . $invoiceSendCustomerId : '') . "
             ORDER BY d.number",
             [
                 [
@@ -128,6 +334,13 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             ]
         );
 
+        if (!empty($docs) && isset($invoiceSendRecipients)) {
+            foreach ($docs as &$doc) {
+                $doc['email'] = implode(',', $invoiceSendRecipients);
+            }
+            unset($doc);
+        }
+
         if (!empty($docs)) {
             $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
             if ($which & DOC_ENTITY_DUPLICATE) {
@@ -141,13 +354,26 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
             $currtime = time();
 
+            $combine_documents = isset($invoiceSendRecipients);
+            $skip_mail_substitution = $combine_documents && isset($invoiceSendSubject) && isset($invoiceSendBody);
+
             $divisiondocs = array();
-            foreach ($docs as $doc) {
-                $divisionid = $doc['divisionid'];
-                if (!isset($divisiondocs[$divisionid])) {
-                    $divisiondocs[$divisionid] = array();
+            if ($combine_documents) {
+                usort($docs, function ($a, $b) {
+                    if ($a['cdate'] == $b['cdate']) {
+                        return $a['id'] <=> $b['id'];
+                    }
+                    return $a['cdate'] <=> $b['cdate'];
+                });
+                $divisiondocs[$docs[count($docs) - 1]['divisionid']] = $docs;
+            } else {
+                foreach ($docs as $doc) {
+                    $divisionid = $doc['divisionid'];
+                    if (!isset($divisiondocs[$divisionid])) {
+                        $divisiondocs[$divisionid] = array();
+                    }
+                    $divisiondocs[$divisionid][] = $doc;
                 }
-                $divisiondocs[$divisionid][] = $doc;
             }
 
             foreach ($divisiondocs as $divisionid => $docs) {
@@ -177,6 +403,12 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
                 $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
                 $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+                if (isset($invoiceSendSubject)) {
+                    $mail_subject = $invoiceSendSubject;
+                }
+                if (isset($invoiceSendBody)) {
+                    $mail_body = $invoiceSendBody;
+                }
                 $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
                 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
                 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
@@ -247,7 +479,9 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                         'financial_history_item_description_format',
                         'which',
                         'duplicate_date',
-                        'smtp_options'
+                        'smtp_options',
+                        'combine_documents',
+                        'skip_mail_substitution'
                     )
                 );
             }

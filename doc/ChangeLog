@@ -2,6 +2,9 @@ $Id$
 
 version 28-git (????-??-??):
 
+  - enhancement: invoice send dialog with recipient picker and editable
+    subject/body with substituted placeholders, sending one e-mail with
+    all selected invoices attached [interduo]
   - security: client IP is taken from X-Forwarded-For only when REMOTE_ADDR is listed in new
     'phpui.trusted_proxies' (set it for reverse proxy!) [interduo]
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
