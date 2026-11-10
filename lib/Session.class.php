@@ -75,7 +75,10 @@ class Session
             $this->_garbageCollector();
         }
 
-        if (isset($_COOKIE['tabId'])) {
+        $formTabId = $_GET['form_tab_id'] ?? null;
+        if (is_string($formTabId) && preg_match('/^[0-9]{1,32}$/D', $formTabId)) {
+            $this->tabId = $formTabId;
+        } elseif (isset($_COOKIE['tabId'])) {
             $this->tabId = $_COOKIE['tabId'];
         }
     }
