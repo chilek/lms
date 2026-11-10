@@ -257,7 +257,7 @@
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
 								{if empty($item.ksefsubmission) || $item.ksefstatus == 200 || $offline_support && isset($item.ksefstatus) && $item.ksefstatus == 0}
 									{textformat assign="tip" wrap=5000}
-										{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+										{if $item.senddate}{trans("Send invoice again")}<br><strong>{if empty($item.sentemails)}{t a=$item.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}{else}{t a=$item.senddate|date_format:"Y-m-d H:i" b=$item.sentemails|escape}(already sent on $a to $b){/t}{/if}</strong>{else}{trans("Send invoice")}{/if}
 									{/textformat}
 									{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
 										href="?m=invoicesend&id={$item.docid}" tip=$tip}
@@ -729,6 +729,10 @@
 	</div>
 </div>
 
+{if isset($invoiceSendContacts)}
+	{include file="customer/customerinvoicesenddialog.html"}
+{/if}
+
 <script>
 
 {if !$limit}
@@ -987,6 +991,11 @@
 			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
+
+		{if isset($invoiceSendContacts)}
+			openInvoiceSendDialog();
+			return;
+		{/if}
 
 		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(function() {
 			var add = "";

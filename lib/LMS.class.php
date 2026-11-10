@@ -5261,10 +5261,169 @@ class LMS
         return $manager->FileExists($md5sum);
     }
 
-    public function SendInvoices($docs, $type, $params)
+    public function substituteInvoiceMailPlaceholders($subject, $body, array $doc, array $document, array $params = array())
     {
         static $barcode = null;
 
+        extract($params);
+
+        $invoice_number = (!empty($doc['template']) ? $doc['template'] : DEFAULT_NUMBER_TEMPLATE);
+        $invoice_number = docnumber(array(
+            'number' => $doc['number'],
+            'template' => $invoice_number,
+            'cdate' => $doc['cdate'] + date('Z'),
+            'customerid' => $doc['customerid'],
+        ));
+
+        $deadline = $doc['cdate'] + $document['paytime'] * 86400;
+
+        $balance = $this->GetCustomerBalance($doc['customerid']);
+        $currency = Localisation::getCurrentCurrency();
+
+        if ($balance < 0) {
+            $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$balance, $currency));
+        } elseif ($balance > 0) {
+            $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($balance, $currency));
+        } else {
+            $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
+        }
+
+        $month = sprintf('%02d', intval(date('m', $currtime)));
+        $day = sprintf('%02d', intval(date('d', $currtime)));
+        $year = sprintf('%04d', intval(date('Y', $currtime)));
+
+        [$now_y, $now_m] = explode('/', date('Y/m', time()));
+
+        $alternative_accounts = $document['bankaccounts'];
+
+        if (empty($use_only_alternative_accounts) || empty($alternative_accounts)) {
+            $accounts = array(bankaccount($doc['customerid'], $document['account']));
+        } else {
+            $accounts = array();
+        }
+
+        if (!empty($use_all_accounts) || !empty($use_only_alternative_accounts)) {
+            $accounts = array_merge($accounts, $alternative_accounts);
+        }
+        foreach ($accounts as &$account) {
+            $account = format_bankaccount($account);
+        }
+        unset($account);
+
+        $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
+
+        $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
+
+        if (!empty($doc['ksefnumber']) || $ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+            if (strpos($body, '%ksef-url') !== false || strpos($body, '%ksef-qr-code') !== false) {
+                $ksefUrl = KSeF::getQrCodeUrl([
+                    'ten' => $doc['kseften'],
+                    'date' => $doc['cdate'],
+                    'hash' => $doc['ksefhash'],
+                    'environment' => $doc['ksefenvironment'],
+                ]);
+            } else {
+                $ksefUrl = '';
+            }
+
+            if (strpos($body, '%ksef-qr-code') !== false) {
+                if (!isset($barcode)) {
+                    $barcode = new \Com\Tecnick\Barcode\Barcode();
+                }
+                $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
+
+                $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
+            } else {
+                $ksefQrCode = '';
+            }
+        } else {
+            $ksefUrl = $ksefQrCode = '';
+        }
+
+        if (empty($doc['ksefnumber'])) {
+            if ($ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
+                $ksefNumber = 'OFFLINE';
+            } else {
+                $ksefNumber = '';
+            }
+        } else {
+            $ksefNumber = $doc['ksefnumber'];
+        }
+
+        $body = str_replace(
+            array(
+                '%invoice',
+                '%balance',
+                '%commented_balance',
+                '%today',
+                '\n',
+                '%bankaccount',
+                '%deadline-y',
+                '%deadline-m',
+                '%deadline-d',
+                '%deadline_month_name',
+                '%pin',
+                '%cid',
+                '%customer_name',
+                '%division_name',
+                '%division_address',
+                '%division_zip',
+                '%division_city',
+                '%lastday',
+                // invoices, debit notes
+                '%value',
+                '%cdate-y',
+                '%cdate-m',
+                '%cdate-d',
+                '%ksef-number',
+                '%ksef-url',
+                '%ksef-qr-code',
+
+            ),
+            array(
+                $invoice_number,
+                moneyf($balance, $currency),
+                $commented_balance,
+                $year . '-' . $month . '-' . $day,
+                "\n",
+                $all_accounts,
+                date('Y', $deadline),
+                date('m', $deadline),
+                date('d', $deadline),
+                date('F', $deadline),
+                $document['customerpin'],
+                $doc['customerid'],
+                $document['name'],
+                $document['division_name'],
+                $document['division_address'],
+                $document['division_zip'],
+                $document['division_city'],
+                date('t', mktime(12, 0, 0, $now_m, 1, $now_y)),
+                moneyf($document['total'], $document['currency']),
+                date('Y', $document['cdate']),
+                date('m', $document['cdate']),
+                date('d', $document['cdate']),
+                $ksefNumber,
+                $ksefUrl,
+                $ksefQrCode,
+            ),
+            $body
+        );
+
+        $subject = preg_replace('/%invoice/', $invoice_number, $subject);
+
+        $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents, $financial_history_reverse_order, $financial_history_item_description_format);
+
+        return array(
+            'subject' => $subject,
+            'body' => $body,
+            'invoice_number' => $invoice_number,
+            'balance' => $balance,
+        );
+    }
+
+    public function SendInvoices($docs, $type, $params)
+    {
         extract($params);
 
         if ($type == 'frontend') {
@@ -5303,6 +5462,355 @@ class LMS
             $from = qp_encode($sender_name) . " <$from>";
         }
 
+        if (!empty($combine_documents)) {
+            usort($docs, function ($a, $b) {
+                if ($a['cdate'] == $b['cdate']) {
+                    return $a['id'] <=> $b['id'];
+                }
+                return $a['cdate'] <=> $b['cdate'];
+            });
+            $primaryDoc = $docs[count($docs) - 1];
+
+            $files = array();
+            $referenced_documents = array();
+            $sentDocs = array();
+            $primaryDocument = null;
+
+            foreach ($docs as $doc) {
+                $doc['invoice_filename'] = $invoice_filename;
+                $doc['dnote_filename'] = $dnote_filename;
+                $doc['which'] = $which;
+                $doc['duplicate-date'] = $duplicate_date;
+
+                if (!$no_attachments) {
+                    $document = $this->GetTradeDocument($doc);
+                    if (empty($document)) {
+                        continue;
+                    }
+                    $files[] = array(
+                        'content_type' => $document['content-type'],
+                        'filename' => $document['filename'],
+                        'data' => $document['data'],
+                    );
+
+                    if (!empty($doc['documentreferenced'])) {
+                        if (!isset($document_manager)) {
+                            $document_manager = $this->getDocumentManager();
+                        }
+                        $docrefs = $document_manager->getDocumentReferences($doc['id']);
+                        if (!empty($docrefs)) {
+                            foreach ($docrefs as $docid => $docref) {
+                                $referenced_document = $document_manager->GetDocumentFullContents($docid);
+                                if (empty($referenced_document)) {
+                                    continue;
+                                }
+                                foreach ($referenced_document['attachments'] as $attachment) {
+                                    $files[] = array(
+                                        'content_type' => $attachment['contenttype'],
+                                        'filename' => $attachment['filename'],
+                                        'data' => $attachment['contents'],
+                                    );
+                                }
+                                $referenced_documents[] = $docid;
+                            }
+                        }
+                    }
+
+                    if ($doc['id'] == $primaryDoc['id']) {
+                        $primaryDocument = $document;
+                    }
+                }
+                $sentDocs[] = $doc;
+            }
+
+            if (empty($sentDocs)) {
+                return;
+            }
+
+            if ($extrafile && !$no_attachments) {
+                if (is_dir($extrafile)) {
+                    $direntries = getdir($extrafile);
+                    if (!empty($direntries)) {
+                        foreach ($direntries as $direntry) {
+                            $filename = $extrafile . DIRECTORY_SEPARATOR . $direntry;
+                            if (is_file($filename)) {
+                                $files[] = array(
+                                    'content_type' => mime_content_type($filename),
+                                    'filename' => $direntry,
+                                    'data' => file_get_contents($filename)
+                                );
+                            }
+                        }
+                    }
+                } else {
+                    $files[] = array(
+                        'content_type' => mime_content_type($extrafile),
+                        'filename' => basename($extrafile),
+                        'data' => file_get_contents($extrafile)
+                    );
+                }
+            }
+
+            $doc = $primaryDoc;
+            $custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
+
+            if (!empty($skip_mail_substitution)) {
+                $subject = $mail_subject;
+                $body = $mail_body;
+                $invoice_number = (!empty($doc['template']) ? $doc['template'] : DEFAULT_NUMBER_TEMPLATE);
+                $invoice_number = docnumber(array(
+                    'number' => $doc['number'],
+                    'template' => $invoice_number,
+                    'cdate' => $doc['cdate'] + date('Z'),
+                    'customerid' => $doc['customerid'],
+                ));
+                $balance = $this->GetCustomerBalance($doc['customerid']);
+            } else {
+                if (!is_null($mail_body)) {
+                    if (is_readable($mail_body) && ($mail_body[0] == DIRECTORY_SEPARATOR)) {
+                        $body = file_get_contents($mail_body);
+                    } else {
+                        $body = $mail_body;
+                    }
+                }
+                $subject = $mail_subject;
+                if (!isset($primaryDocument)) {
+                    if ($doc['doctype'] == DOC_DNOTE) {
+                        $documentContent = $this->GetNoteContent($doc['id']);
+                    } else {
+                        $documentContent = $this->GetInvoiceContent($doc['id']);
+                    }
+                } else {
+                    $documentContent = $primaryDocument['document'];
+                }
+                if (empty($documentContent)) {
+                    return;
+                }
+                $mailPlaceholders = $this->substituteInvoiceMailPlaceholders($subject, $body, $doc, $documentContent, $params);
+                $subject = $mailPlaceholders['subject'];
+                $body = $mailPlaceholders['body'];
+                $invoice_number = $mailPlaceholders['invoice_number'];
+                $balance = $mailPlaceholders['balance'];
+            }
+
+            $doc['customername'] = $doc['name'];
+            $doc['name'] = '"' . $doc['name'] . '"';
+
+            $mailto = array();
+            $mailto_qp_encoded = array();
+            foreach (explode(',', $custemail) as $email) {
+                $mailto[] = $doc['name'] . " <$email>";
+                $mailto_qp_encoded[] = qp_encode($doc['name']) . " <$email>";
+            }
+            $mailto = implode(', ', $mailto);
+            $mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
+
+            if (!$quiet || $test) {
+                foreach ($sentDocs as $sentDoc) {
+                    $sentInvoiceNumber = (!empty($sentDoc['template']) ? $sentDoc['template'] : DEFAULT_NUMBER_TEMPLATE);
+                    $sentInvoiceNumber = docnumber(array(
+                        'number' => $sentDoc['number'],
+                        'template' => $sentInvoiceNumber,
+                        'cdate' => $sentDoc['cdate'] + date('Z'),
+                        'customerid' => $sentDoc['customerid'],
+                    ));
+                    switch ($sentDoc['doctype']) {
+                        case DOC_DNOTE:
+                            $msg = trans('Debit Note No. $a for $b', $sentInvoiceNumber, $mailto);
+                            break;
+                        case DOC_CNOTE:
+                            $msg = trans('Credit Note No. $a for $b', $sentInvoiceNumber, $mailto);
+                            break;
+                        case DOC_INVOICE:
+                            $msg = trans('Invoice No. $a for $b', $sentInvoiceNumber, $mailto);
+                            break;
+                        case DOC_INVOICE_PRO:
+                            $msg = trans('Pro Forma Invoice No. $a for $b', $sentInvoiceNumber, $mailto);
+                            break;
+                    }
+                    if ($type == 'frontend') {
+                        echo htmlspecialchars($msg) . $eol;
+                        flush();
+                        ob_flush();
+                    } else {
+                        echo $msg . $eol;
+                    }
+                }
+            }
+
+            if (!$test) {
+                $headers = array(
+                    'From' => $from,
+                    'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $doc['name'],
+                    'Subject' => $subject,
+                    'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
+                );
+
+                if (!empty($mdn_email)) {
+                    $headers['Return-Receipt-To'] = $mdn_email;
+                    $headers['Disposition-Notification-To'] = $mdn_email;
+                }
+
+                if (!empty($dsn_email)) {
+                    $headers['Delivery-Status-Notification-To'] = $dsn_email;
+                }
+
+                if (!empty($notify_email)) {
+                    $headers['Cc'] = $notify_email;
+                }
+
+                if (!empty($blind_notify_email)) {
+                    $headers['Bcc'] = $blind_notify_email;
+                }
+
+                if (isset($mail_format) && $mail_format == 'html') {
+                    $headers['X-LMS-Format'] = 'html';
+                    $content_type = 'text/html';
+                    $body = str_replace('<eol>', '<br>', $body);
+                } else {
+                    $content_type = 'text/plain';
+                    $body = str_replace('<eol>', "\n", $body);
+                }
+
+                $data = array(
+                    'body' => $body,
+                    'doc' => $doc,
+                    'balance' => $balance,
+                    'mail_format' => $mail_format,
+                    'headers' => $headers
+                );
+                $data = $this->executeHook('invoice_email_before_send', $data);
+                $body = $data['body'];
+                $headers = $data['headers'];
+
+                $messages = array();
+                $msgitems = array();
+                $referenced_documents = array_values(array_unique($referenced_documents));
+                foreach (explode(',', $custemail) as $email) {
+                    $mailSubject = $subject;
+                    $headers['Subject'] = $mailSubject;
+
+                    $emailProperties = $this->DB->GetAllByKey(
+                        'SELECT ccp.name AS name, ccp.value AS value
+                        FROM customercontacts cc
+                        LEFT JOIN customercontactproperties ccp ON cc.id = ccp.contactid
+                        WHERE cc.contact = ?',
+                        'name',
+                        array($email)
+                    );
+
+                    if ($emailProperties && isset($emailProperties['email-subject'])) {
+                        $customSubject = $emailProperties['email-subject']['value'];
+                        $customSubject = preg_replace('/%original/', $subject, $customSubject);
+                        $customSubject = preg_replace('/%invoice/', $invoice_number, $customSubject);
+                        $mailSubject = $customSubject;
+                        $headers['Subject'] = $mailSubject;
+                    }
+
+                    if ($add_message) {
+                        if (!isset($messages[$mailSubject])) {
+                            $this->DB->Execute(
+                                'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
+                                VALUES (?, ?, ?NOW?, ?, ?, ?)',
+                                array($mailSubject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
+                            );
+                            $msgid = $this->DB->GetLastInsertID('messages');
+
+                            $messages[$mailSubject]['msgid'] = $msgid;
+
+                            if ($message_attachments) {
+                                if (!empty($files)) {
+                                    foreach ($files as &$file) {
+                                        $file['name'] = $file['filename'];
+                                        $file['type'] = $file['content_type'];
+                                    }
+                                    unset($file);
+                                    $this->AddFileContainer(array(
+                                        'description' => 'message-' . $msgid,
+                                        'files' => $files,
+                                        'type' => 'messageid',
+                                        'resourceid' => $msgid,
+                                    ));
+                                }
+                            }
+                        } else {
+                            $msgid = $messages[$mailSubject]['msgid'];
+                        }
+                        $this->DB->Execute(
+                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                            VALUES (?, ?, ?, ?NOW?, ?)',
+                            array($msgid, $doc['customerid'], $email, MSG_NEW)
+                        );
+                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                        if (!isset($msgitems[$doc['customerid']])) {
+                            $msgitems[$doc['customerid']] = array();
+                        }
+                        $msgitems[$doc['customerid']][$email] = $msgitemid;
+                    }
+
+                    if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
+                        $headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+                        $headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
+                    }
+
+                    $res = $this->SendMail(
+                        $email,
+                        $headers,
+                        $body,
+                        $files,
+                        null,
+                        ($smtp_options ?? null)
+                    );
+
+                    if (is_string($res)) {
+                        $msg = trans('Error sending mail: $a', $res);
+                        if ($type == 'backend') {
+                            fwrite(STDERR, $msg . $eol);
+                        } else {
+                            echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+                            flush();
+                        }
+                        $status = MSG_ERROR;
+                    } else {
+                        $status = MSG_SENT;
+                        $res = null;
+                    }
+
+                    if ($status == MSG_SENT) {
+                        $sentDocIds = array_column($sentDocs, 'id');
+                        $this->PublishDocuments($sentDocIds);
+                        $this->MarkDocumentsAsSent($sentDocIds);
+
+                        if (!empty($referenced_documents)) {
+                            $this->DB->Execute(
+                                'UPDATE documents
+                                SET published = 1, senddate = ?NOW?
+                                WHERE id IN ?',
+                                array($referenced_documents)
+                            );
+                        }
+                    }
+
+                    if ($add_message) {
+                        $this->DB->Execute('UPDATE messageitems SET status = ?, error = ?
+							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+                    }
+
+                    if (!empty($interval)) {
+                        if ($interval == -1) {
+                            $delay = mt_rand(500, 5000);
+                        } else {
+                            $delay = intval($interval);
+                        }
+                        usleep($delay * 1000);
+                    }
+                }
+            }
+
+            return;
+        }
+
         foreach ($docs as $doc) {
             $doc['invoice_filename'] = $invoice_filename;
             $doc['dnote_filename'] = $dnote_filename;
@@ -5318,7 +5826,6 @@ class LMS
             }
 
             $custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
-            $invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
             if (!is_null($mail_body)) {
                 if (is_readable($mail_body) && ($mail_body[0] == DIRECTORY_SEPARATOR)) {
                     $body = file_get_contents($mail_body);
@@ -5328,149 +5835,14 @@ class LMS
             }
             $subject = $mail_subject;
 
-            $invoice_number = docnumber(array(
-                'number' => $doc['number'],
-                'template' => $invoice_number,
-                'cdate' => $doc['cdate'] + date('Z'),
-                'customerid' => $doc['customerid'],
-            ));
+            $mailPlaceholders = $this->substituteInvoiceMailPlaceholders($subject, $body, $doc, $document['document'], $params);
+            $subject = $mailPlaceholders['subject'];
+            $body = $mailPlaceholders['body'];
+            $invoice_number = $mailPlaceholders['invoice_number'];
+            $balance = $mailPlaceholders['balance'];
 
-            $deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
-
-            $balance = $this->GetCustomerBalance($doc['customerid']);
-            $currency = Localisation::getCurrentCurrency();
-
-            if ($balance < 0) {
-                $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$balance, $currency));
-            } elseif ($balance > 0) {
-                $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($balance, $currency));
-            } else {
-                $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
-            }
-
-            [$now_y, $now_m] = explode('/', date('Y/m', time()));
-
-            $alternative_accounts = $document['document']['bankaccounts'];
-
-            if (empty($use_only_alternative_accounts) || empty($alternative_accounts)) {
-                $accounts = array(bankaccount($doc['customerid'], $document['document']['account']));
-            } else {
-                $accounts = array();
-            }
-
-            if (!empty($use_all_accounts) || !empty($use_only_alternative_accounts)) {
-                $accounts = array_merge($accounts, $alternative_accounts);
-            }
-            foreach ($accounts as &$account) {
-                $account = format_bankaccount($account);
-            }
-            unset($account);
-
-            $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
-
-            $ksefOfflineSupport = ConfigHelper::checkConfig('ksef.offline_support');
-
-            if (!empty($doc['ksefnumber']) || $ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
-                if (strpos($body, '%ksef-url') !== false || strpos($body, '%ksef-qr-code') !== false) {
-                    $ksefUrl = KSeF::getQrCodeUrl([
-                        'ten' => $doc['kseften'],
-                        'date' => $doc['cdate'],
-                        'hash' => $doc['ksefhash'],
-                        'environment' => $doc['ksefenvironment'],
-                    ]);
-                } else {
-                    $ksefUrl = '';
-                }
-
-                if (strpos($body, '%ksef-qr-code') !== false) {
-                    if (!isset($barcode)) {
-                        $barcode = new \Com\Tecnick\Barcode\Barcode();
-                    }
-                    $bobj = $barcode->getBarcodeObj('QRCODE', $ksefUrl, -3, -3, 'black', [0, 0, 0, 0]);
-
-                    $ksefQrCode = '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
-                } else {
-                    $ksefQrCode = '';
-                }
-            } else {
-                $ksefUrl = $ksefQrCode = '';
-            }
-
-            if (empty($doc['ksefnumber'])) {
-                if ($ksefOfflineSupport && !empty($doc['ksefhash']) && empty($doc['ksefstatus'])) {
-                    $ksefNumber = 'OFFLINE';
-                } else {
-                    $ksefNumber = '';
-                }
-            } else {
-                $ksefNumber = $doc['ksefnumber'];
-            }
-
-            $body = str_replace(
-                array(
-                    '%invoice',
-                    '%balance',
-                    '%commented_balance',
-                    '%today',
-                    '\n',
-                    '%bankaccount',
-                    '%deadline-y',
-                    '%deadline-m',
-                    '%deadline-d',
-                    '%deadline_month_name',
-                    '%pin',
-                    '%cid',
-                    '%customer_name',
-                    '%division_name',
-                    '%division_address',
-                    '%division_zip',
-                    '%division_city',
-                    '%lastday',
-                    // invoices, debit notes
-                    '%value',
-                    '%cdate-y',
-                    '%cdate-m',
-                    '%cdate-d',
-                    '%ksef-number',
-                    '%ksef-url',
-                    '%ksef-qr-code',
-
-                ),
-                array(
-                    $invoice_number,
-                    moneyf($balance, $currency),
-                    $commented_balance,
-                    $year . '-' . $month . '-' . $day,
-                    "\n",
-                    $all_accounts,
-                    date('Y', $deadline),
-                    date('m', $deadline),
-                    date('d', $deadline),
-                    date('F', $deadline),
-                    $document['document']['customerpin'],
-                    $doc['customerid'],
-                    $document['document']['name'],
-                    $document['document']['division_name'],
-                    $document['document']['division_address'],
-                    $document['document']['division_zip'],
-                    $document['document']['division_city'],
-                    date('t', mktime(12, 0, 0, $now_m, 1, $now_y)),
-                    moneyf($document['document']['total'], $document['document']['currency']),
-                    date('Y', $document['document']['cdate']),
-                    date('m', $document['document']['cdate']),
-                    date('d', $document['document']['cdate']),
-                    $ksefNumber,
-                    $ksefUrl,
-                    $ksefQrCode,
-                ),
-                $body
-            );
-
-            $subject = preg_replace('/%invoice/', $invoice_number, $subject);
             $doc['customername'] = $doc['name'];
             $doc['name'] = '"' . $doc['name'] . '"';
-
-            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents, $financial_history_reverse_order, $financial_history_item_description_format);
 
             $mailto = array();
             $mailto_qp_encoded = array();

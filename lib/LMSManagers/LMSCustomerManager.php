@@ -437,9 +437,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
 
             $now = time();
+            $sentDocIds = array();
 
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
+                if (!empty($row['senddate'])) {
+                    $sentDocIds[$row['docid']] = $row['docid'];
+                }
                 if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') || !empty($row['balanceexclude'])) {
                     $row['after'] = $result['balance'];
                 } else {
@@ -456,6 +460,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
             }
             unset($row);
+
+            if (!empty($sentDocIds)) {
+                if (!isset($document_manager)) {
+                    $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                $sentEmails = $document_manager->getDocumentSentEmails($sentDocIds);
+                foreach ($result['list'] as &$row) {
+                    if (isset($sentEmails[$row['docid']])) {
+                        $row['sentemails'] = $sentEmails[$row['docid']];
+                    }
+                }
+                unset($row);
+            }
 
             $result['total'] = count($result['list']);
 

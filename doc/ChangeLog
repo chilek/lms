@@ -1309,6 +1309,9 @@ version 28-git (????-??-??):
     %nasip%:3799 disconnect %secret%' [interduo]
   - devel: lms-fping runs the configured command without a shell. Only redirects to
     /dev/null or another descriptor are ignored; other shell metacharacters are rejected [interduo]
+  - enhancement: show last-sent e-mail address in invoice send tooltip [interduo]
+  - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
+    placeholders, sending one e-mail with all selected invoices attached [interduo]
 
 version 27.0 (2021-08-20):
 

@@ -46,4 +46,8 @@ $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($id, null, 'ASC', $a
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customername', $customername);
 $SMARTY->assign('objectid', $id);
+
+$customerid = $id;
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customerinvoicesend.inc.php');
+
 $SMARTY->display('customer/customerbalance.html');
