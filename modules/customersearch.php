@@ -37,12 +37,13 @@ if (isset($_POST['search'])) {
         [$year, $month, $day] = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
     }
-}
 
-if (!isset($search)) {
-    $SESSION->restore('customersearch', $search);
-} else {
+    $SESSION->remove('customersearch', true);
     $SESSION->save('customersearch', $search);
+} elseif (isset($_GET['search'])) {
+    $search = $SESSION->get('customersearch', true) ?? $SESSION->get('customersearch');
+} else {
+    $SESSION->restore('customersearch', $search);
 }
 
 if (!empty($search['balance_date'])) {
@@ -179,12 +180,13 @@ if (!isset($_POST['group-date'])) {
 }
 $SESSION->save('cslgd', $customergroupdate);
 
-if (!isset($_POST['k'])) {
-    $SESSION->restore('cslk', $sqlskey);
-} else {
+if (isset($_POST['k'])) {
     $sqlskey = $_POST['k'];
+    $SESSION->remove('cslk', true);
+    $SESSION->save('cslk', $sqlskey);
+} else {
+    $sqlskey = (isset($_GET['search']) ? $SESSION->get('cslk', true) : null) ?? $SESSION->get('cslk');
 }
-$SESSION->save('cslk', $sqlskey);
 
 if (!isset($_POST['ng'])) {
     $SESSION->restore('cslng', $nodegroup);
