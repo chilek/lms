@@ -112,6 +112,14 @@ function module_main()
         foreach ($_FILES['files']['name'] as $fileidx => $filename) {
             if (!empty($filename)) {
                 if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+                    if (preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $filename)) {
+                        continue;
+                    }
+
+                    if (preg_match('/^\./', $filename)) {
+                        $filename = preg_replace('/^\./', '', $filename);
+                    }
+
                     $filecontents = file_get_contents($_FILES['files']['tmp_name'][$fileidx]);
                     $files[] = array(
                         'name' => $filename,
