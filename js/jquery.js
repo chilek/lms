@@ -242,7 +242,7 @@ function init_datepickers(selector) {
 			}, 1);
 		},
 		onClose: function (dateText, inst) {
-			if ($(this).data('input-tooltip') !== undefined) {
+			if ($(this).data('input-tooltip') && $(this).data('ui-tooltip')) {
 				$(this).tooltip('enable');
 			}
 			if ($(this).data('icon-tooltip') !== undefined) {
