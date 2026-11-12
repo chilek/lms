@@ -116,9 +116,7 @@ function module_main()
                         continue;
                     }
 
-                    if (preg_match('/^\./', $filename)) {
-                        $filename = preg_replace('/^\./', '', $filename);
-                    }
+                    $filename = preg_replace('/^[\.]+/', '', $filename);
 
                     $filecontents = file_get_contents($_FILES['files']['tmp_name'][$fileidx]);
                     $files[] = array(
