@@ -1311,6 +1311,8 @@ version 28-git (????-??-??):
     /dev/null or another descriptor are ignored; other shell metacharacters are rejected [interduo]
   - security/bugfix: file name sanity checking of file uploaded via web browser especially
     for helpdesk attachments [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
+  - bugfix/security: local privilege escalation in daemon (daemon is deprected for several year so
+    we finally remove it) [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
 
 version 27.0 (2021-08-20):
 
