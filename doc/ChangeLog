@@ -1309,6 +1309,8 @@ version 28-git (????-??-??):
     %nasip%:3799 disconnect %secret%' [interduo]
   - devel: lms-fping runs the configured command without a shell. Only redirects to
     /dev/null or another descriptor are ignored; other shell metacharacters are rejected [interduo]
+  - security/bugfix: file name sanity checking of file uploaded via web browser especially
+    for helpdesk attachments [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
 
 version 27.0 (2021-08-20):
 
