@@ -407,12 +407,20 @@ function module_main()
             $error['body'] = trans('Ticket must have its body!');
         }
 
-        $queues = str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues'));
-        $sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
+        $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
+        $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
         if (!$DB->GetOne(
-            'SELECT 1 FROM rttickets WHERE source IN (' . $sources . ')
-			AND queueid IN ('. $queues . ') AND id = ? AND customerid = ? AND deleted = 0',
-            array($ticket['id'], $SESSION->id)
+            'SELECT 1
+            FROM rttickets
+            WHERE id = ?
+                AND customerid = ?
+                AND deleted = 0'
+                . (empty($queues) ? '' : ' AND queueid IN ' . $DB->Escape($queues))
+                . (empty($sources) ? '' : ' AND source IN  ' . $DB->Escape($sources)),
+            array(
+                $ticket['id'],
+                $SESSION->id,
+            )
         )) {
             $error = true;
         }
