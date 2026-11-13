@@ -106,9 +106,13 @@ function queue_changed($queue)
 
     $templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR);
     if ($templates) {
-        $SMARTY->assign('templates', $templates);
-        $SMARTY->assign('tip', 'Select message template');
-        $SMARTY->assign('target', '[name="ticket[body]"]');
+        $SMARTY->assign(
+            array(
+                'templates' => $templates,
+                'tip' => 'Select message template',
+                'target' => '[name="ticket[body]"]',
+            )
+        );
         $JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
         $JSResponse->assign('message-template-row', 'style', '');
     } else {
@@ -117,9 +121,13 @@ function queue_changed($queue)
 
     $templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
     if ($templates) {
-        $SMARTY->assign('templates', $templates);
-        $SMARTY->assign('tip', 'Select note template');
-        $SMARTY->assign('target', '[name="ticket[note]"]');
+        $SMARTY->assign(
+            array(
+                'templates' => $templates,
+                'tip' => 'Select note template',
+                'target' => '[name="ticket[note]"]',
+            )
+        );
         $JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
         $JSResponse->assign('note-template-row', 'style', '');
     } else {
@@ -134,8 +142,12 @@ function queue_changed($queue)
 
     $userlist = $LMS->GetUserNames();
 
-    $SMARTY->assign('userlist', $userlist);
-    $SMARTY->assign('ticket', array('verifierid'=>$vid));
+    $SMARTY->assign(
+        array(
+            'userlist' => $userlist,
+            'ticket' => array('verifierid'=>$vid),
+        )
+    );
     $content = $SMARTY->fetch('rt/rtverifiers.html');
 
     $JSResponse->assign('rtverifiers', 'innerHTML', $content);

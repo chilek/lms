@@ -246,7 +246,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     private function globalConfigOptionExists($params)
     {
         extract($params);
-        if (isset($section) && isset($variable)) {
+        if (isset($section, $variable)) {
             return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ? AND divisionid IS NULL AND userid IS NULL',
                 array($section, $variable)
@@ -259,7 +259,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     private function divisionConfigOptionExists($params)
     {
         extract($params);
-        if (isset($section) && isset($variable) && isset($divisionid)) {
+        if (isset($section, $variable, $divisionid)) {
             return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ? AND divisionid = ? AND userid IS NULL',
                 array($section, $variable, $divisionid)
@@ -272,7 +272,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     private function divisionUserConfigOptionExists($params)
     {
         extract($params);
-        if (isset($section) && isset($variable) && isset($divisionid) && isset($userid)) {
+        if (isset($section, $variable, $divisionid, $userid)) {
             return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ? AND divisionid = ? AND userid = ?',
                 array($section, $variable, $divisionid, $userid)
@@ -285,7 +285,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     private function userConfigOptionExists($params)
     {
         extract($params);
-        if (isset($section) && isset($variable) && isset($userid)) {
+        if (isset($section, $variable, $userid)) {
             return $this->db->GetOne(
                 'SELECT id FROM uiconfig WHERE section = ? AND var = ? AND userid = ? AND divisionid IS NULL',
                 array($section, $variable, $userid)
@@ -1587,7 +1587,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         $args['value'] = $option['value'];
         $args['id'] = $id;
 
-        if (isset($args['description']) && isset($args['disabled']) && isset($args['type'])) {
+        if (isset($args['description'], $args['disabled'], $args['type'])) {
             $option_edited = $this->db->Execute(
                 'UPDATE uiconfig SET description = ?, disabled = ?, type = ?, value = ?
                 WHERE id = ?',

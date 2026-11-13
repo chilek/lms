@@ -28,8 +28,12 @@ if (isset($_POST['usergroupadd'])) {
         $SESSION->redirect('?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('usergroupadd', $usergroupadd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'usergroupadd' => $usergroupadd,
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('New Group');

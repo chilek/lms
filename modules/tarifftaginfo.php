@@ -40,7 +40,11 @@ $layout['pagetitle'] = trans('Tag Info: $a', $tarifftag['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('tarifftag', $tarifftag);
-$SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('tariffscount', $tariffscount);
+$SMARTY->assign(
+    array(
+        'tarifftag' => $tarifftag,
+        'tariffs' => $tariffs,
+        'tariffscount' => $tariffscount,
+    )
+);
 $SMARTY->display('tariff/tarifftaginfo.html');

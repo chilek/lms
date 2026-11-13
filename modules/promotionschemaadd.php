@@ -162,6 +162,10 @@ $schema['selection'] = array(1,3,6,9,12,18,24,30,36,42,48,60);
 
 $layout['pagetitle'] = trans('New Schema');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('schema', $schema);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'schema' => $schema,
+    )
+);
 $SMARTY->display('promotion/promotionschemaadd.html');

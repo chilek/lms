@@ -111,9 +111,13 @@ if ($note = $SESSION->get('noteprint')) {
         $SESSION->remove('noteprint');
 }
 
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('marks', $marks);
-$SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
-$SMARTY->assign('notelist', $notelist);
+$SMARTY->assign(
+    array(
+        'listdata' => $listdata,
+        'pagination' => $pagination,
+        'marks' => $marks,
+        'grouplist' => $LMS->CustomergroupGetAll(),
+        'notelist' => $notelist,
+    )
+);
 $SMARTY->display('note/notelist.html');

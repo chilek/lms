@@ -409,10 +409,14 @@ if ($newnote = $SESSION->get('noteprint')) {
 
 $layout['pagetitle'] = trans('New Debit Note<!long>');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('note', $note);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'contents' => $contents,
+        'customer' => $customer,
+        'note' => $note,
+    )
+);
 
 $args = array(
     'doctype' => DOC_DNOTE,
@@ -429,8 +433,12 @@ $numberplanlist = $LMS->GetNumberPlans($args);
 if (!$numberplanlist) {
     $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
 }
-$SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->assign('planDocumentType', DOC_DNOTE);
+$SMARTY->assign(
+    array(
+        'numberplanlist' => $numberplanlist,
+        'planDocumentType' => DOC_DNOTE,
+    )
+);
 
 //$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('note/noteadd.html');

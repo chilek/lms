@@ -1837,7 +1837,7 @@ if ($report_type == 'full') {
             $netrange['latitude'] /= $netrange['count'];
         }
 
-        if (!isset($teryt['area_terc']) || !isset($teryt['area_simc']) || !isset($node['location_house']) || !strlen($node['location_house'])) {
+        if (!isset($teryt['area_terc'], $teryt['area_simc'], $node['location_house']) || !strlen($node['location_house'])) {
             $error = array(
                 'id' => $node['nodeid'],
                 'name' => $node['name'],

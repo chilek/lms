@@ -189,10 +189,14 @@ $hook_data = $LMS->executeHook(
 );
 $netdevlist = $hook_data['netdevlist'];
 
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('NNprojects', $LMS->GetProjects());
-$SMARTY->assign('producers', $producers);
-$SMARTY->assign('models', $models);
+$SMARTY->assign(
+    array(
+        'netdevlist' => $netdevlist,
+        'pagination' => $pagination,
+        'listdata' => $listdata,
+        'NNprojects' => $LMS->GetProjects(),
+        'producers' => $producers,
+        'models' => $models,
+    )
+);
 $SMARTY->display('netdev/netdevlist.html');

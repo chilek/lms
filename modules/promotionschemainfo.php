@@ -145,10 +145,13 @@ $SESSION->add_history_entry();
 
 $SESSION->restore('psdform', $formdata);
 $SESSION->remove('psdform');
-$SMARTY->assign('formdata', $formdata);
-
-$SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('tags', $LMS->TarifftagGetAll());
-$SMARTY->assign('users', $users);
-$SMARTY->assign('schema', $schema);
+$SMARTY->assign(
+    array(
+        'formdata' => $formdata,
+        'tariffs' => $tariffs,
+        'tags' => $LMS->TarifftagGetAll(),
+        'users' => $users,
+        'schema' => $schema,
+    )
+);
 $SMARTY->display('promotion/promotionschemainfo.html');

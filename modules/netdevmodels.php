@@ -286,9 +286,13 @@ function edit_model($id)
     $obj->assign("id_model_alternative_name", "value", $model['alternative_name']);
     $obj->script('$("#id_model_type").val("' . $model['type'] . '")');
     $obj->script("$('#id_model_name').focus();");
-    $SMARTY->assign('restore', 1);
-    $SMARTY->assign('attachmenttype', "netdevmodelid");
-    $SMARTY->assign('attachmentresourceid', $model['id']);
+    $SMARTY->assign(
+        array(
+            'restore' => 1,
+            'attachmenttype' => "netdevmodelid",
+            'attachmentresourceid' => $model['id'],
+        )
+    );
     $filecontainers = array(
         'netdevmodelid' => array(
             'id' => $model['id'],
@@ -296,8 +300,12 @@ function edit_model($id)
             'containers' => $LMS->GetFileContainers('netdevmodelid', $model['id']),
         ),
     );
-    $SMARTY->assign('filecontainers', $filecontainers);
-    $SMARTY->assign('attachment_support_already_loaded', true);
+    $SMARTY->assign(
+        array(
+            'filecontainers' => $filecontainers,
+            'attachment_support_already_loaded' => true,
+        )
+    );
     $obj->assign('netdevmodel-attachements', "innerHTML", $SMARTY->fetch('attachments.html'));
     $obj->call('init_titlebars', '#netdevmodel-attachements .lmsbox-titlebar');
     $obj->call('init_attachment_lists', '#netdevmodel-attachements');
@@ -477,20 +485,28 @@ $producerlist = $hook_data['producerlist'];
 $producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
 
-if (isset($_GET['restore']) && isset($_GET['resourceid'])) {
+if (isset($_GET['restore'], $_GET['resourceid'])) {
     $restore = $_GET['restore'];
     $resourceid = $_GET['resourceid'];
-    $SMARTY->assign('restore', $restore);
-    $SMARTY->assign('resourceid', $resourceid);
+    $SMARTY->assign(
+        array(
+            'restore' => $restore,
+            'resourceid' => $resourceid,
+        )
+    );
 }
 $SESSION->add_history_entry('m=netdevmodels');
 
-$SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('producerlist', $producerlist);
-$SMARTY->assign('modellist', $modellist);
-$SMARTY->assign('producerinfo', $producerinfo);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
+$SMARTY->assign(
+    array(
+        'xajax' => $LMS->RunXajax(),
+        'listdata' => $listdata,
+        'producerlist' => $producerlist,
+        'modellist' => $modellist,
+        'producerinfo' => $producerinfo,
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+    )
+);
 $SMARTY->display('netdev/netdevmodels.html');

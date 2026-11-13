@@ -35,6 +35,10 @@ if (!empty($tarifftaglist)) {
     unset($tarifftaglist['total'], $tarifftaglist['totalcount']);
 }
 
-$SMARTY->assign('tarifftaglist', $tarifftaglist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'tarifftaglist' => $tarifftaglist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('tariff/tarifftaglist.html');

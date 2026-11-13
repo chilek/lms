@@ -189,13 +189,17 @@ if ($receipt = $SESSION->get('receiptprint', true)) {
     $SESSION->remove('receiptprint', true);
 }
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('logentry', $logentry);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('marks', $marks);
-$SMARTY->assign('receiptlist', $receiptlist);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'logentry' => $logentry,
+        'listdata' => $listdata,
+        'pagination' => $pagination,
+        'pagelimit' => $pagelimit,
+        'start' => $start,
+        'page' => $page,
+        'marks' => $marks,
+        'receiptlist' => $receiptlist,
+    )
+);
 $SMARTY->display('receipt/receiptlist.html');

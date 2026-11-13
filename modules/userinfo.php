@@ -43,8 +43,12 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
             'limit' => 300,
             'details' => true,
         ));
-        $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('userid', $id);
+        $SMARTY->assign(
+            array(
+                'transactions' => $trans,
+                'userid' => $id,
+            )
+        );
         die($SMARTY->fetch('transactionlist.html'));
     }
 
@@ -87,12 +91,16 @@ $customercalls = $LMS->getCustomerCalls(array(
     'limit' => -1,
 ));
 
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('customercalls', $customercalls);
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
+$SMARTY->assign(
+    array(
+        'userinfo' => $userinfo,
+        'customercalls' => $customercalls,
+        'accesslist' => $accesslist,
+        'excludedgroups' => $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups
 					    WHERE customergroupid = g.id AND userid = ?
-					    ORDER BY name', array($userinfo['id'])));
-$SMARTY->assign('user_divisions', $LMS->GetDivisions(array('userid' => $userinfo['id'])));
+					    ORDER BY name', array($userinfo['id'])),
+        'user_divisions' => $LMS->GetDivisions(array('userid' => $userinfo['id'])),
+    )
+);
 
 $SMARTY->display('user/userinfo.html');

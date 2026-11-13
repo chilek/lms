@@ -60,9 +60,13 @@ switch ($action) {
     default:
         break;
 }
-$SMARTY->assign('action', $action);
-$SMARTY->assign('vlanlist', $vlanlist);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('pagetitle', $layout['pagetitle']);
-$SMARTY->assign('pagelimit', ConfigHelper::getConfig('phpui.vlanlist_pagelimit', 100));
+$SMARTY->assign(
+    array(
+        'action' => $action,
+        'vlanlist' => $vlanlist,
+        'netnodelist' => $netnodelist,
+        'pagetitle' => $layout['pagetitle'],
+        'pagelimit' => ConfigHelper::getConfig('phpui.vlanlist_pagelimit', 100),
+    )
+);
 $SMARTY->display('vlan/vlanlist.html');

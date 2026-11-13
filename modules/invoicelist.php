@@ -246,21 +246,28 @@ $hook_data = $LMS->ExecuteHook(
 );
 $invoicelist = $hook_data['invoicelist'];
 
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('marks', $marks);
-$SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
+$SMARTY->assign(
+    array(
+        'listdata' => $listdata,
+        'pagination' => $pagination,
+        'marks' => $marks,
+        'grouplist' => $LMS->CustomergroupGetAll(),
+    )
+);
 
 if ($proforma) {
     $doctypes = array(DOC_INVOICE_PRO);
 } else {
     $doctypes = array(DOC_INVOICE, DOC_CNOTE);
 }
-$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
-    'doctype' => $doctypes,
-)));
-
-$SMARTY->assign('proforma', $proforma);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('invoicelist', $invoicelist);
+$SMARTY->assign(
+    array(
+        'numberplans' => $LMS->GetNumberPlans(array(
+            'doctype' => $doctypes,
+        )),
+        'proforma' => $proforma,
+        'divisions' => $LMS->GetDivisions(),
+        'invoicelist' => $invoicelist,
+    )
+);
 $SMARTY->display('invoice/invoicelist.html');

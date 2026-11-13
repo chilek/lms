@@ -117,9 +117,13 @@ $SESSION->add_history_entry();
 $layout['pagetitle'] = trans('Cash History of Registry:').
         ' <A href="?m=receiptlist&regid='.$regid.'">'.$DB->GetOne('SELECT name FROM cashregs WHERE id = ?', array($regid)).'</A>';
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('cashreglog', $cashreglog);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'cashreglog' => $cashreglog,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('cash/cashreglogview.html');

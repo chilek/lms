@@ -318,8 +318,12 @@ if ($ranges) {
     unset($range);
 }
 
-$SMARTY->assign('devices', $devices);
-$SMARTY->assign('devlinks', $devlinks);
-$SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodelinks', empty($nodelinks) ? null : $nodelinks);
-$SMARTY->assign('ranges', empty($ranges) ? null : $ranges);
+$SMARTY->assign(
+    array(
+        'devices' => $devices,
+        'devlinks' => $devlinks,
+        'nodes' => $nodes,
+        'nodelinks' => empty($nodelinks) ? null : $nodelinks,
+        'ranges' => empty($ranges) ? null : $ranges,
+    )
+);

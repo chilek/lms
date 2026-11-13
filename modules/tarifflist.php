@@ -370,11 +370,15 @@ $layout['pagetitle'] = trans('Subscription List');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('tarifflist', $tarifflist);
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('tags', $LMS->TarifftagGetAll());
-$SMARTY->assign('customergroups', $customergroups);
-$SMARTY->assign('promotions', $promotions);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'tarifflist' => $tarifflist,
+        'taxeslist' => $LMS->GetTaxes(),
+        'tags' => $LMS->TarifftagGetAll(),
+        'customergroups' => $customergroups,
+        'promotions' => $promotions,
+        'listdata' => $listdata,
+    )
+);
 
 $SMARTY->display('tariff/tarifflist.html');

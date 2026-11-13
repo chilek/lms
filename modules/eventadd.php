@@ -53,7 +53,7 @@ if (!empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
 
-if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
+if (isset($_POST['event']['helpdesk'], $_POST['ticket'])) {
     $ticket = $_POST['ticket'];
 }
 
@@ -589,11 +589,15 @@ if (!empty($event['customerid'])) {
     } else {
         $nodes = $LMS->GetNodeLocations($event['customerid'], $address_id);
     }
-    $SMARTY->assign('addresses', $addresses);
-    $SMARTY->assign('nodes', $nodes);
+    $SMARTY->assign(
+        array(
+            'addresses' => $addresses,
+            'nodes' => $nodes,
+        )
+    );
 }
 
-if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
+if (isset($_GET['day'], $_GET['month'], $_GET['year'])) {
     $event['begin'] = date('Y/m/d H:i', mktime(0, 0, 0, $_GET['month'], $_GET['day'], $_GET['year']));
 }
 

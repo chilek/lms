@@ -80,9 +80,13 @@ if (isset($_POST['event'])) {
         }
     }
 
-    $SMARTY->assign('eventlist', $eventlist);
-    $SMARTY->assign('daylist', $daylist);
-    $SMARTY->assign('getHolidays', getHolidays($year ?? null));
+    $SMARTY->assign(
+        array(
+            'eventlist' => $eventlist,
+            'daylist' => $daylist,
+            'getHolidays' => getHolidays($year ?? null),
+        )
+    );
 
     $total_time = 0;
     $calendar_intervals = array();
@@ -137,8 +141,12 @@ if (isset($_POST['event'])) {
         $calendar_total_time += $final_interval;
     }
 
-    $SMARTY->assign('total_time', $total_time);
-    $SMARTY->assign('calendar_total_time', $calendar_total_time);
+    $SMARTY->assign(
+        array(
+            'total_time' => $total_time,
+            'calendar_total_time' => $calendar_total_time,
+        )
+    );
 
     $SMARTY->display('event/eventsearchresults.html');
 

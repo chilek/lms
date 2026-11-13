@@ -108,7 +108,7 @@ if (!empty($configs)) {
     if (isset($_GET['source-division']) && !isset($_GET['source-user'])) {
         $filename .= '-' . $_GET['source-division'];
     }
-    if (isset($_GET['source-division']) && isset($_GET['source-user'])) {
+    if (isset($_GET['source-division'], $_GET['source-user'])) {
         $filename .= '-' . $_GET['source-division'] . '-' . $_GET['source-user'];
     }
     if (!isset($_GET['source-division']) && isset($_GET['source-user'])) {
