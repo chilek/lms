@@ -1284,19 +1284,49 @@ function osm_geocode($params)
 
 function exchangeratesapi_get_currency_value($currency, $date = null)
 {
-    $result = file_get_contents('https://api.exchangeratesapi.io/'
-        . (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . Localisation::getCurrentCurrency());
+    $target = Localisation::getCurrentCurrency();
+    $path = empty($date) ? 'latest' : date('Y-m-d', $date);
+    $params = array(
+        'base' => $currency,
+        'symbols' => $target,
+    );
+
+    // api.exchangeratesapi.io rejects requests without an access key, so it is used only
+    // when phpui.exchangeratesapi_access_key is set. Without a key the rate comes from
+    // a keyless exchangeratesapi.io-compatible endpoint (ECB reference rates served by
+    // AllRatesToday - https://allratestoday.com).
+    $access_key = ConfigHelper::getConfig('phpui.exchangeratesapi_access_key', '', true);
+    if (strlen($access_key)) {
+        $url = 'https://api.exchangeratesapi.io/v1/';
+        $params['access_key'] = $access_key;
+    } else {
+        $url = 'https://allratestoday.com/api/compat/exchangeratesapi/';
+    }
+
+    $context = stream_context_create(array(
+        'http' => array(
+            'timeout' => 10,
+            'header' => array(
+                'User-Agent: PHP/' . PHP_VERSION,
+            ),
+        ),
+    ));
+
+    $result = @file_get_contents($url . $path . '?' . http_build_query($params), false, $context);
     if ($result === false) {
         return null;
     }
 
     $result = json_decode($result, true);
-    if ($result === null) {
+    if (!is_array($result) || !isset($result['rates']) || !is_array($result['rates'])
+        || !isset($result['rates'][$target])) {
         return null;
     }
 
-    if (!isset($result['rates'][Localisation::getCurrentCurrency()])) {
+    $rate = $result['rates'][$target];
+    if (!is_numeric($rate) || $rate <= 0) {
         return null;
     }
-    return $result['rates'][Localisation::getCurrentCurrency()];
+
+    return floatval($rate);
 }
