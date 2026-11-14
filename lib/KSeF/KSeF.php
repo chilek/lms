@@ -26,6 +26,8 @@
 
 namespace Lms\KSeF;
 
+use N1ebieski\KSEFClient\ValueObjects\Requests\KsefNumber;
+
 class KSeF
 {
     const CERTIFICATE_FORMAT_UNKNOWN = 0;
@@ -38,6 +40,9 @@ class KSeF
     const ENVIRONMENT_TEST = 1;
     const ENVIRONMENT_PROD = 2;
     const ENVIRONMENT_DEMO = 3;
+    const STATUS_PENDING = 0;
+    const STATUS_ACCEPTED = 200;
+    const STATUS_DUPLICATE = 440;
 
     const IDENTIFIER_TEN = 1;
     const IDENTIFIER_VAT_UE = 2;
@@ -124,8 +129,38 @@ class KSeF
 
     private $showOnlyAlternativeAccounts;
     private $showAllAccounts;
+    private $showMemo;
 
     private $smartNumberFormatter;
+
+    public static function formatStatusDetails($statusDetails)
+    {
+        if (!is_string($statusDetails) || $statusDetails === '') {
+            return $statusDetails;
+        }
+
+        $decoded = json_decode($statusDetails, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $statusDetails;
+        }
+
+        if (is_array($decoded)) {
+            return implode(', ', array_map([self::class, 'formatStatusDetailValue'], $decoded));
+        }
+
+        return is_scalar($decoded) ? strval($decoded) : $statusDetails;
+    }
+
+    private static function formatStatusDetailValue($value)
+    {
+        if (is_scalar($value) || $value === null) {
+            return strval($value);
+        }
+
+        $encoded = json_encode($value, JSON_UNESCAPED_UNICODE);
+
+        return $encoded === false ? '' : $encoded;
+    }
 
     public function __construct($db, $lms)
     {
@@ -384,6 +419,24 @@ class KSeF
 
     public function getInvoiceXml(array $invoice)
     {
+        $numericLocale = setlocale(LC_NUMERIC, '0');
+        setlocale(LC_NUMERIC, 'C');
+
+        try {
+            return $this->buildInvoiceXml($invoice);
+        } finally {
+            if ($numericLocale !== false) {
+                setlocale(LC_NUMERIC, $numericLocale);
+            }
+        }
+    }
+
+    private function buildInvoiceXml(array $invoice)
+    {
+        if (!isset($invoice['type']) && isset($invoice['doctype'])) {
+            $invoice['type'] = $invoice['doctype'];
+        }
+
         if (!isset($this->divisions[$invoice['divisionid']])) {
             $this->divisions[$invoice['divisionid']] = $this->lms->GetDivision($invoice['divisionid']);
         }
@@ -2064,11 +2117,7 @@ class KSeF
 
     public static function downloadUpoFile($invoiceStatus)
     {
-        if (!isset(self::$upoStorage)) {
-            self::$upoStorage = is_dir(self::KSEF_UPO_DIR) && is_readable(self::KSEF_UPO_DIR);
-        }
-
-        if (!self::$upoStorage) {
+        if (!self::ensureUpoStorageDirectory()) {
             return false;
         }
 
@@ -2082,31 +2131,39 @@ class KSeF
             return 'Couldn\'t download UPO file for KSeF invoice  \'' . $invoiceStatus->ksefNumber . '\'!';
         }
 
-        [$ten, $date] = explode('-', $invoiceStatus->ksefNumber);
+        return self::saveUpoContent($invoiceStatus->ksefNumber, $upoContent);
+    }
 
-        $ksefUpoTenDir = self::KSEF_UPO_DIR . DIRECTORY_SEPARATOR . $ten;
-        if (!is_dir($ksefUpoTenDir)) {
-            mkdir($ksefUpoTenDir);
-            @chmod(
-                $ksefUpoTenDir,
-                fileperms(self::KSEF_UPO_DIR) & 0xfff
-            );
-            @chown($ksefUpoTenDir, fileowner(self::KSEF_UPO_DIR));
-            @chgrp($ksefUpoTenDir, filegroup(self::KSEF_UPO_DIR));
+    public static function saveUpoContent($ksefNumber, $upoContent)
+    {
+        try {
+            KsefNumber::from($ksefNumber);
+        } catch (\Throwable $e) {
+            return 'Invalid KSeF invoice number.';
         }
 
-        $ksefUpoTenDateDir = $ksefUpoTenDir . DIRECTORY_SEPARATOR . $date;
-        if (!is_dir($ksefUpoTenDateDir)) {
-            mkdir($ksefUpoTenDateDir);
-            @chmod(
-                $ksefUpoTenDateDir,
-                fileperms(self::KSEF_UPO_DIR) & 0xfff
-            );
-            @chown($ksefUpoTenDateDir, fileowner(self::KSEF_UPO_DIR));
-            @chgrp($ksefUpoTenDateDir, filegroup(self::KSEF_UPO_DIR));
+        if (!is_string($upoContent) || $upoContent === '') {
+            return 'Empty UPO file content for KSeF invoice \'' . $ksefNumber . '\'!';
         }
 
-        $upoFile = $ksefUpoTenDateDir . DIRECTORY_SEPARATOR . $invoiceStatus->ksefNumber . '.xml';
+        if (!self::ensureUpoStorageDirectory()) {
+            return false;
+        }
+
+        [$ten, $date] = explode('-', $ksefNumber);
+
+        $upoDirectory = self::KSEF_UPO_DIR;
+        foreach ([$ten, $date] as $directoryName) {
+            $upoDirectory .= DIRECTORY_SEPARATOR . $directoryName;
+            if (!is_dir($upoDirectory)) {
+                mkdir($upoDirectory);
+                @chmod($upoDirectory, fileperms(self::KSEF_UPO_DIR) & 0xfff);
+                @chown($upoDirectory, fileowner(self::KSEF_UPO_DIR));
+                @chgrp($upoDirectory, filegroup(self::KSEF_UPO_DIR));
+            }
+        }
+
+        $upoFile = $upoDirectory . DIRECTORY_SEPARATOR . $ksefNumber . '.xml';
         if (file_put_contents($upoFile, $upoContent) !== false) {
             @chmod(
                 $upoFile,
@@ -2115,10 +2172,34 @@ class KSeF
             @chown($upoFile, fileowner(self::KSEF_UPO_DIR));
             @chgrp($upoFile, filegroup(self::KSEF_UPO_DIR));
         } else {
-            return 'Couldn\'t write UPO file for KSeF invoice \'' . $invoiceStatus->ksefNumber . '\'!';
+            return 'Couldn\'t write UPO file for KSeF invoice \'' . $ksefNumber . '\'!';
         }
 
         return true;
+    }
+
+    private static function ensureUpoStorageDirectory()
+    {
+        if (!is_dir(self::KSEF_UPO_DIR)) {
+            $permissions = is_dir(STORAGE_DIR) ? fileperms(STORAGE_DIR) & 0xfff : 0775;
+            @mkdir(self::KSEF_UPO_DIR, $permissions, true);
+
+            if (is_dir(STORAGE_DIR)) {
+                $ksefDir = dirname(self::KSEF_UPO_DIR);
+                @chmod($ksefDir, $permissions);
+                @chmod(self::KSEF_UPO_DIR, $permissions);
+                @chown($ksefDir, fileowner(STORAGE_DIR));
+                @chown(self::KSEF_UPO_DIR, fileowner(STORAGE_DIR));
+                @chgrp($ksefDir, filegroup(STORAGE_DIR));
+                @chgrp(self::KSEF_UPO_DIR, filegroup(STORAGE_DIR));
+            }
+        }
+
+        self::$upoStorage = is_dir(self::KSEF_UPO_DIR)
+            && is_readable(self::KSEF_UPO_DIR)
+            && is_writable(self::KSEF_UPO_DIR);
+
+        return self::$upoStorage;
     }
 
     private static function getUpoFilePath($ksefNumber)
