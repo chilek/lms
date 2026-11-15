@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-(function() {
+$(function() {
 	var netNodeContactIndex = 0;
 
 	$('#netnode-contact-groups').find('.netnode-contact').each(function() {
@@ -64,4 +64,4 @@
 	if (!$('#netnode-email-contacts').find('.netnode-contact').length) {
 		addNetNodeContact('email');
 	}
-})();
+});
