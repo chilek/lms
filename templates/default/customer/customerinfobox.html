@@ -571,7 +571,7 @@
 												{if $customerinfo.secure_pin || $unsecure_pin_validity && $smarty.now - $customerinfo.pinlastchange > $unsecure_pin_validity}
 													{icon name="customer-pin-code" tip="PIN"}
 												{else}
-													{icon name="customer-pin-code" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.pin}
+													{icon name="customer-pin-code" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.pin|escape}
 												{/if}
 											</td>
 											<td>
@@ -584,9 +584,9 @@
 														</span>
 													{else}
 														{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-															{button icon="clipboard" class="lms-ui-button-clipboard" label="Copy" data_clipboard_text=$customerinfo.pin}
+															{button icon="clipboard" class="lms-ui-button-clipboard" label="Copy" data_clipboard_text=$customerinfo.pin|escape}
 														{else}
-															{$customerinfo.pin}
+															{$customerinfo.pin|escape}
 														{/if}
 													{/if}
 												{/if}
