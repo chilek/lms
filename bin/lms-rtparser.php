@@ -335,20 +335,12 @@ function limitAutoreplyCc($ccemails, $counts)
 
 function warnTrustedAuthservIdUnset()
 {
-    global $stderr;
-
     static $warned = false;
     if ($warned) {
         return;
     }
     $warned = true;
-    $message = 'rt.parser_trusted_authserv_id is unset; Authentication-Results is ignored and From is trusted. Set it to the local MTA authserv-id.';
-    if (is_resource($stderr)) {
-        fprintf($stderr, 'Warning: ' . $message . PHP_EOL);
-    }
-    if (function_exists('writesyslog')) {
-        writesyslog($message, LOG_WARNING);
-    }
+    writesyslog('rt.parser_trusted_authserv_id is unset; Authentication-Results is ignored and From is trusted. Set it to the local MTA authserv-id.', LOG_WARNING);
 }
 
 function fromAddressAuthenticated($mailHeaders)
