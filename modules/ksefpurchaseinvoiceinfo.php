@@ -75,7 +75,7 @@ if (!empty($_GET['qr2pay'])) {
             str_pad($invoice['gross_amount'] * 100, 6, 0, STR_PAD_LEFT),
             $invoice['seller_name'],
             //mb_substr($invoice['seller_name'], 0, 20),
-            $invoice['invoice_number'],
+            time() >= strtotime('2027/01/01') ? $invoice['ksef_number'] : $invoice['invoice_number'],
             '',
             '',
             '',

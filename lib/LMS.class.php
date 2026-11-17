@@ -3260,7 +3260,15 @@ class LMS
 
             if (!empty($debug_email)) {
                 $recipients = $debug_email;
+
+                foreach (explode(",", $recipients) as $recipient) {
+                    $this->mail_object->addAddress($recipient, $headers['Recipient-Name'] ?? '');
+                }
             } else {
+                foreach (explode(",", $recipients) as $recipient) {
+                    $this->mail_object->addAddress($recipient, $headers['Recipient-Name'] ?? '');
+                }
+
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
@@ -3311,10 +3319,6 @@ class LMS
             } else {
                 $this->mail_object->isHTML(false);
                 $this->mail_object->Body = $body;
-            }
-
-            foreach (explode(",", $recipients) as $recipient) {
-                $this->mail_object->addAddress($recipient, $headers['Recipient-Name'] ?? '');
             }
 
             if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {

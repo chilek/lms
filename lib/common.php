@@ -1062,6 +1062,9 @@ function handle_file_uploads($elemid, &$error)
                     if (preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $filename)) {
                         continue;
                     }
+
+                    $filename = preg_replace('/^[\.]+/', '', $filename);
+
                     if (!empty($filename)) {
                         if (is_uploaded_file($_FILES[$elemid]['tmp_name'][$fileidx]) && $_FILES[$elemid]['size'][$fileidx]) {
                             $files[] = array(

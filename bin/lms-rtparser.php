@@ -335,20 +335,12 @@ function limitAutoreplyCc($ccemails, $counts)
 
 function warnTrustedAuthservIdUnset()
 {
-    global $stderr;
-
     static $warned = false;
     if ($warned) {
         return;
     }
     $warned = true;
-    $message = 'rt.parser_trusted_authserv_id is unset; Authentication-Results is ignored and From is trusted. Set it to the local MTA authserv-id.';
-    if (is_resource($stderr)) {
-        fprintf($stderr, 'Warning: ' . $message . PHP_EOL);
-    }
-    if (function_exists('writesyslog')) {
-        writesyslog($message, LOG_WARNING);
-    }
+    writesyslog('rt.parser_trusted_authserv_id is unset; Authentication-Results is ignored and From is trusted. Set it to the local MTA authserv-id.', LOG_WARNING);
 }
 
 function fromAddressAuthenticated($mailHeaders)
@@ -740,10 +732,13 @@ function handleRtparserMessage()
                         continue;
                     }
                     $file_name = basename(str_replace('\\', '/', decodeHeader($file_name)));
-                    if ($file_name === '' || $file_name === '.' || $file_name === '..') {
+
+                    if ($file_name === '' || preg_match('/(\/\.\.|^\.[\.]?$|\.\.\/|\/)/', $file_name)) {
                         unset($file_content);
                         continue;
                     }
+
+                    $file_name = preg_replace('/^[\.]+/', '', $file_name);
 
                     if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0
                         && ($imageSize = @getimagesizefromstring($file_content))

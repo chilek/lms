@@ -45,6 +45,8 @@ function cleanUpValue($value)
 
 $action = $_GET['action'] ?? null;
 
+$formTabId = intval($_GET['form_tab_id'] ?? 0);
+
 if (isset($_GET['id']) && $action == 'init') {
     $docid = $LMS->GetDocumentLastReference($_GET['id']);
     $invoice = $LMS->GetInvoiceContent($docid);
@@ -170,6 +172,10 @@ $SESSION->restore('invoicecontents', $contents, true);
 $SESSION->restore('invoice', $invoice, true);
 $SESSION->restore('cnote', $cnote, true);
 $SESSION->restore('cnoteerror', $error, true);
+
+if (!isset($invoice['customerid'], $cnote['cdate'])) {
+    $SESSION->redirect('?m=invoicelist');
+}
 
 $args = array(
     'doctype' => DOC_CNOTE,
@@ -1073,7 +1079,8 @@ $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 if ($action && !$error && !$warning) {
     // redirect, to not prevent from invoice break with the refresh
-    $SESSION->redirect('?m=invoicenote');
+    $SESSION->redirect('?m=invoicenote'
+        . ($formTabId ? '&form_tab_id=' . $formTabId : ''));
 }
 
 $hook_data = array(

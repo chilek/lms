@@ -617,7 +617,7 @@
 				{if !$invoice.closed}
 					<tr>
 						<td class="bold nobr" rowspan="2">
-							{count($contents) + 1}.
+							{count($contents|default:[]) + 1}.
 						</td>
 						<td class="nobr" id="other-selection" colspan="9">
 							{block name="`$layout.module`-other-selection"}

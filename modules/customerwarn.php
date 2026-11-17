@@ -94,14 +94,14 @@ if (isset($setwarnings['mcustomerid'])) {
 }
 
 if (isset($_GET['search'])) {
-    $SESSION->restore('customersearch', $search);
+    $search = $SESSION->get('customersearch', true) ?? $SESSION->get('customersearch');
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
     $SESSION->restore('cslsk', $statesqlkey);
     $SESSION->restore('csln', $network);
     $SESSION->restore('cslng', $nodegroup);
     $SESSION->restore('cslg', $customergroup);
-    $SESSION->restore('cslk', $sqlskey);
+    $sqlskey = $SESSION->get('cslk', true) ?? $SESSION->get('cslk');
     $SESSION->restore('csld', $division);
 
     $customerlist = $LMS->GetCustomerList(compact(
