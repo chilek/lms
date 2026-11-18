@@ -229,11 +229,12 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                 }
 
+                $services = $netnode['services'];
                 $netnode['services'] = array();
-                if (!empty($node['services'])) {
-                    $services = explode(',', $netnode['services']);
+                if (!empty($services)) {
+                    $services = explode(',', $services);
                     foreach ($services as $service) {
-                        $netnodes['services'][$service] = $service;
+                        $netnode['services'][$service] = $service;
                     }
                 }
             }
