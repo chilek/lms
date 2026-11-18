@@ -899,7 +899,7 @@ CREATE TABLE tariffs (
     taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		NOT NULL
-		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	numberplanid integer DEFAULT NULL
 		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
@@ -1028,7 +1028,7 @@ CREATE TABLE liabilities (
 	name text           	DEFAULT '' NOT NULL,
 	note text		DEFAULT NULL,
 	taxid integer       	NOT NULL
-		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
@@ -1189,7 +1189,7 @@ CREATE TABLE invoicecontents (
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(12,5) 	DEFAULT 0 NOT NULL,
 	taxid integer 		NOT NULL
-		CONSTRAINT invoicecontents_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT invoicecontents_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,3) 	DEFAULT 0 NOT NULL,
@@ -4865,6 +4865,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111802');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111803');
 
 COMMIT;
