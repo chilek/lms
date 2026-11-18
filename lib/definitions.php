@@ -169,6 +169,8 @@ define('CCONSENT_POSTAL_DELIVERY_SERVICE_INFO', 36);
 define('CCONSENT_MAIL_SERVICE_PROVIDER_CHANGE', 37);
 define('CCONSENT_POSTAL_DELIVERY_SERVICE_PROVIDER_CHANGE', 38);
 define('CCONSENT_POSTAL_DELIVERY_COMPLAINT', 39);
+define('CCONSENT_DOOR2DOOR_MARKETING', CCONSENT_DIRECT_MARKETING);
+define('CCONSENT_DOOR2DOOR_3RDPARTY_MARKETING', CCONSENT_DIRECT_3RDPARTY_MARKETING);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -241,9 +243,9 @@ $CCONSENTS = array(
         'name' => 'phone_marketing',
         'type' => 'boolean',
     ),
-    CCONSENT_DIRECT_MARKETING => array(
-        'label' => trans('<!marketing>direct'),
-        'name' => 'direct_marketing',
+    CCONSENT_DOOR2DOOR_MARKETING => array(
+        'label' => trans('<!marketing>door-to-door'),
+        'name' => 'door2door_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_MARKETING => array(
@@ -271,9 +273,9 @@ $CCONSENTS = array(
         'name' => 'phone_3rdparty_marketing',
         'type' => 'boolean',
     ),
-    CCONSENT_DIRECT_3RDPARTY_MARKETING => array(
-        'label' => trans('<!marketing>direct'),
-        'name' => 'direct_3rdparty_marketing',
+    CCONSENT_DOOR2DOOR_3RDPARTY_MARKETING => array(
+        'label' => trans('<!marketing>door-to-door'),
+        'name' => 'door2door_3rdparty_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_3RDPARTY_MARKETING => array(
@@ -411,7 +413,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_MAIL_MARKETING,
             CCONSENT_SMS_MARKETING,
             CCONSENT_PHONE_MARKETING,
-            CCONSENT_DIRECT_MARKETING,
+            CCONSENT_DOOR2DOOR_MARKETING,
             CCONSENT_USERPANEL_MARKETING,
             CCONSENT_TRAFFIC_DATA_USE_FOR_MARKETING,
         ),
@@ -422,7 +424,7 @@ $CCONSENT_GROUPS = array(
             CCONSENT_MAIL_3RDPARTY_MARKETING,
             CCONSENT_SMS_3RDPARTY_MARKETING,
             CCONSENT_PHONE_3RDPARTY_MARKETING,
-            CCONSENT_DIRECT_3RDPARTY_MARKETING,
+            CCONSENT_DOOR2DOOR_3RDPARTY_MARKETING,
             CCONSENT_USERPANEL_3RDPARTY_MARKETING,
         ),
     ),

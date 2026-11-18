@@ -6039,6 +6039,7 @@ $_LANG['<!marketing>e-mail'] = 'pocztą elektroniczną';
 $_LANG['<!marketing>sms'] = 'SMS-em';
 $_LANG['<!marketing>telephone'] = 'telefoniczny';
 $_LANG['<!marketing>direct'] = 'bezpośredni';
+$_LANG['<!marketing>door-to-door'] = 'bezpośredni w terenie';
 $_LANG['<!marketing>via userpanel'] = 'poprzez panel klienta';
 $_LANG['<!marketing>traffic data use'] = 'wykorzystanie danych o transmisji';
 $_LANG['<!complaint>e-mail'] = 'pocztą elektroniczną';
