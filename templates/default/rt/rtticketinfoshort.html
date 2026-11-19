@@ -88,7 +88,7 @@
 			{foreach $ticket.relatedtickets as $i}
 				{button
 					type="link"
-					label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+					label="#{$i.id|string_format:"%06d"} {$i.name}"
 					href="?m=rtticketview&id={$i.id}"
 				}
 				{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
@@ -106,7 +106,7 @@
 			{foreach $ticket.childtickets as $i}
 				{button
 					type="link"
-					label="#{$i.id|string_format:"%06d"} {$i.subject|escape}"
+					label="#{$i.id|string_format:"%06d"} {$i.subject}"
 					href="?m=rtticketview&id={$i.id}"
 				}
 				{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}

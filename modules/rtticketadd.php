@@ -481,7 +481,7 @@ if (isset($_POST['ticket'])) {
                 'rt.new_ticket_notify',
                 ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )
-            && (!empty($mails) || !empty($mobile_phones))) {
+            && (!empty($emails) || !empty($mobile_phones))) {
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
                 $custmail_subject = $queuedata['newticketsubject'];
                 $custmail_subject = preg_replace_callback(

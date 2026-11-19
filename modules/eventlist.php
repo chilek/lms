@@ -280,9 +280,8 @@ $SMARTY->assign(array(
     'visible_users' => $visible_users,
     'usergroups' => $usergroups,
     'overdue_events_only' => $overdue_events_only,
-    'getHolidays', getHolidays($year ?? null),
+    'getHolidays' => getHolidays($year ?? null),
     'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
     'divisions' => $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())),
-    'user_row_limit' => ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)),
 ));
 $SMARTY->display('event/eventlist.html');

@@ -621,9 +621,6 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 if ($row['enddate'] && ($row['enddate'] - $row['date'])) {
                     $days = round(($row['enddate'] - $row['date']) / 86400);
                     $row['multiday'] = $days > 0;
-                    if ($forward == -1) {
-                        $row['enddate'] = strtotime("tomorrow", $row['date']);
-                    }
                     //$row['endtime'] = 0;
                     $list2[] = $row;
                     if (!$singleday && $forward != -1) {
@@ -723,7 +720,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $row['userlist'] = $this->db->GetAll(
                         'SELECT
                             userid AS id,
-                            vusers.name
+                            vusers.name,
+                            vusers.access,
+                            vusers.deleted
                         FROM eventassignments
                         JOIN vusers ON vusers.id = userid
                         WHERE eventid = ? ',
@@ -800,14 +799,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $where = 'closed = 0 AND ticketid = ?';
             $sqlreplacedata = $params['ticketid'];
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ids = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
-            $ids = $ids ?? $params['id'];
+            $events = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
+            $ids = array();
 
-            foreach ($ids as $id) {
+            foreach ($events ?? array() as $event) {
+                if (!empty($event['closed'])) {
+                    continue;
+                }
+                $ids[] = $event['id'];
                 $helpdesk_manager->TicketMessageAdd(array(
                     'ticketid' => $params['ticketid'],
-                    'messageid' => '<msg.' . $params['ticketid'] . $id['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
-                    'body' => trans('Assigned event ($a) has been closed.', $a = $id['id']),
+                    'messageid' => '<msg.' . $params['ticketid'] . $event['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                    'body' => trans('Assigned event ($a) has been closed.', $a = $event['id']),
                     'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
                 ));
             }
@@ -822,7 +825,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 $this->syslog->AddMessage(
                     SYSLOG::RES_EVENT,
                     SYSLOG::OPER_UPDATE,
-                    $id,
+                    array(
+                        SYSLOG::RES_EVENT => $id,
+                        'closed' => 1,
+                        'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::GetCurrentUser(),
+                    ),
                     array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
                 );
             }
@@ -858,7 +865,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $this->syslog->AddMessage(
                 SYSLOG::RES_EVENT,
                 SYSLOG::OPER_UPDATE,
-                $id,
+                array(
+                    SYSLOG::RES_EVENT => $id,
+                    'closed' => 0,
+                    'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::GetCurrentUser(),
+                ),
                 array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
             );
         }
