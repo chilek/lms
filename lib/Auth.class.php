@@ -509,7 +509,7 @@ class Auth
                                     VALUES (?, ?, ?NOW?, ?, ?)',
                                     array(
                                         $this->id,
-                                        !empty($this->authcode) ?: '',
+                                        empty($this->authcode) ? '' : $this->authcode,
                                         1,
                                         empty($this->lastip) ? null : ip2long($this->lastip),
                                     )
@@ -527,7 +527,7 @@ class Auth
                                 VALUES (?, ?, ?NOW?, ?)',
                                 array(
                                     $this->id,
-                                    !empty($this->authcode) ?: '',
+                                    empty($this->authcode) ? '' : $this->authcode,
                                     empty($this->lastip) ? null : ip2long($this->lastip),
                                 )
                             );

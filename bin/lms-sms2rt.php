@@ -244,7 +244,7 @@ foreach ($message_files as $message_file) {
             $phone = preg_replace('/^(\+)?' . $prefix . '/', '', $phone);
 
             $customers = $DB->GetAll(
-                "SELECT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
+                "SELECT DISTINCT customerid AS cid, " . $DB->Concat('lastname', "' '", 'c.name') . " AS name
                 FROM customercontacts cc
                 LEFT JOIN customers c ON c.id = cc.customerid
                 WHERE c.deleted = 0

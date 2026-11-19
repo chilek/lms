@@ -64,7 +64,7 @@
 						<table style="width: 95%;">
 							<tr>
 								<td class="fall superlight">
-									{$event.description|replace:"\n":"<BR>"}
+									{$event.description|escape|replace:"\n":"<BR>"}
 								</td>
 							</tr>
 						</table>
@@ -316,7 +316,7 @@
 					<strong>{trans("Users")}</strong>
 				</td>
 				<td class="nobr">
-					{user_compact_list limit=$user_row_limit userlist=$event.userlist}
+					{user_compact_list limit=ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)) userlist=$event.userlist}
 				</td>
 			</tr>
 		{/if}

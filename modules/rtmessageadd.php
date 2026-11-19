@@ -33,6 +33,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $notification_options_by_division_ids = array(
     0 => array(
         'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+        'notification_sender_email' => null,
         'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
         'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
         'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
@@ -237,6 +238,7 @@ if (isset($_POST['message'])) {
 
                         $notification_options_by_division_ids[$ticket_divisionid] = array(
                             'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                            'notification_sender_email' => null,
                             'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
                             'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
                             'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
@@ -265,8 +267,8 @@ if (isset($_POST['message'])) {
                             'notification_sender_name' => ConfigHelper::getConfig($configSectionName . '.sender_name'),
                             'notification_sender_email' => ConfigHelper::getConfig($configSectionName . '.sender_email'),
                             'customer_notification_mail_subject' => ConfigHelper::getConfig($configSectionName . '.customer_notification_mail_subject'),
-                            'new_message_preserve_no_owner' => ConfigHelper::checkConfig($configSectionName . '.new_message_preserve_no_owner'),
-                            'notification_customerinfo' => ConfigHelper::checkConfig($configSectionName . '.notification_customerinfo'),
+                            'new_message_preserve_no_owner' => ConfigHelper::variableExists($configSectionName . '.new_message_preserve_no_owner') ? ConfigHelper::checkConfig($configSectionName . '.new_message_preserve_no_owner') : null,
+                            'notification_customerinfo' => ConfigHelper::variableExists($configSectionName . '.notification_customerinfo') ? ConfigHelper::checkConfig($configSectionName . '.notification_customerinfo') : null,
                             'notification_mail_body_customerinfo_format' => ConfigHelper::getConfig($configSectionName . '.notification_mail_body_customerinfo_format'),
                             'notification_sms_body_customerinfo_format' => ConfigHelper::getConfig($configSectionName . '.notification_sms_body_customerinfo_format'),
                             'notification_mail_subject' => ConfigHelper::getConfig($configSectionName . '.notification_mail_subject'),
@@ -410,7 +412,8 @@ if (isset($_POST['message'])) {
                 $message['state'] = RT_RESOLVED;
             }
 
-            $owner = $DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid));
+            $ticketOld = $DB->GetRow('SELECT owner, state FROM rttickets WHERE id = ?', array($ticketid));
+            $owner = $ticketOld['owner'];
 
             if ($group_reply) {
                 $props = array();
@@ -632,7 +635,7 @@ if (isset($_POST['message'])) {
                     }
                 }
 
-                if ($message['state'] == RT_RESOLVED && $ticketdata['status'] != RT_RESOLVED) {
+                if ($message['state'] == RT_RESOLVED && $ticketOld['state'] != RT_RESOLVED) {
                     if (!empty($queuedata['resolveticketsubject']) && !empty($queuedata['resolveticketbody']) && !empty($emails)) {
                         $custmail_subject = $queuedata['resolveticketsubject'];
                         $custmail_subject = preg_replace_callback(

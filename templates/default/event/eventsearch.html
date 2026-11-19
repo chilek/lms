@@ -27,7 +27,7 @@
 			{trans("Title:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
+			<INPUT type="text" name="event[title]" value="{$event.title|escape}" size="50" {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
 	<tr>

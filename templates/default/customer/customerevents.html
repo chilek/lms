@@ -136,7 +136,7 @@
 								{$event.title|escape}
 							</div>
 							<div class="lms-ui-tab-table-column description">
-								{$event.description|default:"-"}
+								{$event.description|escape|default:"-"}
 							</div>
 							<div class="lms-ui-tab-table-column note">
 								{if $show_timetable_event_notes}
