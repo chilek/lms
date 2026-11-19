@@ -410,7 +410,8 @@ if (isset($_POST['message'])) {
                 $message['state'] = RT_RESOLVED;
             }
 
-            $owner = $DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid));
+            $ticketOld = $DB->GetRow('SELECT owner, state FROM rttickets WHERE id = ?', array($ticketid));
+            $owner = $ticketOld['owner'];
 
             if ($group_reply) {
                 $props = array();
@@ -632,7 +633,7 @@ if (isset($_POST['message'])) {
                     }
                 }
 
-                if ($message['state'] == RT_RESOLVED && $ticketdata['status'] != RT_RESOLVED) {
+                if ($message['state'] == RT_RESOLVED && $ticketOld['state'] != RT_RESOLVED) {
                     if (!empty($queuedata['resolveticketsubject']) && !empty($queuedata['resolveticketbody']) && !empty($emails)) {
                         $custmail_subject = $queuedata['resolveticketsubject'];
                         $custmail_subject = preg_replace_callback(
