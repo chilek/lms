@@ -654,6 +654,7 @@ if (isset($_POST['ticket'])) {
         $ticket['cause'] = $oldticket['cause'];
         $ticket['source'] = $oldticket['source'];
         $ticket['priority'] = $oldticket['priority'];
+        $ticket['periodicity'] = $oldticket['periodicity'];
         $ticket['address_id'] = $oldticket['address_id'];
         $ticket['nodeid'] = $oldticket['nodeid'];
         $ticket['netnodeid'] = $oldticket['netnodeid'];
