@@ -1077,7 +1077,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         $nodes = $this->db->GetAllByKey(
             '(
-                SELECT vnodes.id, vnodes.name, ipaddr, ownerid, netdev
+                SELECT vnodes.id, vnodes.name, ipaddr, ownerid, netdev, lastonline
                 FROM vnodes
                 JOIN networks net ON net.id = vnodes.netid
                 WHERE netid = ?
@@ -1085,7 +1085,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             )
             UNION ALL
             (
-                SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev
+                SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev, lastonline
                 FROM vnodes
                 JOIN networks net ON ipaddr_pub & INET_ATON(net.mask) = net.address
                 WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR ((net.mask = ? OR net.allassignable = 1 OR 1 = ' . ($network_all_addresses_assignable ? '1' : '0') . ') AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
@@ -1159,6 +1159,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                     $network['nodes']['netdev'][$i] = $nodes[$longip]['netdev'];
                     $network['nodes']['ownerid'][$i] = $nodes[$longip]['ownerid'];
                     $network['nodes']['name'][$i] = $nodes[$longip]['name'];
+                    $network['nodes']['lastonline'][$i] = $nodes[$longip]['lastonline'];
+                    $network['nodes']['lastonlinedate'][$i] = lastonline_date($nodes[$longip]['lastonline']);
                     $network['pageassigned'] ++;
                 } else {
                     $network['nodes']['id'][$i] = 0;

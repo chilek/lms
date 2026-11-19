@@ -4,6 +4,8 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 {if !empty($error.divide)}
 <script>
 	alertDialog("{$error.divide}");
@@ -451,11 +453,18 @@
 								{/if}
 							{/if}>
 							{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}
-								{$icon="netdev"}
+								{icon name="netdev"}
+							{elseif !$network.nodes.id[subnetwork]}
+								{icon name="node"}
+							{elseif $network.nodes.lastonline[subnetwork]}
+								{if ($smarty.now - $network.nodes.lastonline[subnetwork]) > $lastonline_limit}
+									<i class="lms-ui-icon-nodeoff" {tip a=$network.nodes.lastonlinedate[subnetwork] text="Last online: \$a"}></i>
+								{else}
+									<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+								{/if}
 							{else}
-								{$icon="node"}
+								<i class="lms-ui-icon-nodeunk"></i>
 							{/if}
-							{icon name=$icon}
 							{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]}
 								<a href="?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}" {tip text=$network.nodes.address[subnetwork]}>
 									<span class="blend">
