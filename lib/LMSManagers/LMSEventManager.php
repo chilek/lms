@@ -48,6 +48,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'private' => $event['private'],
             'note' => $event['note'],
             'closed' => isset($event['close']) ? 1 : 0,
+            'closeduserid' => isset($event['close']) ? Auth::GetCurrentUser() : null,
+            'closeddate' => isset($event['close']) ? time() : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
             SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
@@ -64,9 +66,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
-                endtime, userid, creationdate, private, note, closed, customerid, type, address_id, nodeid,
+                endtime, userid, creationdate, private, note, closed, closeduserid, closeddate, customerid, type, address_id, nodeid,
                 ticketid, netnodeid, netdevid, divisionid)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -123,6 +125,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'private' => $event['private'],
             'note' => $event['note'],
             'closed' => isset($event['close']) ? 1 : 0,
+            'closeduserid' => isset($event['close']) ? Auth::GetCurrentUser() : null,
+            'closeddate' => isset($event['close']) ? time() : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
             SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
@@ -142,7 +146,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $this->db->Execute(
             'UPDATE events SET title = ?, description = ?, date = ?, begintime = ?, enddate = ?, endtime = ?, private = ?,
-                note = ?, closed = ?, customerid = ?, type = ?, address_id = ?, nodeid = ?, ticketid = ?, moddate = ?, moduserid = ?,
+                note = ?, closed = ?, closeduserid = ?, closeddate = ?, customerid = ?, type = ?, address_id = ?, nodeid = ?, ticketid = ?, moddate = ?, moduserid = ?,
                 netnodeid = ?, netdevid = ?, divisionid = ? WHERE id = ?',
             array_values($args)
         );
