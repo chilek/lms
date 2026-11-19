@@ -29,7 +29,7 @@
             <br>{$event.date|date_format:"Y-m-d"}
             {if $show_date_range}- {$event.enddate|date_format:"Y-m-d"}{/if}
         {/if}
-        {user_compact_list limit=$user_row_limit userlist=$event.userlist}
+        {user_compact_list limit=ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)) userlist=$event.userlist}
         {if $event.userlist}
             {$imadded = in_array($layout.logid, array_column($event.userlist, 'id'))}
         {else}
