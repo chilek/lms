@@ -804,7 +804,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             ea.userid AS assignment_userid,
             eau.rname AS assignment_rname,
             eau.name AS assignment_name,
-            eau.login AS assignment_login
+            eau.login AS assignment_login,
+            eau.access AS assignment_access,
+            eau.deleted AS assignment_deleted
         FROM events e
         LEFT JOIN vaddresses va ON va.id = e.address_id
         LEFT JOIN vnodes n ON e.nodeid = n.id
@@ -841,6 +843,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     'rname' => $row['assignment_rname'],
                     'name' => $row['assignment_name'],
                     'login' => $row['assignment_login'],
+                    'access' => $row['assignment_access'],
+                    'deleted' => $row['assignment_deleted'],
                 );
             }
 
@@ -848,7 +852,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $result[$eventid]['assignment_userid'],
                 $result[$eventid]['assignment_rname'],
                 $result[$eventid]['assignment_name'],
-                $result[$eventid]['assignment_login']
+                $result[$eventid]['assignment_login'],
+                $result[$eventid]['assignment_access'],
+                $result[$eventid]['assignment_deleted']
             );
         }
 

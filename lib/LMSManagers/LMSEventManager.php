@@ -720,7 +720,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $row['userlist'] = $this->db->GetAll(
                         'SELECT
                             userid AS id,
-                            vusers.name
+                            vusers.name,
+                            vusers.access,
+                            vusers.deleted
                         FROM eventassignments
                         JOIN vusers ON vusers.id = userid
                         WHERE eventid = ? ',
