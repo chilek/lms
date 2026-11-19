@@ -800,14 +800,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $where = 'closed = 0 AND ticketid = ?';
             $sqlreplacedata = $params['ticketid'];
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ids = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
-            $ids = $ids ?? $params['id'];
+            $events = $helpdesk_manager->GetEventsByTicketId($params['ticketid']);
+            $ids = array();
 
-            foreach ($ids as $id) {
+            foreach ($events ?? array() as $event) {
+                if (!empty($event['closed'])) {
+                    continue;
+                }
+                $ids[] = $event['id'];
                 $helpdesk_manager->TicketMessageAdd(array(
                     'ticketid' => $params['ticketid'],
-                    'messageid' => '<msg.' . $params['ticketid'] . $id['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
-                    'body' => trans('Assigned event ($a) has been closed.', $a = $id['id']),
+                    'messageid' => '<msg.' . $params['ticketid'] . $event['id'] . '.' . time() . '@rtsystem.' . gethostname() . '>',
+                    'body' => trans('Assigned event ($a) has been closed.', $a = $event['id']),
                     'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
                 ));
             }
