@@ -1973,6 +1973,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } elseif (array_key_exists('nodeid', $props)) {
             $props['nodeid'] = null;
             if (!empty($ticket['nodeid'])) {
+                $type = $type | RTMESSAGE_NODE_CHANGE;
                 $notes[] = trans(
                     'Ticket\'s node $a ($b) has been removed.',
                     $ticket['node_name'] . ': ' . $ticket['node_location'],
@@ -2129,14 +2130,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticketid
                 )
             );
-            if ($type && !empty($note)) {
+            if (!empty($note)) {
                 $this->db->Execute(
                     'INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
                     VALUES(?, ?, ?, ?, ?)',
                     array(
                         $userid,
                         $ticketid,
-                        $type,
+                        $type ?: RTMESSAGE_NOTE,
                         $note,
                         $modtime
                     )
