@@ -43,7 +43,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
             JOIN rttickets t ON t.id = m.ticketid
             WHERE a.messageid = ? AND a.filename = ? AND m.ticketid = ?'
             . $deletedSql,
-            array($_GET['mid'], $filename, $_GET['tid'])
+            array(intval($_GET['mid']), $filename, intval($_GET['tid']))
         );
     } else {
         $filename = $cid = urldecode($_GET['cid']);
@@ -53,7 +53,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
             JOIN rttickets t ON t.id = m.ticketid
             WHERE a.messageid = ? AND a.cid = ? AND m.ticketid = ?'
             . $deletedSql,
-            array($_GET['mid'], $cid, $_GET['tid'])
+            array(intval($_GET['mid']), $cid, intval($_GET['tid']))
         );
     }
 
