@@ -826,7 +826,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 $this->syslog->AddMessage(
                     SYSLOG::RES_EVENT,
                     SYSLOG::OPER_UPDATE,
-                    $id,
+                    array(
+                        SYSLOG::RES_EVENT => $id,
+                        'closed' => 1,
+                        'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::GetCurrentUser(),
+                    ),
                     array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
                 );
             }
@@ -862,7 +866,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $this->syslog->AddMessage(
                 SYSLOG::RES_EVENT,
                 SYSLOG::OPER_UPDATE,
-                $id,
+                array(
+                    SYSLOG::RES_EVENT => $id,
+                    'closed' => 0,
+                    'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::GetCurrentUser(),
+                ),
                 array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
             );
         }
