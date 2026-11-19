@@ -33,6 +33,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $notification_options_by_division_ids = array(
     0 => array(
         'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+        'notification_sender_email' => null,
         'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
         'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
         'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
@@ -237,6 +238,7 @@ if (isset($_POST['message'])) {
 
                         $notification_options_by_division_ids[$ticket_divisionid] = array(
                             'notification_sender_name' => ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name')),
+                            'notification_sender_email' => null,
                             'customer_notification_mail_subject' => ConfigHelper::getConfig('rt.customer_notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')),
                             'new_message_preserve_no_owner' => ConfigHelper::checkConfig('rt.new_message_preserve_no_owner'),
                             'notification_customerinfo' => ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')),
