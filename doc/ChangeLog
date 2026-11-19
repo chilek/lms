@@ -1318,6 +1318,7 @@ version 28-git (????-??-??):
   - security/bugfix: (CVE-2026-129961) file name sanity checking of file uploaded as helpdesk
     attachments via lms-rtparser.php backend script
     [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
+  - enhancement: allow to set ticket as periodic and create new events by crontab script [interduo]
 
 version 27.0 (2021-08-20):
 
