@@ -1330,6 +1330,7 @@ version 28-git (????-??-??):
   - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
     placeholders, sending one e-mail with all selected invoices attached
     (variable: phpui.invoice_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
+  - enhancement: allow to set ticket as periodic and create new events by crontab script [interduo]
 
 version 27.0 (2021-08-20):
 
