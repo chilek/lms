@@ -295,16 +295,15 @@ CREATE TABLE divisions (
 	office_address_id integer DEFAULT NULL
 		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label),
-	UNIQUE (shortname)
+	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label)
 );
 
 /* --------------------------------------------------------
   Structure of table "serviceproviders" (serviceproviders)
 -------------------------------------------------------- */
+DROP TABLE IF EXISTS serviceproviders CASCADE;
 DROP SEQUENCE IF EXISTS serviceproviders_id_seq;
 CREATE SEQUENCE serviceproviders_id_seq;
-DROP TABLE IF EXISTS serviceproviders;
 CREATE TABLE serviceproviders (
 	id integer DEFAULT nextval('serviceproviders_id_seq') NOT NULL,
 	name varchar(64) NOT NULL,
@@ -721,8 +720,8 @@ CREATE TABLE voipaccounts (
 	login		varchar(255)	NOT NULL DEFAULT '',
 	passwd		varchar(255)	NOT NULL DEFAULT '',
 	access      smallint        NOT NULL DEFAULT 1,
-	creationdate	integer		NOT NULL DEFAULT 0,
-	moddate		integer		NOT NULL DEFAULT 0,
+	creationdate	bigint		NOT NULL DEFAULT 0,
+	moddate		bigint		NOT NULL DEFAULT 0,
 	creatorid	integer		DEFAULT NULL
 		CONSTRAINT voipaccounts_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	modid		integer		DEFAULT NULL
@@ -1351,7 +1350,7 @@ CREATE SEQUENCE pna_id_seq;
 DROP TABLE IF EXISTS pna CASCADE;
 CREATE TABLE pna (
 	id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
-	zip varchar(128) NOT NULL,
+	zip varchar(10) NOT NULL,
 	cityid integer DEFAULT NULL
 		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	cityname varchar(100) DEFAULT NULL,
@@ -2271,10 +2270,10 @@ CREATE TABLE rtmessages (
   replyto text 		DEFAULT '' NOT NULL,
   headers text 		DEFAULT '' NOT NULL,
   body text		DEFAULT '' NOT NULL,
-  createtime integer	DEFAULT 0 NOT NULL,
+  createtime bigint	DEFAULT 0 NOT NULL,
   type integer		DEFAULT 0 NOT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
-  deltime integer	DEFAULT 0 NOT NULL,
+  deltime bigint	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   contenttype varchar(255) DEFAULT 'text/plain',
@@ -2854,7 +2853,7 @@ CREATE TABLE messages (
 	id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
 	subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
-	cdate 	integer		DEFAULT 0 NOT NULL,
+	cdate 	bigint		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT 0 NOT NULL,
 	userid 	integer		DEFAULT NULL
 		CONSTRAINT messages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -3312,6 +3311,7 @@ CREATE TABLE ksefinvoicesummaries (
 /* ---------------------------------------------------
  Structure of table ksefinvoiceitems
 ------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefinvoiceitems CASCADE;
 CREATE TABLE ksefinvoiceitems (
     ksef_invoice_id integer NOT NULL
         CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -4070,6 +4070,7 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
     WHERE $1 IS NULL OR d.customerid = $1
 $$ LANGUAGE SQL IMMUTABLE;
 
+DROP VIEW IF EXISTS vinvoicecontents;
 CREATE VIEW vinvoicecontents AS
     SELECT * FROM get_invoice_contents(NULL);
 
@@ -4525,6 +4526,8 @@ INSERT INTO netdeviceproducers (id, name) VALUES
 (1, 'Mikrotik'),
 (2, 'Ubiquiti');
 
+SELECT setval('netdeviceproducers_id_seq', 3, false);
+
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('RB750', NULL, 1),
 ('RB750UP', NULL, 1),
@@ -4865,6 +4868,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111803');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111901');
 
 COMMIT;
