@@ -2448,6 +2448,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
         if (!empty($invoicelist)) {
+            $sentDocIds = array();
             foreach ($invoicelist as &$invoice) {
                 if (!empty($invoice['documentreferenced'])) {
                     if (!isset($document_manager)) {
@@ -2455,6 +2456,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
                 }
+                if (!empty($invoice['senddate'])) {
+                    $sentDocIds[] = $invoice['id'];
+                }
+            }
+            unset($invoice);
+
+            if (!empty($sentDocIds)) {
+                if (!isset($document_manager)) {
+                    $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                $sentEmails = $document_manager->getDocumentSentEmails($sentDocIds);
+                foreach ($invoicelist as &$invoice) {
+                    if (isset($sentEmails[$invoice['id']])) {
+                        $invoice['sentemails'] = $sentEmails[$invoice['id']];
+                    }
+                }
+                unset($invoice);
             }
         }
 

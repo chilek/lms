@@ -280,7 +280,7 @@
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				{if empty($invoice.ksefsubmission) || $invoice.ksefstatus == 200 || $offline_support && isset($invoice.ksefstatus) && $invoice.ksefstatus == 0}
 					{textformat assign="tip" wrap=5000}
-						{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+						{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{if empty($invoice.sentemails)}{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}{else}{t a=$invoice.senddate|date_format:"Y-m-d H:i" b=$invoice.sentemails|escape}(already sent on $a to $b){/t}{/if}</strong>{else}{trans("Send invoice")}{/if}
 					{/textformat}
 					{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
 						tip=$tip}
