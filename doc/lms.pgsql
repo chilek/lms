@@ -403,6 +403,7 @@ CREATE TABLE customernotes (
         CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
+CREATE INDEX customernotes_customerid_idx ON customernotes (customerid);
 
 /* --------------------------------------------------------
   Structure of table "customerkarmalastchanges" (customerkarmalastchanges)
@@ -615,6 +616,7 @@ CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
 CREATE INDEX documents_type_idx ON documents (type);
+CREATE INDEX documents_fullnumber_idx ON documents (fullnumber);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -1705,6 +1707,7 @@ CREATE TABLE netradiosectors (
 	PRIMARY KEY (id),
 	UNIQUE (name, netdev)
 );
+CREATE INDEX netradiosectors_netdev_idx ON netradiosectors (netdev);
 
 /* --------------------------------------------------------
   Structure of table "nodes"
@@ -1760,6 +1763,7 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
+CREATE INDEX nodes_netid_idx ON nodes (netid);
 
 /* --------------------------------------------------------
   Structure of table "routednetworks"
@@ -1832,6 +1836,7 @@ CREATE TABLE macs (
 	PRIMARY KEY (id),
 	CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 );
+CREATE INDEX macs_nodeid_idx ON macs (nodeid);
 
 /* --------------------------------------------------------
   Structure of table "nodegroups"
@@ -2648,6 +2653,8 @@ CREATE INDEX events_nodeid_idx ON events(nodeid);
 CREATE INDEX events_netnodeid_idx ON events (netnodeid);
 CREATE INDEX events_netdevid_idx ON events (netdevid);
 CREATE INDEX events_divisionid_idx ON events (divisionid);
+CREATE INDEX events_customerid_idx ON events (customerid);
+CREATE INDEX events_ticketid_idx ON events (ticketid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -3307,6 +3314,7 @@ CREATE TABLE ksefinvoicesummaries (
     eu smallint DEFAULT 0,
     export smallint DEFAULT 0
 );
+CREATE INDEX ksefinvoicesummaries_ksef_invoice_id_idx ON ksefinvoicesummaries (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoiceitems
@@ -3335,6 +3343,7 @@ CREATE TABLE ksefinvoiceitems (
     order_id text DEFAULT NULL
 );
 CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id);
+CREATE INDEX ksefinvoiceitems_ksef_invoice_id_idx ON ksefinvoiceitems (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoicetags
@@ -4868,6 +4877,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111902');
 
 COMMIT;
