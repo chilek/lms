@@ -1109,7 +1109,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             foreach ($files as $file) {
                 // handle spaces and unknown characters in filename
                 // on systems having problems with that
-                $filename = preg_replace('/[^\w\.-_]/', '_', basename($file['name']));
+                $filename = preg_replace('/[^\w.\-]/', '_', basename($file['name']));
                 $dstfile = $message_dir . DIRECTORY_SEPARATOR . $filename;
                 if (isset($file['content'])) {
                     $fh = @fopen($dstfile, 'w');
