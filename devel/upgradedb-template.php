@@ -21,8 +21,11 @@
  *
  */
 
-$this->BeginTrans();
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('%version%', 'dbversion'));
-
-$this->CommitTrans();
+/*
+ * Put schema changes here.
+ * UpgradeDb() runs this file in a transaction and stores the dbinfo version
+ * from the filename. BeginTrans(), CommitTrans() and UPDATE dbinfo in the
+ * script are ignored while that transaction is open.
+ * To keep this file outside that transaction, add its own line:
+ *     // LMS-UPGRADE-TRANSACTION: off
+ */
