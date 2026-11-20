@@ -1170,7 +1170,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $createtime = $message['createtime'] ?? time();
 
         $body = preg_replace("/\r/", "", $message['body']);
-        if (isset($message['contenttype']) && $message['contenttype'] == 'text/html') {
+        if (($message['contenttype'] ?? 'text/plain') != 'text/plain') {
             $body = Utils::removeInsecureHtml($body);
         }
 
