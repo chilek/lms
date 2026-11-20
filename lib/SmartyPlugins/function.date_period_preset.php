@@ -31,7 +31,7 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
     $periods = $params['periods'] ?? null;
     $time = !empty($params['time']);
 
-    if (!isset($from_selector) || !isset($to_selector)) {
+    if (!isset($from_selector, $to_selector)) {
         return;
     }
 

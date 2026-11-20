@@ -49,8 +49,12 @@ if (isset($_POST['customergroupadd'])) {
         $SESSION->redirect('?m=customergrouplist&id='.$LMS->CustomergroupAdd($customergroupadd));
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('customergroupadd', $customergroupadd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'customergroupadd' => $customergroupadd,
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('New Group');

@@ -310,11 +310,15 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     LEFT JOIN vusers u ON (u.id = s.userid)
     ORDER BY s.idate DESC');
 
-$SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('division_names', $division_names);
-$SMARTY->assign('listdata', $listdata ?? null);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('sourcefiles', $sourcefiles);
+$SMARTY->assign(
+    array(
+        'divisions' => $divisions,
+        'division_names' => $division_names,
+        'listdata' => $listdata ?? null,
+        'error' => $error,
+        'sourcefiles' => $sourcefiles,
+    )
+);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }

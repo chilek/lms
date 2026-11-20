@@ -165,8 +165,12 @@ function module_main()
         $SMARTY->assign($var, $val);
     }
 
-    $SMARTY->assign('userinfo', $userinfo);
-    $SMARTY->assign('usernodes', $usernodes);
+    $SMARTY->assign(
+        array(
+            'userinfo' => $userinfo,
+            'usernodes' => $usernodes,
+        )
+    );
     //$SMARTY->assign('balancelist',$balancelist);
     $SMARTY->assign('fields_changed', $fields_changed);
     $SMARTY->display('module:info.html');
@@ -184,8 +188,12 @@ function module_updateuserform()
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
 
-    $SMARTY->assign('userinfo', $userinfo);
-    $SMARTY->assign('usernodes', $usernodes);
+    $SMARTY->assign(
+        array(
+            'userinfo' => $userinfo,
+            'usernodes' => $usernodes,
+        )
+    );
     $SMARTY->display('module:updateuser.html');
 }
 
@@ -414,9 +422,13 @@ function module_updateusersave()
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
         //$usernodes['ownerid'] = $SESSION->id;
 
-        $SMARTY->assign('userinfo', $userinfo);
-        $SMARTY->assign('usernodes', $usernodes);
-        $SMARTY->assign('error', $error);
+        $SMARTY->assign(
+            array(
+                'userinfo' => $userinfo,
+                'usernodes' => $usernodes,
+                'error' => $error,
+            )
+        );
         $SMARTY->display('module:updateuser.html');
     } else {
         if (isset($needupdate)) {
@@ -451,8 +463,12 @@ function module_updatepinform()
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
     //$usernodes['ownerid'] = $SESSION->id;
 
-    $SMARTY->assign('userinfo', $userinfo);
-    $SMARTY->assign('usernodes', $usernodes);
+    $SMARTY->assign(
+        array(
+            'userinfo' => $userinfo,
+            'usernodes' => $usernodes,
+        )
+    );
 
     $SMARTY->display('module:updatepin.html');
 }
@@ -523,10 +539,14 @@ function module_updatepin()
         $usernodes = $LMS->GetCustomerNodes($SESSION->id);
         //$usernodes['ownerid'] = $SESSION->id;
 
-        $SMARTY->assign('userinfo', $userinfo);
-        $SMARTY->assign('usernodes', $usernodes);
-        $SMARTY->assign('error', $error);
-        $SMARTY->assign('updatepin', 1);
+        $SMARTY->assign(
+            array(
+                'userinfo' => $userinfo,
+                'usernodes' => $usernodes,
+                'error' => $error,
+                'updatepin' => 1,
+            )
+        );
 
         $SMARTY->display('module:updatepin.html');
     } else {
@@ -811,19 +831,23 @@ if (defined('USERPANEL_SETUPMODE')) {
             access_denied();
         }
 
-        $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
-        $SMARTY->assign('node_lock_management', ConfigHelper::checkConfig('userpanel.node_lock_management'));
-        $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
-        $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
-        $SMARTY->assign('show_sensitive_data', ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'));
-        $SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
-        $SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
-        $SMARTY->assign('change_notification_mail_subject', ConfigHelper::getConfig('userpanel.change_notification_mail_subject'));
-        $SMARTY->assign('change_notification_mail_body', ConfigHelper::getConfig('userpanel.change_notification_mail_body'));
-        $SMARTY->assign('change_confirmation_mail_subject', ConfigHelper::getConfig('userpanel.change_confirmation_mail_subject'));
-        $SMARTY->assign('change_confirmation_mail_body', ConfigHelper::getConfig('userpanel.change_confirmation_mail_body'));
-        $SMARTY->assign('change_rejection_mail_subject', ConfigHelper::getConfig('userpanel.change_rejection_mail_subject'));
-        $SMARTY->assign('change_rejection_mail_body', ConfigHelper::getConfig('userpanel.change_rejection_mail_body'));
+        $SMARTY->assign(
+            array(
+                'hide_nodesbox' => ConfigHelper::getConfig('userpanel.hide_nodesbox'),
+                'node_lock_management' => ConfigHelper::checkConfig('userpanel.node_lock_management'),
+                'consent_text' => ConfigHelper::getConfig('userpanel.data_consent_text'),
+                'pin_changes' => ConfigHelper::checkConfig('userpanel.pin_changes'),
+                'show_sensitive_data' => ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data'),
+                'change_notification_mail_sender' => ConfigHelper::getConfig('userpanel.change_notification_mail_sender'),
+                'change_notification_mail_recipient' => ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'),
+                'change_notification_mail_subject' => ConfigHelper::getConfig('userpanel.change_notification_mail_subject'),
+                'change_notification_mail_body' => ConfigHelper::getConfig('userpanel.change_notification_mail_body'),
+                'change_confirmation_mail_subject' => ConfigHelper::getConfig('userpanel.change_confirmation_mail_subject'),
+                'change_confirmation_mail_body' => ConfigHelper::getConfig('userpanel.change_confirmation_mail_body'),
+                'change_rejection_mail_subject' => ConfigHelper::getConfig('userpanel.change_rejection_mail_subject'),
+                'change_rejection_mail_body' => ConfigHelper::getConfig('userpanel.change_rejection_mail_body'),
+            )
+        );
 
         $SMARTY->display('module:info:setup.html');
     }

@@ -155,11 +155,15 @@ $SESSION->save('dlp', $page);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
-$SMARTY->assign('domainlist', $domainlist);
-$SMARTY->assign('domaincount', $domaincount);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+$SMARTY->assign(
+    array(
+        'pagelimit' => $pagelimit,
+        'page' => $page,
+        'start' => $start,
+        'domainlist' => $domainlist,
+        'domaincount' => $domaincount,
+        'listdata' => $listdata,
+        'customerlist' => $LMS->GetCustomerNames(),
+    )
+);
 $SMARTY->display('domain/domainlist.html');

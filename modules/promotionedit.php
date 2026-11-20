@@ -199,7 +199,11 @@ if ($promotion) {
 
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('warning', $warning);
-$SMARTY->assign('promotion', $promotion);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'warning' => $warning,
+        'promotion' => $promotion,
+    )
+);
 $SMARTY->display('promotion/promotionedit.html');

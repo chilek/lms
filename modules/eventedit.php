@@ -269,8 +269,12 @@ if (isset($event['customerid']) && intval($event['customerid'])) {
     } else {
         $nodes = $LMS->GetNodeLocations($event['customerid'], $address_id);
     }
-    $SMARTY->assign('addresses', $addresses);
-    $SMARTY->assign('nodes', $nodes);
+    $SMARTY->assign(
+        array(
+            'addresses' => $addresses,
+            'nodes' => $nodes,
+        )
+    );
 }
 
 if (!isset($event['usergroup'])) {

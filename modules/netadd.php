@@ -182,9 +182,13 @@ if (isset($_POST['netadd'])) {
         $SESSION->redirect('?m=netinfo&id='.$LMS->NetworkAdd($netadd));
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('warning', $warning);
-    $SMARTY->assign('netadd', $netadd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'warning' => $warning,
+            'netadd' => $netadd,
+        )
+    );
 } elseif (isset($_GET['ownerid'])) {
     if ($LMS->CustomerExists($_GET['ownerid']) == true) {
         $netadd['ownerid'] = $_GET['ownerid'];
@@ -198,8 +202,12 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-$SMARTY->assign('vlanlist', $LMS->GetVlanList(array('orderby' => 'vlanid')));
-$SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'vlanlist' => $LMS->GetVlanList(array('orderby' => 'vlanid')),
+        'prefixlist' => $LMS->GetPrefixList(),
+        'networks' => $LMS->GetNetworks(),
+        'hostlist' => $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'),
+    )
+);
 $SMARTY->display('net/netadd.html');

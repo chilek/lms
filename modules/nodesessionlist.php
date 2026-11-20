@@ -188,16 +188,18 @@ if (($page - 1) * $pagelimit > $listdata['total']) {
     $page = 1;
 }
 
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('start', ($page - 1) * $pagelimit);
-$SMARTY->assign('page', $page);
-
-$SMARTY->assign('filtertype', $filtertype);
-$SMARTY->assign('filtervalue', $filtervalue);
-$SMARTY->assign('datefrom', $datefrom ? date('Y/m/d H:i', $datefrom) : '');
-$SMARTY->assign('dateto', $dateto ? date('Y/m/d H:i', $dateto) : '');
-$SMARTY->assign('type', $type);
-
-$SMARTY->assign('nodesessions', $nodesessions);
+$SMARTY->assign(
+    array(
+        'listdata' => $listdata,
+        'pagelimit' => $pagelimit,
+        'start' => ($page - 1) * $pagelimit,
+        'page' => $page,
+        'filtertype' => $filtertype,
+        'filtervalue' => $filtervalue,
+        'datefrom' => $datefrom ? date('Y/m/d H:i', $datefrom) : '',
+        'dateto' => $dateto ? date('Y/m/d H:i', $dateto) : '',
+        'type' => $type,
+        'nodesessions' => $nodesessions,
+    )
+);
 $SMARTY->display('node/nodesessionlist.html');

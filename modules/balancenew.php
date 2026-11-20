@@ -46,16 +46,20 @@ if ($SESSION->is_set('addbnotification')) {
     $notification = ConfigHelper::checkConfig('finances.customer_notify', true) ? 1 : 0;
 }
 
-$SMARTY->assign('last', $last);
-$SMARTY->assign('notification', $notification);
-$SMARTY->assign('currency', Localisation::getDefaultCurrency());
-$SMARTY->assign('operation', $SESSION->get('addtype'));
-$SMARTY->assign('servicetype', $SESSION->get('addbst'));
-$SMARTY->assign('sourceid', $SESSION->get('addsource'));
-$SMARTY->assign('comment', $SESSION->get('addbc'));
-$SMARTY->assign('taxid', $SESSION->get('addbtax'));
-$SMARTY->assign('time', $SESSION->get('addbt'));
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('sourcelist', $LMS->getCashSources());
+$SMARTY->assign(
+    array(
+        'last' => $last,
+        'notification' => $notification,
+        'currency' => Localisation::getDefaultCurrency(),
+        'operation' => $SESSION->get('addtype'),
+        'servicetype' => $SESSION->get('addbst'),
+        'sourceid' => $SESSION->get('addsource'),
+        'comment' => $SESSION->get('addbc'),
+        'taxid' => $SESSION->get('addbtax'),
+        'time' => $SESSION->get('addbt'),
+        'taxeslist' => $LMS->GetTaxes(),
+        'customers' => $LMS->GetCustomerNames(),
+        'sourcelist' => $LMS->getCashSources(),
+    )
+);
 $SMARTY->display('balance/balancenew.html');

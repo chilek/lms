@@ -60,11 +60,15 @@ switch ($type) {
     default:
         $layout['pagetitle'] = trans('Reports');
 
-        $SMARTY->assign('divisions', $LMS->GetDivisions());
-        $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-        $SMARTY->assign('invprojects', $LMS->GetProjects());
-        $SMARTY->assign('printmenu', 'netdev');
-        $SMARTY->assign('linktypes', $LINKTYPES);
+        $SMARTY->assign(
+            array(
+                'divisions' => $LMS->GetDivisions(),
+                'customergroups' => $LMS->CustomergroupGetAll(),
+                'invprojects' => $LMS->GetProjects(),
+                'printmenu' => 'netdev',
+                'linktypes' => $LINKTYPES,
+            )
+        );
         $SMARTY->display('print/printindex.html');
         break;
 }

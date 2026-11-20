@@ -235,9 +235,13 @@ $layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'
 
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
-$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
-$SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
-$SMARTY->assign('timeout', $_TIMEOUT);
+$SMARTY->assign(
+    array(
+        'page_header' => ConfigHelper::getConfig('userpanel.page_header'),
+        'company_logo' => ConfigHelper::getConfig('userpanel.company_logo'),
+        'timeout' => $_TIMEOUT,
+    )
+);
 
 $extra_css = ConfigHelper::getConfig('userpanel.extra_style', '');
 if (preg_match('#https?://#', $extra_css)) {
@@ -300,8 +304,12 @@ if ($SESSION->islogged) {
     $LMS->executeHook('userpanel_' . $module . '_on_load');
 
     if ($module_dir !== null) {
-        $SMARTY->assign('menuitems', $USERPANEL->getMenuItems());
-        $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
+        $SMARTY->assign(
+            array(
+                'menuitems' => $USERPANEL->getMenuItems(),
+                'customername' => $LMS->GetCustomerName($SESSION->id),
+            )
+        );
 
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
@@ -333,13 +341,21 @@ if ($SESSION->islogged) {
         $SESSION->save('lastmodule', $module);
     }
 } else {
-    $SMARTY->assign('error', $SESSION->error);
-    $SMARTY->assign('info', $SESSION->info);
-    $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+    $SMARTY->assign(
+        array(
+            'error' => $SESSION->error,
+            'info' => $SESSION->info,
+            'target' => '?' . $_SERVER['QUERY_STRING'],
+        )
+    );
 
     if ($SESSION->authCodeRequired()) {
-        $SMARTY->assign('phone_numbers', $SESSION->getCustomerPhoneNumbers());
-        $SMARTY->assign('authcode_required', true);
+        $SMARTY->assign(
+            array(
+                'phone_numbers' => $SESSION->getCustomerPhoneNumbers(),
+                'authcode_required' => true,
+            )
+        );
     }
 
     $SMARTY->display('login.html');

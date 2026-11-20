@@ -36,6 +36,10 @@ if (empty($usergrouplist)) {
     unset($usergrouplist['total'], $usergrouplist['totalcount']);
 }
 
-$SMARTY->assign('usergrouplist', $usergrouplist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'usergrouplist' => $usergrouplist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('user/usergrouplist.html');

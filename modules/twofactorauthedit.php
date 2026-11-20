@@ -73,7 +73,11 @@ if (isset($_POST['userinfo'])) {
     $error['twofactorauthdisabled'] = trans('Two factor authentication is required in system configuration!');
 }
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'userinfo' => $userinfo,
+    )
+);
 
 $SMARTY->display('twofactorauth/twofactorauthedit.html');

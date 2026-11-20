@@ -240,7 +240,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'availablelines' => $availablelines,
             'foreignentity' => $foreignentity,
         );
-        if (isset($link['srcport']) && isset($link['dstport'])) {
+        if (isset($link['srcport'], $link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
             $args['srcport'] = intval($link['dstport']);
             $args['dstport'] = intval($link['srcport']);
@@ -254,7 +254,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (!$res) {
             $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR)] = $srcradiosector;
             $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR)] = $dstradiosector;
-            if (isset($link['srcport']) && isset($link['dstport'])) {
+            if (isset($link['srcport'], $link['dstport'])) {
                 $args['srcport'] = intval($link['srcport']);
                 $args['dstport'] = intval($link['dstport']);
             }

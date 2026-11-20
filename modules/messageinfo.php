@@ -277,16 +277,20 @@ foreach ($itemlist as $item) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('message', $message);
-$SMARTY->assign('summary', $summary);
-$SMARTY->assign('lastchanges', $lastchanges);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('start', ($page - 1) * $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('marks', $marks);
-$SMARTY->assign('itemlist', $itemlist);
-$SMARTY->assign('itemerrorlist', $itemerrorlist);
-$SMARTY->assign('filecontainers', $LMS->GetFileContainers('messageid', $message['id']));
+$SMARTY->assign(
+    array(
+        'message' => $message,
+        'summary' => $summary,
+        'lastchanges' => $lastchanges,
+        'listdata' => $listdata,
+        'pagelimit' => $pagelimit,
+        'start' => ($page - 1) * $pagelimit,
+        'page' => $page,
+        'marks' => $marks,
+        'itemlist' => $itemlist,
+        'itemerrorlist' => $itemerrorlist,
+        'filecontainers' => $LMS->GetFileContainers('messageid', $message['id']),
+    )
+);
 
 $SMARTY->display('message/messageinfo.html');

@@ -133,6 +133,10 @@ if ($payment) {
 
 $layout['pagetitle'] = trans('New Payment');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('payment', $payment);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'payment' => $payment,
+    )
+);
 $SMARTY->display('payment/paymentadd.html');

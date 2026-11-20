@@ -152,9 +152,13 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('VoIP summary report');
 
-        $SMARTY->assign('datefrom', $datefrom);
-        $SMARTY->assign('dateto', $dateto);
-        $SMARTY->assign('summary', $summary);
+        $SMARTY->assign(
+            array(
+                'datefrom' => $datefrom,
+                'dateto' => $dateto,
+                'summary' => $summary,
+            )
+        );
 
         $print_template = 'print/printvoipsummary.html';
 
@@ -177,9 +181,12 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Reports');
 
-        $SMARTY->assign('domestic_prefix', '48');
-
-        $SMARTY->assign('printmenu', 'voip');
+        $SMARTY->assign(
+            array(
+                'domestic_prefix' => '48',
+                'printmenu' => 'voip',
+            )
+        );
         $SMARTY->display('print/printindex.html');
 
         break;

@@ -71,6 +71,10 @@ $layout['pagetitle'] = trans('New Host');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('hostadd', $hostadd);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'hostadd' => $hostadd,
+    )
+);
 $SMARTY->display('host/hostadd.html');

@@ -50,10 +50,14 @@ $layout['pagetitle'] = trans('Group Info: $a', $customergroup['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('customergroup', $customergroup);
-$SMARTY->assign('customers', $customers);
-$SMARTY->assign('customerscount', $customerscount);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('membersnetid', $membersnetid ?? 0);
-$SMARTY->assign('othersnetid', $othersnetid ?? 0);
+$SMARTY->assign(
+    array(
+        'customergroup' => $customergroup,
+        'customers' => $customers,
+        'customerscount' => $customerscount,
+        'networks' => $LMS->GetNetworks(),
+        'membersnetid' => $membersnetid ?? 0,
+        'othersnetid' => $othersnetid ?? 0,
+    )
+);
 $SMARTY->display('customer/customergroupinfo.html');

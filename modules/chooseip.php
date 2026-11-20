@@ -144,12 +144,16 @@ switch ($p) {
 
 $SESSION->save('netid', $netid);
 
-$SMARTY->assign('part', $p);
-$SMARTY->assign('js', $js);
-$SMARTY->assign('networks', $networks);
-$SMARTY->assign('network', $network);
-$SMARTY->assign('netid', $netid);
-$SMARTY->assign('privnetid', $privnetid);
-$SMARTY->assign('device', isset($_GET['device']) ? intval($_GET['device']) : null);
-$SMARTY->assign('ip', $ip);
+$SMARTY->assign(
+    array(
+        'part' => $p,
+        'js' => $js,
+        'networks' => $networks,
+        'network' => $network,
+        'netid' => $netid,
+        'privnetid' => $privnetid,
+        'device' => isset($_GET['device']) ? intval($_GET['device']) : null,
+        'ip' => $ip,
+    )
+);
 $SMARTY->display('choose/chooseip.html');

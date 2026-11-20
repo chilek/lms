@@ -187,8 +187,12 @@ $layout['pagetitle'] = trans('Documents List');
 $SESSION->add_history_entry();
 
 if ($docid = $SESSION->get('documentprint')) {
-    $SMARTY->assign('docid', $docid);
-    $SMARTY->assign('attachments', $SESSION->get('document-with-attachments'));
+    $SMARTY->assign(
+        array(
+            'docid' => $docid,
+            'attachments' => $SESSION->get('document-with-attachments'),
+        )
+    );
     $SESSION->remove('documentprint');
     $SESSION->remove('document-with-attachments');
 }
@@ -202,11 +206,15 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => true)));
-$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
-    'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICE_LIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
-)));
-$SMARTY->assign('documentlist', $documentlist);
-$SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('filter', $filter);
+$SMARTY->assign(
+    array(
+        'users' => $LMS->GetUserNames(array('withDeleted' => true)),
+        'numberplans' => $LMS->GetNumberPlans(array(
+            'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICE_LIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
+        )),
+        'documentlist' => $documentlist,
+        'pagination' => $pagination,
+        'filter' => $filter,
+    )
+);
 $SMARTY->display('document/documentlist.html');

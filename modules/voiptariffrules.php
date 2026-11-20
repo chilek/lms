@@ -139,9 +139,13 @@ function getGroupTableRow($name, $def_price = '', $def_units = '', $def_unit_siz
                          'unit_size' => $def_unit_size);
 
         global $SMARTY;
-        $SMARTY->assign('default', $default);
-        $SMARTY->assign('row_id', $id);
-        $SMARTY->assign('group', $group);
+        $SMARTY->assign(
+            array(
+                'default' => $default,
+                'row_id' => $id,
+                'group' => $group,
+            )
+        );
 
         $row = $SMARTY->fetch('voipaccount/voiptarifftablerow.html');
 
@@ -288,6 +292,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     $SMARTY->assign('rule', getRuleGroups($rule_id));
 }
 
-$SMARTY->assign('rule_list', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'rule_list' => $DB->GetAll('SELECT id, name FROM voip_rule_groups'),
+        'error' => $error,
+    )
+);
 $SMARTY->display('voipaccount/voiptariffrules.html');

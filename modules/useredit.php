@@ -41,8 +41,12 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
             'limit' => 300,
             'details' => true,
         ));
-        $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('userid', $id);
+        $SMARTY->assign(
+            array(
+                'transactions' => $trans,
+                'userid' => $id,
+            )
+        );
         die($SMARTY->fetch('transactionlist.html'));
     }
 
@@ -249,14 +253,18 @@ $customercalls = $LMS->getCustomerCalls(array(
     'limit' => -1,
 ));
 
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('customergroups', $customergroups);
-$SMARTY->assign('users', $LMS->GetUserNames());
-$SMARTY->assign('usergroups', $LMS->getAlluserGroups());
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('customercalls', $customercalls);
-$SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('user_divisions', $userDivisions);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'accesslist' => $accesslist,
+        'customergroups' => $customergroups,
+        'users' => $LMS->GetUserNames(),
+        'usergroups' => $LMS->getAlluserGroups(),
+        'userinfo' => $userinfo,
+        'customercalls' => $customercalls,
+        'divisions' => $divisions,
+        'user_divisions' => $userDivisions,
+        'error' => $error,
+    )
+);
 
 $SMARTY->display('user/useredit.html');

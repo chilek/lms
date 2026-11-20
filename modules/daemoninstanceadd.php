@@ -124,8 +124,12 @@ $layout['pagetitle'] = trans('New Instance');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('instance', $instance);
-$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'instance' => $instance,
+        'hosts' => $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'),
+    )
+);
 
 $SMARTY->display('daemon/daemoninstanceadd.html');

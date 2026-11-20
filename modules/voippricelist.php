@@ -267,7 +267,11 @@ if (isset($_GET['id']) && $pricelist_id) {
     $pricelist['name'] = $tmp_rule[0]['name'];
 }
 
-$SMARTY->assign('pricelist', $pricelist);
-$SMARTY->assign('price_list', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'pricelist' => $pricelist,
+        'price_list' => $DB->GetAll('SELECT id, name FROM voip_tariffs'),
+        'error' => $error,
+    )
+);
 $SMARTY->display('voipaccount/voippricelist.html');

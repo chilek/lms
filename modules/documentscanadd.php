@@ -119,7 +119,11 @@ if (isset($_POST['documentscans'])) {
 
 $layout['pagetitle'] = trans('Add Scans');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('scans', $scans);
-$SMARTY->assign('allowed_mime_types', $allowed_mime_types);
+$SMARTY->assign(
+    array(
+        'error' => $error,
+        'scans' => $scans,
+        'allowed_mime_types' => $allowed_mime_types,
+    )
+);
 $SMARTY->display('document/documentscanadd.html');

@@ -38,9 +38,13 @@ $layout['pagetitle'] = trans('Group Info: $a', $usergroup['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('usergroup', $usergroup);
-$SMARTY->assign('users', $users);
-$SMARTY->assign('userscount', $userscount);
-$SMARTY->assign('membersnetid', $membersnetid ?? 0);
-$SMARTY->assign('othersnetid', $othersnetid ?? 0);
+$SMARTY->assign(
+    array(
+        'usergroup' => $usergroup,
+        'users' => $users,
+        'userscount' => $userscount,
+        'membersnetid' => $membersnetid ?? 0,
+        'othersnetid' => $othersnetid ?? 0,
+    )
+);
 $SMARTY->display('user/usergroupinfo.html');

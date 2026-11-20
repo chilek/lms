@@ -146,9 +146,13 @@ $customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
 		    GROUP BY c.id, lastname, c.name 
 		    ORDER BY customername ASC', 'id');
 
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_WARNING));
-$SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
-$SMARTY->assign('warnon', $SESSION->get('warnon'));
-$SMARTY->assign('warnoff', $SESSION->get('warnoff'));
-$SMARTY->assign('customerlist', $customerlist);
+$SMARTY->assign(
+    array(
+        'messagetemplates' => $LMS->GetMessageTemplates(TMPL_WARNING),
+        'warnmessage' => $SESSION->get('warnmessage'),
+        'warnon' => $SESSION->get('warnon'),
+        'warnoff' => $SESSION->get('warnoff'),
+        'customerlist' => $customerlist,
+    )
+);
 $SMARTY->display('customer/customerwarnings.html');

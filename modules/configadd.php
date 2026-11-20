@@ -261,8 +261,12 @@ if (!empty($option)) {
     $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 }
 
-$SMARTY->assign('reftype', $reftype);
-$SMARTY->assign('refconfigid', $refconfigid);
-$SMARTY->assign('config', $config);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'reftype' => $reftype,
+        'refconfigid' => $refconfigid,
+        'config' => $config,
+        'error' => $error,
+    )
+);
 $SMARTY->display('config/configadd.html');

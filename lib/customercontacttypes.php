@@ -443,7 +443,7 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
     );
     if (!empty($flags)) {
         foreach ($type['ui']['flags'] as $flagvalue => $flag) {
-            if (isset($flag['alias']) && isset($flags[$flag['alias']])) {
+            if (isset($flag['alias'], $flags[$flag['alias']])) {
                 $contact_default_flags[$ctype][$flagvalue] = $flagvalue;
             }
         }
@@ -453,6 +453,10 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
 global $SMARTY;
 
 if (isset($SMARTY)) {
-    $SMARTY->assign('_CUSTOMERCONTACTTYPES', $CUSTOMERCONTACTTYPES);
-    $SMARTY->assign('contact_default_flags', $contact_default_flags);
+    $SMARTY->assign(
+        array(
+            '_CUSTOMERCONTACTTYPES' => $CUSTOMERCONTACTTYPES,
+            'contact_default_flags' => $contact_default_flags,
+        )
+    );
 }

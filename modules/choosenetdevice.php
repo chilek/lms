@@ -63,8 +63,12 @@ if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
         }
     }
 
-    $SMARTY->assign('searchnetdev', $search);
-    $SMARTY->assign('netdevices', $netdevices);
+    $SMARTY->assign(
+        array(
+            'searchnetdev' => $search,
+            'netdevices' => $netdevices,
+        )
+    );
 }
 
 if (isset($netdevid)) {

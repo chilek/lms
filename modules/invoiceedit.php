@@ -172,7 +172,7 @@ switch ($action) {
         $contents = changeContents($contents, $itemdata['invoice-contents']);
 
         if ($action == 'savepos') {
-            if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']])) {
+            if (!isset($_GET['posuid'], $contents[$_GET['posuid']])) {
                 die;
             }
             $posuid = $_GET['posuid'];
@@ -947,8 +947,12 @@ if (!empty($invoice['customerid'])) {
 } else {
     $customer = null;
 }
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign(
+    array(
+        'tariffs' => $LMS->GetTariffs(),
+        'taxeslist' => $taxeslist,
+    )
+);
 
 $args = array(
     'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
@@ -996,14 +1000,22 @@ if (isset($customer)) {
         $invoice['recipient_address2'] = base64_encode(json_encode($invoice['recipient_address2']));
     }
 
-    $SMARTY->assign('addresses', $addresses);
-    $SMARTY->assign('addresses2', $addresses2);
+    $SMARTY->assign(
+        array(
+            'addresses' => $addresses,
+            'addresses2' => $addresses2,
+        )
+    );
 }
 
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('contents', $contents);
-$SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('planDocumentType', isset($invoice['proforma']) && $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
+$SMARTY->assign(
+    array(
+        'customer' => $customer,
+        'contents' => $contents,
+        'invoice' => $invoice,
+        'planDocumentType' => isset($invoice['proforma']) && $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+    )
+);
 
 $total_value = 0;
 if (!empty($contents)) {

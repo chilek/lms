@@ -256,11 +256,15 @@ function module_main()
     $pagin->setCurrentPage(empty($_GET['page']) ? 1 : intval($_GET['page']));
     $pagin->setRange(3);
 
-    $SMARTY->assign('pagination', $pagin);
-    $SMARTY->assign('pagin_result', $pagin->getPages());
-    $SMARTY->assign('params', $params);
-    $SMARTY->assign('billings', $billings);
-    $SMARTY->assign('customer_phone_list', $phones);
-    $SMARTY->assign('user_accounts', $user_accounts);
+    $SMARTY->assign(
+        array(
+            'pagination' => $pagin,
+            'pagin_result' => $pagin->getPages(),
+            'params' => $params,
+            'billings' => $billings,
+            'customer_phone_list' => $phones,
+            'user_accounts' => $user_accounts,
+        )
+    );
     $SMARTY->display('module:billing.html');
 }

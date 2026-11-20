@@ -421,8 +421,12 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
 $layout['pagetitle'] = trans('Export');
 
-$SMARTY->assign('users', $LMS->GetUserNames());
-$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
-$SMARTY->assign('divisions', $LMS->GetDivisions());
-$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+$SMARTY->assign(
+    array(
+        'users' => $LMS->GetUserNames(),
+        'cashreglist' => $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'),
+        'divisions' => $LMS->GetDivisions(),
+        'customergroups' => $LMS->CustomergroupGetAll(),
+    )
+);
 $SMARTY->display('export.html');

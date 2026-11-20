@@ -182,7 +182,11 @@ $layout['pagetitle'] = trans('New Domain');
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('domainadd', $domainadd);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign(
+    array(
+        'domainadd' => $domainadd,
+        'error' => $error,
+        'customers' => $LMS->GetCustomerNames(),
+    )
+);
 $SMARTY->display('domain/domainadd.html');

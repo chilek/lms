@@ -82,7 +82,11 @@ $listdata['nodestotal'] = empty($nodegrouplist) ? 0 : $nodegrouplist['nodestotal
 unset($nodegrouplist['total']);
 unset($nodegrouplist['nodestotal']);
 
-$SMARTY->assign('nodegrouplist', $nodegrouplist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'nodegrouplist' => $nodegrouplist,
+        'listdata' => $listdata,
+    )
+);
 
 $SMARTY->display('node/nodegrouplist.html');

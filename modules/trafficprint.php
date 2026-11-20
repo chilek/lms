@@ -43,8 +43,12 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));
 
-        $SMARTY->assign('showavg', isset($_POST['showavg']) ? 1 : 0);
-        $SMARTY->assign('showmax', isset($_POST['showmax']) ? 1 : 0);
+        $SMARTY->assign(
+            array(
+                'showavg' => isset($_POST['showavg']) ? 1 : 0,
+                'showmax' => isset($_POST['showmax']) ? 1 : 0,
+            )
+        );
 
         $from = mktime(0, 0, 0, $month, 1, $year);
         $to = mktime(0, 0, 0, $month+1, 1, $year);
@@ -115,8 +119,12 @@ switch ($type) {
             [$listdata[0]['upload'], $listdata[0]['uploadunit']] = setunits($listdata[0]['upload']);
             [$listdata[0]['download'], $listdata[0]['downloadunit']] = setunits($listdata[0]['download']);
 
-            $SMARTY->assign('stats', $stats);
-            $SMARTY->assign('listdata', $listdata);
+            $SMARTY->assign(
+                array(
+                    'stats' => $stats,
+                    'listdata' => $listdata,
+                )
+            );
         }
 
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
@@ -146,11 +154,15 @@ switch ($type) {
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {
             $SMARTY->assign('customers', $LMS->GetCustomerNames());
         }
-        $SMARTY->assign('currmonth', date('n'));
-        $SMARTY->assign('curryear', date('Y'));
-        $SMARTY->assign('statyears', $statyears);
-        $SMARTY->assign('months', $months);
-        $SMARTY->assign('printmenu', 'traffic');
+        $SMARTY->assign(
+            array(
+                'currmonth' => date('n'),
+                'curryear' => date('Y'),
+                'statyears' => $statyears,
+                'months' => $months,
+                'printmenu' => 'traffic',
+            )
+        );
         $SMARTY->display('print/printindex.html');
         break;
 }

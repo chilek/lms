@@ -48,7 +48,11 @@ $SESSION->add_history_entry();
 
 $SESSION->remove('backid');
 
-$SMARTY->assign('filter', $filter);
-$SMARTY->assign('queues', $queues);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'filter' => $filter,
+        'queues' => $queues,
+        'error' => $error,
+    )
+);
 $SMARTY->display('rt/rtqueuelist.html');

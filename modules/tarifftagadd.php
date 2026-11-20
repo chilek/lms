@@ -49,8 +49,12 @@ if (isset($_POST['tarifftagadd'])) {
         $SESSION->redirect('?m=tarifftaglist&id=' . $LMS->TarifftagAdd($tarifftagadd));
     }
 
-    $SMARTY->assign('error', $error);
-    $SMARTY->assign('tarifftagadd', $tarifftagadd);
+    $SMARTY->assign(
+        array(
+            'error' => $error,
+            'tarifftagadd' => $tarifftagadd,
+        )
+    );
 }
 
 $layout['pagetitle'] = trans('New tag');

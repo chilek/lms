@@ -48,11 +48,15 @@ $layout['pagetitle'] = trans('Group Info: $a', $nodegroup['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('nodegroup', $nodegroup);
-$SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodescount', $nodescount);
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('membersnetid', $membersnetid ?? 0);
-$SMARTY->assign('othersnetid', $othersnetid ?? 0);
+$SMARTY->assign(
+    array(
+        'nodegroup' => $nodegroup,
+        'nodes' => $nodes,
+        'nodescount' => $nodescount,
+        'networks' => $LMS->GetNetworks(),
+        'membersnetid' => $membersnetid ?? 0,
+        'othersnetid' => $othersnetid ?? 0,
+    )
+);
 
 $SMARTY->display('node/nodegroupinfo.html');

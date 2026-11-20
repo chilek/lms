@@ -59,7 +59,11 @@ if ($divisionlist) {
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('divisionlist', $divisionlist);
-$SMARTY->assign('pagination', $pagination);
+$SMARTY->assign(
+    array(
+        'divisionlist' => $divisionlist,
+        'pagination' => $pagination,
+    )
+);
 
 $SMARTY->display('division/divisionlist.html');

@@ -34,6 +34,10 @@ unset($paymentlist['total']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('paymentlist', $paymentlist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign(
+    array(
+        'paymentlist' => $paymentlist,
+        'listdata' => $listdata,
+    )
+);
 $SMARTY->display('payment/paymentlist.html');

@@ -34,7 +34,10 @@ $layout['pagetitle'] = trans('Nodes Scanning');
 $SESSION->add_history_entry();
 
 $LMS->InitXajax();
-$SMARTY->assign('xajax', $LMS->RunXajax());
-
-$SMARTY->assign('nodes', $LMS->ScanNodes());
+$SMARTY->assign(
+    array(
+        'xajax' => $LMS->RunXajax(),
+        'nodes' => $LMS->ScanNodes(),
+    )
+);
 $SMARTY->display('node/nodescan.html');

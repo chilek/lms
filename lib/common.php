@@ -1014,7 +1014,7 @@ function check_url($url)
     if ($components === false) {
         return false;
     }
-    if (!isset($components['host']) || !isset($components['scheme'])) {
+    if (!isset($components['host'], $components['scheme'])) {
         return false;
     }
     return true;

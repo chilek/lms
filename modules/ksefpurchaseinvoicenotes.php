@@ -49,7 +49,11 @@ $notes = $DB->GetOne(
     ]
 );
 
-$SMARTY->assign('id', $id);
-$SMARTY->assign('notes', $notes);
+$SMARTY->assign(
+    array(
+        'id' => $id,
+        'notes' => $notes,
+    )
+);
 
 $SMARTY->display('ksef/ksefpurchaseinvoicenotes.html');

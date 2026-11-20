@@ -105,6 +105,10 @@ $layout['pagetitle'] = trans('Document Type Edit: $a', $type['name']);
 
 $SESSION->add_history_entry();
 
-$SMARTY->assign('documenttype', $type);
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'documenttype' => $type,
+        'error' => $error,
+    )
+);
 $SMARTY->display('document/documenttypeedit.html');
