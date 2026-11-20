@@ -298,11 +298,15 @@ END;
 $$;
 ");
 
+$this->Execute("DROP TRIGGER IF EXISTS cash_customerbalances_lock_receipts_trigger ON cash");
+
 $this->Execute("
 CREATE TRIGGER cash_customerbalances_lock_receipts_trigger
     BEFORE INSERT OR UPDATE OR DELETE ON cash
     FOR EACH ROW EXECUTE PROCEDURE customerbalances_lock_cash_receipts();
 ");
+
+$this->Execute("DROP TRIGGER IF EXISTS receiptcontents_customerbalances_lock_trigger ON receiptcontents");
 
 $this->Execute("
 CREATE TRIGGER receiptcontents_customerbalances_lock_trigger
@@ -310,17 +314,23 @@ CREATE TRIGGER receiptcontents_customerbalances_lock_trigger
     FOR EACH ROW EXECUTE PROCEDURE customerbalances_lock_receipt_changes();
 ");
 
+$this->Execute("DROP TRIGGER IF EXISTS receiptcontents_customerbalances_update_trigger ON receiptcontents");
+
 $this->Execute("
 CREATE TRIGGER receiptcontents_customerbalances_update_trigger
     AFTER INSERT OR UPDATE OR DELETE ON receiptcontents
     FOR EACH ROW EXECUTE PROCEDURE customerbalances_update_receipts();
 ");
 
+$this->Execute("DROP TRIGGER IF EXISTS receiptcontents_customerbalances_truncate_trigger ON receiptcontents");
+
 $this->Execute("
 CREATE TRIGGER receiptcontents_customerbalances_truncate_trigger
     AFTER TRUNCATE ON receiptcontents
     EXECUTE PROCEDURE customerbalances_update_receipts();
 ");
+
+$this->Execute("DROP TRIGGER IF EXISTS cashregs_customerbalances_update_trigger ON cashregs");
 
 $this->Execute("
 CREATE TRIGGER cashregs_customerbalances_update_trigger
