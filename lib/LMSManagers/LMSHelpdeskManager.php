@@ -1029,7 +1029,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetUserCategories($userid = null)
     {
         return $this->db->GetAllByKey(
-            'SELECT c.id, name
+            'SELECT c.id, c.id AS categoryid, c.name, c.description, c.style
             FROM rtcategories c
             LEFT JOIN rtcategoryusers cu
             ON c.id = cu.categoryid '
