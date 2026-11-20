@@ -1085,8 +1085,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
-    private function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false)
+    private function SaveTicketMessageAttachments($ticketid, $messageid, $files)
     {
+        global $SESSION;
+
         $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
         $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
         $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
@@ -1105,11 +1107,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             @chown($message_dir, $storage_dir_owneruid);
             @chgrp($message_dir, $storage_dir_ownergid);
 
-            $dirs_to_be_deleted = array();
             foreach ($files as $file) {
                 // handle spaces and unknown characters in filename
                 // on systems having problems with that
                 $filename = preg_replace('/[^\w.\-]/', '_', basename($file['name']));
+                if ($filename === '' || $filename === '.' || $filename === '..') {
+                    continue;
+                }
                 $dstfile = $message_dir . DIRECTORY_SEPARATOR . $filename;
                 if (isset($file['content'])) {
                     $fh = @fopen($dstfile, 'w');
@@ -1119,10 +1123,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     fwrite($fh, $file['content'], strlen($file['content']));
                     fclose($fh);
                 } else {
-                    if ($cleanup) {
-                        $dirs_to_be_deleted[] = dirname($file['name']);
+                    $source = $file['tmp_name'] ?? $file['name'];
+                    if (!is_string($source) || is_link($source) || !is_file($source)) {
+                        continue;
                     }
-                    if (!@rename($file['tmp_name'] ?? $file['name'], $dstfile)) {
+                    if (!is_uploaded_file($source)) {
+                        $stagingDir = dirname($source);
+                        $tmpdir = basename($stagingDir);
+                        $registeredUploads = isset($SESSION) ? $SESSION->get('fileupload_tmpdirs') : null;
+                        if (!is_array($registeredUploads) || !isset($registeredUploads[$tmpdir])
+                            || !preg_match('/^lms-fileupload-[0-9a-f]{32}$/D', $tmpdir)
+                            || is_link($stagingDir)
+                            || realpath($stagingDir) !== realpath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . $tmpdir) {
+                            continue;
+                        }
+                    }
+                    if (!@rename($source, $dstfile)) {
                         continue;
                     }
                 }
@@ -1135,12 +1151,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					VALUES (?, ?, ?, ?)',
                     array($messageid, $filename, $file['type'], $file['content-id'] ?? null)
                 );
-            }
-            if (!empty($dirs_to_be_deleted)) {
-                $dirs_to_be_deleted = array_unique($dirs_to_be_deleted);
-                foreach ($dirs_to_be_deleted as $dir) {
-                    rrmdir($dir);
-                }
             }
         }
     }
