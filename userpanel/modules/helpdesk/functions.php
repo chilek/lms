@@ -118,15 +118,22 @@ function module_main()
 
                     $filename = preg_replace('/^[\.]+/', '', $filename);
 
+                    $fileType = function_exists('mime_content_type')
+                        ? @mime_content_type($_FILES['files']['tmp_name'][$fileidx])
+                        : false;
+                    if (empty($fileType)) {
+                        $fileType = 'application/octet-stream';
+                    }
+
                     $filecontents = file_get_contents($_FILES['files']['tmp_name'][$fileidx]);
                     $files[] = array(
                         'name' => $filename,
                         'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
-                        'type' => $_FILES['files']['type'][$fileidx],
+                        'type' => $fileType,
                         'contents' => $filecontents,
                     );
                     $attachments[] = array(
-                        'content_type' => $_FILES['files']['type'][$fileidx],
+                        'content_type' => $fileType,
                         'filename' => $filename,
                         'data' => $filecontents,
                     );
@@ -779,9 +786,30 @@ function module_attachment()
 
     $file = $rt_dir . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $attach['filename']);
     if (file_exists($file)) {
-        header('Content-Type: '. $attach['contenttype']);
+        $contentType = strtolower(trim((string) strtok((string) $attach['contenttype'], ';')));
+        if (!preg_match('#^[a-z0-9][a-z0-9!\#$&^_.+-]*/[a-z0-9][a-z0-9!\#$&^_.+-]*$#', $contentType)) {
+            $contentType = 'application/octet-stream';
+        }
+
+        $inline = false;
+        if ($contentType == 'application/pdf') {
+            $fh = @fopen($file, 'rb');
+            if ($fh) {
+                $inline = fread($fh, 5) === '%PDF-';
+                fclose($fh);
+            }
+        }
+
+        $filenameFallback = preg_replace('/[^\w.\-]/', '_', $attach['filename']);
+
+        header('Content-Type: ' . $contentType);
+        header('X-Content-Type-Options: nosniff');
         header('Cache-Control: private');
-        header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attach['filename']);
+        header(
+            'Content-Disposition: ' . ($inline ? 'inline' : 'attachment')
+            . '; filename="' . $filenameFallback . '"'
+            . "; filename*=UTF-8''" . rawurlencode($attach['filename'])
+        );
         echo @file_get_contents($file);
     }
     die;

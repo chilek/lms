@@ -26,7 +26,7 @@
 							<td>
 								<select name="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel" class="lms-ui-multiselect"}>
 									{foreach $queuelist as $queue}
-										<option value="{$queue.id}"{if in_array($queue.id, $queues)} selected{/if}>{$queue.name}</option>
+										<option value="{$queue.id}"{if in_array($queue.id, $queues)} selected{/if}>{$queue.name|escape}</option>
 									{/foreach}
 								</select>
 							</td>
@@ -94,7 +94,7 @@
 								{trans("LMS url:")}
 							</td>
 							<td>
-								<input type="text" name="lms_url" value="{$lms_url}" size="50"
+								<input type="text" name="lms_url" value="{$lms_url|escape}" size="50"
 									{tip text="LMS address needed to build link to new ticket in notification message"}>
 							</td>
 						</tr>
@@ -107,7 +107,7 @@
 									<label>
 										<input type="checkbox" name="lms_categories[{$category.id}]" value="1"
 											{if $category.checked > 0} checked{/if}>
-										{$category.name}
+										{$category.name|escape}
 									</label>
 									{if !$category@last}<br>{/if}
 								{/foreach}
