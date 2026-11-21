@@ -185,6 +185,27 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
     $SMARTY->assign('nodeid', $nodeinfo['id']);
 }
 
+if (!isset($resource_tabs['nodetickets']) || $resource_tabs['nodetickets']) {
+    $params = [
+        'nodeids' => $nodeid,
+        'short' => true,
+    ];
+
+    $alltickets = isset($_GET['alltickets']) ? !empty($_GET['alltickets']) : ConfigHelper::checkConfig(
+        'rt.default_show_closed_tickets',
+        ConfigHelper::checkConfig('phpui.default_show_closed_tickets')
+    );
+
+    if (!$alltickets) {
+        $params['state'] = -1;
+    }
+
+    $SMARTY->assign([
+        'nodeticketlist' => $LMS->GetQueueContents($params),
+        'alltickets' => $alltickets
+    ]);
+}
+
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeinfo_sortable_order', $SESSION->get_persistent_setting('nodeinfo-sortable-order'));
