@@ -136,7 +136,6 @@ DROP TABLE IF EXISTS pna;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS cashimport;
 DROP TABLE IF EXISTS sourcefiles;
-DROP TABLE IF EXISTS cashsources;
 DROP TABLE IF EXISTS debitnotecontents;
 DROP TABLE IF EXISTS invoicecontents;
 DROP TABLE IF EXISTS voip_number_assignments;
@@ -162,6 +161,7 @@ DROP TABLE IF EXISTS voipaccounts;
 DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS receiptcontents;
 DROP TABLE IF EXISTS cashregs;
+DROP TABLE IF EXISTS cashsources;
 DROP TABLE IF EXISTS documentattachments;
 DROP TABLE IF EXISTS documentcontents;
 DROP TABLE IF EXISTS documents;
@@ -844,6 +844,21 @@ CREATE TABLE documentattachments (
 
 # --------------------------------------------------------
 #
+# Structure of table cashsources
+#
+CREATE TABLE cashsources (
+	id      int(11)         NOT NULL auto_increment,
+	name	varchar(32)     DEFAULT '' NOT NULL,
+	description text		DEFAULT NULL,
+	account varchar(48)     NOT NULL DEFAULT '',
+	deleted smallint		NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table cashregs
 #
 CREATE TABLE cashregs (
@@ -1394,21 +1409,6 @@ CREATE TABLE debitnotecontents (
 	UNIQUE KEY docid (docid, itemid),
 	CONSTRAINT debitnotecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table cashsources
-#
-CREATE TABLE cashsources (
-	id      int(11)         NOT NULL auto_increment,
-	name	varchar(32)     DEFAULT '' NOT NULL,
-	description text		DEFAULT NULL,
-	account varchar(48)     NOT NULL DEFAULT '',
-	deleted smallint		NOT NULL DEFAULT 0,
-	isdefault smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

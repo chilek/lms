@@ -657,6 +657,23 @@ CREATE TABLE documentattachments (
 CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
 
 /* ---------------------------------------------------
+ Structure of table "cashsources"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS cashsources_id_seq;
+CREATE SEQUENCE cashsources_id_seq;
+DROP TABLE IF EXISTS cashsources CASCADE;
+CREATE TABLE cashsources (
+	id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
+	name varchar(32)    DEFAULT '' NOT NULL,
+	description text	DEFAULT NULL,
+	account varchar(48) NOT NULL DEFAULT '',
+	deleted smallint	NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "cashregs"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS cashregs_id_seq;
@@ -1223,23 +1240,6 @@ CREATE TABLE debitnotecontents (
 	description text 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
-);
-
-/* ---------------------------------------------------
- Structure of table "cashsources"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS cashsources_id_seq;
-CREATE SEQUENCE cashsources_id_seq;
-DROP TABLE IF EXISTS cashsources CASCADE;
-CREATE TABLE cashsources (
-	id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
-	name varchar(32)    DEFAULT '' NOT NULL,
-	description text	DEFAULT NULL,
-	account varchar(48) NOT NULL DEFAULT '',
-	deleted smallint	NOT NULL DEFAULT 0,
-	isdefault smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (name)
 );
 
 /* ---------------------------------------------------
