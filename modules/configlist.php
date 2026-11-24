@@ -107,6 +107,7 @@ function GetConfigList()
             'ping_type' => 'Default ping type. You can use "1" for ping or "2" for arping. Default: 1.',
             'default_teryt_city' => 'Default City in TERYT. Set city id in TERYT.',
             'logout_confirmation' => 'If set to "true" then logout confirmation is required. Default "false"',
+            'invoice_send_dialog' => 'If set to "true" then "Send invoices" button on customer card opens a dialog with recipient picker and editable subject/body. If set to "false" previous confirmation and direct send is used. Default: true',
             'helpdesk_notification_mail_subject' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
             'helpdesk_notification_mail_body' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
             'helpdesk_notification_sms_body' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',

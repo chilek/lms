@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+if (!ConfigHelper::checkConfig('phpui.invoice_send_dialog', true)) {
+    return;
+}
+
 $SMARTY->assign(array(
     'invoiceSendContacts' => $LMS->GetCustomerContacts($customerid, CONTACT_EMAIL),
     'invoiceSendCustomerId' => $customerid,

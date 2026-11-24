@@ -1326,7 +1326,8 @@ version 28-git (????-??-??):
     [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
   - enhancement: show last-sent e-mail address in invoice send tooltip [interduo]
   - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
-    placeholders, sending one e-mail with all selected invoices attached [interduo]
+    placeholders, sending one e-mail with all selected invoices attached
+    (variable: phpui.invoice_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
 
 version 27.0 (2021-08-20):
 
