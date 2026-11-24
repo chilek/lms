@@ -24,10 +24,8 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('cashregs.cashsourceid', LMSDB::RESOURCE_TYPE_COLUMN)) {
-    $this->Execute("
-        ALTER TABLE cashregs ADD COLUMN cashsourceid integer DEFAULT NULL;
-        ALTER TABLE cashregs ADD CONSTRAINT cashregs_cashsourceid_fkey FOREIGN KEY (cashsourceid) REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE
-    ");
+    $this->Execute("ALTER TABLE cashregs ADD COLUMN cashsourceid integer DEFAULT NULL");
+    $this->Execute("ALTER TABLE cashregs ADD CONSTRAINT cashregs_cashsourceid_fkey FOREIGN KEY (cashsourceid) REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026112400', 'dbversion'));
