@@ -1309,6 +1309,12 @@ version 28-git (????-??-??):
     %nasip%:3799 disconnect %secret%' [interduo]
   - devel: lms-fping runs the configured command without a shell. Only redirects to
     /dev/null or another descriptor are ignored; other shell metacharacters are rejected [interduo]
+  - security/bugfix: file name sanity checking of file uploaded via web browser especially
+    for helpdesk attachments [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
+  - bugfix/security: local privilege escalation in daemon (daemon is deprected for several year so
+    we finally remove it) [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
+  - security/bugfix: file name sanity checking of file uploaded as helpdesk attachments via lms-rtparser.php
+    backend script [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
   - security/bugfix: (CVE-2026-127142) file name sanity checking of file uploaded via web browser
     especially for helpdesk attachments
     [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
@@ -1320,6 +1326,10 @@ version 28-git (????-??-??):
     [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
   - enhancement: automatic cash documents can be generated for commited cash imports (cash source to cash
     registry assignment is required to activate this mechanism) [chilan]
+  - enhancement: show last-sent e-mail address in invoice send tooltip [interduo]
+  - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
+    placeholders, sending one e-mail with all selected invoices attached
+    (variable: phpui.invoice_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
 
 version 27.0 (2021-08-20):
 

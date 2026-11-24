@@ -90,6 +90,8 @@ interface LMSDocumentManagerInterface
 
     public function getDocumentReferences($docid, $cashid = null);
 
+    public function getDocumentSentEmails(array $ids);
+
     public function getDefaultNumberPlanID($doctype, $divisionid = null, $cdate = null);
 
     public function checkNumberPlanAccess($id);

@@ -1,0 +1,157 @@
+<style>
+
+	#invoice-send-dialog {
+		display: none;
+		min-width: 40em;
+	}
+
+	#invoice-send-dialog .invoice-send-recipient {
+		display: block;
+	}
+
+	#invoice-send-dialog input[type="text"],
+	#invoice-send-dialog input[type="email"],
+	#invoice-send-dialog textarea {
+		width: 98%;
+	}
+
+	#invoice-send-dialog textarea {
+		resize: vertical;
+	}
+
+</style>
+
+<div id="invoice-send-dialog" class="lms-ui-dialog" title="{trans("Send invoices")}">
+	<form method="post" id="invoice-send-form" target="_blank">
+		<input type="hidden" name="invoicesend[customerid]" value="{$invoiceSendCustomerId}">
+		<div class="invoice-send-marks"></div>
+		<ol class="dialog-box">
+			<li>
+				<strong>{trans("Recipients:")}</strong>
+				{foreach $invoiceSendContacts as $contact}
+					{$contactDisabled = ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED}
+					{$contactInvoices = ($contact.type & $smarty.const.CONTACT_INVOICES) == $smarty.const.CONTACT_INVOICES}
+					<label class="invoice-send-recipient{if $contactDisabled} blend{/if}">
+						<input type="checkbox" name="invoicesend[recipients][]" value="{$contact.contact|escape}"
+							{if $contactInvoices && !$contactDisabled} checked{/if}>
+						{$contact.fullname|escape}
+					</label>
+				{/foreach}
+			</li>
+			<li>
+				<strong>{trans("Additional e-mail:")}</strong><br>
+				<input type="email" name="invoicesend[extraemail]">
+			</li>
+			<li>
+				<strong>{trans("Subject:")}</strong><br>
+				<input type="text" name="invoicesend[subject]" required>
+			</li>
+			<li>
+				<strong>{trans("Body:")}</strong><br>
+				<textarea name="invoicesend[body]" rows="12"></textarea>
+			</li>
+		</ol>
+		<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+			<div class="ui-dialog-buttonset">
+				{button type="submit" class="lms-ui-button ui-button ui-corner-all ui-widget" icon="mail"
+					id="invoice-send-apply-button" label="Send"}
+				{button class="lms-ui-button ui-button ui-corner-all ui-widget" icon="cancel"
+					id="invoice-send-cancel-button" label="Cancel"}
+			</div>
+		</div>
+	</form>
+</div>
+
+<script>
+
+	var invoiceSendDialog;
+
+	function openInvoiceSendDialog() {
+		var button = $('#send-invoices');
+		if (button.prop('disabled')) {
+			return;
+		}
+		button.prop('disabled', true);
+
+		var data = [
+			{ name: 'customerid', value: $('#invoice-send-form [name="invoicesend[customerid]"]').val() }
+		];
+		$('[form="addbalance-form"].lms-ui-multi-check:checked').each(function() {
+			data.push({ name: $(this).attr('name'), value: $(this).val() });
+		});
+
+		$.ajax({
+			url: '?m=invoicesend&action=preview&api=1&marks=cash',
+			method: 'POST',
+			dataType: 'json',
+			data: data
+		}).done(function(result) {
+			if (result.error) {
+				alertDialog(result.error, button);
+				return;
+			}
+			$('#invoice-send-form [name="invoicesend[subject]"]').val(result.subject);
+			$('#invoice-send-form [name="invoicesend[body]"]').val(result.body);
+			invoiceSendDialog.open();
+		}).fail(function(jqXHR) {
+			alertDialog($t('AJAX: Invalid result - status: $a', jqXHR.status), button);
+		}).always(function() {
+			button.prop('disabled', false);
+		});
+	}
+
+	$(function() {
+		invoiceSendDialog = new LmsUiDialog('invoice-send-dialog', {
+			width: 'auto',
+			position: {
+				my: "left bottom",
+				at: "top right",
+				of: $('#send-invoices')
+			}
+		});
+
+		$('#invoice-send-cancel-button').click(function() {
+			invoiceSendDialog.close();
+		});
+
+		$('#invoice-send-form').submit(function() {
+			var form = $(this);
+
+			if (!form.find('[name="invoicesend[recipients][]"]:checked').length
+				&& !form.find('[name="invoicesend[extraemail]"]').val().trim().length) {
+				$('#invoice-send-apply-button').prop('disabled', false);
+				alertDialog($t('Unable to send message. No recipients selected!'), this);
+				return false;
+			}
+
+			var add = "";
+			var which = 0;
+			$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+			if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
+			}
+			form.attr('action', '?m=invoicesend&marks=cash' + add);
+
+			var marks = form.find('.invoice-send-marks').empty();
+			$('[form="addbalance-form"].lms-ui-multi-check:checked').each(function() {
+				$('<input>', {
+					type: 'hidden',
+					name: $(this).attr('name'),
+					value: $(this).val()
+				}).appendTo(marks);
+			});
+
+			setTimeout(function() {
+				invoiceSendDialog.close();
+				$('#invoice-send-apply-button').prop('disabled', false);
+			}, 0);
+		});
+	});
+
+</script>
