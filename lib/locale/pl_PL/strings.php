@@ -6502,3 +6502,5 @@ $_LANG['%comment% (transaction excluded from customer balance)'] = '%comment% (o
 
 $_LANG['hide data summaries'] = 'ukryj dane zbiorcze';
 $_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';
+
+$_LANG['Cash source'] = 'Źródło płatności';

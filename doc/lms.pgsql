@@ -671,7 +671,9 @@ CREATE TABLE cashregs (
 	out_numberplanid 	integer 	DEFAULT NULL
 		CONSTRAINT cashregs_out_numberplanid_fkey REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	disabled 		smallint	DEFAULT 0 NOT NULL,
-    balanceexclude  smallint    DEFAULT 0 NOT NULL,
+	balanceexclude  smallint    DEFAULT 0 NOT NULL,
+	cashsourceid integer DEFAULT NULL
+		CONSTRAINT cashregs_cashsourceid_fkey REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -5011,6 +5013,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111903');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112400');
 
 COMMIT;

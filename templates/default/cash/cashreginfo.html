@@ -70,6 +70,19 @@
 			{if !empty($registry.balanceexclude)}{icon name="checked"}{/if}
 		</td>
 	</tr>
+	{if !empty($registry.cashsourceid)}
+		<tr>
+			<td>
+				{icon name="isource"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Cash source")}</strong>
+			</td>
+			<td>
+				{$registry.cashsourcename|escape}
+			</td>
+		</tr>
+	{/if}
 	<TR>
 	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">

@@ -35,10 +35,13 @@ $registry = $DB->GetRow(
         i.template AS in_template,
         o.template AS out_template,
         disabled,
-        balanceexclude
+        balanceexclude,
+        cashsourceid,
+        cs.name AS cashsourcename
     FROM cashregs reg
     LEFT JOIN numberplans i ON in_numberplanid = i.id
     LEFT JOIN numberplans o ON out_numberplanid = o.id
+    LEFT JOIN cashsources cs ON cs.id = reg.cashsourceid
     WHERE reg.id = ?',
     array($id)
 );

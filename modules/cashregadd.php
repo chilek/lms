@@ -27,10 +27,6 @@
 if (isset($_POST['registry'])) {
     $registry = $_POST['registry'];
 
-    if ($registry['name']=='' && $registry['description']=='') {
-        $SESSION->redirect('?m=cashreglist');
-    }
-
     if ($registry['name'] == '') {
         $error['name'] = trans('Registry name must be defined!');
     }
@@ -53,11 +49,12 @@ if (isset($_POST['registry'])) {
             'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
             'disabled' => empty($registry['disabled']) ? 0 : 1,
             'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
+            'cashsourceid' => empty($registry['cashsourceid']) || !intval($registry['cashsourceid']) ? null : intval($registry['cashsourceid']),
         );
         $DB->Execute(
             'INSERT INTO cashregs
-            (name, description, in_numberplanid, out_numberplanid, disabled, balanceexclude)
-            VALUES (?, ?, ?, ?, ?, ?)',
+            (name, description, in_numberplanid, out_numberplanid, disabled, balanceexclude, cashsourceid)
+            VALUES (?, ?, ?, ?, ?, ?, ?)',
             $args
         );
 
@@ -111,5 +108,6 @@ $SMARTY->assign('registry', $registry);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
     'doctype' => DOC_RECEIPT,
 )));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregadd.html');

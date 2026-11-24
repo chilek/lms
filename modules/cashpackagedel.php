@@ -38,6 +38,7 @@ if (!$name) {
 
     if ($SYSLOG) {
         $imports = $DB->GetAll('SELECT id, customerid, sourceid FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
+
         if (!empty($imports)) {
             $importids = array();
             foreach ($imports as $import) {
@@ -67,10 +68,42 @@ if (!$name) {
                 SYSLOG::RES_USER => $userid,
             );
             $SYSLOG->AddMessage(SYSLOG::RES_SOURCEFILE, SYSLOG::OPER_DELETE, $args);
+
+            $imports = $importids;
         }
+    } else {
+        $imports = $DB->GetCol(
+            'SELECT id
+            FROM cashimport
+            WHERE sourcefileid = ?',
+            [
+                $sourcefileid,
+            ]
+        );
     }
-    $DB->Execute('DELETE FROM cash WHERE importid IN (
-		SELECT id FROM cashimport WHERE sourcefileid = ?)', array($sourcefileid));
+
+    if (!empty($imports)) {
+        $DB->Execute(
+            'DELETE FROM documents
+            WHERE type = ?
+                AND id IN (
+                    SELECT DISTINCT docid FROM cash WHERE importid IN ?
+                )',
+            [
+                DOC_RECEIPT,
+                $imports,
+            ]
+        );
+
+        $DB->Execute(
+            'DELETE FROM cash
+            WHERE importid IN ?',
+            [
+                $imports,
+            ]
+        );
+    }
+
     $DB->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
     $DB->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
 

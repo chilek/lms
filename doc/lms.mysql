@@ -854,12 +854,15 @@ CREATE TABLE cashregs (
 	out_numberplanid int(11) DEFAULT NULL,
 	disabled tinyint(1)     DEFAULT '0' NOT NULL,
 	balanceexclude tinyint(1)     DEFAULT 0 NOT NULL,
+	cashsourceid integer DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name),
 	CONSTRAINT cashregs_in_numberplanid_fkey
 		FOREIGN KEY (in_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT cashregs_out_numberplanid_fkey
-		FOREIGN KEY (out_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (out_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashregs_cashsourceid_fkey
+		FOREIGN KEY (cashsourceid) REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4825,4 +4828,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026111903');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112400');

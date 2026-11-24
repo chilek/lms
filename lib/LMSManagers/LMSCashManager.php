@@ -717,14 +717,57 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
     /**
      * Commits cash imports located in database
      */
-    public function CashImportCommit()
+    public function CashImportCommit(?array $ids = null)
     {
         global $LMS;
 
-        $imports = $this->db->GetAll('SELECT i.*, f.idate
-			FROM cashimport i
-			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
-			WHERE i.closed = 0 AND i.customerid IS NOT NULL');
+        $cashRegs = $this->db->GetAll(
+            'SELECT
+                cr.id,
+                cr.name,
+                cr.cashsourceid,
+                cr.in_numberplanid AS numberplanid,
+                ' . $this->db->GroupConcat('npa.divisionid') . ' AS divisions
+            FROM cashregs cr
+            JOIN numberplans np ON np.id = cr.in_numberplanid
+            JOIN numberplanassignments npa ON npa.planid = cr.in_numberplanid
+            WHERE disabled = ?
+                AND cr.cashsourceid IS NOT NULL
+            GROUP BY cr.id, cr.name, cr.cashsourceid',
+            [
+                0,
+            ]
+        );
+        if (empty($cashRegs)) {
+            $cashRegs = [];
+        }
+
+        $cashRegsByCashSources = [];
+        foreach ($cashRegs as $cashReg) {
+            $divisions = explode(',', $cashReg['divisions']);
+            $cashReg['divisions'] = array_combine($divisions, $divisions);
+
+            $cashSourceId = $cashReg['cashsourceid'];
+            if (!isset($cashRegsByCashSources[$cashSourceId])) {
+                $cashRegsByCashSources[$cashSourceId] = [];
+            }
+
+            $cashRegsByCashSources[$cashSourceId][$cashReg['id']] = $cashReg;
+        }
+        unset($cashRegs);
+
+        $imports = $this->db->GetAll(
+            'SELECT
+                i.*,
+                f.idate,
+                c.divisionid
+            FROM cashimport i
+            LEFT JOIN sourcefiles f ON f.id = i.sourcefileid
+            LEFT JOIN customers c ON c.id = i.customerid
+            WHERE i.closed = 0
+                AND i.customerid IS NOT NULL
+                ' . (empty($ids) ? '' : ' AND i.id IN ' . $this->db->Escape($ids))
+        );
 
         if (!empty($imports)) {
             $idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');
@@ -740,7 +783,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-            $cashimports = array();
+            $customers = $cashimports = [];
+
             foreach ($imports as $import) {
                 $this->db->BeginTrans();
 
@@ -816,6 +860,20 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     }
                 }
 
+                $receiptCashRegId = null;
+
+                if (isset($cashRegsByCashSources[$import['sourceid']])) {
+                    foreach ($cashRegsByCashSources[$import['sourceid']] as $cashRegId => $cashReg) {
+                        if (isset($cashReg['divisions'][$import['divisionid']])) {
+                            if ($receiptCashRegId) {
+                                $receiptCashRegId = null;
+                                break;
+                            }
+                            $receiptCashRegId = $cashRegId;
+                        }
+                    }
+                }
+
                 $this->db->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
 
                 if ($this->syslog) {
@@ -828,8 +886,35 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
-                $balance['currency'] = Localisation::getCurrentCurrency();
-                $finance_manager->AddBalance($balance);
+
+                if (!empty($receiptCashRegId)) {
+                    $receiptCashReg = $cashRegsByCashSources[$import['sourceid']][$receiptCashRegId];
+
+                    if (!isset($customers[$import['customerid']])) {
+                        $customers[$import['customerid']] = $customer_manager->GetCustomer($import['customerid'], true);
+                    }
+
+                    $receipt = [
+                        'regid' => $receiptCashRegId,
+                        'numberplanid' => $receiptCashReg['numberplanid'],
+                        'cdate' => time(),
+                        'type' => 'in',
+                        'customer' => $customers[$import['customerid']],
+                        'cashsourceid' => $import['sourceid'],
+                        'contents' => [
+                            [
+                                'value' => $import['value'],
+                                'description' => $import['description'],
+                                'importid' => $import['id'],
+                            ],
+                        ],
+                    ];
+
+                    $finance_manager->AddReceipt($receipt, false);
+                } else {
+                    $balance['currency'] = Localisation::getCurrentCurrency();
+                    $finance_manager->AddBalance($balance);
+                }
 
                 $this->db->CommitTrans();
 

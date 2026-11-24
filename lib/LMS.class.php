@@ -585,10 +585,10 @@ class LMS
         return $manager->CashImportParseFile($filename, $contents, $patterns, $quiet, $filemtime, $config_section);
     }
 
-    public function CashImportCommit()
+    public function CashImportCommit(?array $ids = null)
     {
         $manager = $this->getCashManager();
-        return $manager->CashImportCommit();
+        return $manager->CashImportCommit($ids);
     }
 
     public function GetCustomerStatus($id)
@@ -4117,10 +4117,10 @@ class LMS
         return $manager->GetReceiptList($params);
     }
 
-    public function AddReceipt(array $receipt)
+    public function AddReceipt(array $receipt, $withTransaction = true)
     {
         $manager = $this->getFinanceManager();
-        return $manager->AddReceipt($receipt);
+        return $manager->AddReceipt($receipt, $withTransaction);
     }
 
     public function GetCashRegistries($cid = null)
