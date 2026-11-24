@@ -64,9 +64,9 @@
 		</TD>
 		<TD class="text-center">{if $event.ticketid>0}#{$event.ticketid}{/if}</TD>
 		<TD class="text-left">
-			<B>{$event.title}</B><BR>
-			{$event.description}<BR>
-			{$event.note}
+			<B>{$event.title|escape}</B><BR>
+			{$event.description|escape}<BR>
+			{$event.note|escape}
 		</TD>
 		<TD class="text-center nobr">
 			{foreach item=user from=$event.userlist}

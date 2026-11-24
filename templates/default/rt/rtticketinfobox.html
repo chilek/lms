@@ -397,7 +397,7 @@
 								<TD>
 									{button
 										type="link"
-										label="#{$ticket.parent.id|string_format:"%06d"} {$ticket.parent.name|escape}"
+										label="#{$ticket.parent.id|string_format:"%06d"} {$ticket.parent.name}"
 										href="?m=rtticketview&id={$ticket.parent.id}"
 									}
 								</TD>
@@ -412,7 +412,7 @@
 										{foreach $ticket.childtickets as $t}
 											{button
 												type="link"
-												label="#{$t.id|string_format:"%06d"} {$t.subject|escape}"
+												label="#{$t.id|string_format:"%06d"} {$t.subject}"
 												href="?m=rtticketview&id={$t.id}"
 											}
 											{if !$t@last}<br>{/if}
@@ -429,7 +429,7 @@
 									{foreach $ticket.relatedtickets as $i}
 										{button
 											type="link"
-											label="#{$i.id|string_format:"%06d"} {$i.name|escape}"
+											label="#{$i.id|string_format:"%06d"} {$i.name}"
 											href="?m=rtticketview&id={$i.id}"
 										}
 										{if !$i@last}<br>{/if}

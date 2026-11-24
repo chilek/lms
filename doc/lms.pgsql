@@ -295,16 +295,15 @@ CREATE TABLE divisions (
 	office_address_id integer DEFAULT NULL
 		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label),
-	UNIQUE (shortname)
+	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label)
 );
 
 /* --------------------------------------------------------
   Structure of table "serviceproviders" (serviceproviders)
 -------------------------------------------------------- */
+DROP TABLE IF EXISTS serviceproviders CASCADE;
 DROP SEQUENCE IF EXISTS serviceproviders_id_seq;
 CREATE SEQUENCE serviceproviders_id_seq;
-DROP TABLE IF EXISTS serviceproviders;
 CREATE TABLE serviceproviders (
 	id integer DEFAULT nextval('serviceproviders_id_seq') NOT NULL,
 	name varchar(64) NOT NULL,
@@ -404,6 +403,7 @@ CREATE TABLE customernotes (
         CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
+CREATE INDEX customernotes_customerid_idx ON customernotes (customerid);
 
 /* --------------------------------------------------------
   Structure of table "customerkarmalastchanges" (customerkarmalastchanges)
@@ -616,6 +616,7 @@ CREATE INDEX documents_customerid_idx ON documents(customerid);
 CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
 CREATE INDEX documents_type_idx ON documents (type);
+CREATE INDEX documents_fullnumber_idx ON documents (fullnumber);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -656,6 +657,23 @@ CREATE TABLE documentattachments (
 CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
 
 /* ---------------------------------------------------
+ Structure of table "cashsources"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS cashsources_id_seq;
+CREATE SEQUENCE cashsources_id_seq;
+DROP TABLE IF EXISTS cashsources CASCADE;
+CREATE TABLE cashsources (
+	id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
+	name varchar(32)    DEFAULT '' NOT NULL,
+	description text	DEFAULT NULL,
+	account varchar(48) NOT NULL DEFAULT '',
+	deleted smallint	NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "cashregs"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS cashregs_id_seq;
@@ -670,7 +688,9 @@ CREATE TABLE cashregs (
 	out_numberplanid 	integer 	DEFAULT NULL
 		CONSTRAINT cashregs_out_numberplanid_fkey REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	disabled 		smallint	DEFAULT 0 NOT NULL,
-    balanceexclude  smallint    DEFAULT 0 NOT NULL,
+	balanceexclude  smallint    DEFAULT 0 NOT NULL,
+	cashsourceid integer DEFAULT NULL
+		CONSTRAINT cashregs_cashsourceid_fkey REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -721,8 +741,8 @@ CREATE TABLE voipaccounts (
 	login		varchar(255)	NOT NULL DEFAULT '',
 	passwd		varchar(255)	NOT NULL DEFAULT '',
 	access      smallint        NOT NULL DEFAULT 1,
-	creationdate	integer		NOT NULL DEFAULT 0,
-	moddate		integer		NOT NULL DEFAULT 0,
+	creationdate	bigint		NOT NULL DEFAULT 0,
+	moddate		bigint		NOT NULL DEFAULT 0,
 	creatorid	integer		DEFAULT NULL
 		CONSTRAINT voipaccounts_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	modid		integer		DEFAULT NULL
@@ -899,7 +919,7 @@ CREATE TABLE tariffs (
     taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		NOT NULL
-		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	numberplanid integer DEFAULT NULL
 		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
@@ -1028,7 +1048,7 @@ CREATE TABLE liabilities (
 	name text           	DEFAULT '' NOT NULL,
 	note text		DEFAULT NULL,
 	taxid integer       	NOT NULL
-		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
@@ -1189,7 +1209,7 @@ CREATE TABLE invoicecontents (
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(12,5) 	DEFAULT 0 NOT NULL,
 	taxid integer 		NOT NULL
-		CONSTRAINT invoicecontents_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT invoicecontents_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,3) 	DEFAULT 0 NOT NULL,
@@ -1220,23 +1240,6 @@ CREATE TABLE debitnotecontents (
 	description text 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
-);
-
-/* ---------------------------------------------------
- Structure of table "cashsources"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS cashsources_id_seq;
-CREATE SEQUENCE cashsources_id_seq;
-DROP TABLE IF EXISTS cashsources CASCADE;
-CREATE TABLE cashsources (
-	id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
-	name varchar(32)    DEFAULT '' NOT NULL,
-	description text	DEFAULT NULL,
-	account varchar(48) NOT NULL DEFAULT '',
-	deleted smallint	NOT NULL DEFAULT 0,
-	isdefault smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -1351,7 +1354,7 @@ CREATE SEQUENCE pna_id_seq;
 DROP TABLE IF EXISTS pna CASCADE;
 CREATE TABLE pna (
 	id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
-	zip varchar(128) NOT NULL,
+	zip varchar(10) NOT NULL,
 	cityid integer DEFAULT NULL
 		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	cityname varchar(100) DEFAULT NULL,
@@ -1706,6 +1709,7 @@ CREATE TABLE netradiosectors (
 	PRIMARY KEY (id),
 	UNIQUE (name, netdev)
 );
+CREATE INDEX netradiosectors_netdev_idx ON netradiosectors (netdev);
 
 /* --------------------------------------------------------
   Structure of table "nodes"
@@ -1761,6 +1765,7 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
+CREATE INDEX nodes_netid_idx ON nodes (netid);
 
 /* --------------------------------------------------------
   Structure of table "routednetworks"
@@ -1833,6 +1838,7 @@ CREATE TABLE macs (
 	PRIMARY KEY (id),
 	CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 );
+CREATE INDEX macs_nodeid_idx ON macs (nodeid);
 
 /* --------------------------------------------------------
   Structure of table "nodegroups"
@@ -2271,10 +2277,10 @@ CREATE TABLE rtmessages (
   replyto text 		DEFAULT '' NOT NULL,
   headers text 		DEFAULT '' NOT NULL,
   body text		DEFAULT '' NOT NULL,
-  createtime integer	DEFAULT 0 NOT NULL,
+  createtime bigint	DEFAULT 0 NOT NULL,
   type integer		DEFAULT 0 NOT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
-  deltime integer	DEFAULT 0 NOT NULL,
+  deltime bigint	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   contenttype varchar(255) DEFAULT 'text/plain',
@@ -2649,6 +2655,8 @@ CREATE INDEX events_nodeid_idx ON events(nodeid);
 CREATE INDEX events_netnodeid_idx ON events (netnodeid);
 CREATE INDEX events_netdevid_idx ON events (netdevid);
 CREATE INDEX events_divisionid_idx ON events (divisionid);
+CREATE INDEX events_customerid_idx ON events (customerid);
+CREATE INDEX events_ticketid_idx ON events (ticketid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2854,7 +2862,7 @@ CREATE TABLE messages (
 	id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
 	subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
-	cdate 	integer		DEFAULT 0 NOT NULL,
+	cdate 	bigint		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT 0 NOT NULL,
 	userid 	integer		DEFAULT NULL
 		CONSTRAINT messages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -3308,10 +3316,12 @@ CREATE TABLE ksefinvoicesummaries (
     eu smallint DEFAULT 0,
     export smallint DEFAULT 0
 );
+CREATE INDEX ksefinvoicesummaries_ksef_invoice_id_idx ON ksefinvoicesummaries (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoiceitems
 ------------------------------------------------------*/
+DROP TABLE IF EXISTS ksefinvoiceitems CASCADE;
 CREATE TABLE ksefinvoiceitems (
     ksef_invoice_id integer NOT NULL
         CONSTRAINT ksefinvoiceitems_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -3335,6 +3345,7 @@ CREATE TABLE ksefinvoiceitems (
     order_id text DEFAULT NULL
 );
 CREATE INDEX ksefinvoiceitems_order_id_idx ON ksefinvoiceitems (order_id);
+CREATE INDEX ksefinvoiceitems_ksef_invoice_id_idx ON ksefinvoiceitems (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoicetags
@@ -4070,134 +4081,76 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
     WHERE $1 IS NULL OR d.customerid = $1
 $$ LANGUAGE SQL IMMUTABLE;
 
+DROP VIEW IF EXISTS vinvoicecontents;
 CREATE VIEW vinvoicecontents AS
     SELECT * FROM get_invoice_contents(NULL);
+
+CREATE OR REPLACE FUNCTION customerbalances_recalculate(affected_customers integer[])
+    RETURNS void
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    affected_customer integer;
+    calculated_balance numeric;
+BEGIN
+    affected_customers := ARRAY(
+        SELECT DISTINCT customerid
+        FROM unnest(affected_customers) AS affected(customerid)
+        WHERE customerid IS NOT NULL
+        ORDER BY customerid
+    );
+    FOREACH affected_customer IN ARRAY affected_customers LOOP
+        PERFORM pg_advisory_xact_lock(hashtext('customerbalances'), affected_customer);
+    END LOOP;
+    FOREACH affected_customer IN ARRAY affected_customers LOOP
+        -- Cascades may already have removed or renumbered the parent customer.
+        IF NOT EXISTS (SELECT 1 FROM customers WHERE id = affected_customer) THEN
+            DELETE FROM customerbalances WHERE customerid = affected_customer;
+            CONTINUE;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM cash WHERE customerid = affected_customer) THEN
+            DELETE FROM customerbalances WHERE customerid = affected_customer;
+        ELSE
+            SELECT COALESCE(SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0
+                THEN c.value * c.currencyvalue ELSE 0 END), 0)
+            INTO calculated_balance
+            FROM cash c
+            LEFT JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
+            LEFT JOIN cashregs cr ON cr.id = rc.regid
+            WHERE c.customerid = affected_customer;
+            UPDATE customerbalances SET balance = calculated_balance
+            WHERE customerid = affected_customer;
+            IF NOT FOUND THEN
+                INSERT INTO customerbalances (customerid, balance)
+                VALUES (affected_customer, calculated_balance);
+            END IF;
+        END IF;
+    END LOOP;
+END;
+$$;
 
 CREATE OR REPLACE FUNCTION customerbalances_update()
     RETURNS trigger
     LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF (TG_OP = 'TRUNCATE') THEN
+    IF TG_OP = 'TRUNCATE' THEN
         DELETE FROM customerbalances;
-        RETURN NULL;
-    ELSIF (TG_OP = 'DELETE') THEN
-        IF OLD.customerid IS NULL THEN
+    ELSIF TG_OP = 'UPDATE' THEN
+        IF OLD.value IS NOT DISTINCT FROM NEW.value
+            AND OLD.currencyvalue IS NOT DISTINCT FROM NEW.currencyvalue
+            AND OLD.customerid IS NOT DISTINCT FROM NEW.customerid
+            AND OLD.docid IS NOT DISTINCT FROM NEW.docid
+            AND OLD.itemid IS NOT DISTINCT FROM NEW.itemid THEN
             RETURN NULL;
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM cash WHERE customerid = OLD.customerid) THEN
-            DELETE FROM customerbalances WHERE customerid = OLD.customerid;
-        ELSE
-            IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
-                UPDATE customerbalances
-                SET balance = (
-                    SELECT
-                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                    FROM cash
-                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                    LEFT JOIN cashregs cr ON cr.id = rc.regid
-                    WHERE customerid = OLD.customerid
-                ) WHERE customerid = OLD.customerid;
-            ELSE
-                INSERT INTO customerbalances (customerid, balance) VALUES (
-                    OLD.customerid,
-                    (
-                        SELECT
-                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                        FROM cash
-                        LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                        LEFT JOIN cashregs cr ON cr.id = rc.regid
-                        WHERE customerid = OLD.customerid
-                    )
-                );
-            END IF;
-        END IF;
-        RETURN NULL;
-    ELSIF (TG_OP = 'UPDATE') THEN
-        IF OLD.value = NEW.value AND OLD.currencyvalue = NEW.currencyvalue THEN
-            RETURN NEW;
-        END IF;
-        IF OLD.customerid IS NOT NULL AND OLD.customerid <> NEW.customerid THEN
-            IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
-                UPDATE customerbalances
-                SET balance = (
-                    SELECT
-                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                    FROM cash
-                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                    LEFT JOIN cashregs cr ON cr.id = rc.regid
-                    WHERE customerid = OLD.customerid
-                ) WHERE customerid = OLD.customerid;
-            ELSE
-                INSERT INTO customerbalances (customerid, balance) VALUES (
-                    OLD.customerid,
-                    (
-                        SELECT
-                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                        FROM cash
-                        LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                        LEFT JOIN cashregs cr ON cr.id = rc.regid
-                        WHERE customerid = OLD.customerid
-                    )
-                );
-            END IF;
-        END IF;
-        IF NEW.customerid IS NULL THEN
-            RETURN NEW;
-        END IF;
-        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
-            UPDATE customerbalances
-            SET balance = (
-                SELECT
-                    SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                FROM cash
-                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                LEFT JOIN cashregs cr ON cr.id = rc.regid
-                WHERE customerid = NEW.customerid
-            ) WHERE customerid = NEW.customerid;
-        ELSE
-            INSERT INTO customerbalances (customerid, balance) VALUES (
-                NEW.customerid,
-                (
-                    SELECT
-                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) THEN cash.value * currencyvalue ELSE 0 END)
-                    FROM cash
-                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                    LEFT JOIN cashregs cr ON cr.id = rc.regid
-                    WHERE customerid = NEW.customerid
-                )
-            );
-        END IF;
-        RETURN NEW;
+        PERFORM customerbalances_recalculate(ARRAY[OLD.customerid, NEW.customerid]);
+    ELSIF TG_OP = 'DELETE' THEN
+        PERFORM customerbalances_recalculate(ARRAY[OLD.customerid]);
     ELSE
-        IF NEW.customerid IS NULL THEN
-            RETURN NEW;
-        END IF;
-        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
-            UPDATE customerbalances
-            SET balance = (
-                SELECT
-                    SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                FROM cash
-                LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                LEFT JOIN cashregs cr ON cr.id = rc.regid
-                WHERE customerid = NEW.customerid
-            ) WHERE customerid = NEW.customerid;
-        ELSE
-            INSERT INTO customerbalances (customerid, balance) VALUES (
-                NEW.customerid,
-                (
-                    SELECT
-                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
-                    FROM cash
-                    LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
-                    LEFT JOIN cashregs cr ON cr.id = rc.regid
-                    WHERE customerid = NEW.customerid
-                )
-            );
-        END IF;
-        RETURN NEW;
+        PERFORM customerbalances_recalculate(ARRAY[NEW.customerid]);
     END IF;
+    RETURN NULL;
 END;
 $$;
 
@@ -4213,11 +4166,14 @@ CREATE OR REPLACE FUNCTION customerbalances_refresh()
     LANGUAGE plpgsql
 AS $$
 BEGIN
+    -- Keep the source rows stable throughout the maintenance rebuild.
+    LOCK TABLE cash, receiptcontents, cashregs IN SHARE MODE;
     DELETE FROM customerbalances;
     INSERT INTO customerbalances (customerid, balance) (
         SELECT
             cash.customerid,
-            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+            COALESCE(SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0
+                THEN cash.value * currencyvalue ELSE 0 END), 0)
         FROM cash
         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4226,6 +4182,196 @@ BEGIN
     );
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION customerbalances_lock_cash_receipts()
+    RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    affected_documents integer[];
+    affected_document integer;
+BEGIN
+    IF TG_OP = 'UPDATE' THEN
+        IF OLD.value IS NOT DISTINCT FROM NEW.value
+            AND OLD.currencyvalue IS NOT DISTINCT FROM NEW.currencyvalue
+            AND OLD.customerid IS NOT DISTINCT FROM NEW.customerid
+            AND OLD.docid IS NOT DISTINCT FROM NEW.docid
+            AND OLD.itemid IS NOT DISTINCT FROM NEW.itemid THEN
+            RETURN NEW;
+        END IF;
+        affected_documents := ARRAY[OLD.docid, NEW.docid];
+    ELSIF TG_OP = 'DELETE' THEN
+        affected_documents := ARRAY[OLD.docid];
+    ELSE
+        affected_documents := ARRAY[NEW.docid];
+    END IF;
+
+    FOR affected_document IN
+        SELECT DISTINCT docid
+        FROM unnest(affected_documents) AS affected(docid)
+        WHERE docid IS NOT NULL
+        ORDER BY docid
+    LOOP
+        PERFORM pg_advisory_xact_lock_shared(hashtext('customerbalances.receipts'), affected_document);
+    END LOOP;
+
+    -- This separate statement sees the committed receipt mapping after waiting
+    -- for its document lock. SHARE also waits for a cash register flag update.
+    -- Keep the query even for NULL docids: its relation lock protects TRUNCATE.
+    PERFORM id
+    FROM cashregs
+    WHERE id IN (
+        SELECT regid FROM receiptcontents
+        WHERE docid = ANY(affected_documents)
+    )
+    ORDER BY id
+    FOR SHARE;
+
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION customerbalances_lock_receipt_changes()
+    RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    affected_documents integer[];
+    affected_registers integer[];
+    affected_document integer;
+BEGIN
+    IF TG_OP = 'UPDATE' THEN
+        IF OLD.docid IS NOT DISTINCT FROM NEW.docid
+            AND OLD.itemid IS NOT DISTINCT FROM NEW.itemid
+            AND OLD.regid IS NOT DISTINCT FROM NEW.regid THEN
+            RETURN NEW;
+        END IF;
+        affected_documents := ARRAY[OLD.docid, NEW.docid];
+        affected_registers := ARRAY[OLD.regid, NEW.regid];
+    ELSIF TG_OP = 'DELETE' THEN
+        affected_documents := ARRAY[OLD.docid];
+        affected_registers := ARRAY[OLD.regid];
+    ELSE
+        affected_documents := ARRAY[NEW.docid];
+        affected_registers := ARRAY[NEW.regid];
+    END IF;
+
+    FOR affected_document IN
+        SELECT DISTINCT docid
+        FROM unnest(affected_documents) AS affected(docid)
+        WHERE docid IS NOT NULL
+        ORDER BY docid
+    LOOP
+        PERFORM pg_advisory_xact_lock(hashtext('customerbalances.receipts'), affected_document);
+    END LOOP;
+    PERFORM id FROM cashregs
+    WHERE id = ANY(affected_registers)
+    ORDER BY id
+    FOR SHARE;
+
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION customerbalances_update_receipts()
+    RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    affected_customers integer[];
+    old_document integer;
+    old_item smallint;
+    new_document integer;
+    new_item smallint;
+BEGIN
+    IF TG_OP = 'TRUNCATE' THEN
+        -- TRUNCATE already owns ACCESS EXCLUSIVE on receiptcontents. Every
+        -- balance-changing cash statement reads that table in its BEFORE
+        -- trigger, so no further source-table locks are needed here.
+        affected_customers := ARRAY(
+            SELECT customerid FROM cash WHERE customerid IS NOT NULL
+            UNION
+            SELECT customerid FROM customerbalances
+        );
+        PERFORM customerbalances_recalculate(affected_customers);
+        RETURN NULL;
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+        IF OLD.docid IS NOT DISTINCT FROM NEW.docid
+            AND OLD.itemid IS NOT DISTINCT FROM NEW.itemid
+            AND OLD.regid IS NOT DISTINCT FROM NEW.regid THEN
+            RETURN NULL;
+        END IF;
+    END IF;
+    IF TG_OP <> 'INSERT' THEN
+        old_document := OLD.docid;
+        old_item := OLD.itemid;
+    END IF;
+    IF TG_OP <> 'DELETE' THEN
+        new_document := NEW.docid;
+        new_item := NEW.itemid;
+    END IF;
+    -- Membership is read only after the BEFORE trigger has obtained its locks.
+    affected_customers := ARRAY(
+        SELECT DISTINCT customerid FROM cash
+        WHERE customerid IS NOT NULL
+            AND ((docid = old_document AND itemid = old_item)
+                OR (docid = new_document AND itemid = new_item))
+        ORDER BY customerid
+    );
+    PERFORM customerbalances_recalculate(affected_customers);
+    RETURN NULL;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION customerbalances_update_cashregs()
+    RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    affected_customers integer[];
+BEGIN
+    IF OLD.balanceexclude IS NOT DISTINCT FROM NEW.balanceexclude THEN
+        RETURN NULL;
+    END IF;
+    -- The UPDATE row lock excludes concurrent SHARE readers in cash/receipts.
+    affected_customers := ARRAY(
+        SELECT DISTINCT c.customerid
+        FROM cash c
+        JOIN receiptcontents rc ON rc.docid = c.docid AND rc.itemid = c.itemid
+        WHERE rc.regid = NEW.id AND c.customerid IS NOT NULL
+        ORDER BY c.customerid
+    );
+    PERFORM customerbalances_recalculate(affected_customers);
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER cash_customerbalances_lock_receipts_trigger
+    BEFORE INSERT OR UPDATE OR DELETE ON cash
+    FOR EACH ROW EXECUTE PROCEDURE customerbalances_lock_cash_receipts();
+
+CREATE TRIGGER receiptcontents_customerbalances_lock_trigger
+    BEFORE INSERT OR UPDATE OR DELETE ON receiptcontents
+    FOR EACH ROW EXECUTE PROCEDURE customerbalances_lock_receipt_changes();
+
+CREATE TRIGGER receiptcontents_customerbalances_update_trigger
+    AFTER INSERT OR UPDATE OR DELETE ON receiptcontents
+    FOR EACH ROW EXECUTE PROCEDURE customerbalances_update_receipts();
+
+CREATE TRIGGER receiptcontents_customerbalances_truncate_trigger
+    AFTER TRUNCATE ON receiptcontents
+    EXECUTE PROCEDURE customerbalances_update_receipts();
+
+CREATE TRIGGER cashregs_customerbalances_update_trigger
+    AFTER UPDATE ON cashregs
+    FOR EACH ROW EXECUTE PROCEDURE customerbalances_update_cashregs();
 
 /* ---------------------------------------------------
  Data records
@@ -4524,6 +4670,8 @@ INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
 INSERT INTO netdeviceproducers (id, name) VALUES
 (1, 'Mikrotik'),
 (2, 'Ubiquiti');
+
+SELECT setval('netdeviceproducers_id_seq', 3, false);
 
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('RB750', NULL, 1),
@@ -4865,6 +5013,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112400');
 
 COMMIT;

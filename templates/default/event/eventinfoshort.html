@@ -70,7 +70,7 @@
             </TD>
             <TD>
                 <div class="fall superlight eventinfoshort-textbox">
-                    {$event.description|replace:"\n":"<BR>"}
+                    {$event.description|escape|replace:"\n":"<BR>"}
                 </div>
             </TD>
         </TR>

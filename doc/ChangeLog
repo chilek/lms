@@ -1324,6 +1324,8 @@ version 28-git (????-??-??):
   - security/bugfix: (CVE-2026-129961) file name sanity checking of file uploaded as helpdesk
     attachments via lms-rtparser.php backend script
     [report by Robert Jaroszuk @ Nordasys <robert.jaroszuk@nordasys.com>]
+  - enhancement: automatic cash documents can be generated for commited cash imports (cash source to cash
+    registry assignment is required to activate this mechanism) [chilan]
   - enhancement: show last-sent e-mail address in invoice send tooltip [interduo]
   - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
     placeholders, sending one e-mail with all selected invoices attached

@@ -34,7 +34,8 @@ $current_registry = $DB->GetRow(
         in_numberplanid,
         out_numberplanid,
         disabled,
-        balanceexclude
+        balanceexclude,
+        cashsourceid
     FROM cashregs
     WHERE id = ?',
     array($id)
@@ -64,10 +65,6 @@ if (isset($_POST['registry'])) {
     $registry = $_POST['registry'];
     $registry['id'] = $id;
 
-    if ($registry['name']=='' && $registry['description']=='') {
-        $SESSION->redirect('?m=cashreglist');
-    }
-
     if ($registry['name'] == '') {
         $error['name'] = trans('Registry name must be defined!');
     }
@@ -82,6 +79,7 @@ if (isset($_POST['registry'])) {
     $current_registry['description'] = $registry['description'];
     $current_registry['disabled'] = empty($registry['disabled']) ? 0 : 1;
     $current_registry['balanceexclude'] = empty($registry['balanceexclude']) ? 0 : 1;
+    $current_registry['cashsourceid'] = empty($registry['cashsourceid']) ? null : intval($registry['cashsourceid']);
 
     if (isset($registry['users'])) {
         foreach ($registry['users'] as $key => $value) {
@@ -99,11 +97,12 @@ if (isset($_POST['registry'])) {
             'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
             'disabled' => empty($registry['disabled']) ? 0 : 1,
             'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
+            'cashsourceid' => empty($registry['cashsourceid']) || !intval($registry['cashsourceid']) ? null : intval($registry['cashsourceid']),
             SYSLOG::RES_CASHREG => $registry['id'],
         );
         $DB->Execute(
             'UPDATE cashregs
-            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?, balanceexclude = ?
+            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?, balanceexclude = ?, cashsourceid = ?
             WHERE id = ?',
             $args
         );
@@ -164,5 +163,6 @@ $SMARTY->assign('registry', $current_registry);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
     'doctype' => DOC_RECEIPT,
 )));
+$SMARTY->assign('sourcelist', $LMS->getCashSources());
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregedit.html');

@@ -88,6 +88,26 @@
 			<input type="checkbox" id="balanceexclude" name="registry[balanceexclude]" value="1"{if !empty($registry.balanceexclude)} checked{/if}>
 		</td>
 	</tr>
+	{if !empty($sourcelist)}
+		<tr>
+			<td>
+				{icon name="isource"}
+			</td>
+			<td class="nobr">
+				<label for="cashsourceid">
+					<strong>{trans("Cash source")}</strong>
+				</label>
+			</td>
+			<td>
+				<select name="registry[cashsourceid]" id="cashsourceid" {tip text="Select import source (optional)" trigger="source"}>
+					<option value="">{trans("— none —")}</option>
+					{foreach $sourcelist as $source}
+						<option value="{$source.id}"{if $source.id == $registry.cashsourceid} selected{/if}>{$source.name|escape}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+    {/if}
 	<TR>
 		<TD>
 			<IMG src="img/users.gif" ALT="">

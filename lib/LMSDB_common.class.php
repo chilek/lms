@@ -25,7 +25,7 @@
  */
 
 // here should be always the newest version of database!
-define('DBVERSION', '2026102301');
+define('DBVERSION', '2026112400');
 
 /**
  *
@@ -944,7 +944,7 @@ abstract class LMSDB_common implements LMSDBInterface
                     die('Could not open database schema file ' . $docdir . DIRECTORY_SEPARATOR . $schema);
                 }
 
-                if (!$this->MultiExecute($sql)) {    // execute
+                if ($this->MultiExecute($sql) === false) {    // execute
                     die('Could not load database schema!');
                 }
             } else {                 // database might be installed so don't miss any error

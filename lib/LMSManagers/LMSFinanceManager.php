@@ -4936,10 +4936,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return null;
     }
 
-    public function AddReceipt(array $receipt)
+    public function AddReceipt(array $receipt, $withTransaction = true)
     {
-        $this->db->BeginTrans();
-        $this->db->LockTables(array('documents', 'numberplans', 'vdivisions'));
+        if (!empty($withTransaction)) {
+            $this->db->BeginTrans();
+            $this->db->LockTables(array('documents', 'numberplans', 'vdivisions'));
+        }
 
         $SYSLOG = SYSLOG::getInstance();
         $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -5079,9 +5081,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
                 'notification' => isset($receipt['notification']) ? (empty($receipt['notification']) ? 0 : 1) : 1,
+                'sourceid' => empty($receipt['cashsourceid']) ? null : $receipt['cashsourceid'],
+                'importid' => empty($item['importid']) ? null : $item['importid'],
             );
-            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid, customerid, notification)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $this->db->Execute(
+                'INSERT INTO cash
+                (time, type, docid, itemid, value, currency, currencyvalue, comment, userid, customerid, notification, sourceid, importid)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                array_values($args)
+            );
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
                 unset($args[SYSLOG::RES_USER]);
@@ -5120,7 +5128,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        $this->db->CommitTrans();
+        if (!empty($withTransaction)) {
+            $this->db->CommitTrans();
+        }
 
         return empty($error) ? $rid : $error;
     }

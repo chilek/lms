@@ -19,7 +19,7 @@
 				<strong>{trans("Title")}</strong>
 			</td>
 			<td>
-				<strong>{$event.title}</strong>
+				<strong>{$event.title|escape}</strong>
 			</td>
 		</tr>
 	</thead>
@@ -106,7 +106,7 @@
 				</td>
 				<td>
 					<textarea name="event[note]" cols="50" rows="5"
-						{tip}>{$event.note}</textarea>
+						{tip}>{$event.note|escape}</textarea>
 				</td>
 			</tr>
 			<tr>

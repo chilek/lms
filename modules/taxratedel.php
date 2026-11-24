@@ -30,6 +30,7 @@ if ($id) {
     if (($DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1', array($id))
         + $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1', array($id))
         + $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1', array($id))
+        + $DB->GetOne('SELECT 1 FROM liabilities WHERE taxid=? LIMIT 1', array($id))
         ) == 0) {
         $DB->Execute('DELETE FROM taxes WHERE id=?', array($id));
         if ($SYSLOG) {

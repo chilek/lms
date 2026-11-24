@@ -146,118 +146,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
             $error[$id] = trans('Customer not selected!');
             unset($marks[$idx]);
         } else {
-            $marks[$idx] = intval($id);
+            $marks[$idx] = $id;
         }
     }
+
+    $marks = Utils::filterIntegers($marks);
 
     if (!empty($marks)) {
-        $imports = $DB->GetAll('SELECT i.*, f.idate
-			FROM cashimport i
-			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
-			WHERE i.closed = 0 AND i.id IN ('.implode(',', $marks).')');
-    }
-
-    if (!empty($imports)) {
-        $idate = ConfigHelper::checkConfig('finances.cashimport_use_idate');
-        $icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
-
-        foreach ($imports as $import) {
-            // do not insert if the record is already closed (prevent multiple inserts of the same record)
-            if ($import['closed'] == 1) {
-                continue;
-            }
-
-            $DB->BeginTrans();
-
-            $balance['time'] = $idate ? $import['idate'] : $import['date'];
-            $balance['type'] = 1;
-            $balance['value'] = $import['value'];
-            $balance['customerid'] = $customers[$import['id']];
-            $balance['comment'] = $import['description'];
-            $balance['importid'] = $import['id'];
-            $balance['sourceid'] = $import['sourceid'];
-
-            if ($import['value'] > 0 && $icheck) {
-                if ($invoices = $DB->GetAll(
-                    'SELECT d.id,
-						(SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
-						COALESCE((SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
-							FROM documents dd
-							JOIN invoicecontents a ON (a.docid = dd.id)
-        						JOIN invoicecontents b ON (dd.reference = b.docid AND a.itemid = b.itemid)
-	        					WHERE dd.reference = d.id
-		    					GROUP BY dd.reference), 0) AS value
-					FROM documents d
-					WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
-					GROUP BY d.id, d.cdate ORDER BY d.cdate',
-                    array($balance['customerid'], DOC_INVOICE)
-                )) {
-                    foreach ($invoices as $inv) {
-                        $sum += $inv['value'];
-                    }
-
-                    $bval = $LMS->GetCustomerBalance($balance['customerid']);
-                    $value = f_round($bval + $import['value'] + $sum);
-
-                    foreach ($invoices as $inv) {
-                        $inv['value'] = f_round($inv['value']);
-                        if ($inv['value'] > $value) {
-                            break;
-                        } else {
-                            // close invoice and assigned credit notes
-                            $DB->Execute(
-                                'UPDATE documents SET closed = 1
-								WHERE id = ? OR reference = ?',
-                                array($inv['id'], $inv['id'])
-                            );
-
-                            if ($SYSLOG) {
-                                $docid = $DB->GetOne(
-                                    'SELECT id FROM documents
-									WHERE id = ? OR reference = ?',
-                                    array($inv['id'], $inv['id'])
-                                );
-                                $args = array(
-                                    SYSLOG::RES_DOC => $docid,
-                                    SYSLOG::RES_CUST => $balance['customerid'],
-                                    'closed' => 1,
-                                );
-                                $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-                            }
-
-                            $value -= $inv['value'];
-                        }
-                    }
-                }
-            }
-
-            $DB->Execute(
-                'UPDATE cashimport
-                SET customerid = ?, closed = 1
-                WHERE id = ?',
-                array(
-                    $balance['customerid'],
-                    $import['id'],
-                )
-            );
-            if ($SYSLOG) {
-                $args = array(
-                    SYSLOG::RES_CASHIMPORT => $import['id'],
-                    SYSLOG::RES_CUST => $balance['customerid'],
-                    SYSLOG::RES_CASHSOURCE => $import['sourceid'],
-                    SYSLOG::RES_SOURCEFILE => $import['sourcefileid'],
-                    'closed' => 1,
-                );
-                $SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
-            }
-
-            $balance['currency'] = Localisation::getCurrentCurrency();
-            $LMS->AddBalance($balance);
-
-            $DB->CommitTrans();
-        }
-
-        $LMS->executeHook('cashimport_after_commit', array('cashimports' => $imports));
+        $LMS->CashImportCommit($marks);
     }
 }
 

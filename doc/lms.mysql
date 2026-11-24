@@ -136,7 +136,6 @@ DROP TABLE IF EXISTS pna;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS cashimport;
 DROP TABLE IF EXISTS sourcefiles;
-DROP TABLE IF EXISTS cashsources;
 DROP TABLE IF EXISTS debitnotecontents;
 DROP TABLE IF EXISTS invoicecontents;
 DROP TABLE IF EXISTS voip_number_assignments;
@@ -162,6 +161,7 @@ DROP TABLE IF EXISTS voipaccounts;
 DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS receiptcontents;
 DROP TABLE IF EXISTS cashregs;
+DROP TABLE IF EXISTS cashsources;
 DROP TABLE IF EXISTS documentattachments;
 DROP TABLE IF EXISTS documentcontents;
 DROP TABLE IF EXISTS documents;
@@ -844,6 +844,21 @@ CREATE TABLE documentattachments (
 
 # --------------------------------------------------------
 #
+# Structure of table cashsources
+#
+CREATE TABLE cashsources (
+	id      int(11)         NOT NULL auto_increment,
+	name	varchar(32)     DEFAULT '' NOT NULL,
+	description text		DEFAULT NULL,
+	account varchar(48)     NOT NULL DEFAULT '',
+	deleted smallint		NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table cashregs
 #
 CREATE TABLE cashregs (
@@ -854,12 +869,15 @@ CREATE TABLE cashregs (
 	out_numberplanid int(11) DEFAULT NULL,
 	disabled tinyint(1)     DEFAULT '0' NOT NULL,
 	balanceexclude tinyint(1)     DEFAULT 0 NOT NULL,
+	cashsourceid integer DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name),
 	CONSTRAINT cashregs_in_numberplanid_fkey
 		FOREIGN KEY (in_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT cashregs_out_numberplanid_fkey
-		FOREIGN KEY (out_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (out_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashregs_cashsourceid_fkey
+		FOREIGN KEY (cashsourceid) REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1133,7 +1151,7 @@ CREATE TABLE tariffs (
 	CONSTRAINT tariffs_voip_tariff_rule_id_fkey
 		FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT tariffs_taxid_fkey
-		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT tariffs_serviceproviderid_fkey
         FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -1202,7 +1220,7 @@ CREATE TABLE liabilities (
 	netvalue decimal(9,3) DEFAULT NULL,
     PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
-		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1372,7 +1390,7 @@ CREATE TABLE invoicecontents (
 	CONSTRAINT invoicecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT invoicecontents_taxid_fkey
-		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT invoicecontents_tariffid_fkey
 		FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -1391,21 +1409,6 @@ CREATE TABLE debitnotecontents (
 	UNIQUE KEY docid (docid, itemid),
 	CONSTRAINT debitnotecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table cashsources
-#
-CREATE TABLE cashsources (
-	id      int(11)         NOT NULL auto_increment,
-	name	varchar(32)     DEFAULT '' NOT NULL,
-	description text		DEFAULT NULL,
-	account varchar(48)     NOT NULL DEFAULT '',
-	deleted smallint		NOT NULL DEFAULT 0,
-	isdefault smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4053,7 +4056,7 @@ CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
                 UPDATE customerbalances
                 SET balance = (
                     SELECT
-                        SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                     FROM cash
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4064,7 +4067,7 @@ CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
                     NEW.customerid,
                     (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4080,29 +4083,29 @@ DELIMITER $$
 CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
     FOR EACH ROW
     BEGIN
-        IF OLD.value <> NEW.value OR OLD.currencyvalue <> NEW.currencyvalue THEN
-            IF OLD.customerid IS NOT NULL AND OLD.customerid <> NEW.customerid THEN
+        IF NOT (OLD.value <=> NEW.value AND OLD.currencyvalue <=> NEW.currencyvalue AND OLD.customerid <=> NEW.customerid) THEN
+            IF OLD.customerid IS NOT NULL AND NOT (OLD.customerid <=> NEW.customerid) THEN
                 IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
                     UPDATE customerbalances
-                    SET balance = (
+                    SET balance = COALESCE((
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
                         WHERE customerid = OLD.customerid
-                    ) WHERE customerid = OLD.customerid;
+                    ), 0) WHERE customerid = OLD.customerid;
                 ELSE
                     INSERT INTO customerbalances (customerid, balance) VALUES (
                         OLD.customerid,
-                        (
+                        COALESCE((
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
                             WHERE customerid = OLD.customerid
-                        )
+                        ), 0)
                     );
                 END IF;
             END IF;
@@ -4111,7 +4114,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                     UPDATE customerbalances
                     SET balance = (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4122,7 +4125,7 @@ CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
                         NEW.customerid,
                         (
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4147,7 +4150,7 @@ CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
                     UPDATE customerbalances
                     SET balance = (
                         SELECT
-                            SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                            SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                         FROM cash
                         LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                         LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4158,7 +4161,7 @@ CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
                         OLD.customerid,
                         (
                             SELECT
-                                SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
+                                SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * currencyvalue ELSE 0 END)
                             FROM cash
                             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                             LEFT JOIN cashregs cr ON cr.id = rc.regid
@@ -4180,10 +4183,11 @@ BEGIN
     INSERT INTO customerbalances (customerid, balance)
     SELECT
         cash.customerid,
-        SUM(CASE WHEN COALESCE(cr.balancexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END)
+        SUM(CASE WHEN COALESCE(cr.balanceexclude, 0) = 0 THEN cash.value * cash.currencyvalue ELSE 0 END)
     FROM cash
     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
     LEFT JOIN cashregs cr ON cr.id = rc.regid
+    WHERE cash.customerid IS NOT NULL
     GROUP BY cash.customerid;
 END$$
 DELIMITER ;
@@ -4824,4 +4828,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026102301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112400');
