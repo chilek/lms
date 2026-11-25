@@ -4140,7 +4140,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $count = false;
         }
 
-        $where = '';
+        $join = $where = '';
 
         if ($search && $cat) {
             switch ($cat) {
@@ -4177,8 +4177,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     break;
                 case 'cashimport':
                     if (!empty($search)) {
-                        $where = ' AND cash.importid IN (SELECT i.id FROM cashimport i WHERE i.sourcefileid '
-                            . (is_array($search) ? ' IN (' . implode(',', Utils::filterIntegers($search)) . ')' : ' = ' . intval($search)) . ')';
+                        $join = 'JOIN cashimport i ON i.id = cash.importid AND i.sourcefileid ' . (is_array($search) ? ' IN (' . implode(',', Utils::filterIntegers($search)) . ')' : ' = ' . intval($search));
+
+                        $sourceFileIntervals = $this->db->GetAll(
+                            'SELECT
+                                MIN(cash.time) AS mintime,
+                                MAX(cash.time) AS maxtime,
+                                i.sourcefileid
+                            FROM cash
+                            JOIN cashimport i ON i.id = cash.importid
+                            WHERE i.sourcefileid ' . (is_array($search) ? ' IN (' . implode(',', Utils::filterIntegers($search)) . ')' : ' = ' . intval($search)) . '
+                            GROUP BY i.sourcefileid'
+                        );
+
+                        if (!empty($sourceFileIntervals)) {
+                            $where = ' AND ('
+                                . implode(
+                                    ' OR ',
+                                    array_map(
+                                        function ($sourceFileInterval) {
+                                            return '(i.sourcefileid = ' . $sourceFileInterval['sourcefileid'] . ' AND cash.time >= ' . $sourceFileInterval['mintime'] . ' AND cash.time <= ' . $sourceFileInterval['maxtime'] . ')';
+                                        },
+                                        $sourceFileIntervals
+                                    )
+                                )
+                                . ')';
+                        }
                     }
                     break;
             }
@@ -4227,14 +4251,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($count) {
             $summary = $this->db->GetRow('SELECT COUNT(cash.id) AS total,
 					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -cash.value * cash.currencyvalue ELSE 0 END) AS liability,
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS income,
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -cash.value * cash.currencyvalue ELSE 0 END) AS expense
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND cash.value > 0 THEN cash.value * cash.currencyvalue ELSE 0 END) AS income,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND cash.value < 0 THEN -cash.value * cash.currencyvalue ELSE 0 END) AS expense
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
+                ' . $join . '
 				WHERE 1=1 '
-                .$where
-                .(!empty($group) ?
+                . $where
+                . (!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 					AND customerid = cash.customerid)' : ''));
@@ -4270,6 +4295,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             FROM cash
             LEFT JOIN customerview c ON (cash.customerid = c.id)
             LEFT JOIN documents ON (documents.id = cash.docid)
+            ' . $join . '
             LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
             LEFT JOIN cashregs cr ON cr.id = rc.regid
             LEFT JOIN ksefdocuments kd ON kd.docid = documents.id AND kd.status IN (' . implode(',', [0, 200]) . ')
@@ -4295,6 +4321,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     FROM cash
                     LEFT JOIN customerview c ON (cash.customerid = c.id)
                     LEFT JOIN documents ON (documents.id = docid)
+                    ' . $join . '
                     LEFT JOIN receiptcontents rc ON rc.docid = cash.docid AND rc.itemid = cash.itemid
                     LEFT JOIN cashregs cr ON cr.id = rc.regid
                     WHERE 1 = 1 '
