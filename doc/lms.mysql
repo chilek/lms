@@ -870,6 +870,7 @@ CREATE TABLE cashregs (
 	disabled tinyint(1)     DEFAULT '0' NOT NULL,
 	balanceexclude tinyint(1)     DEFAULT 0 NOT NULL,
 	cashsourceid integer DEFAULT NULL,
+	receiptdatesource smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name),
 	CONSTRAINT cashregs_in_numberplanid_fkey
@@ -4828,4 +4829,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112500');

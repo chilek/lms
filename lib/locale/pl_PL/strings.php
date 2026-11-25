@@ -6507,3 +6507,7 @@ $_LANG['Similar open tickets'] = 'Podobne otwarte zgłoszenia';
 $_LANG['(already sent on $a to $b)'] = '(już wysłane w dniu $a na $b)';
 $_LANG['Additional e-mail:'] = 'Dodatkowy e-mail:';
 $_LANG['Cash source'] = 'Źródło płatności';
+$_LANG['Receipt date source'] = 'Źródło daty dokumentu kasowego';
+$_LANG['current date'] = 'data bieżąca';
+$_LANG['cash import date'] = 'data zaimportowanej płatności';
+$_LANG['cash import operation date'] = 'data operacji zaimportowanej płatności';

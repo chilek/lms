@@ -82,6 +82,23 @@
 				{$registry.cashsourcename|escape}
 			</td>
 		</tr>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Receipt date source")}</strong>
+			</td>
+			<td>
+				{if $registry.receiptdatesource == 1}
+					{trans("cash import date")}
+				{elseif $registry.receiptdatesource == 2}
+					{trans("cash import operation date")}
+				{else}
+					{trans("current date")}
+				{/if}
+			</td>
+		</tr>
 	{/if}
 	<TR>
 	    <TD width="1%">

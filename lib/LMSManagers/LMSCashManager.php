@@ -726,6 +726,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 cr.id,
                 cr.name,
                 cr.cashsourceid,
+                cr.receiptdatesource,
                 cr.in_numberplanid AS numberplanid,
                 ' . $this->db->GroupConcat('npa.divisionid') . ' AS divisions
             FROM cashregs cr
@@ -894,10 +895,22 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         $customers[$import['customerid']] = $customer_manager->GetCustomer($import['customerid'], true);
                     }
 
+                    switch ($receiptCashReg['receiptdatesource']) {
+                        case 1:
+                            $cdate = $import['date'];
+                            break;
+                        case 2:
+                            $cdate = empty($import['operdate']) ? $import['date'] : $import['operdate'];
+                            break;
+                        default:
+                            $cdate = time();
+                            break;
+                    }
+
                     $receipt = [
                         'regid' => $receiptCashRegId,
                         'numberplanid' => $receiptCashReg['numberplanid'],
-                        'cdate' => time(),
+                        'cdate' => $cdate,
                         'type' => 'in',
                         'customer' => $customers[$import['customerid']],
                         'cashsourceid' => $import['sourceid'],
