@@ -15,8 +15,8 @@
 		<td width="99%" colspan="2">
 			<strong>{$userinfo.customername}
 			{if isset($fields_changed.lastname) || isset($fields_changed.name)}
-			({if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<span class="lms-ui-customer-property-changed">{$fields_changed.lastname.fieldvalue}</span>{else}{$userinfo.lastname}{/if}
-			{if isset($fields_changed.name) && $fields_changed.name.fieldvalue != $userinfo.name}<span class="lms-ui-customer-property-changed">{$fields_changed.name.fieldvalue}</span>{else}{$userinfo.name}{/if})
+			({if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<span class="lms-ui-customer-property-changed">{$fields_changed.lastname.fieldvalue}</span>{else}{$userinfo.lastname|escape:'html':'UTF-8':false}{/if}
+			{if isset($fields_changed.name) && $fields_changed.name.fieldvalue != $userinfo.name}<span class="lms-ui-customer-property-changed">{$fields_changed.name.fieldvalue}</span>{else}{$userinfo.name|escape:'html':'UTF-8':false}{/if})
 			{/if}
 			({$userinfo.id|string_format:"%04d"})</strong>
 		</td>
@@ -29,8 +29,8 @@
 		<td width="99%" colspan="2">
 			{foreach $userinfo.emails as $email}
 				{$emailid='email'|cat:$email.id}
-				{$email.email}
-				{if isset($fields_changed[$emailid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$emailid].fieldvalue})</span>{/if}
+				{$email.email|escape:'html':'UTF-8':false}
+				{if isset($fields_changed[$emailid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$emailid].fieldvalue|escape:'html':'UTF-8':false})</span>{/if}
 				{if !$email@last}<BR />{/if}
 			{/foreach}
 		</td>
@@ -43,14 +43,14 @@
 		<td width="99%" colspan="2">
 			{$userinfo.address}
 			{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)}
-				({if isset($fields_changed.street)}<span class="lms-ui-customer-property-changed">{$fields_changed.street.fieldvalue}</span>{else}{$userinfo.street}{/if}
-				{if isset($fields_changed.building)}<span class="lms-ui-customer-property-changed">{$fields_changed.building.fieldvalue}</span>{else}{$userinfo.building}{/if}{if isset($fields_changed.apartment)}<span class="lms-ui-customer-property-changed">/{$fields_changed.apartment.fieldvalue}</span>{else}/{$userinfo.apartment}{/if})
+				({if isset($fields_changed.street)}<span class="lms-ui-customer-property-changed">{$fields_changed.street.fieldvalue}</span>{else}{$userinfo.street|escape:'html':'UTF-8':false}{/if}
+				{if isset($fields_changed.building)}<span class="lms-ui-customer-property-changed">{$fields_changed.building.fieldvalue}</span>{else}{$userinfo.building|escape:'html':'UTF-8':false}{/if}{if isset($fields_changed.apartment)}<span class="lms-ui-customer-property-changed">/{$fields_changed.apartment.fieldvalue}</span>{else}/{$userinfo.apartment|escape:'html':'UTF-8':false}{/if})
 			{/if}
 			<br/>
-			{$userinfo.zip} {$userinfo.city}
+			{$userinfo.zip|escape:'html':'UTF-8':false} {$userinfo.city|escape:'html':'UTF-8':false}
 			{if isset($fields_changed.zip) || isset($fields_changed.city)}
-			({if isset($fields_changed.zip)}<span class="lms-ui-customer-property-changed">{$fields_changed.zip.fieldvalue}</span>{else}{$userinfo.zip}{/if}
-			{if isset($fields_changed.city)}<span class="lms-ui-customer-property-changed">{$fields_changed.city.fieldvalue}</span>{else}{$userinfo.city}{/if})
+			({if isset($fields_changed.zip)}<span class="lms-ui-customer-property-changed">{$fields_changed.zip.fieldvalue}</span>{else}{$userinfo.zip|escape:'html':'UTF-8':false}{/if}
+			{if isset($fields_changed.city)}<span class="lms-ui-customer-property-changed">{$fields_changed.city.fieldvalue}</span>{else}{$userinfo.city|escape:'html':'UTF-8':false}{/if})
 			{/if}
 		</td>
 	</tr>
@@ -62,7 +62,7 @@
 		<td width="99%" colspan="2">
 			{foreach $userinfo.contacts as $item}
 				{$phoneid='phone'|cat:$item.id}
-				{$item.phone}{if isset($fields_changed[$phoneid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$phoneid].fieldvalue})</span>{/if}{if !$item@last}<BR />{/if}
+				{$item.phone|escape:'html':'UTF-8':false}{if isset($fields_changed[$phoneid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$phoneid].fieldvalue|escape:'html':'UTF-8':false})</span>{/if}{if !$item@last}<BR />{/if}
 			{/foreach}
 		</td>
 	</tr>
@@ -80,7 +80,7 @@
 		</td>
 		<td width="99%" colspan="2">
 			{$imid='im'|cat:$item.id}
-			{$item.uid}{if isset($fields_changed[$imid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$imid].fieldvalue})</span>{/if}
+			{$item.uid|escape:'html':'UTF-8':false}{if isset($fields_changed[$imid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$imid].fieldvalue|escape:'html':'UTF-8':false})</span>{/if}
 		</td>
 	</tr>
 {/foreach}
@@ -90,7 +90,7 @@
 			<strong>{trans("TEN")}</strong>
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.ten}{if isset($fields_changed.ten)} <span class="lms-ui-customer-property-changed">({$fields_changed.ten.fieldvalue})</span>{/if}
+			{$userinfo.ten|escape:'html':'UTF-8':false}{if isset($fields_changed.ten)} <span class="lms-ui-customer-property-changed">({$fields_changed.ten.fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/if}
@@ -101,7 +101,7 @@
 			</td>
 			<td colspan="2">
 				{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
-					{$userinfo.ssn}
+					{$userinfo.ssn|escape:'html':'UTF-8':false}
 				{/if}
 				{if isset($fields_changed.ssn)}
 					<span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>

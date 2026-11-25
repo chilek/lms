@@ -7,6 +7,7 @@
     <tr>
         <td>
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
+	<input type="hidden" name="csrf_token" value="{$csrf_token}">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 <input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
@@ -59,7 +60,7 @@
 </table>
 {/box}
 <br />
-{box title=$title}
+{box title=$title|escape}
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">

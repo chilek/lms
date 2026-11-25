@@ -28,7 +28,7 @@ function module_main()
 {
     global $DB,$LMS,$SESSION,$SMARTY;
 
-    if (isset($_GET['confirm_old'])) {
+    if (isset($_POST['confirm_old']) && $SESSION->validatePostToken()) {
          $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
     } elseif ($DB->GetOne('SELECT MAX(warning) FROM vnodes WHERE ownerid = ?', array($SESSION->id))) {
         $warning = $LMS->GetCustomerMessage($SESSION->id);
@@ -36,12 +36,9 @@ function module_main()
     }
 
 
-    if (isset($_GET['confirm'])) {
-        $confirm = $_GET['confirm'];
-        $DB->Execute(
-            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?',
-            array(MSG_DELIVERED, $confirm, $SESSION->id)
-        );
+    if (isset($_POST['confirm']) && $SESSION->validatePostToken()) {
+        $confirm = $_POST['confirm'];
+        UserpanelNoticeHandler::getInstance()->markNoticeAsDelivered($confirm);
         $SESSION->redirect('?m=notices');
     } else {
         $notices = $DB->GetAllByKey(
@@ -56,8 +53,7 @@ function module_main()
                 mi.destination,
                 mi.status,
                 mi.lastdate,
-                mi.lastreaddate,
-                mi.body as mibody
+                mi.lastreaddate
             FROM customers c
             JOIN messageitems mi ON mi.customerid = c.id
             JOIN messages m ON m.id = mi.messageid
@@ -71,6 +67,10 @@ function module_main()
             )
         );
         if (!empty($notices)) {
+            foreach ($notices as &$notice) {
+                $notice['body'] = UserpanelNoticeHandler::formatBody($notice['body'], $notice['contenttype']);
+            }
+            unset($notice);
             $attachments = $DB->GetAll(
                 'SELECT
                     c.messageid,
@@ -95,9 +95,9 @@ function module_main()
         $SMARTY->assign('notices', $notices);
     }
 
-    if (isset($_GET['confirm_urgent'])) {
+    if (isset($_POST['confirm_urgent']) && $SESSION->validatePostToken()) {
         $notice_handler = UserpanelNoticeHandler::getInstance();
-        $notice_handler->markNoticeAsDelivered($_GET['confirm_urgent']);
+        $notice_handler->markNoticeAsDelivered($_POST['confirm_urgent']);
         if (isset($_GET['ajax'])) {
             header('Content-Type: application/json');
             print json_encode(array(
@@ -129,9 +129,10 @@ function module_attachmentview()
         JOIN messages m ON m.id = c.messageid
         JOIN messageitems mi ON mi.messageid = m.id
         WHERE mi.customerid = ?
-            AND f.id = ?',
+            AND m.type IN ? AND f.id = ?',
         array(
             $SESSION->id,
+            array(MSG_USERPANEL, MSG_USERPANEL_URGENT),
             $attachmentid,
         )
     );
@@ -140,23 +141,7 @@ function module_attachmentview()
     }
 
     $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $attachment['md5sum'];
-    if (!file_exists($filename)) {
-        die;
-    }
-
-    header('Content-Type: ' . $attachment['contenttype']);
-
-    if (!preg_match('/(^text|pdf|image)/i', $attachment['contenttype'])) {
-        header('Content-Disposition: attachment; filename=' . $attachment['filename']);
-        header('Pragma: public');
-    } else {
-        header('Content-Disposition: inline; filename="' . $attachment['filename'] . '"');
-        header('Content-Transfer-Encoding: binary');
-        header('Content-Length: ' . filesize($filename));
-    }
-
-    readfile($filename);
-
+    USERPANEL::sendAttachment($filename, $attachment['filename'], $attachment['contenttype']);
     die;
 }
 

@@ -256,6 +256,7 @@ $plugin_manager->executeHook('userpanel_lms_initialized', $LMS);
 $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if ($SESSION->islogged) {
+    $SMARTY->assign('csrf_token', $SESSION->getPostToken());
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $function = preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['f'] ?? '');
     if ($SESSION->isPasswdChangeRequired) {

@@ -44,10 +44,17 @@ class UserpanelNoticeHandler
         return self::$instance;
     }
 
+    public static function formatBody($body, $type)
+    {
+        return $type === 'text/html' ? Utils::removeInsecureHtml($body)
+            : nl2br(htmlspecialchars((string) $body, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), false);
+    }
+
     public function getUrgentNotice()
     {
         $notice = $this->db->GetRow(
             'SELECT
+                m.contenttype,
                 m.subject,
                 m.cdate,
                 (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
@@ -68,6 +75,7 @@ class UserpanelNoticeHandler
         );
 
         if (!empty($notice)) {
+            $notice['body'] = self::formatBody($notice['body'], $notice['contenttype']);
             $notice['attachments'] = array();
 
             $attachments = $this->db->GetAll(
@@ -109,10 +117,12 @@ class UserpanelNoticeHandler
     public function markNoticeAsRead($id)
     {
         $this->db->Execute(
-            'UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ? AND customerid = ?',
+            'UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ? AND customerid = ?
+                AND messageid IN (SELECT id FROM messages WHERE type IN ?)',
             array(
                 $id,
                 $this->customerid,
+                array(MSG_USERPANEL, MSG_USERPANEL_URGENT),
             )
         );
     }
@@ -120,11 +130,13 @@ class UserpanelNoticeHandler
     public function markNoticeAsDelivered($id)
     {
         $this->db->Execute(
-            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?',
+            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ? AND customerid = ?
+                AND messageid IN (SELECT id FROM messages WHERE type IN ?)',
             array(
                 MSG_DELIVERED,
                 $id,
                 $this->customerid,
+                array(MSG_USERPANEL, MSG_USERPANEL_URGENT),
             )
         );
     }

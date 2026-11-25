@@ -65,15 +65,17 @@
                     class: "lms-ui-button",
                     click: function () {
                         $.ajax(
-                            '?m=notices&ajax=1&confirm_urgent=' + $("#urgent-notice-dialog").attr('data-id'),
+                            '?m=notices&ajax=1',
                             {
+                                method: 'POST',
+                                data: { confirm_urgent: $("#urgent-notice-dialog").attr('data-id'), csrf_token: '{$csrf_token}' },
                                 dataType: 'json',
                                 success: function (data) {
                                     $('#urgent-notice-dialog').dialog('close');
                                     if (!parseInt(data["unread_notices"])) {
                                         $('#lms-userpanel-menu-item-notices .warning-icon').removeClass('lms-userpanel-icon-warning');
                                     }
-                                    if (typeof (data["urgent_notice"]) == 'object') {
+                                    if (data["urgent_notice"]) {
                                         $('#urgent-notice-dialog').one('dialogclose', function () {
                                             $('#urgent-notice-dialog').attr('data-id', data["urgent_notice"].id);
                                             cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
@@ -100,7 +102,7 @@
     </script>
     {assign var=title_date value=$urgent_notice.cdate|date_format:"Y-m-d H:i"}
     {assign var=title_subject value=$urgent_notice.subject}
-    <div id="urgent-notice-dialog" data-id="{$urgent_notice.id}" title="{$title_date} / {$title_subject}">
+    <div id="urgent-notice-dialog" data-id="{$urgent_notice.id}" title="{$title_date} / {$title_subject|escape}">
         <div id="urgent-notice-body">{$urgent_notice.body}</div>
         {if !empty($urgent_notice.attachments)}
             <div id="urgent-notice-attachments">

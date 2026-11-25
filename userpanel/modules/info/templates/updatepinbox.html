@@ -1,4 +1,5 @@
 <form name="userpin" method="post" action="?m=info&f=updatepin">
+	<input type="hidden" name="csrf_token" value="{$csrf_token}">
 {box title="PIN Update"}
 
 {$pin_tip = ConfigHelper::getConfig('customers.pin_restriction_description', ConfigHelper::getConfig('phpui.pin_restriction_description'))}

@@ -33,6 +33,7 @@
 				</div>
 				<div class="form-group">
 					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode" id="authcode-form">
+						<input type="hidden" name="csrf_token" value="{$csrf_token}">
 						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
@@ -61,6 +62,7 @@
 			<div class="modal-body">
 				<div class="form-group">
 					<form method="post" action="?m=documents" id="newscan-form" name="newscan" enctype="multipart/form-data">
+						<input type="hidden" name="csrf_token" value="{$csrf_token}">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans"
 							{userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"}
@@ -70,7 +72,7 @@
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
 						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
 							{if isset($error.files)}
-								{$error.files}
+								{$error.files|escape}
 							{/if}
 						</div>
 						<small class="form-text">
@@ -144,7 +146,7 @@
 										{if $docattach.type == 1}
 											{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
 										{else}
-											{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
+											{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename|escape}"}
 										{/if}
 										{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last) && $doc.confirmdate != -1}
 											{if $scan_active}
@@ -253,6 +255,7 @@
 				url: '?m=documents&smsauth=1&send=1',
 				dataType: 'json',
 				data: {
+					csrf_token: '{$csrf_token}',
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
 				success: function(result) {
@@ -285,6 +288,7 @@
 				dataType: "json",
 				data: {
 					code: $('#authcode').val(),
+					csrf_token: '{$csrf_token}',
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
 				success: function(result) {

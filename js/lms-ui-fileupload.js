@@ -58,7 +58,7 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 				return myXhr;
 			},
 			success: function(data) {
-				elem.find(".fileupload-status").html(data.error);
+				elem.find(".fileupload-status").text(data.error);
 				if (typeof(data) == "object" && !data.error.length) {
 					elem.find(".fileupload-tmpdir").val(data.tmpdir);
 					var fileupload_files = elem.find(".fileupload-files");
@@ -83,13 +83,13 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 								'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
 								(fileList[fileKey].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
 								'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
-								fileList[fileKey].name + ' (' + size.size + ' ' + size.unit + ')' +
+								escapeHtml(file.name) + ' (' + size.size + ' ' + size.unit + ')' +
 								'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
-									' value="' + fileList[fileKey].name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+									' value="' + escapeHtml(file.name) + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 								'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
 									' value="' + fileList[fileKey].size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 								'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
-									' value="' + fileList[fileKey].type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+									' value="' + escapeHtml(file.type) + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'</div>' +
 							(new_item_custom_content.length ? '<div class="fileupload-file-options">' +
 								Base64.decode(new_item_custom_content).replaceAll('%idx%', count + key) + '</div>': '') +
@@ -113,7 +113,7 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (errorThrown != "abort")
-					elem.find(".fileupload-status").html(errorThrown);
+					elem.find(".fileupload-status").text(errorThrown);
 			},
 			complete: function(jqXHR, textStatus) {
 				elem.find("input[type=file]").replaceWith(

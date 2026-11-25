@@ -109,7 +109,7 @@
                                     {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
                                 </div>
                                 <div class="toast-body">
-                                    {$error}
+                                    {$error|escape}
                                 </div>
                             </div>
                         </div>
@@ -123,7 +123,7 @@
                                     {button class="ml-2 mb-1 close" data-dismiss="toast" text="&times;"}
                                 </div>
                                 <div class="toast-body">
-                                    {$info}
+                                    {$info|escape}
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                     {/if}
                     {if empty($authcode_required)}
                         {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', $smarty.const.USERPANEL_AUTH_TYPE_ID_PIN)}
-                        <form id="login" class="form-signin" method="post" action="{$target}">
+                        <form id="login" class="form-signin" method="post" action="{$target|escape}">
                             <input type="submit" hidden>
                             <fieldset class="form-group">
                                 <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
@@ -163,7 +163,7 @@
                             {/if}
                         </form>
                     {else}
-                        <form id="login" class="form-signin" method="post" action="{$target}">
+                        <form id="login" class="form-signin" method="post" action="{$target|escape}">
                             <input type="submit" hidden>
                             <fieldset class="form-group phone-number-ui-control"{if empty($phone_numbers)} style="display: none;"{/if}>
                                 <label for="phone-number">
@@ -202,7 +202,7 @@
                         (ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                         || ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))}
                         {$reminder_type=ConfigHelper::getConfig('userpanel.reminder_type', $smarty.const.USERPANEL_REMINDER_TYPE_SSNTEN)}
-                        <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
+                        <form id="remind" class="form-signin" method="post" action="{$target|escape}" style="display:none;">
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders') && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <input type="hidden" name="remindform[type]" id="remindType" value="2">
                             {else}
@@ -287,7 +287,7 @@
                     $(".auth-code-ui-control").show().find('.form-control').prop('disabled', false);
                     $(".phone-number-ui-control").hide().prop('disabled', true);
                     $.ajax({
-                        url: "{$target}",
+                        url: $("#login").attr("action"),
                         method: "POST",
                         dataType: 'json',
                         data: {

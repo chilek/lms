@@ -28,6 +28,7 @@
 {if $op == 'authcode' && $sms_active}
 	{box title="Authorization"}
 		<form id="authcode-dialog" method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+			<input type="hidden" name="csrf_token" value="{$csrf_token}">
 		<table width="100%" cellpadding="3" class="light">
 			<colgroup>
 				<col style="width: 1%;">
@@ -71,6 +72,7 @@
 					url: '?m=documents&smsauth=1&send=1',
 					dataType: "json",
 					data: {
+						csrf_token: '{$csrf_token}',
 						documentid: parseInt($('#authcode-dialog .documentid').val())
 					},
 					success: function(result) {
@@ -93,6 +95,7 @@
 						dataType: "json",
 						data: {
 							code: $('#authcode').val(),
+							csrf_token: '{$csrf_token}',
 							documentid: parseInt($('#authcode-dialog .documentid').val())
 						},
 						success: function(result) {
@@ -124,6 +127,7 @@
 {if $op == 'scans' && $scan_active}
 	{box title="Document submission"}
 		<form id="newscan-dialog" method="post" action="?m=documents&op=scans" name="newscan" enctype="multipart/form-data">
+			<input type="hidden" name="csrf_token" value="{$csrf_token}">
 		<table width="100%" cellpadding="3" class="light">
 			<colgroup>
 				<col style="width: 1%;">
@@ -145,7 +149,7 @@
 								multiple />
 							<div id="file-status" style="display: none;">
 								{if isset($error.files)}
-									{$error.files}
+									{$error.files|escape}
 								{/if}
 							</div>
 							<br>
@@ -265,7 +269,7 @@
 			|| ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
 			{foreach $doc.attachments as $docattach}
 			<a href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
-				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
+				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename|escape}{/if} {img src="view.gif" alt="View"}
 			</a>
 			{if !$doc.closed && ($docattach.type == 1 || $doc.only_other_attachments && $docattach@last) && $doc.confirmdate != -1}
 				{if $scan_active}

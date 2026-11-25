@@ -6,7 +6,7 @@
 <table style="width: 100%;" cellpadding="10">
     <tr>
 	<td>
-{box title=$title}
+{box title=$title|escape}
 
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
@@ -51,7 +51,7 @@
 	</tr>
 	<tr>
 		<td colspan="5">
-			{if $message.contenttype == 'text/plain'}
+			{if $message.contenttype != 'text/html'}
 				{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br/>'}
 			{else}
 				{$message.body}

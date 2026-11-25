@@ -25,7 +25,10 @@
 	{box title="Warning to you"}
 	<div class="alert alert-warning" role="alert">
 		{$warning}
-		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("<!userpanel>Confirm")}</a>
+		<form method="post" action="?m=notices">
+					<input type="hidden" name="csrf_token" value="{$csrf_token}">
+					<button type="submit" name="confirm_old" value="1">{trans("<!userpanel>Confirm")}</button>
+				</form>
 	</div>
 	{/box}
 {/if}
@@ -44,7 +47,7 @@
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
 					<td>{$items.cdate|date_format:"Y-m-d H:i"}</td>
 					<td>{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
-					<td>{$items.subject}</td>
+					<td>{$items.subject|escape}</td>
 					<td>
 						{if $items.type == $smarty.const.MSG_USERPANEL_URGENT || $items.type == $smarty.const.MSG_USERPANEL}
 							{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
@@ -59,23 +62,7 @@
 					<td colspan="4" >
 						<h3>{trans("Body")}</h3>
 						<div class="notice-body">
-							{if $items.mibody}
-								{if $items.contenttype == 'text/plain'}
-									{nl2br(htmlspecialchars($items.mibody), false)}
-								{elseif $items.contenttype == 'text/html'}
-									{$items.mibody}
-								{else}
-									{nl2br($items.mibody, false)}
-								{/if}
-							{else}
-								{if $items.contenttype == 'text/plain'}
-									{nl2br(htmlspecialchars($items.body), false)}
-								{elseif $items.contenttype == 'text/html'}
-									{$items.body}
-								{else}
-									{nl2br($items.body, false)}
-								{/if}
-							{/if}
+							{$items.body}
 						</div>
 						{if !empty($items.attachments)}
 							<div class="notice-attachments">
@@ -100,7 +87,10 @@
 						{/if}
 						{if $items.status != $smarty.const.MSG_DELIVERED}
 							<div class="notice-confirm">
-								{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<!userpanel>Confirm"}
+								<form method="post" action="?m=notices">
+					<input type="hidden" name="csrf_token" value="{$csrf_token}">
+					<button type="submit" name="confirm" value="{$items.id}">{trans("<!userpanel>Confirm")}</button>
+				</form>
 							</div>
 						{/if}
 					</td>

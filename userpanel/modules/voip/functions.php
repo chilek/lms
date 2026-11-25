@@ -60,6 +60,10 @@ switch ($_GET['action']) {
     break;
 
     case 'updateaccountinfo':
+        if (!$SESSION->validatePostToken()) {
+            http_response_code(403);
+            die;
+        }
         $rec = ($_POST['recording'] == 1) ? 1 : 0;
         $id  = (int) $_POST['voipaccid'];
 
@@ -92,19 +96,23 @@ switch ($_GET['action']) {
             $LMS->DB->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($id));
 
             // set new indexes
-            if (count($_POST['phones']) != count($current_phones)) {
+            if (!is_array($phones) || count($phones) != count($current_phones ?: array())) {
                 $LMS->DB->RollbackTrans();
                 die();
             }
 
             $i = 0;
             foreach ($phones as $p) {
-                if (!isset($current_phones[$p])) {
+                if (!is_string($p) || !isset($current_phones[$p])) {
                     $LMS->DB->RollbackTrans();
                     die();
                 }
 
-                $LMS->DB->Execute('UPDATE voip_numbers SET number_index = ? WHERE phone ?LIKE? ?', array(++$i, $p));
+                unset($current_phones[$p]);
+                $LMS->DB->Execute(
+                    'UPDATE voip_numbers SET number_index = ? WHERE voip_account_id = ? AND phone = ?',
+                    array(++$i, $id, $p)
+                );
             }
         }
 
@@ -124,7 +132,7 @@ if (isset($_GET['record'])) {
         array($_GET['record'], $SESSION->id, $SESSION->id)
     );
 
-    if (empty($uid)) {
+    if (empty($uid) || basename($uid) !== $uid || strpos($uid, '\\') !== false) {
         die();
     }
 
@@ -143,9 +151,11 @@ if (isset($_GET['record'])) {
         $filepath .= '.wav';
     }
 
-    header('Content-Type: ' . mime_content_type($filepath));
-
-    echo file_get_contents($filepath);
+    if (is_file($filepath) && is_readable($filepath)) {
+        header('Content-Type: ' . array('mp3' => 'audio/mpeg', 'ogg' => 'audio/ogg', 'wav' => 'audio/wav')[pathinfo($filepath, PATHINFO_EXTENSION)]);
+        header('X-Content-Type-Options: nosniff');
+        readfile($filepath);
+    }
     die();
 }
 

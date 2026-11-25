@@ -1154,8 +1154,8 @@ function handle_file_uploads($elemid, &$error)
                             if (!@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
                                 $errors[] = trans('Unable to write file: $a', $file['name']);
                             }
-                            unset($file['tmp_name']);
                         }
+                        unset($file['tmp_name']);
                         $files2[] = $file;
                     }
                     unset($file);
@@ -1164,7 +1164,7 @@ function handle_file_uploads($elemid, &$error)
                 }
                 if (!empty($errors)) {
                     $result = array(
-                        'error' => implode('<br>', $errors),
+                        'error' => implode("\n", $errors),
                     );
                 } else {
                     $result = array(
@@ -1181,7 +1181,7 @@ function handle_file_uploads($elemid, &$error)
         } elseif ($tmppath !== '' && isset($fileupload[$elemid]) && is_array($fileupload[$elemid])) {
             $files = array();
             foreach ($fileupload[$elemid] as $fileidx => $file) {
-                if (!is_array($file) || !isset($file['name']) || !is_string($file['name'])) {
+                if (!is_int($fileidx) || $fileidx < 0 || !is_array($file) || !isset($file['name']) || !is_string($file['name'])) {
                     continue;
                 }
                 $name = $file['name'];
@@ -1198,15 +1198,16 @@ function handle_file_uploads($elemid, &$error)
                 unset($file['tmp_name'], $file['content'], $file['contents']);
                 $file['name'] = $name;
                 $file['size'] = filesize($source);
-                $file['type'] = isset($file['type']) && is_string($file['type'])
-                    ? $file['type'] : 'application/octet-stream';
+                $file['type'] = function_exists('mime_content_type') ? mime_content_type($source) : false;
+                $file['type'] = $file['type'] ?: 'application/octet-stream';
                 [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
                 $files[$fileidx] = $file;
             }
             ${$elemid} = $fileupload[$elemid] = $files;
         } else {
-            ${$elemid} = array();
+            ${$elemid} = $fileupload[$elemid] = array();
+            $fileupload[$elemid . '-tmpdir'] = $tmpdir;
         }
     } else {
         ${$elemid} = array();
