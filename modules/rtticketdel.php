@@ -35,7 +35,7 @@ if (empty($tickets)) {
 }
 
 foreach ($tickets as $ticket) {
-    if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE)) {
+    if (!($LMS->CheckTicketAccess($ticket, RT_RIGHT_DELETE))) {
         access_denied();
     }
 }

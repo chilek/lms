@@ -217,7 +217,7 @@ if (isset($_POST['event'])) {
                 $error['ticketid'] = trans('Ticket identifier invalid format!');
             } elseif (!$LMS->TicketExists($event['ticketid'])) {
                 $error['ticketid'] = trans('Nonexistent ticket!');
-            } elseif (!($LMS->checkTicketAccess($event['ticketid']) & RT_RIGHT_READ)) {
+            } elseif (!($LMS->checkTicketAccess($event['ticketid'], RT_RIGHT_READ))) {
                 $error['ticketid'] = trans('Ticket access denied!');
             }
             break;
