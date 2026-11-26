@@ -131,6 +131,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && !empty($_POST['marks'
     }
 
     if (!empty($ids)) {
+        $ids = $DB->GetCol(
+            'SELECT DISTINCT rc.docid
+            FROM receiptcontents rc
+            JOIN cashrights r ON r.regid = rc.regid
+            WHERE rc.docid IN ? AND r.userid = ? AND r.rights > 0',
+            array($ids, Auth::GetCurrentUser())
+        ) ?: [];
         sort($ids);
     }
 
