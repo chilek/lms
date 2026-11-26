@@ -29,6 +29,24 @@ use \Lms\KSeF\KSeF;
 $layout['pagetitle'] = trans('Invoice send');
 
 if (isset($_POST['marks'])) {
+    $proformaIds = array();
+    if (isset($_GET['marks']) && $_GET['marks'] == 'cash' && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
+        $proformaIds = Utils::filterIntegers(array_keys((array) ($_POST['marks']['proforma'] ?? array()) + (array) ($_POST['marks']['invoice'] ?? array())));
+        if (!empty($proformaIds)) {
+            $proformaIds = $DB->GetCol(
+                'SELECT id FROM documents WHERE type = ? AND id IN ?',
+                array(DOC_INVOICE_PRO, $proformaIds)
+            ) ?? array();
+        }
+        unset($_POST['marks']['proforma']);
+        if (isset($_POST['marks']['invoice'])) {
+            $_POST['marks']['invoice'] = array_diff_key((array) $_POST['marks']['invoice'], array_flip($proformaIds));
+            if (empty($_POST['marks']['invoice'])) {
+                unset($_POST['marks']['invoice']);
+            }
+        }
+    }
+
     if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
         $marks = [];
         if (!empty($_POST['marks']['invoice'])) {
@@ -47,6 +65,10 @@ if (isset($_POST['marks'])) {
 
     if ($_GET['marks'] == 'cash' && !empty($ids)) {
         $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+    }
+
+    if (!empty($proformaIds)) {
+        $ids = array_unique(array_merge($ids ?? array(), $proformaIds));
     }
 } elseif (isset($_GET['id']) && intval($_GET['id'])) {
     $ids = array(intval($_GET['id']));
