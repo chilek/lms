@@ -994,7 +994,8 @@
 	$('#send-invoices').click(function() {
 		if (!$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
 				&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length
-				&& !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length) {
+				&& !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_INVOICE_PRO}"] :checked').length) {
 			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
