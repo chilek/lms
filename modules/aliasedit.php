@@ -60,7 +60,7 @@ if (isset($_POST['alias'])) {
                 $error['login'] = trans('Login contains forbidden characters!');
         }
     } else {
-        $alias['login'] == '';
+        $alias['login'] = '';
     }
     if (!$alias['domainid']) {
         $error['domainid'] = trans('You have to select domain for alias!');
