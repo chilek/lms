@@ -158,6 +158,8 @@ if (!empty($user_phones)) {
     unset($user_phones);
 }
 
+$dateFrom = time();
+
 foreach ($dirs as $dir) {
     $src_file_dir = $src_dir . ($dir == '' ? '' : DIRECTORY_SEPARATOR . $dir);
 
@@ -360,11 +362,14 @@ foreach ($dirs as $dir) {
                 'duration' => $duration,
             )
         );
+
+        $dateFrom = min($dateFrom, $dt);
     }
 }
 
 $calls = $LMS->getCustomerCalls(array(
-    'order' => 'id,asc'
+    'datefrom' => strtotime('1 month ago', $dateFrom),
+    'order' => 'id,asc',
 ));
 if (empty($calls)) {
     die('Warning: the are no customer calls in database!' . PHP_EOL);
