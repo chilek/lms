@@ -308,7 +308,7 @@ function getThroughput($ip)
         '%i' => $ip,
     ));
     exec($cmd, $output);
-    if (!is_array($output) && count($output) != 1) {
+    if (!is_array($output) || count($output) != 1) {
         return $result;
     }
 
