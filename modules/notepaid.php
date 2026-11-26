@@ -41,11 +41,15 @@ if (count($ilm)) {
 
 if (count($ids)) {
     foreach ($ids as $noteid) {
-        [$cid, $value, $closed] = array_values($DB->GetRow('SELECT customerid, 
+        $note = $DB->GetRow('SELECT customerid, 
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
 			FROM documents d
-			WHERE id = ?', array($noteid)));
+			WHERE id = ?', array($noteid));
+        if (empty($note)) {
+            continue;
+        }
+        [$cid, $value, $closed] = array_values($note);
         // add payment
         if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
             if ($value != 0) {
