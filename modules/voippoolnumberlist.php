@@ -57,7 +57,7 @@ function valid_pool($p, $id = 0)
     $error = array();
     $DB    = LMSDB::getInstance();
     $id    = (int) $id;
-    $pool_list = $DB->GetAllByKey("SELECT id, name, poolstart, poolend FROM voip_pool_numbers;", 'name');
+    $pool_list = $DB->GetAllByKey("SELECT id, name, poolstart, poolend FROM voip_pool_numbers;", 'name') ?: array();
 
     $name   = (!empty($p['name']))      ? trim($p['name'])      : null;
     $pstart = (!empty($p['poolstart'])) ? trim($p['poolstart']) : null;
@@ -97,7 +97,7 @@ function valid_pool($p, $id = 0)
     }
 
     foreach ($pool_list as $v) {
-        if ($id == $v['id'] || !$id) {
+        if ($id == $v['id']) {
             continue;
         }
 
@@ -115,7 +115,7 @@ function valid_pool($p, $id = 0)
             $error['poolend'] = trans('Number coincides with pool `$a` !', $v['name']);
         }
 
-        if ($check1 == -1 && $check2 == 1) {
+        if (gmp_cmp($pstart, $v['poolstart']) == -1 && $check2 == 1) {
             $error['poolstart'] = trans('Number range coincides with pool `$a` !', $v['name']);
         }
     }
