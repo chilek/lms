@@ -1330,6 +1330,10 @@ version 28-git (????-??-??):
   - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
     placeholders, sending one e-mail with all selected invoices attached
     (variable: phpui.invoice_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
+  - enhancement: helpdesk categories assigned to users can be skipped in ticket access checks and queue ticket lists
+    (variable: rt.category_privileges, default: true; false makes queue rights decide about access to tickets,
+    ticket owner and verifier get access too when rt.additional_user_permission_checks is enabled, explicit zero
+    queue rights still deny access, helpdesk search and quick search are still filtered by user categories) [interduo]
 
 version 27.0 (2021-08-20):
 
