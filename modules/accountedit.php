@@ -40,6 +40,7 @@ $layout['pagetitle'] = trans('Account Edit: $a', $account['login'].'@'.$account[
 
 if (isset($_POST['account'])) {
     $oldlogin = $account['login'];
+    $oldDomainId = $account['domainid'];
     $oldowner = $account['ownerid'];
     $oldtype = $account['type'];
 
@@ -63,7 +64,7 @@ if (isset($_POST['account'])) {
         $error['login'] = trans('Login contains forbidden characters!');
     } elseif (!$account['domainid']) {
             $error['domainid'] = trans('You have to select domain for account!');
-    } elseif ($account['login'] != $oldlogin) {
+    } elseif ($account['login'] != $oldlogin || $account['domainid'] != $oldDomainId) {
         if ($DB->GetOne(
             'SELECT id FROM passwd WHERE login = ? AND domainid = ?',
             array($account['login'], $account['domainid'])
