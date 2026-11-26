@@ -26,9 +26,12 @@
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'dns.php');
 
-$d = $_GET['d']*1;
+$d = intval($_GET['d']);
 
 $record = $DB->GetRow('SELECT name AS domainname, id AS domain_id FROM domains WHERE id = ?', array($d));
+if (!$record) {
+    $SESSION->redirect('?m=domainlist');
+}
 
 if (isset($_POST['record'])) {
     $rec = $_POST['record'];
