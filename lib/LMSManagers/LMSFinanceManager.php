@@ -5561,7 +5561,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE d.type IN ?
 				AND c.id IN (" . implode(', ', $ids) . ")",
             array($doctypes)
-        );
+        ) ?: [];
     }
 
     public function GetDocumentLastReference($docid)
