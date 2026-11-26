@@ -83,7 +83,7 @@ if (isset($_POST['domain'])) {
             if ($limits['domain_limit'] > 0) {
                     $cnt = $DB->GetOne(
                         'SELECT COUNT(*) FROM domains WHERE ownerid = ?',
-                        array($domainadd['ownerid'])
+                        array($domain['ownerid'])
                     );
             }
 
