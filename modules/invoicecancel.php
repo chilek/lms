@@ -41,6 +41,8 @@ if ($id) {
             $LMS->AddBalance(array(
                 'time' => $invoice['cdate'],
                 'value' => $value * -1,
+                'currency' => $invoice['currency'],
+                'currencyvalue' => $invoice['currencyvalue'],
                 'taxid' => $content['taxid'],
                 'customerid' => $invoice['customerid'],
                 'comment' => $content['description'],
