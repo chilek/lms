@@ -54,7 +54,7 @@ if (count($ids)) {
             continue;
         }
 
-        [$cid, $closed] = $invoice;
+        [$cid, $closed] = array_values($invoice);
 
         // add payment
         if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {
