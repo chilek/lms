@@ -333,7 +333,7 @@ if (!isset($_POST['flags']) && !isset($_GET['flags'])) {
 } else {
     $flags = $_POST['flags'];
 }
-$SESSION->save('tllags', $flags);
+$SESSION->save('tlflags', $flags);
 
 $tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg, $tax, $netflag, $flags);
 
