@@ -27,7 +27,6 @@
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     if ($id) {
-        $LMS->DeleteFileContainers('messageid', $id);
         $DB->BeginTrans();
         if (isset($_GET['customerid'])) {
             $DB->Execute(
@@ -42,6 +41,9 @@ if (isset($_GET['id'])) {
         } else {
             $DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
         }
+        if (!$DB->GetOne('SELECT 1 FROM messageitems WHERE messageid = ?', array($id))) {
+            $LMS->DeleteFileContainers('messageid', $id);
+        }
         $DB->Execute(
             'DELETE FROM messages
             WHERE id = ?
@@ -53,9 +55,6 @@ if (isset($_GET['id'])) {
 } elseif (isset($_POST['marks'])) {
     $ids = Utils::filterIntegers($_POST['marks']);
     if (!empty($ids)) {
-        foreach ($_POST['marks'] as $mkey => $mark) {
-            $LMS->DeleteFileContainers('messageid', $mkey);
-        }
         $DB->BeginTrans();
         if (isset($_GET['customerid'])) {
             $DB->Execute(
@@ -74,6 +73,11 @@ if (isset($_GET['id'])) {
                     $ids,
                 )
             );
+        }
+        foreach ($ids as $messageId) {
+            if (!$DB->GetOne('SELECT 1 FROM messageitems WHERE messageid = ?', array($messageId))) {
+                $LMS->DeleteFileContainers('messageid', $messageId);
+            }
         }
         $DB->Execute(
             'DELETE FROM messages
