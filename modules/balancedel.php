@@ -32,7 +32,7 @@ $notes = array();
 
 if (!empty($_GET['id']) && intval($_GET['id'])) {
     $ids = array($_GET['id']);
-} elseif (count($_POST['marks'])) {
+} elseif (!empty($_POST['marks'])) {
     foreach ($_POST['marks'] as $markid => $mark) {
         switch ($markid) {
             case 'invoice':
