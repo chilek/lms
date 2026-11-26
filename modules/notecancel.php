@@ -28,7 +28,9 @@ $id = intval($_GET['id']);
 
 if ($id) {
     if (isset($_GET['recover'])) {
-        $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
+        if (!$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ? AND cancelled = 1', array($id))) {
+            $SESSION->redirect('?m=notelist');
+        }
 
         $note = $LMS->GetNoteContent($id);
 
