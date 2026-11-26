@@ -453,6 +453,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+        $categoriesAcl = ConfigHelper::checkConfig('rt.category_privileges', true)
+            ? ' AND (tc.categoryid IN (SELECT categoryid FROM rtcategoryusers WHERE userid = ' . $userid . ')'
+                . ($allow_empty_categories ? ' OR NOT EXISTS (SELECT 1 FROM rtticketcategories tc3 WHERE tc3.ticketid = t.id)' : '')
+                . ')'
+            : '';
 
         $qids = null;
         if (!empty($ids)) {
@@ -482,17 +487,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						JOIN rtrights r ON r.queueid = q.id
 						WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' =  ' . $rights . '
 					)'. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '')
-                    . ') AND (tc.categoryid IN (
-								SELECT categoryid
-								FROM rtcategoryusers WHERE userid = ' . $userid . '
-							)'
-                        . ($allow_empty_categories
-                            ? ' OR NOT EXISTS (
-									SELECT 1 FROM rtticketcategories tc2
-									WHERE tc2.ticketid = t.id
-								)'
-                            : '')
-                        . ')'
+                    . ')' . $categoriesAcl
                     : '')
                 . ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
                             . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
@@ -591,18 +586,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					JOIN rtrights r ON r.queueid = q.id
 					WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' = ' . $rights . '
 				)' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '')
-                . ') AND (tc.categoryid IN (
-							SELECT categoryid
-							FROM rtcategoryusers
-							WHERE userid = ' . $userid . '
-						)'
-                    . ($allow_empty_categories
-                        ? ' OR NOT EXISTS (
-								SELECT 1 FROM rtticketcategories tc3
-								WHERE tc3.ticketid = t.id
-							)'
-                        : '')
-                    . ')'
+                . ')' . $categoriesAcl
                 : '')
             . ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
                     . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
@@ -949,6 +933,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetUserRightsToCategory($user, $category, $ticket = null)
     {
+        if (!ConfigHelper::checkConfig('rt.category_privileges', true)) {
+            return 1;
+        }
+
         if (!$category && $ticket) {
             if (!($category = $this->cache->getCache('rttickets', $ticket, 'categoryid'))) {
                 $category = $this->db->GetCol('SELECT categoryid FROM rtticketcategories WHERE ticketid=?', array($ticket));
@@ -3117,43 +3105,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
         if ($user_permission_checks) {
-            $access = $this->db->GetOne(
-                'SELECT (CASE WHEN r.rights IS NULL THEN '
-                    . (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ' ELSE r.rights END) FROM rttickets t
-				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
-				WHERE t.id = ? AND (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?)
-					AND (EXISTS (
-						SELECT tc.categoryid FROM rtticketcategories tc
-						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
-						WHERE tc.ticketid = ?
-					)' . ($allow_empty_categories
-                        ? ' OR NOT EXISTS (
-								SELECT tc2.categoryid FROM rtticketcategories tc2
-								WHERE tc2.ticketid = ' . intval($ticketid) . '
-							)'
-                        : '')
-                    . ')',
-                array($userid, $ticketid, $userid, $userid, $userid, $ticketid)
-            );
+            $query = 'SELECT COALESCE(r.rights, ' . (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ')
+                FROM rttickets t
+                LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
+                WHERE t.id = ? AND (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?)';
+            $params = array($userid, $ticketid, $userid, $userid);
         } else {
-            $access = $this->db->GetOne(
-                'SELECT rights FROM rtrights r
-				JOIN rttickets t ON t.queueid = r.queueid
-				WHERE r.userid = ? AND t.id = ?
-					AND (EXISTS (
-						SELECT tc.categoryid FROM rtticketcategories tc
-						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
-						WHERE tc.ticketid = ?
-					)' . ($allow_empty_categories
-                        ? ' OR NOT EXISTS (
-								SELECT tc2.categoryid FROM rtticketcategories tc2
-								WHERE tc2.ticketid = ' . intval($ticketid) . '
-							)'
-                        : '')
-                    . ')',
-                array($userid, $ticketid, $userid, $ticketid)
-            );
+            $query = 'SELECT r.rights FROM rtrights r
+                JOIN rttickets t ON t.queueid = r.queueid
+                WHERE r.userid = ? AND t.id = ?';
+            $params = array($userid, $ticketid);
         }
+
+        if (ConfigHelper::checkConfig('rt.category_privileges', true)) {
+            $query .= ' AND (EXISTS (
+                SELECT 1 FROM rtticketcategories tc
+                JOIN rtcategoryusers u ON u.categoryid = tc.categoryid AND u.userid = ?
+                WHERE tc.ticketid = t.id
+            )' . ($allow_empty_categories
+                ? ' OR NOT EXISTS (SELECT 1 FROM rtticketcategories tc WHERE tc.ticketid = t.id)'
+                : '') . ')';
+            $params[] = $userid;
+        }
+
+        $access = $this->db->GetOne($query, $params);
 
         if (empty($rights)) {
             return $access;

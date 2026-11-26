@@ -163,6 +163,7 @@ function GetConfigList()
         ),
         'rt' => array(
             'backend_mode' => 'When enabled, all messages in helpdesk system (except those sent to requester) will be sent to mail server corresponding queue address. lms-rtparser script should be running on server. Messages won\'t be written directly to database, but on solely responsibility of rtparser script. Default: disabled.',
+            'category_privileges' => 'If set to "false" then user categories do not restrict access to a single ticket (view, edit) and to queue ticket lists, only queue rights (and ticket owner/verifier when rt.additional_user_permission_checks is enabled) are checked. Helpdesk search and quick search are still filtered by user categories. Default: true',
             'new_ticket_notify' => 'When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.',
             'notification_customerinfo' => 'Adds customer basic information on ticket view and in notifications. Default: true',
             'notification_mail_subject' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
