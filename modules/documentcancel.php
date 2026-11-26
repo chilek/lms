@@ -27,6 +27,10 @@
 $id = intval($_GET['id']);
 
 if ($id) {
+    if (!$LMS->isDocumentAccessible($id)) {
+        access_denied();
+    }
+
     if (isset($_GET['recover'])) {
         $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
         $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
