@@ -36,10 +36,12 @@ if ($id) {
             $LMS->AddBalance(array(
                 'time' => $note['cdate'],
                 'value' => $content['value'] * -1,
+                'currency' => $note['currency'],
+                'currencyvalue' => $note['currencyvalue'],
                 'customerid' => $note['customerid'],
                 'comment' => $content['description'],
                 'docid' => $id,
-                'itemid' => $note['itemid'],
+                'itemid' => $content['itemid'],
             ));
         }
         if ($SYSLOG) {
