@@ -37,7 +37,7 @@ if (isset($_POST['record'])) {
                 $rec[$idx] = trim(strip_tags($val));
     }
 
-    $record = array_merge($record, $rec);
+    $record = array_merge($rec, $record);
 
     if ($record['type'] == 'SOA') {
         if ($DB->GetOne('SELECT 1 FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id']))) {
