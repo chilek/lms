@@ -64,7 +64,7 @@ function lmsFileUpload(elemid, formid, new_item_custom_content) {
 					var fileupload_files = elem.find(".fileupload-files");
 					var count = fileupload_files.find(".fileupload-file").length;
 					$.each(data.files, function(key, file) {
-						var fileClone = new File([files[key]], files[key].name, {
+						var fileClone = new File([files[key]], files[key].name.replace(/^[\.]+/, ''), {
 							name: files[key].name,
 							type: files[key].type,
 							lastModified: files[key].lastModified,
