@@ -87,7 +87,7 @@ $SESSION->add_history_entry();
 $SMARTY->assign('customergroup', $customergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $customers);
-$SMARTY->assign('customerscount', count($customers));
+$SMARTY->assign('customerscount', empty($customers) ? 0 : count($customers));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('membersnetid', $membersnetid ?? 0);

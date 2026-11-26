@@ -79,7 +79,7 @@ $SESSION->add_history_entry();
 
 $SMARTY->assign('nodegroup', $nodegroup);
 $SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodescount', count($nodes));
+$SMARTY->assign('nodescount', empty($nodes) ? 0 : count($nodes));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('membersnetid', $membersnetid ?? 0);

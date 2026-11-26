@@ -33,7 +33,7 @@ if (isset($_POST['userassignments'])) {
 }
 $tarifftag = $LMS->TarifftagGet($_GET['id']);
 $tariffs = $LMS->GetTariffWithoutTagNames($_GET['id']);
-$tariffscount = count($tariffs);
+$tariffscount = empty($tariffs) ? 0 : count($tariffs);
 
 $layout['pagetitle'] = trans('Edit tag').': '.$tarifftag['name'];
 
