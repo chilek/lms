@@ -204,13 +204,13 @@ switch ($_GET['action']) {
 
         $DB->BeginTrans();
 
-        $status = ($pool['status'] == '1') ? 1 : 0;
+        $status = ($p['status'] == '1') ? 1 : 0;
 
         $query = $DB->Execute(
             'UPDATE voip_pool_numbers SET
                                disabled = ?, name = ?, poolstart = ?, poolend = ?, description = ?, type = ?
                                WHERE id = ?',
-            array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'], $p['poolid'])
+            array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'], $p['poolid'])
         );
 
         if ($query == 1) {
