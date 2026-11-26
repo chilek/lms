@@ -37,6 +37,7 @@ $registry = $DB->GetRow(
         disabled,
         balanceexclude,
         cashsourceid,
+        receiptdatesource,
         cs.name AS cashsourcename
     FROM cashregs reg
     LEFT JOIN numberplans i ON in_numberplanid = i.id

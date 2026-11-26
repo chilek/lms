@@ -50,11 +50,12 @@ if (isset($_POST['registry'])) {
             'disabled' => empty($registry['disabled']) ? 0 : 1,
             'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
             'cashsourceid' => empty($registry['cashsourceid']) || !intval($registry['cashsourceid']) ? null : intval($registry['cashsourceid']),
+            'receiptdatesource' => empty($registry['receiptdatesource']) || !intval($registry['receiptdatesource']) ? null : intval($registry['receiptdatesource']),
         );
         $DB->Execute(
             'INSERT INTO cashregs
-            (name, description, in_numberplanid, out_numberplanid, disabled, balanceexclude, cashsourceid)
-            VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (name, description, in_numberplanid, out_numberplanid, disabled, balanceexclude, cashsourceid, receiptdatesource)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             $args
         );
 

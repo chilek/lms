@@ -35,7 +35,8 @@ $current_registry = $DB->GetRow(
         out_numberplanid,
         disabled,
         balanceexclude,
-        cashsourceid
+        cashsourceid,
+        receiptdatesource
     FROM cashregs
     WHERE id = ?',
     array($id)
@@ -79,7 +80,8 @@ if (isset($_POST['registry'])) {
     $current_registry['description'] = $registry['description'];
     $current_registry['disabled'] = empty($registry['disabled']) ? 0 : 1;
     $current_registry['balanceexclude'] = empty($registry['balanceexclude']) ? 0 : 1;
-    $current_registry['cashsourceid'] = empty($registry['cashsourceid']) ? null : intval($registry['cashsourceid']);
+    $current_registry['cashsourceid'] = empty($registry['cashsourceid']) || !intval($registry['cashsourceid']) ? null : intval($registry['cashsourceid']);
+    $current_registry['receiptdatesource'] = empty($registry['receiptdatesource']) || !intval($registry['receiptdatesource']) ? 0 : intval($registry['receiptdatesource']);
 
     if (isset($registry['users'])) {
         foreach ($registry['users'] as $key => $value) {
@@ -95,14 +97,16 @@ if (isset($_POST['registry'])) {
             'description' => $registry['description'],
             'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
             'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
-            'disabled' => empty($registry['disabled']) ? 0 : 1,
-            'balanceexclude' => empty($registry['balanceexclude']) ? 0 : 1,
-            'cashsourceid' => empty($registry['cashsourceid']) || !intval($registry['cashsourceid']) ? null : intval($registry['cashsourceid']),
+            'disabled' => $current_registry['disabled'],
+            'balanceexclude' => $current_registry['balanceexclude'],
+            'cashsourceid' => $current_registry['cashsourceid'],
+            'receiptdatesource' => $current_registry['receiptdatesource'],
             SYSLOG::RES_CASHREG => $registry['id'],
         );
         $DB->Execute(
             'UPDATE cashregs
-            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?, balanceexclude = ?, cashsourceid = ?
+            SET name = ?, description = ?, in_numberplanid = ?, out_numberplanid = ?, disabled = ?, balanceexclude = ?,
+                cashsourceid = ?, receiptdatesource = ?
             WHERE id = ?',
             $args
         );

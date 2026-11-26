@@ -111,6 +111,24 @@
 				</select>
 			</td>
 		</tr>
+		<tr id="receiptdatesourcerow"{if empty($registry.cashsourceid)} class="lms-ui-disabled"{/if}>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<label for="receiptdatesource">
+					<strong>{trans("Receipt date source")}</strong>
+				</label>
+			</td>
+			<td>
+				<select name="registry[receiptdatesource]" id="receiptdatesource"
+					{if empty($registry.cashsourceid)} disabled{/if}>
+					<option value="0">{trans("current date")}</option>
+					<option value="1"{if $registry.receiptdatesource == 1} selected{/if}>{trans("cash import date")}</option>
+					<option value="2"{if $registry.receiptdatesource == 2} selected{/if}>{trans("cash import operation date")}</option>
+				</select>
+			</td>
+		</tr>
 	{/if}
 	<TR>
 		<TD>
@@ -210,6 +228,13 @@
 
 	$(function() {
 		document.forms['registry'].elements['registry[name]'].focus();
+
+		$('#cashsourceid').change(function() {
+			let cashSourceId = $(this).val();
+			cashSourceId = cashSourceId.length ? parseInt(cashSourceId) : 0;
+			$('#receiptdatesourcerow').toggleClass('lms-ui-disabled', !cashSourceId)
+				.find('select').prop('disabled', !cashSourceId);
+		});
 	});
 
 </script>
