@@ -39,6 +39,7 @@ if (isset($_POST['record'])) {
         $rec[$idx] = trim(strip_tags($val));
     }
 
+    unset($rec['id'], $rec['domain_id'], $rec['domainname']);
     $record = array_merge($record, $rec);
 
     if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
