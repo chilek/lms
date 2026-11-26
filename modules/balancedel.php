@@ -167,6 +167,11 @@ if (!empty($invoices)) {
 
 if (!empty($receipts)) {
     foreach ($receipts as $receiptid) {
+        $regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid = ?', array($receiptid));
+        if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid = ? AND regid = ?', array(Auth::GetCurrentUser(), $regid)) < 256) {
+            continue;
+        }
+
         $LMS->ReceiptDelete($receiptid);
     }
 }
