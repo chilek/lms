@@ -36,6 +36,8 @@ if (!$d) {
     $d = $DB->GetOne('SELECT id FROM domains ORDER BY name LIMIT 1');
 }
 
+$domain = $DB->GetRow('SELECT name, type FROM domains WHERE id = ?', array($d));
+
 $recordslist = $DB->GetAll(
     'SELECT *,
 	(CASE WHEN type=\'TXT\' THEN 1
