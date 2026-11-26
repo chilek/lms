@@ -133,6 +133,18 @@ if (!empty($docitems)) {
 
 if (!empty($invoices)) {
     foreach ($invoices as $invoiceid) {
+        if ($LMS->isDocumentPublished($invoiceid) && !ConfigHelper::checkPrivilege('published_document_modification')) {
+            continue;
+        }
+
+        if ($LMS->getDocumentType($invoiceid) != DOC_INVOICE_PRO && $LMS->isDocumentReferenced($invoiceid)) {
+            continue;
+        }
+
+        if ($LMS->isArchiveDocument($invoiceid)) {
+            continue;
+        }
+
         if ($LMS->isKsefDocument($invoiceid)) {
             continue;
         }
@@ -161,6 +173,14 @@ if (!empty($receipts)) {
 
 if (!empty($notes)) {
     foreach ($notes as $noteid) {
+        if ($LMS->isDocumentPublished($noteid) && !ConfigHelper::checkConfig('privileges.superuser')) {
+            continue;
+        }
+
+        if ($LMS->isArchiveDocument($noteid)) {
+            continue;
+        }
+
         $LMS->DebitNoteDelete($noteid);
     }
 }
