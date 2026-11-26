@@ -33,10 +33,11 @@ if ($LMS->CustomerExists($customerid)) {
         $DB->BeginTrans();
 
         $DB->Execute(
-            'INSERT INTO cash (time, type, userid, value, customerid, comment)
-			VALUES (?NOW?, 1, ?, ?, ?, ?)',
+            'INSERT INTO cash (time, type, userid, value, currency, customerid, comment)
+			VALUES (?NOW?, 1, ?, ?, ?, ?, ?)',
             array(Auth::GetCurrentUser(),
                 str_replace(',', '.', $balance*-1),
+                Localisation::getCurrentCurrency(),
                 $customerid,
                 trans('Accounted'))
         );
