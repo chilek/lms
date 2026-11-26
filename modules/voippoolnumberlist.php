@@ -168,7 +168,7 @@ switch ($_GET['action']) {
 
             $voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
 
-            if (count($voip_phones)) {
+            if (!empty($voip_phones)) {
                 foreach ($voip_phones as $phone) {
                     $ph = $phone['phone'];
 
