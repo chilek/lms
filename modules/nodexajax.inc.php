@@ -142,7 +142,7 @@ function delNodeLock($id)
     $nodeid = intval($_GET['id']);
 
     $DB = LMSDB::getInstance();
-    $DB->Execute('DELETE FROM nodelocks WHERE id = ?', array($id));
+    $DB->Execute('DELETE FROM nodelocks WHERE id = ? AND nodeid = ?', array($id, $nodeid));
 
     $result->call('getNodeLocks');
 
@@ -156,7 +156,7 @@ function toggleNodeLock($id)
     $nodeid = intval($_GET['id']);
 
     $DB = LMSDB::getInstance();
-    $DB->Execute('UPDATE nodelocks SET disabled = (CASE WHEN disabled = 0 THEN 1 ELSE 0 END) WHERE id = ?', array($id));
+    $DB->Execute('UPDATE nodelocks SET disabled = (CASE WHEN disabled = 0 THEN 1 ELSE 0 END) WHERE id = ? AND nodeid = ?', array($id, $nodeid));
 
     $result->call('getNodeLocks');
 
@@ -200,12 +200,13 @@ function updateNodeLock($params)
     $DB->Execute(
         'UPDATE nodelocks
         SET days = ?, fromsec = ?, tosec = ?
-        WHERE id = ?',
+        WHERE id = ? AND nodeid = ?',
         array(
             $days,
             $fromsec,
             $tosec,
-            $formdata['id']
+            $formdata['id'],
+            intval($_GET['id']),
         )
     );
 
