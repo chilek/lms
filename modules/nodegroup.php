@@ -55,7 +55,7 @@ if ($action == 'delete') {
             $nodegroupid = array($_POST['nodegroupid']);
         }
         $nodegroupid = Utils::filterIntegers($nodegroupid);
-        if ($nodegroupids = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN (' . implode(',', $nodegroupid) . ')')) {
+        if (!empty($nodegroupid) && $nodegroupids = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN ?', array($nodegroupid))) {
             foreach ($nodegroupids as $nodegroupid) {
                 $params = array(
                 SYSLOG::RES_NODE => $_GET['id'],
