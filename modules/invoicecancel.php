@@ -33,6 +33,7 @@ if ($id) {
         }
 
         $invoice = $LMS->GetInvoiceContent($id);
+        $document = $invoice;
 
         foreach ($invoice['content'] as $idx => $content) {
             if ($invoice['doctype'] == DOC_CNOTE) {
