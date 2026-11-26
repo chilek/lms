@@ -169,6 +169,10 @@ if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocum
     if (!empty($documents)) {
         $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
             FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
+
+        if (ConfigHelper::checkConfig('phpui.document_send_dialog', true)) {
+            $SMARTY->assign('documentSendContacts', $LMS->GetCustomerContacts($customerid, CONTACT_EMAIL));
+        }
     }
 }
 $taxeslist            = $LMS->GetTaxes();

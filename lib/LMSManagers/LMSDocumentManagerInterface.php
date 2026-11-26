@@ -74,6 +74,8 @@ interface LMSDocumentManagerInterface
 
     public function GetDocumentFullContents($id, $with_reference_document = false, $attachments = null);
 
+    public function substituteDocumentMailPlaceholders($subject, $body, array $document, array $params = array());
+
     public function SendDocuments($docs, $type, $params);
 
     public function deleteDocumentAttachments($docid, array $attachmentIds = []);

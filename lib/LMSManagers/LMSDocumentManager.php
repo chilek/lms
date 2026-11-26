@@ -3031,6 +3031,63 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $document;
     }
 
+    public function substituteDocumentMailPlaceholders($subject, $body, array $document, array $params = array())
+    {
+        global $DOCTYPES;
+
+        extract($params);
+
+        $body = str_replace(
+            array(
+                '%document',
+                '%cdate-y',
+                '%cdate-m',
+                '%cdate-d',
+                '%type',
+                '%title',
+                '%today',
+                '%cid',
+                '%pin',
+                '%customer_name',
+                '%username',
+                '%rusername',
+                '\n',
+            ),
+            array(
+                $document['fullnumber'],
+                date('Y', $document['cdate']),
+                date('m', $document['cdate']),
+                date('d', $document['cdate']),
+                $DOCTYPES[$document['type']],
+                $document['content_title'],
+                date('Y-m-d', $currtime),
+                $document['customerid'],
+                $document['pin'],
+                $document['name'],
+                $username,
+                $rusername,
+                "\n",
+            ),
+            $body
+        );
+
+        $subject = str_replace(
+            array(
+                '%document',
+                '%type',
+                '%title',
+            ),
+            array(
+                $document['fullnumber'],
+                $DOCTYPES[$document['type']],
+                $document['content_title'],
+            ),
+            $subject
+        );
+
+        return compact('subject', 'body');
+    }
+
     public function SendDocuments($docs, $type, $params)
     {
         global $LMS, $DOCTYPES, $DOCTYPE_ALIASES;
@@ -3049,10 +3106,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (!isset($currtime)) {
             $currtime = time();
         }
-
-        $month = date('m', $currtime);
-        $day = date('d', $currtime);
-        $year = date('Y', $currtime);
 
         if (!empty($docs)) {
             $doc = reset($docs);
@@ -3300,56 +3353,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
             }
 
-            $body = isset($mail_bodies[$document['type']]) ? $mail_bodies[$document['type']] : $mail_body;
-            $subject = isset($mail_subjects[$document['type']]) ? $mail_subjects[$document['type']] : $mail_subject;
+            $body = $mailBody ?? (isset($mail_bodies[$document['type']]) ? $mail_bodies[$document['type']] : $mail_body);
+            $subject = $mailSubject ?? (isset($mail_subjects[$document['type']]) ? $mail_subjects[$document['type']] : $mail_subject);
 
-            $body = str_replace(
-                array(
-                    '%document',
-                    '%cdate-y',
-                    '%cdate-m',
-                    '%cdate-d',
-                    '%type',
-                    '%title',
-                    '%today',
-                    '%cid',
-                    '%pin',
-                    '%customer_name',
-                    '%username',
-                    '%rusername',
-                    '\n',
-                ),
-                array(
-                    $document['fullnumber'],
-                    date('Y', $document['cdate']),
-                    date('m', $document['cdate']),
-                    date('d', $document['cdate']),
-                    $DOCTYPES[$document['type']],
-                    $document['content_title'],
-                    $year . '-' . $month . '-' . $day,
-                    $document['customerid'],
-                    $document['pin'],
-                    $document['name'],
-                    $username,
-                    $rusername,
-                    "\n",
-                ),
-                $body
+            $mailPlaceholders = $this->substituteDocumentMailPlaceholders(
+                $subject,
+                $body,
+                $document,
+                compact('currtime', 'username', 'rusername')
             );
-
-            $subject = str_replace(
-                array(
-                    '%document',
-                    '%type',
-                    '%title',
-                ),
-                array(
-                    $document['fullnumber'],
-                    $DOCTYPES[$document['type']],
-                    $document['content_title'],
-                ),
-                $subject
-            );
+            $subject = $mailPlaceholders['subject'];
+            $body = $mailPlaceholders['body'];
 
             $mailto = array();
             $mailto_qp_encoded = array();

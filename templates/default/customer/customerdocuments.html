@@ -245,6 +245,9 @@
 				</fieldset>
 			{/tab_buttons}
 		{/tab_button_panel}
+		{if isset($documentSendContacts)}
+			{include file="customer/customerdocumentsenddialog.html"}
+		{/if}
 {/if}
 
 	{/tab_contents}

@@ -63,6 +63,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.invoice_check_payment'       => CONFIG_TYPE_BOOLEAN,
         'phpui.logout_confirmation'         => CONFIG_TYPE_BOOLEAN,
         'phpui.invoice_send_dialog'         => CONFIG_TYPE_BOOLEAN,
+        'phpui.document_send_dialog'        => CONFIG_TYPE_BOOLEAN,
         'finances.cashimport_checkinvoices' => CONFIG_TYPE_BOOLEAN,
         'receipts.show_nodes_warning'       => CONFIG_TYPE_BOOLEAN,
         'invoices.customer_bankaccount'     => CONFIG_TYPE_BOOLEAN,

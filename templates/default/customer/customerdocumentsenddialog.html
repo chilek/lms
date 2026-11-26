@@ -1,0 +1,169 @@
+<style>
+
+	#document-send-dialog {
+		display: none;
+		min-width: 40em;
+	}
+
+	#document-send-dialog .document-send-recipient {
+		display: block;
+	}
+
+	#document-send-dialog input[type="text"],
+	#document-send-dialog input[type="email"],
+	#document-send-dialog textarea {
+		width: 98%;
+	}
+
+	#document-send-dialog textarea {
+		resize: vertical;
+	}
+
+</style>
+
+<div id="document-send-dialog" class="lms-ui-dialog" title="{trans("Send documents")}">
+	<form method="post" id="document-send-form" action="?m=documentsend" target="_blank">
+		<input type="hidden" name="documentsend[customerid]" value="{$customerinfo.id}">
+		<div class="document-send-marks"></div>
+		<ol class="dialog-box">
+			<li>
+				<strong>{trans("Recipients:")}</strong>
+				{foreach $documentSendContacts as $contact}
+					{$contactDisabled = ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED}
+					{$contactDocuments = ($contact.type & $smarty.const.CONTACT_DOCUMENTS) == $smarty.const.CONTACT_DOCUMENTS}
+					<label class="document-send-recipient{if $contactDisabled} blend{/if}">
+						<input type="checkbox" name="documentsend[recipients][]" value="{$contact.contact|escape}"
+							{if $contactDocuments && !$contactDisabled} checked{/if}>
+						{$contact.fullname|escape}
+					</label>
+				{/foreach}
+			</li>
+			<li>
+				<strong>{trans("Additional e-mail:")}</strong><br>
+				<input type="email" name="documentsend[extraemail]">
+			</li>
+			<li id="document-send-common-text" style="display: none;">
+				<label>
+					<input type="hidden" name="documentsend[commontext]" value="0">
+					<input type="checkbox" name="documentsend[commontext]" value="1" id="document-send-common-text-checkbox">
+					{trans("Use this subject and body for all selected documents")}
+				</label>
+			</li>
+			<li>
+				<strong>{trans("Subject:")}</strong><br>
+				<input type="text" name="documentsend[subject]" required>
+			</li>
+			<li>
+				<strong>{trans("Body:")}</strong><br>
+				<textarea name="documentsend[body]" rows="12"></textarea>
+			</li>
+		</ol>
+		<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+			<div class="ui-dialog-buttonset">
+				{button type="submit" class="lms-ui-button ui-button ui-corner-all ui-widget" icon="mail"
+					id="document-send-apply-button" label="Send"}
+				{button class="lms-ui-button ui-button ui-corner-all ui-widget" icon="cancel"
+					id="document-send-cancel-button" label="Cancel"}
+			</div>
+		</div>
+	</form>
+</div>
+
+<script>
+
+	var documentSendDialog;
+
+	function openDocumentSendDialog() {
+		var button = $('#send-documents');
+		if (button.prop('disabled')) {
+			return;
+		}
+		button.prop('disabled', true);
+
+		var data = [
+			{ name: 'customerid', value: $('#document-send-form [name="documentsend[customerid]"]').val() }
+		];
+		$('[form="customerdocuments-form"].document-checkbox:checked').each(function() {
+			data.push({ name: $(this).attr('name'), value: $(this).val() });
+		});
+
+		$.ajax({
+			url: '?m=documentsend&action=preview&api=1',
+			method: 'POST',
+			dataType: 'json',
+			data: data
+		}).done(function(result) {
+			if (result.error) {
+				alertDialog(result.error, button);
+				return;
+			}
+			var documentSendSubject = $('#document-send-form [name="documentsend[subject]"]');
+			var documentSendBody = $('#document-send-form [name="documentsend[body]"]');
+			var documentSendCommonText = $('#document-send-common-text');
+			var documentSendCommonTextCheckbox = $('#document-send-common-text-checkbox');
+			var documentSendMixedTemplates = !!result.mixedTemplates;
+
+			documentSendSubject.val(result.subject);
+			documentSendBody.val(result.body);
+			documentSendCommonText.toggle(documentSendMixedTemplates);
+			documentSendCommonTextCheckbox.prop('checked', !documentSendMixedTemplates);
+			documentSendSubject.prop('disabled', documentSendMixedTemplates).prop('required', !documentSendMixedTemplates);
+			documentSendBody.prop('disabled', documentSendMixedTemplates);
+			documentSendDialog.open();
+		}).fail(function(jqXHR) {
+			alertDialog($t('AJAX: Invalid result - status: $a', jqXHR.status), button);
+		}).always(function() {
+			button.prop('disabled', false);
+		});
+	}
+
+	$(function() {
+		documentSendDialog = new LmsUiDialog('document-send-dialog', {
+			width: 'auto',
+			position: {
+				my: "left bottom",
+				at: "top right",
+				of: $('#send-documents')
+			}
+		});
+
+		$('#document-send-cancel-button').click(function() {
+			documentSendDialog.close();
+		});
+
+		$('#document-send-common-text-checkbox').change(function() {
+			var useCommonText = $(this).prop('checked');
+			var documentSendSubject = $('#document-send-form [name="documentsend[subject]"]');
+			var documentSendBody = $('#document-send-form [name="documentsend[body]"]');
+
+			documentSendSubject.prop('disabled', !useCommonText).prop('required', useCommonText);
+			documentSendBody.prop('disabled', !useCommonText);
+		});
+
+		$('#document-send-form').submit(function() {
+			var form = $(this);
+
+			if (!form.find('[name="documentsend[recipients][]"]:checked').length
+				&& !form.find('[name="documentsend[extraemail]"]').val().trim().length) {
+				$('#document-send-apply-button').prop('disabled', false);
+				alertDialog($t('Unable to send message. No recipients selected!'), this);
+				return false;
+			}
+
+			var marks = form.find('.document-send-marks').empty();
+			$('[form="customerdocuments-form"].lms-ui-multi-check:checked').each(function() {
+				$('<input>', {
+					type: 'hidden',
+					name: $(this).attr('name'),
+					value: $(this).val()
+				}).appendTo(marks);
+			});
+
+			setTimeout(function() {
+				documentSendDialog.close();
+				$('#document-send-apply-button').prop('disabled', false);
+			}, 0);
+		});
+	});
+
+</script>

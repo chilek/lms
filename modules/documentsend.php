@@ -26,12 +26,148 @@
 
 $layout['pagetitle'] = trans('Document send');
 
+if (isset($_GET['action']) && $_GET['action'] == 'preview' && isset($_GET['api'])) {
+    header('Content-Type: application/json');
+
+    $documentSendCustomerId = intval($_POST['customerid'] ?? 0);
+    $documentSendIds = isset($_POST['marks']) ? Utils::filterIntegers(array_values($_POST['marks'])) : array();
+
+    if (empty($documentSendIds) || empty($documentSendCustomerId)) {
+        die(json_encode(array(
+            'error' => trans("Fatal error: No documents were selected!"),
+        )));
+    }
+
+    $userId = Auth::GetCurrentUser();
+
+    $docs = $DB->GetAll(
+        'SELECT
+            d.id,
+            d.number,
+            d.cdate,
+            d.type,
+            d.customerid,
+            d.name,
+            d.divisionid,
+            c.pin,
+            n.template,
+            dc.title AS content_title
+        FROM documents d
+        JOIN documentcontents dc ON dc.docid = d.id
+        JOIN customers c ON c.id = d.customerid
+        JOIN docrights r ON r.doctype = d.type AND r.userid = ' . $userId . '
+        LEFT JOIN numberplans n ON n.id = d.numberplanid
+        WHERE d.id IN ?
+            AND d.customerid = ' . $documentSendCustomerId . '
+            AND d.cancelled = 0
+            AND (r.rights & ?) > 0
+        ORDER BY d.id',
+        array(
+            $documentSendIds,
+            DOCRIGHT_VIEW,
+        )
+    );
+
+    if (empty($docs)) {
+        die(json_encode(array(
+            'error' => trans("Fatal error: No documents were selected!"),
+        )));
+    }
+
+    $doc = reset($docs);
+
+    ConfigHelper::setFilter($doc['divisionid'], $userId);
+
+    $docTypeAlias = $DOCTYPE_ALIASES[$doc['type']];
+    $subject = ConfigHelper::getConfig('documents-' . $docTypeAlias . '.mail_subject', ConfigHelper::getConfig('documents.mail_subject', '%document'));
+    $body = ConfigHelper::getConfig('documents-' . $docTypeAlias . '.mail_body', ConfigHelper::getConfig('documents.mail_body', '%document'));
+
+    $mixedTemplates = false;
+    foreach ($docs as $docItem) {
+        if ($docItem['id'] == $doc['id']) {
+            continue;
+        }
+        ConfigHelper::setFilter($docItem['divisionid'], $userId);
+        $itemTypeAlias = $DOCTYPE_ALIASES[$docItem['type']];
+        $itemSubject = ConfigHelper::getConfig('documents-' . $itemTypeAlias . '.mail_subject', ConfigHelper::getConfig('documents.mail_subject', '%document'));
+        $itemBody = ConfigHelper::getConfig('documents-' . $itemTypeAlias . '.mail_body', ConfigHelper::getConfig('documents.mail_body', '%document'));
+        if ($itemSubject !== $subject || $itemBody !== $body) {
+            $mixedTemplates = true;
+            break;
+        }
+    }
+    ConfigHelper::setFilter($doc['divisionid'], $userId);
+
+    if (count($docs) == 1) {
+        $doc['fullnumber'] = docnumber(array(
+            'number' => $doc['number'],
+            'template' => $doc['template'],
+            'cdate' => $doc['cdate'],
+            'customerid' => $doc['customerid'],
+        ));
+
+        $user = $LMS->GetUserInfo($userId, false);
+
+        $mailPlaceholders = $LMS->substituteDocumentMailPlaceholders(
+            $subject,
+            $body,
+            $doc,
+            array(
+                'currtime' => time(),
+                'username' => $user['name'],
+                'rusername' => $user['rname'],
+            )
+        );
+        $subject = $mailPlaceholders['subject'];
+        $body = $mailPlaceholders['body'];
+    }
+
+    die(json_encode(array(
+        'subject' => $subject,
+        'body' => $body,
+        'mixedTemplates' => $mixedTemplates,
+    )));
+}
+
 $SMARTY->display('header.html');
 
 if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=documentsend/', $_SERVER['HTTP_REFERER'])) {
     set_time_limit(0);
 
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
+
+    $mailSubject = $mailBody = null;
+
+    if (isset($_POST['documentsend']) && is_array($_POST['documentsend'])) {
+        $documentSend = $_POST['documentsend'];
+        $documentSendCustomerId = intval($documentSend['customerid'] ?? 0);
+
+        $documentSendEmails = empty($documentSend['recipients']) ? array() : (array) $documentSend['recipients'];
+        if (!empty($documentSend['extraemail'])) {
+            $extraEmail = is_string($documentSend['extraemail']) ? trim($documentSend['extraemail']) : '';
+            if (check_email($extraEmail)) {
+                $documentSendEmails[] = $extraEmail;
+            } else {
+                $documentSendInvalidExtraEmail = true;
+            }
+        }
+        $documentSendRecipients = array();
+        foreach ($documentSendEmails as $email) {
+            $email = is_string($email) ? trim($email) : '';
+            if (check_email($email)) {
+                $documentSendRecipients[$email] = $email;
+            }
+        }
+
+        if (isset($documentSend['commontext']) && ConfigHelper::checkValue($documentSend['commontext'])) {
+            if (isset($documentSend['subject']) && is_string($documentSend['subject']) && strlen(trim($documentSend['subject']))) {
+                $mailSubject = trim($documentSend['subject']);
+            }
+            if (isset($documentSend['body']) && is_string($documentSend['body'])) {
+                $mailBody = str_replace("\r\n", "\n", $documentSend['body']);
+            }
+        }
+    }
 
     if (isset($_POST['marks'])) {
         $docids = $DB->GetCol(
@@ -45,6 +181,10 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
     if (empty($docids)) {
         echo '<span class="red">' . trans("Fatal error: No documents were selected!") . '</span><br>';
+    } elseif (!empty($documentSendInvalidExtraEmail)) {
+        echo '<span class="red">' . trans('Unable to send message. Invalid e-mail address: $a', htmlspecialchars($extraEmail)) . '</span><br>';
+    } elseif (isset($documentSendRecipients) && (empty($documentSendRecipients) || empty($documentSendCustomerId))) {
+        echo '<span class="red">' . trans("Unable to send message. No recipients selected!") . '</span><br>';
     } else {
         $docs = $DB->GetAll(
             "SELECT
@@ -55,7 +195,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 m.email,
                 p.phone
             FROM documents d
-            JOIN (
+            " . (isset($documentSendRecipients) ? 'LEFT ' : '') . "JOIN (
                 SELECT
                     customerid, "
                     . $DB->GroupConcat('contact') . " AS email
@@ -72,7 +212,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 GROUP BY customerid
             ) p ON p.customerid = d.customerid
             WHERE d.id IN ?
-                AND d.cancelled = 0
+                AND d.cancelled = 0"
+                . (isset($documentSendRecipients) ? ' AND d.customerid = ' . $documentSendCustomerId : '') . "
             ORDER BY d.id",
             array(
                 CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
@@ -82,6 +223,13 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 $docids,
             )
         );
+
+        if (!empty($docs) && isset($documentSendRecipients)) {
+            foreach ($docs as &$doc) {
+                $doc['email'] = implode(',', $documentSendRecipients);
+            }
+            unset($doc);
+        }
 
         if (!empty($docs)) {
             $currtime = time();
@@ -107,7 +255,9 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     'currtime',
                     'quiet',
                     'test',
-                    'attachments'
+                    'attachments',
+                    'mailSubject',
+                    'mailBody'
                 )
             );
         }

@@ -3839,6 +3839,12 @@ class LMS
         return $manager->GetDocumentFullContents($id, $with_reference_document, $attachments);
     }
 
+    public function substituteDocumentMailPlaceholders($subject, $body, array $document, array $params = array())
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->substituteDocumentMailPlaceholders($subject, $body, $document, $params);
+    }
+
     public function SendDocuments($docs, $type, $params)
     {
         $manager = $this->getDocumentManager();
