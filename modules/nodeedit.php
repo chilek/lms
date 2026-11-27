@@ -114,6 +114,10 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
+    if (!ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip', true))) {
+        $nodeedit['ipaddr_pub'] = '';
+    }
+
     if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
         $SESSION->redirect_to_history_entry();
     }
