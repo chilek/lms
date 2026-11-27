@@ -54,6 +54,10 @@ if (isset($ids) || isset($cid)) {
     }
 
     if (!empty($ids)) {
+        $ids = $DB->GetCol('SELECT id FROM assignments WHERE id IN ? AND customerid = ?', array($ids, $customer));
+    }
+
+    if (!empty($ids)) {
         $DB->BeginTrans();
         foreach ($ids as $id) {
             $LMS->DeleteAssignment($id);
