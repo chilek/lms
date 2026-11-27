@@ -896,7 +896,6 @@ CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time);
 CREATE INDEX voip_cdr_creationdate_idx ON voip_cdr (creationdate);
-CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction);
 CREATE INDEX voip_cdr_type_idx ON voip_cdr (type);
 CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental);
 CREATE INDEX voip_cdr_callervoipaccountid_idx ON voip_cdr (callervoipaccountid);
@@ -1239,7 +1238,6 @@ CREATE TABLE invoicecontents (
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3
 );
-CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 CREATE INDEX invoicecontents_tariffid_idx ON invoicecontents (tariffid);
 CREATE INDEX invoicecontents_docid_itemid_idx ON invoicecontents(docid, itemid);
 
@@ -1308,7 +1306,6 @@ CREATE TABLE cashimport (
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
 CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
-CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 CREATE INDEX cashimport_extid_idx ON cashimport (extid);
 
 /* ---------------------------------------------------
@@ -1356,8 +1353,6 @@ CREATE TABLE cash (
 	CONSTRAINT cash_importid_ukey UNIQUE (importid)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);
-CREATE INDEX cash_docid_idx ON cash (docid);
-CREATE INDEX cash_importid_idx ON cash (importid);
 CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
 CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
@@ -1706,7 +1701,6 @@ CREATE TABLE netdevicemacs (
     CONSTRAINT netdevicemacs_mac_ukey UNIQUE (mac),
     CONSTRAINT netdevicemacs_netdevid_label_ukey UNIQUE (netdevid, label)
 );
-CREATE INDEX netdevicemacs_netdevid_idx ON netdevicemacs (netdevid);
 CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label);
 
 /* ---------------------------------------------------
@@ -2857,7 +2851,6 @@ CREATE TABLE customercontacts (
     PRIMARY KEY (id)
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
-CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
 CREATE INDEX customercontacts_contact_type_idx ON customercontacts (contact, type);
 
 /* ---------------------------------------------------
@@ -3143,8 +3136,6 @@ CREATE TABLE userdivisions (
     PRIMARY KEY (id),
     CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
 );
-DROP INDEX IF EXISTS userdivisions_userid_idx;
-CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
 
 /* ---------------------------------------------------
  Structure of table passwdhistory
@@ -3316,7 +3307,6 @@ CREATE TABLE ksefinvoices (
 );
 CREATE INDEX ksefinvoices_issue_date_idx ON ksefinvoices (issue_date);
 CREATE INDEX ksefinvoices_permanent_storage_date_idx ON ksefinvoices (permanent_storage_date);
-CREATE INDEX ksefinvoices_ksef_number_idx ON ksefinvoices (ksef_number);
 CREATE INDEX ksefinvoices_corrected_ksef_number_idx ON ksefinvoices (corrected_ksef_number);
 CREATE INDEX ksefinvoices_seller_ten_idx ON ksefinvoices (seller_ten);
 CREATE INDEX ksefinvoices_buyer_identifier_value_idx ON ksefinvoices (buyer_identifier_value);
@@ -5057,6 +5047,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112702');
 
 COMMIT;
