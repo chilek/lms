@@ -59,7 +59,7 @@ if ($id && $LMS->VoipAccountExists($id)) {
     // Selected voipaccounts
     $voipaccounts = array();
     foreach ($_POST['marks'] as $id) {
-        if ($LMS->VoipAccountSet($id, $access)) {
+        if ($LMS->VoipAccountExists($id) && $LMS->VoipAccountSet($id, $access)) {
             $voipaccounts[] = $id;
         }
     }
