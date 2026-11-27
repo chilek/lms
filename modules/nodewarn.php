@@ -55,13 +55,13 @@ if (isset($setwarnings['mnodeid'])) {
                 if (empty($msgtmplid)) {
                     break;
                 }
-                $LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, '', $setwarnings['message']);
+                $LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, '', null, null, $setwarnings['message']);
                 break;
             case 3:
                 if (!strlen($msgtmplname)) {
                     break;
                 }
-                $LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, '', $setwarnings['message']);
+                $LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, '', null, null, $setwarnings['message']);
                 break;
         }
     }
