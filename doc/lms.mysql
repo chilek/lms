@@ -219,7 +219,7 @@ CREATE TABLE users (
   position varchar(255) NOT NULL DEFAULT '',
   rights text           NOT NULL DEFAULT '',
   hosts varchar(255)    NOT NULL DEFAULT '',
-  trustedhosts varchar(255) DEFAULT NULL,
+  trustedhosts varchar(256) DEFAULT NULL,
   passwd varchar(255)   NOT NULL DEFAULT '',
   netpasswd varchar(255)   DEFAULT NULL,
   passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -1187,7 +1187,8 @@ CREATE TABLE voip_pool_numbers (
 	poolend varchar(20) NOT NULL,
 	description text,
 	type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	UNIQUE (name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1209,7 +1210,7 @@ CREATE TABLE voip_emergency_numbers (
 #
 CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
-	value decimal(9,2)      NOT NULL DEFAULT '0',
+	value decimal(9,3)      NOT NULL DEFAULT '0',
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
@@ -1537,7 +1538,7 @@ CREATE TABLE pna (
 	PRIMARY KEY (id),
 	INDEX fromnumber (fromnumber),
 	INDEX tonumber (tonumber),
-	UNIQUE KEY zip (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity),
+	UNIQUE KEY zip (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity),
 	FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -4829,4 +4830,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112701');

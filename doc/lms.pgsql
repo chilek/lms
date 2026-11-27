@@ -19,7 +19,7 @@ CREATE TABLE users (
 	position varchar(255) 	DEFAULT '' NOT NULL,
 	rights text 	DEFAULT '' NOT NULL,
 	hosts varchar(255) 	DEFAULT '' NOT NULL,
-	trustedhosts varchar(255) DEFAULT NULL,
+	trustedhosts varchar(256) DEFAULT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
 	netpasswd varchar(255) DEFAULT NULL,
 	passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -711,7 +711,7 @@ CREATE TABLE cashregs (
 DROP TABLE IF EXISTS receiptcontents CASCADE;
 CREATE TABLE receiptcontents (
 	docid integer		NOT NULL
-		CONSTRAINT receiptcontents_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT receiptcontents_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2)	DEFAULT 0 NOT NULL,
 	regid integer		DEFAULT NULL
@@ -890,7 +890,7 @@ CREATE TABLE voip_cdr (
 	prefixname varchar(256) DEFAULT NULL,
 	incremental smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (direction, uniqueid)
+	CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (uniqueid, direction)
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
@@ -2981,7 +2981,7 @@ DROP TABLE IF EXISTS logtransactions CASCADE;
 CREATE TABLE logtransactions (
 	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
 	userid integer		DEFAULT NULL
-		CONSTRAINT logtransactions REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT logtransactions_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	time bigint		DEFAULT 0 NOT NULL,
 	module varchar(50)	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
@@ -5057,6 +5057,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112701');
 
 COMMIT;
