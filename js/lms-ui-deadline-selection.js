@@ -58,6 +58,7 @@ $(function() {
 
         deadline_days_elem.scombobox('change', function () {
             if (!cdate_elem.val().length) {
+                const cdt = new Date();
                 cdate_elem.val(sprintf("%04d/%02d/%02d", cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()));
             }
             const ddt = new Date(cdate_elem.val().replaceAll('/', '-') + 'T00:00:00');
