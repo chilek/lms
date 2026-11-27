@@ -227,6 +227,7 @@ CREATE TABLE location_buildings (
 	PRIMARY KEY (id),
 	CONSTRAINT location_buildings_extid_ukey UNIQUE (extid)
 );
+CREATE INDEX location_buildings_street_id_idx ON location_buildings (street_id);
 DROP INDEX IF EXISTS location_cityid_index;
 CREATE INDEX location_cityid_index ON location_buildings (city_id);
 
@@ -252,6 +253,8 @@ CREATE TABLE addresses (
 	flat       varchar(20) NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX addresses_city_id_idx ON addresses (city_id);
+CREATE INDEX addresses_street_id_idx ON addresses (street_id);
 
 /* ---------------------------------------------------
  Structure of table "divisions"
@@ -355,6 +358,7 @@ CREATE TABLE customers (
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
+CREATE INDEX customers_divisionid_idx ON customers (divisionid);
 
 /* --------------------------------------------------------
   Structure of table "customerconsents" (customerconsents)
@@ -460,6 +464,7 @@ CREATE TABLE customercallassignments (
     CONSTRAINT customercallassignments_customercallid_ukey
         UNIQUE (customercallid, customerid)
 );
+CREATE INDEX customercallassignments_customerid_idx ON customercallassignments (customerid);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -527,6 +532,7 @@ CREATE TABLE customer_addresses (
     PRIMARY KEY (id),
     UNIQUE(customer_id, address_id)
 );
+CREATE INDEX customer_addresses_address_id_idx ON customer_addresses (address_id);
 
 /* --------------------------------------------------------
   Structure of table "documents"
@@ -617,6 +623,9 @@ CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
 CREATE INDEX documents_type_idx ON documents (type);
 CREATE INDEX documents_fullnumber_idx ON documents (fullnumber);
+CREATE INDEX documents_divisionid_idx ON documents (divisionid);
+CREATE INDEX documents_recipient_address_id_idx ON documents (recipient_address_id);
+CREATE INDEX documents_post_address_id_idx ON documents (post_address_id);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -759,6 +768,8 @@ CREATE TABLE voipaccounts (
 	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX voipaccounts_ownerid_idx ON voipaccounts (ownerid);
+CREATE INDEX voipaccounts_address_id_idx ON voipaccounts (address_id);
 
 /* --------------------------------------------------------
   Structure of table "voip_rule_groups"
@@ -888,6 +899,8 @@ CREATE INDEX voip_cdr_creationdate_idx ON voip_cdr (creationdate);
 CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction);
 CREATE INDEX voip_cdr_type_idx ON voip_cdr (type);
 CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental);
+CREATE INDEX voip_cdr_callervoipaccountid_idx ON voip_cdr (callervoipaccountid);
+CREATE INDEX voip_cdr_calleevoipaccountid_idx ON voip_cdr (calleevoipaccountid);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -1184,6 +1197,10 @@ CREATE TABLE assignments (
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
+CREATE INDEX assignments_promotionschemaid_idx ON assignments (promotionschemaid);
+CREATE INDEX assignments_docid_idx ON assignments (docid);
+CREATE INDEX assignments_liabilityid_idx ON assignments (liabilityid);
+CREATE INDEX assignments_recipient_address_id_idx ON assignments (recipient_address_id);
 
 /* --------------------------------------------------------
   Structure of table "voip_number_assignments"
@@ -1373,6 +1390,8 @@ CREATE TABLE pna (
 );
 CREATE INDEX pna_fromnumber_idx ON pna (fromnumber);
 CREATE INDEX pna_tonumber_idx ON pna (tonumber);
+CREATE INDEX pna_cityid_idx ON pna (cityid);
+CREATE INDEX pna_streetid_idx ON pna (streetid);
 
 /* ---------------------------------------------------
  Structure of table "ewx_channels" (EtherWerX(R))
@@ -1468,6 +1487,7 @@ CREATE INDEX netranges_downlink_idx ON netranges (downlink);
 CREATE INDEX netranges_uplink_idx ON netranges (uplink);
 CREATE INDEX netranges_type_idx ON netranges (type);
 CREATE INDEX netranges_services_idx ON netranges (services);
+CREATE INDEX netranges_buildingid_idx ON netranges (buildingid);
 
 /* ---------------------------------------------------
  Structure of table "netnodes"
@@ -1501,6 +1521,7 @@ CREATE TABLE netnodes (
 	services varchar(100) NOT NULL DEFAULT '',
 	PRIMARY KEY(id)
 );
+CREATE INDEX netnodes_address_id_idx ON netnodes (address_id);
 
 /* --------------------------------------------------------
 Structure of table "netnodecontacts"
@@ -1664,6 +1685,9 @@ CREATE TABLE netdevices (
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
+CREATE INDEX netdevices_ownerid_idx ON netdevices (ownerid);
+CREATE INDEX netdevices_netnodeid_idx ON netdevices (netnodeid);
+CREATE INDEX netdevices_address_id_idx ON netdevices (address_id);
 
 /* ---------------------------------------------------
  Structure of table "netdevicemacs"
@@ -1767,6 +1791,7 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 CREATE INDEX nodes_netid_idx ON nodes (netid);
+CREATE INDEX nodes_address_id_idx ON nodes (address_id);
 
 /* --------------------------------------------------------
   Structure of table "routednetworks"
@@ -1824,6 +1849,7 @@ CREATE TABLE nodelocks (
 	disabled 		smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX nodelocks_nodeid_idx ON nodelocks (nodeid);
 
 /* --------------------------------------------------------
   Structure of table "macs"
@@ -2110,6 +2136,7 @@ CREATE TABLE netlinks (
 );
 CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
 CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector);
+CREATE INDEX netlinks_dst_idx ON netlinks (dst);
 
 DROP SEQUENCE IF EXISTS netlinkpoints_id_seq;
 CREATE SEQUENCE netlinkpoints_id_seq;
@@ -2246,6 +2273,13 @@ CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
+CREATE INDEX rttickets_owner_idx ON rttickets (owner);
+CREATE INDEX rttickets_verifierid_idx ON rttickets (verifierid);
+CREATE INDEX rttickets_nodeid_idx ON rttickets (nodeid);
+CREATE INDEX rttickets_netnodeid_idx ON rttickets (netnodeid);
+CREATE INDEX rttickets_netdevid_idx ON rttickets (netdevid);
+CREATE INDEX rttickets_address_id_idx ON rttickets (address_id);
+CREATE INDEX rttickets_parentid_idx ON rttickets (parentid);
 
 DROP TABLE IF EXISTS rtticketlastview CASCADE;
 CREATE TABLE rtticketlastview (
@@ -2290,6 +2324,8 @@ CREATE TABLE rtmessages (
 );
 
 CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
+CREATE INDEX rtmessages_customerid_idx ON rtmessages (customerid);
+CREATE INDEX rtmessages_inreplyto_idx ON rtmessages (inreplyto);
 
 DROP SEQUENCE IF EXISTS rtrights_id_seq;
 CREATE SEQUENCE rtrights_id_seq;
@@ -2658,6 +2694,7 @@ CREATE INDEX events_netdevid_idx ON events (netdevid);
 CREATE INDEX events_divisionid_idx ON events (divisionid);
 CREATE INDEX events_customerid_idx ON events (customerid);
 CREATE INDEX events_ticketid_idx ON events (ticketid);
+CREATE INDEX events_address_id_idx ON events (address_id);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2670,6 +2707,7 @@ CREATE TABLE eventassignments (
 		CONSTRAINT eventassignments_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT eventassignments_eventid_key UNIQUE (eventid, userid)
 );
+CREATE INDEX eventassignments_userid_idx ON eventassignments (userid);
 
 /* ---------------------------------------------------
  Structure of table "sessions"
@@ -3145,6 +3183,7 @@ CREATE TABLE filecontainers (
 		CONSTRAINT filecontainers_netdevmodelid_fkey REFERENCES netdevicemodels (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
+CREATE INDEX filecontainers_messageid_idx ON filecontainers (messageid);
 
 /* ---------------------------------------------------
  Structure of table files
@@ -3206,6 +3245,8 @@ CREATE TABLE ksefdocuments
     PRIMARY KEY (id)
 );
 CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
+CREATE INDEX ksefdocuments_docid_idx ON ksefdocuments (docid);
+CREATE INDEX ksefdocuments_batchsessionid_idx ON ksefdocuments (batchsessionid);
 
 /* ---------------------------------------------------
  Structure of table ksefconfig
@@ -3300,6 +3341,7 @@ CREATE TABLE ksefinvoicethirdsubjects (
 CREATE INDEX ksefinvoicethirdsubjects_identifier_type_idx ON ksefinvoicethirdsubjects (identifier_type);
 CREATE INDEX ksefinvoicethirdsubjects_identifier_value_idx ON ksefinvoicethirdsubjects (identifier_value);
 CREATE INDEX ksefinvoicethirdsubjects_role_idx ON ksefinvoicethirdsubjects (role);
+CREATE INDEX ksefinvoicethirdsubjects_ksefinvoiceid_idx ON ksefinvoicethirdsubjects (ksefinvoiceid);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoicesummaries
@@ -3374,6 +3416,7 @@ CREATE TABLE ksefinvoicetagassignments (
         CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id)
 );
+CREATE INDEX ksefinvoicetagassignments_ksef_invoice_id_idx ON ksefinvoicetagassignments (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
@@ -5014,6 +5057,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112700');
 
 COMMIT;
