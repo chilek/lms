@@ -672,7 +672,7 @@ switch ($action) {
             strtotime('yesterday', min($sdate, $cdate, time()))
         );
         if (!isset($invoice['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
+            die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($invoice['currency']) . ' currency!<br>');
         }
 
         $DB->BeginTrans();

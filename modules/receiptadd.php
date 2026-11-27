@@ -712,7 +712,7 @@ switch ($action) {
             $receipt['contents'] = $contents;
             $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
             if (!isset($receipt['currencyvalue'])) {
-                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+                die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($receipt['currency']) . ' currency!<br>');
             }
             $result = $LMS->AddReceipt($receipt);
             if (is_array($result)) {
@@ -733,7 +733,7 @@ switch ($action) {
             $receipt['contents'] = $contents;
             $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
             if (!isset($receipt['currencyvalue'])) {
-                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+                die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($receipt['currency']) . ' currency!<br>');
             }
             $result = $LMS->AddReceipt($receipt);
             if (is_array($result)) {
@@ -777,7 +777,7 @@ switch ($action) {
 
             $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
             if (!isset($receipt['currencyvalue'])) {
-                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+                die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($receipt['currency']) . ' currency!<br>');
             }
 
             $DB->BeginTrans();
