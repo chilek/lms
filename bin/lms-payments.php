@@ -1284,7 +1284,7 @@ $cashes = $DB->GetAll(
 setlocale(LC_NUMERIC, 'C');
 
 // solid payments
-$payments = $DB->GetAll(
+$payments = empty($customerid) ? $DB->GetAll(
     "SELECT * FROM payments WHERE value <> 0
 			AND (period = ? OR (period = ? AND at = ?)
 				OR (period = ? AND at = ?)
@@ -1292,7 +1292,7 @@ $payments = $DB->GetAll(
 				OR (period = ? AND at = ?)
 				OR (period = ? AND at = ?))",
     array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday)
-);
+) : array();
 
 $DB->BeginTrans();
 
