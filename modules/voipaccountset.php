@@ -69,8 +69,4 @@ if ($id && $LMS->VoipAccountExists($id)) {
     }
 }
 
-if (!empty($_GET['shortlist'])) {
-    $SESSION->redirect('?m=voipaccountlistshort&id=' . $LMS->GetVoipAccountOwner($id));
-} else {
-    $SESSION->redirect('?' . $SESSION->remove_history_entry() . (isset($backid) ? '#'.$backid : ''));
-}
+$SESSION->redirect('?' . $SESSION->remove_history_entry() . (isset($backid) ? '#'.$backid : ''));
