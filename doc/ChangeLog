@@ -1336,6 +1336,8 @@ version 28-git (????-??-??):
     the operator chooses a common subject and body
     (variable: phpui.document_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
   - enhancement: visual editor toggle for message body in customer invoice and document send dialogs [interduo]
+  - enhancement: invoice and document send dialogs are also available on invoice list and document list;
+    for a single customer the recipient picker is shown, for multiple customers default addresses are used [interduo]
 
 version 27.0 (2021-08-20):
 
