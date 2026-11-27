@@ -3275,6 +3275,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 extract($smtp_options_by_division_ids[$currentDocumentDivisionId]);
                 extract($options_by_division_ids[$currentDocumentDivisionId]);
 
+                if (isset($mailFormat)) {
+                    $mail_format = $mailFormat;
+                }
+
                 if (empty($sender_email)) {
                     switch ($type) {
                         case 'frontend':

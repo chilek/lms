@@ -55,7 +55,7 @@
 			</li>
 			<li>
 				<strong>{trans("Body:")}</strong><br>
-				<textarea name="documentsend[body]" rows="12"></textarea>
+				<textarea name="documentsend[body]" class="lms-ui-wysiwyg-editor" data-wysiwyg="false" rows="12"></textarea>
 			</li>
 		</ol>
 		<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
@@ -103,13 +103,22 @@
 			var documentSendCommonTextCheckbox = $('#document-send-common-text-checkbox');
 			var documentSendMixedTemplates = !!result.mixedTemplates;
 
+			documentSendBody.trigger('lms:visual_editor_change_required', {
+				ifShow: false
+			});
 			documentSendSubject.val(result.subject);
 			documentSendBody.val(result.body);
+			documentSendBody.data('documentSendFormat', result.format);
 			documentSendCommonText.toggle(documentSendMixedTemplates);
 			documentSendCommonTextCheckbox.prop('checked', !documentSendMixedTemplates);
 			documentSendSubject.prop('disabled', documentSendMixedTemplates).prop('required', !documentSendMixedTemplates);
 			documentSendBody.prop('disabled', documentSendMixedTemplates);
 			documentSendDialog.open();
+			if (!documentSendMixedTemplates && result.format == 'html') {
+				documentSendBody.trigger('lms:visual_editor_change_required', {
+					ifShow: true
+				});
+			}
 		}).fail(function(jqXHR) {
 			alertDialog($t('AJAX: Invalid result - status: $a', jqXHR.status), button);
 		}).always(function() {
@@ -138,10 +147,22 @@
 
 			documentSendSubject.prop('disabled', !useCommonText).prop('required', useCommonText);
 			documentSendBody.prop('disabled', !useCommonText);
+			documentSendBody.trigger('lms:visual_editor_change_required', {
+				ifShow: false
+			});
+			if (useCommonText && documentSendBody.data('documentSendFormat') == 'html') {
+				documentSendBody.trigger('lms:visual_editor_change_required', {
+					ifShow: true
+				});
+			}
 		});
 
 		$('#document-send-form').submit(function() {
 			var form = $(this);
+
+			if (typeof tinymce !== 'undefined') {
+				tinymce.triggerSave();
+			}
 
 			if (!form.find('[name="documentsend[recipients][]"]:checked').length
 				&& !form.find('[name="documentsend[extraemail]"]').val().trim().length) {
