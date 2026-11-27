@@ -1605,7 +1605,7 @@ class KSeF
             $tmp = trim(htmlspecialchars(\Utils::removeHtml($tmp)));
             if (strlen($tmp)) {
                 $footerXml .= "\t\t<Informacje>" . PHP_EOL;
-                $footerXml .= "\t\t\t<StopkaFaktury>" . htmlspecialchars(\Utils::removeHtml($tmp)) . "</StopkaFaktury>" . PHP_EOL;
+                $footerXml .= "\t\t\t<StopkaFaktury>" . $tmp . "</StopkaFaktury>" . PHP_EOL;
                 $footerXml .= "\t\t</Informacje>" . PHP_EOL;
             }
         }
