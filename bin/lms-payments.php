@@ -1393,6 +1393,11 @@ if ($check_invoices) {
 }
 
 if (empty($assigns)) {
+    if ($test) {
+        $DB->RollbackTrans();
+    } else {
+        $DB->CommitTrans();
+    }
     die;
 }
 
