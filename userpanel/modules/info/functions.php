@@ -33,9 +33,9 @@ function module_main()
     $SMARTY = LMSSmarty::getInstance();
 
     if (ConfigHelper::checkConfig('userpanel.node_lock_management')) {
-        switch ($_GET['action']) {
+        switch ($_GET['action'] ?? '') {
             case 'delete-nodelock':
-                $nodelockid = intval($_GET['id']);
+                $nodelockid = $SESSION->validatePostToken() ? intval($_POST['id'] ?? 0) : 0;
 
                 if (!empty($nodelockid)) {
                     if ($LMS->DB->GetOne(
@@ -70,7 +70,7 @@ function module_main()
                 )));
 
             case 'add-nodelock':
-                $nodeid = intval($_POST['nodeid']);
+                $nodeid = $SESSION->validatePostToken() ? intval($_POST['nodeid'] ?? 0) : 0;
 
                 if ($LMS->DB->GetOne(
                     'SELECT
@@ -85,8 +85,10 @@ function module_main()
                 )) {
                     $time = $_POST['time'];
                     $days = 0;
-                    foreach ($time as $daynr => $day) {
-                        $days |= 1 << intval($daynr);
+                    foreach (array_keys((array) ($_POST['days'] ?? array())) as $daynr) {
+                        if (is_int($daynr) && $daynr >= 0 && $daynr <= 6) {
+                            $days |= 1 << $daynr;
+                        }
                     }
 
                     $result = $LMS->DB->Execute(
@@ -114,7 +116,7 @@ function module_main()
         }
     }
 
-    if (!empty($_GET['consent'])) {
+    if (!empty($_POST['consent']) && $SESSION->validatePostToken()) {
         if ($LMS->DB->GetOne(
             'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
             array($SESSION->id, CCONSENT_DATE)
@@ -199,6 +201,10 @@ function parse_notification_mail($string, $customerinfo)
 function module_updateusersave()
 {
     global $LMS, $SMARTY, $SESSION, $rights, $error;
+    if (!$SESSION->validatePostToken()) {
+        http_response_code(403);
+        return;
+    }
     $SYSLOG = SYSLOG::getInstance();
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
@@ -245,7 +251,7 @@ function module_updateusersave()
                             $args = array(
                                 SYSLOG::RES_CUST => $id,
                                 'contact' => $v,
-                                'type' => CONTACT_LANDLINE,
+                                'type' => $field == 'email' ? CONTACT_EMAIL : CONTACT_LANDLINE,
                             );
                             $LMS->DB->Execute(
                                 'INSERT INTO customercontacts (customerid, contact, type) VALUES (?, ?, ?)',
@@ -461,7 +467,7 @@ function module_updatepin()
 {
     global $LMS, $SMARTY, $SESSION;
 
-    if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata'])) {
+    if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata']) || !$SESSION->validatePostToken()) {
         $SESSION->redirect('?m=info');
     }
 
@@ -470,21 +476,16 @@ function module_updatepin()
     $userdata = $_POST['userdata'];
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
-    if (preg_match('/\$[0-9a-z]+\$/i', $userinfo['pin'])) {
-        if (!password_verify($userdata['oldpin'], $userinfo['pin'])) {
-            $error['oldpin'] = trans('Incorrect current PIN!');
-        }
-    } else {
-        if ($userinfo['pin'] !== $userdata['oldpin']) {
-            $error['oldpin'] = trans('Incorrect current PIN!');
-        }
+    if (!Session::matchesPIN($userinfo['pin'], $userdata['oldpin'] ?? null)) {
+        $error['oldpin'] = trans('Incorrect current PIN!');
     }
 
-    if (!strlen($userdata['pin']) || !strlen($userdata['pin2'])) {
+    if (!is_string($userdata['pin'] ?? null) || $userdata['pin'] === ''
+        || !is_string($userdata['pin2'] ?? null) || $userdata['pin2'] === '') {
         $error['pin'] = $error['pin2'] = trans('PINs cannot be empty!');
-    } elseif ($userdata['pin'] != $userdata['pin2']) {
+    } elseif ($userdata['pin'] !== $userdata['pin2']) {
         $error['pin'] = $error['pin2'] = trans('Entered PINs do not match!');
-    } elseif ($userinfo['pin'] == $userdata['pin']) {
+    } elseif (Session::matchesPIN($userinfo['pin'], $userdata['pin'])) {
         $error['pin'] = $error['pin2'] = trans('New PIN should be different than old PIN!');
     } else {
         $pin_min_size = intval(ConfigHelper::getConfig(

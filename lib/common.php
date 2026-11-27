@@ -407,17 +407,25 @@ function rmkdir($dir)
 // Deletes directory and all subdirs and files in it
 function rrmdir($dir)
 {
-    $files = glob($dir . DIRECTORY_SEPARATOR . '*', GLOB_MARK);
-    foreach ($files as $file) {
-        if (is_dir($file)) {
-            rrmdir($file);
-        } else {
+    if (is_link($dir)) {
+        unlink($dir);
+        return;
+    }
+    if (!is_dir($dir)) {
+        return;
+    }
+    foreach (scandir($dir) as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $file = $dir . DIRECTORY_SEPARATOR . $entry;
+        if (is_link($file) || !is_dir($file)) {
             unlink($file);
+        } else {
+            rrmdir($file);
         }
     }
-    if (is_dir($dir)) {
-        rmdir($dir);
-    }
+    rmdir($dir);
 }
 
 function striphtml($text)
@@ -1034,25 +1042,42 @@ function check_file_uploads()
 
 function handle_file_uploads($elemid, &$error)
 {
+    global $SESSION;
+
     $tmpdir = $tmppath = '';
     $fileupload = array();
-    if (isset($_POST['fileupload'])) {
+    if (isset($_POST['fileupload']) && is_array($_POST['fileupload'])) {
         $fileupload = $_POST['fileupload'];
-        $tmpdir = $fileupload[$elemid . '-tmpdir'];
-        if (empty($tmpdir)) {
-            $tmpdir = uniqid('lms-fileupload-');
-            $tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
-            if (isset($_FILES[$elemid]) && !empty($_FILES[$elemid]['tmp_name'][0])
-                && (is_dir($tmppath) || !@mkdir($tmppath))) {
-                $tmpdir = '';
+        $tmpdir = $fileupload[$elemid . '-tmpdir'] ?? '';
+        $registeredUploads = $SESSION->get('fileupload_tmpdirs');
+        if (!is_array($registeredUploads)) {
+            $registeredUploads = array();
+        }
+        if ($tmpdir === '') {
+            if (isset($_GET['ajax']) && !empty($_FILES[$elemid]['tmp_name'][0])) {
+                $tmpdir = 'lms-fileupload-' . bin2hex(random_bytes(16));
+                $tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+                if (!@mkdir($tmppath, 0700)) {
+                    $error[$elemid] = trans('Unable to create temporary upload directory!');
+                    $tmpdir = $tmppath = '';
+                } else {
+                    $registeredUploads[$tmpdir] = $elemid;
+                    $SESSION->save('fileupload_tmpdirs', $registeredUploads);
+                }
+            } elseif (!empty($fileupload[$elemid])) {
+                $error[$elemid] = trans('Invalid temporary upload directory!');
             }
-        } elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
-            $tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
-            if (!file_exists($tmppath)) {
-                @mkdir($tmppath);
-            }
-        } else {
+        } elseif (!is_string($tmpdir)
+            || !preg_match('/^lms-fileupload-[0-9a-f]{32}$/D', $tmpdir)
+            || ($registeredUploads[$tmpdir] ?? null) !== $elemid) {
+            $error[$elemid] = trans('Invalid temporary upload directory!');
             $tmpdir = '';
+        } else {
+            $tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+            if (!is_dir($tmppath) || is_link($tmppath) || (fileperms($tmppath) & 0077)) {
+                $error[$elemid] = trans('Invalid temporary upload directory!');
+                $tmpdir = $tmppath = '';
+            }
         }
 
         if (isset($_GET['ajax'])) {
@@ -1129,8 +1154,8 @@ function handle_file_uploads($elemid, &$error)
                             if (!@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
                                 $errors[] = trans('Unable to write file: $a', $file['name']);
                             }
-                            unset($file['tmp_name']);
                         }
+                        unset($file['tmp_name']);
                         $files2[] = $file;
                     }
                     unset($file);
@@ -1139,7 +1164,7 @@ function handle_file_uploads($elemid, &$error)
                 }
                 if (!empty($errors)) {
                     $result = array(
-                        'error' => implode('<br>', $errors),
+                        'error' => implode("\n", $errors),
                     );
                 } else {
                     $result = array(
@@ -1151,20 +1176,38 @@ function handle_file_uploads($elemid, &$error)
             }
             header('Content-type: application/json');
             print json_encode($result);
+            $SESSION->close();
             die;
-        } elseif (isset($fileupload[$elemid])) {
+        } elseif ($tmppath !== '' && isset($fileupload[$elemid]) && is_array($fileupload[$elemid])) {
             $files = array();
             foreach ($fileupload[$elemid] as $fileidx => $file) {
-                if ($file['name'] === '..' || strpos($file['name'], '/') !== false) {
+                if (!is_int($fileidx) || $fileidx < 0 || !is_array($file) || !isset($file['name']) || !is_string($file['name'])) {
                     continue;
                 }
+                $name = $file['name'];
+                if ($name === '' || $name === '.' || $name === '..'
+                    || strpos($name, '/') !== false || strpos($name, '\\') !== false
+                    || strpos($name, "\0") !== false) {
+                    continue;
+                }
+                $source = $tmppath . DIRECTORY_SEPARATOR . $name;
+                if (is_link($source) || !is_file($source)
+                    || dirname(realpath($source) ?: '') !== realpath($tmppath)) {
+                    continue;
+                }
+                unset($file['tmp_name'], $file['content'], $file['contents']);
+                $file['name'] = $name;
+                $file['size'] = filesize($source);
+                $file['type'] = function_exists('mime_content_type') ? mime_content_type($source) : false;
+                $file['type'] = $file['type'] ?: 'application/octet-stream';
                 [$size, $unit] = setunits($file['size']);
                 $file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
                 $files[$fileidx] = $file;
             }
             ${$elemid} = $fileupload[$elemid] = $files;
         } else {
-            ${$elemid} = array();
+            ${$elemid} = $fileupload[$elemid] = array();
+            $fileupload[$elemid . '-tmpdir'] = $tmpdir;
         }
     } else {
         ${$elemid} = array();

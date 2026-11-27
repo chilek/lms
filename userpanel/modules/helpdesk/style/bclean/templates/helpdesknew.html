@@ -18,6 +18,7 @@
 			</div>
 			<div class="modal-body">
 				<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
+					<input type="hidden" name="csrf_token" value="{$csrf_token}">
 					{if $queues|size == 1}
 						<input type="hidden" name="helpdesk[queue]" value="{$queues[0].id}">
 					{else}
@@ -25,7 +26,7 @@
 						<label for="queue" class="font-weight-bold">{trans("Queue:")}</label>
 						<select name="helpdesk[queue]" id="queue" {userpaneltip class="form-control" text="Select queue" trigger="queue"}>
 							{foreach $queues as $queue}
-								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</option>
+								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name|escape}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -49,7 +50,7 @@
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
 						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
 							{if isset($error.files)}
-								{$error.files}
+								{$error.files|escape}
 							{/if}
 						</div>
 						<small class="form-text">

@@ -28,6 +28,11 @@ function module_main()
 {
     global $SESSION, $LMS;
 
+    if (isset($_POST['documentid']) && !$SESSION->validatePostToken()) {
+        http_response_code(403);
+        return;
+    }
+
     $op = $_GET['op'] ?? '';
 
     $DB = LMSDB::getInstance();
@@ -66,16 +71,16 @@ function module_main()
             array($documentid, $SESSION->id)
         )) {
             if (isset($_GET['smsauth'])) {
+                $errors = $info = array();
                 if ($sms_active) {
-                    $errors = array();
-                    $info = array();
-
                     header('Content-Type: application/json');
 
                     if (isset($_GET['send'])) {
                         if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
                             $sms_authcode = strval(random_int(10000000, 99999999));
                             $SESSION->save('smsauthcode', $sms_authcode);
+                            $SESSION->save('smsauth_documentid', $documentid);
+                            $SESSION->save('smsauth_attempts', 0);
                             $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
 
@@ -108,7 +113,7 @@ function module_main()
                                 }
 
                                 if ($status == MSG_ERROR) {
-                                    $errors = array_merge($errors, $res['errors']);
+                                    $errors = array_merge($errors, $send_errors);
                                 }
 
                                 if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
@@ -130,16 +135,15 @@ function module_main()
                                 }
                             }
                         } else {
-                            if ($SESSION->is_set('smsauthcode')) {
-                                $errors[] = trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
-                            } else {
-                                $SESSION->remove('smsauthcode');
-                                $SESSION->remove('smsauthcode_timestamp');
-                            }
+                            $errors[] = trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                         }
                     } elseif (isset($_GET['check'])) {
                         if ($SESSION->is_set('smsauthcode') && time() - $SESSION->get('smsauthcode_timestamp') < 5 * 60) {
-                            if (trim($_POST['code']) == $SESSION->get('smsauthcode')) {
+                            if ((int) $SESSION->get('smsauth_attempts') < 5
+                                && $SESSION->get('smsauth_documentid') === $documentid
+                                && is_string($_POST['code'] ?? null)
+                                && hash_equals($SESSION->get('smsauthcode'), trim($_POST['code']))) {
+                                $SESSION->remove('smsauth_documentid');
                                 $SESSION->remove('smsauthcode');
                                 $SESSION->remove('smsauthcode_timestamp');
 
@@ -149,6 +153,7 @@ function module_main()
                                 $errors = array_merge($errors, $result['errors']);
                                 $info = array_merge($info, $result['info']);
                             } else {
+                                $SESSION->save('smsauth_attempts', min(5, (int) $SESSION->get('smsauth_attempts') + 1));
                                 $errors[] = trans('Authorization code you entered is invalid!');
                             }
                         } else {
@@ -171,20 +176,21 @@ function module_main()
                     foreach ($_FILES['files']['name'] as $fileidx => $filename) {
                         if (!empty($filename)) {
                             if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                                if (isset($allowed_file_types[$_FILES['files']['type'][$fileidx]])) {
+                                $type = function_exists('mime_content_type') ? mime_content_type($_FILES['files']['tmp_name'][$fileidx]) : false;
+                                if (isset($allowed_file_types[$type])) {
                                     $files[] = array(
                                         'tmpname' => null,
                                         'filename' => $filename,
                                         'name' => $_FILES['files']['tmp_name'][$fileidx],
-                                        'type' => $_FILES['files']['type'][$fileidx],
-                                        'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                                        'type' => $type,
+                                        'md5sum' => md5_file($_FILES['files']['tmp_name'][$fileidx]),
                                         'attachmenttype' => -1,
                                     );
                                 } else {
                                     if (isset($error['files'])) {
                                         $error['files'] .= "\n";
                                     }
-                                    $error['files'] .= trans('Invalid file type: $a', $filename);
+                                    $error['files'] = ($error['files'] ?? '') . trans('Invalid file type: $a', $filename);
                                 }
                             } else { // upload errors
                                 if (isset($error['files'])) {
@@ -210,7 +216,7 @@ function module_main()
                             }
                         }
                     }
-                    if (!$error) {
+                    if (!$error && $files) {
                         $error = $LMS->AddDocumentFileAttachments($files);
                         if (!$error) {
                             $attachmentids = $LMS->AddDocumentScans($documentid, $files);

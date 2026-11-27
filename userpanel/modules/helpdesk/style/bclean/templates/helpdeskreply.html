@@ -9,8 +9,9 @@
 
 </style>
 
-<h3>{button class="btn btn-secondary" href="?m=helpdesk" icon="cancel" label="Back"} {trans($title)}</h3>
+<h3>{button class="btn btn-secondary" href="?m=helpdesk" icon="cancel" label="Back"} {$title|escape}</h3>
 <form method="post" id="newmessage" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
+	<input type="hidden" name="csrf_token" value="{$csrf_token}">
     {box title="Message"}
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 	<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
@@ -42,7 +43,7 @@
 					<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
 					<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
 						{if isset($error.files)}
-							{$error.files}
+							{$error.files|escape}
 						{/if}
 					</div>
 					<small class="form-text">

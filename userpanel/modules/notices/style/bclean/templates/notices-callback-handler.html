@@ -44,19 +44,21 @@
 
             $('#urgent-notice-confirm').click(function() {
                 $.ajax(
-                    '?m=notices&ajax=1&confirm_urgent=' + $(this).attr('data-id'),
+                    '?m=notices&ajax=1',
                     {
+                        method: 'POST',
+                        data: { confirm_urgent: $(this).attr('data-id'), csrf_token: '{$csrf_token}' },
                         dataType: 'json',
                         success: function(data) {
                             $('#urgent-notice-dialog').modal('hide');
                             if (!parseInt(data["unread_notices"])) {
                                 $('#lms-userpanel-menu-item-notices .warning-icon').removeClass('lms-userpanel-icon-warning');
                             }
-                            if (typeof(data["urgent_notice"]) == 'object') {
+                            if (data["urgent_notice"]) {
                                 $('#urgent-notice-dialog').one('hidden.bs.modal', function() {
                                     $('#urgent-notice-confirm').attr('data-id', data["urgent_notice"].id);
                                     cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
-                                    $('#urgent-notice-title').html(sprintf("%04d/%02d/%02d %02d:%02d / %s",
+                                    $('#urgent-notice-title').text(sprintf("%04d/%02d/%02d %02d:%02d / %s",
                                         cdate.getFullYear(),
                                         cdate.getMonth() + 1,
                                         cdate.getDate(),
@@ -83,7 +85,7 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 id="urgent-notice-title" class="modal-title">{$urgent_notice.cdate|date_format:"Y-m-d H:i"} / {$urgent_notice.subject}</h4>
+                        <h4 id="urgent-notice-title" class="modal-title">{$urgent_notice.cdate|date_format:"Y-m-d H:i"} / {$urgent_notice.subject|escape}</h4>
                         {button class="close" data_dismiss="modal" icon="cancel"}
                     </div>
                     <div id="urgent-notice-body" class="modal-body">

@@ -6,7 +6,7 @@
 <table style="width: 100%;" cellpadding="10">
     <tr>
 	<td>
-{box title=$title}
+{box title=$title|escape}
 
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
@@ -19,9 +19,9 @@
 		</td>
 		<td width="96%" class="nobr">
 			    {if $message.customerid}
-				    {$message.customername}
+				    {$message.customername|escape}
 			    {elseif $message.userid}
-				    {$message.username}
+				    {$message.username|escape}
 			    {elseif $message.mailfrom}
 				    {$message.mailfrom|escape}
 			    {else}
@@ -36,7 +36,7 @@
 		<td width="1%" nowrap>
 			{if $message.attachments}
 			{foreach $message.attachments as $attachment}
-			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename} {img src="attach.gif" alt=""}</a>
+			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename|escape:'url'}">{$attachment.filename|escape} {img src="attach.gif" alt=""}</a>
 			{/foreach}
 			{/if}
 		</td>
@@ -51,7 +51,7 @@
 	</tr>
 	<tr>
 		<td colspan="5">
-			{if $message.contenttype == 'text/plain'}
+			{if $message.contenttype != 'text/html'}
 				{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br/>'}
 			{else}
 				{$message.body}

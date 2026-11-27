@@ -324,12 +324,13 @@ class Session
             $this->authcoderequired = '';
             $this->login = null;
             $this->id = null;
+            $this->remove('session_authcode');
             $this->remove('session_login');
             $this->remove('session_authcoderequired');
             $this->remove('session_id');
         }
 
-        if ($this->login) {
+        if ($this->login && !$this->authcoderequired) {
             $this->islogged = true;
         } elseif (isset($loginform)) {
             if ($this->authcoderequired && $this->id) {
@@ -361,6 +362,7 @@ class Session
 
                                 if (isset($phone)) {
                                     $authcode = random_int(100000, 999999);
+                                    $this->save('session_authcode_attempts', 0);
                                     $this->save('session_authcode', $authcode);
                                     $this->save('session_authcode_dt', time());
 
@@ -389,6 +391,7 @@ class Session
                     $this->authcoderequired = '';
                     $this->login = null;
                     $this->id = null;
+                    $this->remove('session_authcode');
                     $this->remove('session_login');
                     $this->remove('session_authcoderequired');
                     $this->remove('session_id');
@@ -397,12 +400,16 @@ class Session
 
                     $authinfo = $this->GetCustomerAuthInfo($this->id);
                     $authcode = $loginform['authcode'];
+                    $attempts = (int) $this->get('session_authcode_attempts');
 
-                    if ($authcode == $session_authcode) {
+                    if ($attempts < 5 && is_string($authcode) && isset($session_authcode)
+                        && time() - (int) $this->get('session_authcode_dt') < 300
+                        && hash_equals((string) $session_authcode, $authcode)) {
                         $this->islogged = true;
                         $this->isPasswdChangeRequired = $this->unsecure_pin_validity && !preg_match('/^\$[0-9a-z]+\$/', $authinfo['passwd']);
                         $this->authcoderequired = '';
 
+                        $this->login = $this->id;
                         $this->save('session_login', $this->login);
 
                         $this->save('passwd_change_required', $this->isPasswdChangeRequired);
@@ -422,9 +429,10 @@ class Session
                         $this->remove('session_authcode');
                         $this->remove('session_authcode_dt');
                     } else {
+                        $this->save('session_authcode_attempts', min($attempts + 1, 5));
                         $this->error = trans('Incorrect one-time password!');
 
-                        writesyslog('Bad authentication code (' . $authcode . ') for customer with ID: ' . $this->id, LOG_WARNING);
+                        writesyslog('Bad authentication code for customer with ID: ' . $this->id, LOG_WARNING);
                     }
                 }
             } elseif (isset($loginform['login'])) {
@@ -500,6 +508,7 @@ class Session
                                                         $phones = explode(',', $authinfo['phones']);
                                                         if (count($phones) == 1) {
                                                             $authcode = random_int(100000, 999999);
+                                                            $this->save('session_authcode_attempts', 0);
                                                             $this->save('session_authcode', $authcode);
                                                             $this->save('session_authcode_dt', time());
 
@@ -596,13 +605,25 @@ class Session
                 $this->LogOut();
 
                 return;
-            } elseif (!empty($this->id)) {
+            } elseif ($this->get('session_login') && !empty($this->id)) {
                 $this->islogged = true;
                 $this->isPasswdChangeRequired = $this->get('passwd_change_required');
             }
         }
 
         $this->save('session_authcoderequired', $this->authcoderequired);
+    }
+
+    public function getPostToken()
+    {
+        return $this->SID ? hash_hmac('sha256', 'userpanel-csrf', $this->SID) : null;
+    }
+
+    public function validatePostToken()
+    {
+        $token = $this->getPostToken();
+        return $_SERVER['REQUEST_METHOD'] === 'POST' && is_string($token) && is_string($_POST['csrf_token'] ?? null)
+            && hash_equals($token, $_POST['csrf_token']);
     }
 
     public function save($variable, $content)
@@ -862,22 +883,29 @@ class Session
         return !strlen($string);
     }
 
+    public static function matchesPIN($stored, $submitted)
+    {
+        if (!is_string($submitted)) {
+            return false;
+        }
+        if (preg_match('/^\$[0-9a-z]+\$/i', $stored)) {
+            return password_verify($submitted, $stored);
+        }
+        if (preg_match('/^[0-9a-f]{32}$/iD', $stored)) {
+            return hash_equals(strtolower($stored), md5($submitted));
+        }
+        return hash_equals((string) $stored, $submitted);
+    }
+
     private function checkPIN($passwd, $passwdlastchange)
     {
-        if (preg_match('/^\$[0-9a-z]+\$/i', $passwd)) {
-            return password_verify($this->passwd, $passwd);
-        }
-
-        if (preg_match('/^[0-9a-f]{32}$/i', $passwd)) {
-            return hash_equals(strtolower($passwd), md5($this->passwd));
-        }
-
-        if ($this->unsecure_pin_validity && time() - $passwdlastchange >= $this->unsecure_pin_validity) {
+        if ($this->unsecure_pin_validity && !preg_match('/^\$[0-9a-z]+\$|^[0-9a-f]{32}$/iD', $passwd)
+            && time() - $passwdlastchange >= $this->unsecure_pin_validity) {
             $this->error = trans('PIN is expired - use credential reminder form!');
             return false;
         }
 
-        return hash_equals((string) $passwd, (string) $this->passwd);
+        return self::matchesPIN($passwd, $this->passwd);
     }
 
     private function getAllowedCustomerStatus()

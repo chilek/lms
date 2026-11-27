@@ -2,6 +2,6 @@
 <div class="alert alert-danger">
     {ConfigHelper::getConfig('userpanel.data_consent_text')|replace:"\n":"<br />"}
     <br/><br/>
-    {button class="btn btn-danger" href="?m=info&amp;consent=1" icon="confirm" label="<!userpanel>Confirm"}
+    <form method="post" action="?m=info"><input type="hidden" name="csrf_token" value="{$csrf_token}"><button type="submit" class="btn btn-danger" name="consent" value="1">{trans("<!userpanel>Confirm")}</button></form>
 </div>
 {/box}

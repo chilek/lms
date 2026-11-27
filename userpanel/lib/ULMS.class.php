@@ -147,17 +147,21 @@ class ULMS extends LMS
 
     public function GetCustomerTickets($id)
     {
-        $queues = array();
-        if (ConfigHelper::getConfig('userpanel.tickets_from_selected_queues')) {
-            $queues = $this->DB->GetCol('SELECT id FROM rtqueues
-				WHERE id IN (' . str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues')) . ')');
+        $sql = 'SELECT * FROM rttickets WHERE customerid = ? AND deleted = 0';
+        $params = array($id);
+        $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
+        if ($sources) {
+            $sql .= ' AND source IN ?';
+            $params[] = $sources;
         }
-        $sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-        $tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
-            . (!empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
-            . ' AND deleted = 0'
-            . ' AND source IN (' . $sources . ')'
-            . ' ORDER BY createtime DESC', array($id));
+        if (ConfigHelper::getConfig('userpanel.tickets_from_selected_queues')) {
+            $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
+            if ($queues) {
+                $sql .= ' AND queueid IN ?';
+                $params[] = $queues;
+            }
+        }
+        $tickets = $this->DB->GetAll($sql . ' ORDER BY createtime DESC', $params);
         if (!empty($tickets)) {
             foreach ($tickets as &$ticket) {
                 $ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
@@ -205,6 +209,7 @@ class ULMS extends LMS
 				WHERE ticketid = ? AND rtmessages.type = ? AND rtmessages.deleted = 0
 				ORDER BY createtime DESC', array($id, RTMESSAGE_REGULAR));
 
+        $ticket['messages'] = $ticket['messages'] ?: array();
         foreach ($ticket['messages'] as &$message) {
             $message['attachments'] = array();
             $attachments = $this->DB->GetAll(
@@ -212,22 +217,21 @@ class ULMS extends LMS
                 array($message['id'])
             );
             if ($attachments) {
-                if ($message['contenttype'] == 'text/html') {
-                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
-                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
-                }
-
                 foreach ($attachments as $attachment) {
                     if (empty($attachment['cid'])) {
                         $message['attachments'][] = $attachment;
                     } elseif ($message['contenttype'] == 'text/html') {
                         $message['body'] = str_ireplace(
                             '"CID:' . $attachment['cid'] . '"',
-                            '"' . $url_prefix . '/?m=helpdesk&f=attachment&cid=' . $attachment['cid'] . '&tid=' . $id . '&msgid=' . $message['id'] . '"',
+                            '"?m=helpdesk&amp;f=attachment&amp;cid=' . rawurlencode($attachment['cid'])
+                                . '&amp;msgid=' . intval($message['id']) . '"',
                             $message['body']
                         );
                     }
                 }
+            }
+            if ($message['contenttype'] == 'text/html') {
+                $message['body'] = Utils::removeInsecureHtml($message['body']);
             }
         }
 

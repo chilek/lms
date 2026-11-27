@@ -39,6 +39,7 @@
 				<div class="alert alert-danger">{$error.pin}</div>
 				{/if}
 				<form name="userpin" method="post" action="?m=info&f=updatepin">
+					<input type="hidden" name="csrf_token" value="{$csrf_token}">
 					<div class="form-group">
 						<label for="oldpin"><strong>{trans("Current PIN")}:</strong></label>
 						<input id="oldpin" type="password" class="form-control" name="userdata[oldpin]" placeholder="{trans("Enter current PIN")}">

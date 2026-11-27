@@ -7,6 +7,7 @@
     <tr>
         <td>
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
+	<input type="hidden" name="csrf_token" value="{$csrf_token}">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 <input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
@@ -59,7 +60,7 @@
 </table>
 {/box}
 <br />
-{box title=$title}
+{box title=$title|escape}
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">
@@ -71,9 +72,9 @@
 		</td>
 		<td width="96%" class="nobr">
 			    {if $message.customerid}
-				    {$message.customername}
+				    {$message.customername|escape}
 			    {elseif $message.userid}
-				    {$message.username}
+				    {$message.username|escape}
 			    {elseif $message.mailfrom}
 				    {$message.mailfrom|escape}
 			    {else}
@@ -88,7 +89,7 @@
 		<td width="1%" nowrap>
 			{if $message.attachments}
 			{foreach $message.attachments as $attachment}
-			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename} {img src="attach.gif" alt=""}</a>
+			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename|escape:'url'}">{$attachment.filename|escape} {img src="attach.gif" alt=""}</a>
 			{/foreach}
 			{/if}
 		</td>

@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
 <form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
+	<input type="hidden" name="csrf_token" value="{$csrf_token}">
 {box title="New Request"}
 <table id="newrequest" width="100%" cellpadding="3" class="light">
 	{if $queues|size == 1}
@@ -15,7 +16,7 @@
 		<td width="98%">
 			<SELECT name="helpdesk[queue]" {userpaneltip text="Select queue" trigger="queue"}>
 				{foreach $queues as $queue}
-				<OPTION value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</OPTION>
+				<OPTION value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</td>

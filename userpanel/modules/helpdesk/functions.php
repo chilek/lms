@@ -101,6 +101,11 @@ function module_main()
 
     $DB = LMSDB::getInstance();
 
+    if (isset($_POST['helpdesk']) && !$SESSION->validatePostToken()) {
+        http_response_code(403);
+        return;
+    }
+
     $error = null;
 
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -118,15 +123,22 @@ function module_main()
 
                     $filename = preg_replace('/^[\.]+/', '', $filename);
 
+                    $fileType = function_exists('mime_content_type')
+                        ? @mime_content_type($_FILES['files']['tmp_name'][$fileidx])
+                        : false;
+                    if (empty($fileType)) {
+                        $fileType = 'application/octet-stream';
+                    }
+
                     $filecontents = file_get_contents($_FILES['files']['tmp_name'][$fileidx]);
                     $files[] = array(
                         'name' => $filename,
                         'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
-                        'type' => $_FILES['files']['type'][$fileidx],
+                        'type' => $fileType,
                         'contents' => $filecontents,
                     );
                     $attachments[] = array(
-                        'content_type' => $_FILES['files']['type'][$fileidx],
+                        'content_type' => $fileType,
                         'filename' => $filename,
                         'data' => $filecontents,
                     );
@@ -409,19 +421,21 @@ function module_main()
 
         $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
         $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
-        if (!$DB->GetOne(
-            'SELECT 1
+        $sql = 'SELECT 1
             FROM rttickets
             WHERE id = ?
                 AND customerid = ?
-                AND deleted = 0'
-                . (empty($queues) ? '' : ' AND queueid IN ' . $DB->Escape($queues))
-                . (empty($sources) ? '' : ' AND source IN  ' . $DB->Escape($sources)),
-            array(
-                $ticket['id'],
-                $SESSION->id,
-            )
-        )) {
+                AND deleted = 0';
+        $params = array($ticket['id'], $SESSION->id);
+        if ($queues) {
+            $sql .= ' AND queueid IN ?';
+            $params[] = $queues;
+        }
+        if ($sources) {
+            $sql .= ' AND source IN ?';
+            $params[] = $sources;
+        }
+        if (!$DB->GetOne($sql, $params)) {
             $error = true;
         }
 
@@ -597,7 +611,7 @@ function module_main()
     );
     foreach (array('post_max_size', 'upload_max_filesize') as $var) {
         preg_match('/^(?<number>[0-9]+)(?<unit>[kKmMgGtT]?)$/', ini_get($var), $m);
-        $unit_multiplier = isset($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
+        $unit_multiplier = !empty($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
         if ($var == 'post_max_size') {
             $unit_multiplier *= 1/1.33;
         }
@@ -618,10 +632,11 @@ function module_main()
 
             $ticket = $LMS->GetTicketContents($ticketId);
 
-            $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
-            $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-            if (!empty($ticket) && $ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
-                && in_array($ticket['source'], $sources)) {
+            $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
+            $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
+            if (!empty($ticket) && $ticket['customerid'] == $SESSION->id
+                && (!$queues || in_array($ticket['queueid'], $queues))
+                && (!$sources || in_array($ticket['source'], $sources))) {
                 if (count($queues) == 1) {
                     $SMARTY->assign('title', trans(
                         'Request No. $a',
@@ -651,10 +666,11 @@ function module_main()
 
         $ticket['id'] = $ticketId = intval($_GET['id']);
 
-        $queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
-        $sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-        if (!empty($ticket['customerid']) && $ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
-            && in_array($ticket['source'], $sources)) {
+        $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
+        $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
+        if (!empty($ticket['customerid']) && $ticket['customerid'] == $SESSION->id
+            && (!$queues || in_array($ticket['queueid'], $queues))
+            && (!$sources || in_array($ticket['source'], $sources))) {
             if (isset($_GET['msgid']) && intval($_GET['msgid'])) {
                 $reply = $LMS->GetMessage($_GET['msgid']);
 
@@ -666,10 +682,14 @@ function module_main()
                 $helpdesk['subject'] = $reply['subject'];
                 $helpdesk['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($helpdesk['subject']);
             } else {
-                $reply = $LMS->GetFirstMessage($ticketId);
+                $firstId = $DB->GetOne(
+                    'SELECT MIN(id) FROM rtmessages WHERE ticketid = ? AND type = ? AND deleted = 0',
+                    array($ticketId, RTMESSAGE_REGULAR)
+                );
+                $reply = $firstId ? $LMS->GetMessage($firstId) : null;
             }
-            $helpdesk['inreplyto'] = $reply['id'];
-            $helpdesk['references'] = implode(' ', $reply['references']);
+            $helpdesk['inreplyto'] = $reply['id'] ?? 0;
+            $helpdesk['references'] = implode(' ', $reply['references'] ?? array());
             $SMARTY->assign('helpdesk', $helpdesk);
 
             if (count($queues) == 1) {
@@ -725,64 +745,66 @@ function module_attachment()
     $queues = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.queues')));
     $sources = Utils::filterIntegers(explode(';', (string) ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
 
-    if (!$queues || !$sources) {
-        die;
+    $filterSql = '';
+    $filterParams = array();
+    if ($queues) {
+        $filterSql .= ' AND t.queueid IN ?';
+        $filterParams[] = $queues;
+    }
+    if ($sources) {
+        $filterSql .= ' AND t.source IN ?';
+        $filterParams[] = $sources;
     }
 
-    if (isset($_GET['file'])) {
-        $filename = urldecode($_GET['file']);
+    if (isset($_GET['file']) && is_string($_GET['file'])) {
+        $filename = $_GET['file'];
         $attach = $DB->GetRow(
             'SELECT m.ticketid, a.filename, a.contenttype FROM rtattachments a
             JOIN rtmessages m ON m.id = a.messageid
             JOIN rttickets t ON t.id = m.ticketid
             WHERE t.customerid = ? AND a.messageid = ? AND a.filename = ?
-                AND m.type = ? AND m.deleted = ? AND t.deleted = ?
-                AND t.queueid IN ? AND t.source IN ?',
-            array(
-                $SESSION->id,
-                intval($_GET['msgid']),
-                $filename,
-                RTMESSAGE_REGULAR,
-                0,
-                0,
-                $queues,
-                $sources,
+                AND m.type = ? AND m.deleted = ? AND t.deleted = ?' . $filterSql,
+            array_merge(
+                array(
+                    $SESSION->id,
+                    intval($_GET['msgid']),
+                    $filename,
+                    RTMESSAGE_REGULAR,
+                    0,
+                    0,
+                ),
+                $filterParams
             )
         );
-    } else {
-        $cid = urldecode($_GET['cid']);
+    } elseif (isset($_GET['cid']) && is_string($_GET['cid'])) {
+        $cid = $_GET['cid'];
         $attach = $DB->GetRow(
             'SELECT m.ticketid, a.* FROM rtattachments a
             JOIN rtmessages m ON m.id = a.messageid
             JOIN rttickets t ON t.id = m.ticketid
             WHERE t.customerid = ? AND a.messageid = ? AND a.cid = ?
-                AND m.type = ? AND m.deleted = ? AND t.deleted = ?
-                AND t.queueid IN ? AND t.source IN ?',
-            array(
-                $SESSION->id,
-                intval($_GET['msgid']),
-                $cid,
-                RTMESSAGE_REGULAR,
-                0,
-                0,
-                $queues,
-                $sources,
+                AND m.type = ? AND m.deleted = ? AND t.deleted = ?' . $filterSql,
+            array_merge(
+                array(
+                    $SESSION->id,
+                    intval($_GET['msgid']),
+                    $cid,
+                    RTMESSAGE_REGULAR,
+                    0,
+                    0,
+                ),
+                $filterParams
             )
         );
     }
 
-    if (empty($attach)) {
+    if (empty($attach) || basename($attach['filename']) !== $attach['filename'] || strpos($attach['filename'], '\\') !== false) {
         die;
     }
 
     $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
 
     $file = $rt_dir . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $attach['filename']);
-    if (file_exists($file)) {
-        header('Content-Type: '. $attach['contenttype']);
-        header('Cache-Control: private');
-        header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attach['filename']);
-        echo @file_get_contents($file);
-    }
+    USERPANEL::sendAttachment($file, $attach['filename'], $attach['contenttype']);
     die;
 }

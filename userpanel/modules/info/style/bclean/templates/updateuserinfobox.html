@@ -4,6 +4,7 @@
 	{if $error}{/if}
 
 	<form class="form-inline" name="useredit" method="post" action="?m=info&f=updateusersave">
+		<input type="hidden" name="csrf_token" value="{$csrf_token}">
 		<div class="table-responsive">
 			<table class="table table-hover table-bordered table-striped table-condensed">
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -27,12 +28,12 @@
 					{foreach $userinfo.emails as $email}
 						<tr>
 							<td class="font-weight-bold">{trans("E-mail:")}</td>
-							<td><INPUT TYPE="email" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
+							<td><INPUT TYPE="email" NAME="userdata[email][{$email.id}]" VALUE="{$email.email|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
 						</tr>
 					{foreachelse}
 						<tr>
 							<td class="font-weight-bold">{trans("E-mail:")}</td>
-							<td><INPUT TYPE="email" NAME="userdata[email][0]" VALUE="{$userinfo.email}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
+							<td><INPUT TYPE="email" NAME="userdata[email][0]" VALUE="{$userinfo.email|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
 						</tr>
 					{/foreach}
 				{else}
@@ -40,7 +41,7 @@
 						<td class="font-weight-bold">{trans("E-mail:")}</td>
 						<td>
 							{foreach $userinfo.emails as $email}
-								{$email.email}{if !$email@last}<BR />{/if}
+								{$email.email|escape:'html':'UTF-8':false}{if !$email@last}<BR />{/if}
 							{/foreach}
 						</td>
 					</tr>
@@ -48,27 +49,27 @@
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 					<tr>
 						<td class="font-weight-bold">{trans("Street:")}</td>
-						<td><INPUT TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" {userpaneltip class="form-control" text="Enter street name" trigger="street"}></td>
+						<td><INPUT TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter street name" trigger="street"}></td>
 					</tr>
 					<tr>
 						<td class="font-weight-bold">{trans("Building:")}</td>
 						<td>
-							<INPUT TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" {userpaneltip class="form-control" text="Enter building number" trigger="building"}>
+							<INPUT TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter building number" trigger="building"}>
 							<strong>{trans("Apartment:")}</strong>
-							<INPUT TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" {userpaneltip class="form-control" text="Enter apartment number" trigger="apartment"}>
+							<INPUT TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter apartment number" trigger="apartment"}>
 						</td>
 					</tr>
 					<tr>
 						<td class="font-weight-bold">{trans("Zip:")}</td>
-						<td><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" {userpaneltip class="form-control" text="Enter zip code" trigger="zip"}></td>
+						<td><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter zip code" trigger="zip"}></td>
 					</tr>
 					<tr>
 						<td class="font-weight-bold">{trans("City:")}</td>
-						<td><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" {userpaneltip class="form-control" text="Enter city name" trigger="city"}></td>
+						<td><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter city name" trigger="city"}></td>
 					</tr>
 				{else}
 					<tr>
-						<td colspan="2">{$userinfo.address}, {$userinfo.zip} {$userinfo.city}</td>
+						<td colspan="2">{$userinfo.address}, {$userinfo.zip|escape:'html':'UTF-8':false} {$userinfo.city|escape:'html':'UTF-8':false}</td>
 					</tr>
 				{/if}
 
@@ -76,17 +77,17 @@
 					{foreach $userinfo.contacts as $item}
 						<tr>
 							<td class="font-weight-bold">{trans("Phone:")}</td>
-							<td><INPUT TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip class="form-control" text="Enter phone number"}></td>
+							<td><INPUT TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter phone number"}></td>
 						</tr>
 					{foreachelse}
 						<tr>
 							<td class="font-weight-bold">{trans("Phone:")}</td>
-							<td><INPUT TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" {userpaneltip class="form-control" text="Enter phone number"}></td>
+							<td><INPUT TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter phone number"}></td>
 						</tr>
 					{/foreach}
 				{else}
 					{foreach $userinfo.contacts as $item}
-						{if $item.phone}{$item.phone}<br />{/if}
+						{if $item.phone}{$item.phone|escape:'html':'UTF-8':false}<br />{/if}
 					{/foreach}
 				{/if}
 
@@ -103,9 +104,9 @@
 						</td>
 						<td>
 							{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-								<INPUT TYPE="TEXT" NAME="userdata[im][{$item.id}]" VALUE="{$item.uid}" {userpaneltip class="form-control" text="Enter IM number"}>
+								<INPUT TYPE="TEXT" NAME="userdata[im][{$item.id}]" VALUE="{$item.uid|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter IM number"}>
 							{else}
-								{$item.uid}
+								{$item.uid|escape:'html':'UTF-8':false}
 							{/if}
 						</td>
 					</tr>
@@ -116,7 +117,7 @@
 						<tr>
 							<td class="font-weight-bold">{trans("SSN")}:</td>
 							<td>
-								<input type="text" name="userdata[ssn]" value="{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}{$userinfo.ssn}{else}***{/if}"
+								<input type="text" name="userdata[ssn]" value="{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}{$userinfo.ssn|escape:'html':'UTF-8':false}{else}***{/if}"
 									{userpaneltip class="form-control" text="Enter social security number" trigger="ssn"}>
 							</td>
 						</tr>
@@ -124,7 +125,7 @@
 						{if ConfigHelper::checkConfig('userpanel.show_customer_sensitive_data')}
 							<tr>
 								<td class="font-weight-bold">{trans("SSN")}:</td>
-								<td>{$userinfo.ssn}</td>
+								<td>{$userinfo.ssn|escape:'html':'UTF-8':false}</td>
 							</tr>
 						{/if}
 					{/if}
@@ -132,12 +133,12 @@
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 						<tr>
 							<td class="font-weight-bold">{trans("TEN")}:</td>
-							<td><INPUT TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" {userpaneltip class="form-control" text="Enter tax exempt number" trigger="ten"}></td>
+							<td><INPUT TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten|escape:'html':'UTF-8':false}" {userpaneltip class="form-control" text="Enter tax exempt number" trigger="ten"}></td>
 						</tr>
 					{else}
 						<tr>
 							<td class="font-weight-bold">{trans("TEN")}:</td>
-							<td>{$userinfo.ten}</td>
+							<td>{$userinfo.ten|escape:'html':'UTF-8':false}</td>
 						</tr>
 					{/if}
 				{/if}

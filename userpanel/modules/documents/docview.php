@@ -81,11 +81,14 @@ if (!empty($_GET['id'])) {
         )
     );
 
-    $attachmentid = intval($_GET['attachmentid']);
+    $attachmentid = intval($_GET['attachmentid'] ?? 0);
     if ($attachmentid) {
-        $docattach = $docattachments[$attachmentid];
+        $docattach = $docattachments[$attachmentid] ?? null;
     } else {
-        $docattach = reset($docattachments);
+        $docattach = $docattachments ? reset($docattachments) : null;
+    }
+    if (!$docattach) {
+        die;
     }
     $doc['md5sum'] = $docattach['md5sum'];
     $doc['filename'] = $docattach['filename'];
@@ -196,18 +199,7 @@ if (!empty($_GET['id'])) {
                 ));
             }
         } else {
-            header('Content-Type: '.$doc['contenttype']);
-
-            if (!preg_match('/(^text|pdf)/i', $doc['contenttype']) || !empty($_GET['save'])) {
-                header('Content-Disposition: attachment; filename='.$doc['filename']);
-                header('Pragma: public');
-            } else {
-                header('Content-Disposition: inline; filename="' . $doc['filename'] . '"');
-                header('Content-Transfer-Encoding: binary');
-                header('Content-Length: ' . filesize($filename));
-            }
-
-            readfile($filename);
+            USERPANEL::sendAttachment($filename, $doc['filename'], $doc['contenttype'], !empty($_GET['save']));
         }
     }
     die;

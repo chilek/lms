@@ -14,7 +14,7 @@
                             <SELECT NAME="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel"}>
                                 {*<OPTION value="" SELECTED>{trans("- select queues -")}</OPTION>*}
                                 {foreach $queuelist as $queue}
-                                <OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name}</OPTION>
+                                <OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name|escape}</OPTION>
                                 {/foreach}
                             </SELECT> 
                         </TD>
@@ -61,7 +61,7 @@
                             {trans("LMS url:")}
                         </TD>
                         <TD WIDTH="99%" NOWRAP>
-                            <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}> 
+                            <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url|escape}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}>
                         </TD>
                     </TR>
                     <TR>
@@ -71,7 +71,7 @@
                         <TD WIDTH="99%" NOWRAP>
                             {foreach $categories as $category}
                             <INPUT type="checkbox" name="lms_categories[{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
-                            <label for="cat{$category.id}">{$category.name}</label><BR>
+                            <label for="cat{$category.id}">{$category.name|escape}</label><BR>
                             {/foreach}
                         </TD>
                     </TR>

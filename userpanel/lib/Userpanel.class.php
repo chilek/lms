@@ -44,6 +44,26 @@ class USERPANEL
         }
     }
 
+    public static function sendAttachment($path, $filename, $contentType, $download = false)
+    {
+        if (!is_file($path) || !is_readable($path)) {
+            return;
+        }
+        $type = strtolower(trim(explode(';', (string) $contentType, 2)[0]));
+        $previewTypes = array('application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'text/plain');
+        $inline = !$download && in_array($type, $previewTypes, true)
+            && function_exists('mime_content_type') && mime_content_type($path) === $type;
+        header('Content-Type: ' . ($inline ? $type : 'application/octet-stream'));
+        header('X-Content-Type-Options: nosniff');
+        header("Content-Security-Policy: sandbox; default-src 'none'");
+        header('Cache-Control: private, no-store');
+        header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment')
+            . '; filename="' . preg_replace('/[^\w.\-]/', '_', $filename) . '"'
+            . "; filename*=UTF-8''" . rawurlencode($filename));
+        header('Content-Length: ' . filesize($path));
+        readfile($path);
+    }
+
     public function _postinit()
     {
         return true;

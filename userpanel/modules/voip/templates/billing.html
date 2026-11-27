@@ -503,7 +503,7 @@
             $.ajax({
                 method: "POST",
                 url: "?m=voip&action=updateaccountinfo",
-                data: { "voipaccid" : {if count($user_accounts) > 1}$( '#account-select' ).val(){else}{$useracc['id']}{/if},
+                data: { "csrf_token": "{$csrf_token}", "voipaccid" : {if count($user_accounts) > 1}$( '#account-select' ).val(){else}{$useracc['id']}{/if},
                         "recording" : $('input[name=callrecording]:checked').val(),
                         "phones"    : phones }
             })
