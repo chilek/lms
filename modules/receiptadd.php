@@ -554,6 +554,10 @@ switch ($action) {
             }
         }
 
+        if (!isset($CURRENCIES[$receipt['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
         if ($receipt['numberplanid'] && !isset($receipt['extnumber'])) {
             if (strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==false) {
                 $receipt['extended'] = true;
