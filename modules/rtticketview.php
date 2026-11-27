@@ -35,7 +35,7 @@ if (!$LMS->CheckTicketAccess($id, RT_RIGHT_READ)) {
 }
 
 $show_stats = ConfigHelper::checkConfig('rt.show_stats', ConfigHelper::checkConfig('phpui.helpdesk_stats'));
-$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operation');
 $notification_customerinfo = ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'));
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 

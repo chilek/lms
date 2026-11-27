@@ -261,7 +261,7 @@
 	    <TD COLSPAN="3" class="text-right">
 		{button icon="view" href="?m=rtqueueview&id={$queue.id}" label="Browse"}
 		{button icon="save" href="?m=rtqueueedit&id={$queue.id}" label="Edit"}
-		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 			{button icon="restore" label="Restore<!RT>" id="restore-rtqueue" data_name=$queue.name data_resource_id=$queue.id}
 			{button icon="delete" label="Delete permanently" id="remove-rtqueue" data_name=$queue.name data_resource_id=$queue.id}
 		{else}

@@ -170,7 +170,7 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
 
-    if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+    if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation')) {
         $where_AND[] = 't.deleted = 0';
     } else {
         if (!empty($search['removed'])) {

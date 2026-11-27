@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') && !ConfigHelper::checkPrivilege('reports')) {
+if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') && !ConfigHelper::checkPrivilege('reports')) {
     access_denied();
 }
 
@@ -57,7 +57,7 @@ switch ($type) {
             }
         }
 
-        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation')) {
             $where[] = 'rttickets.deleted = 0';
         } else {
             if ($removed != '') {
@@ -186,7 +186,7 @@ switch ($type) {
             }
         }
 
-        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation')) {
             $where[] = 't.deleted = 0';
         } else {
             if ($removed != '') {

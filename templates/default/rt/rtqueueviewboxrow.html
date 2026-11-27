@@ -1,5 +1,5 @@
 {block name=rtboxrow}
-<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
+<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
 		data-name="{$ticket.id|string_format:"%06d"}"
@@ -149,7 +149,7 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{button type="link" icon="childticket" href="?m=rtticketadd&parentid={$ticket.id}" tip="Create secondary ticket"}
 			{/if}
-			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>" class="restore-ticket"}
 				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently" class="remove-ticket"}
 			{else}
