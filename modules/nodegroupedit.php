@@ -51,7 +51,7 @@ if (isset($_POST['nodegroup'])) {
         $error['name'] = trans('Group name is too long!');
     } elseif (!preg_match('/^[\._\-0-9\pL]+$/u', $nodegroupedit['name'])) {
         $error['name'] = trans('Invalid chars in group name!');
-    } elseif ($id != $nodegroupedit['id']) {
+    } elseif (($existingId = $LMS->getNodeGroupIdByName($nodegroupedit['name'])) && $existingId != $id) {
         $error['name'] = trans('Group with name $a already exists!', $nodegroupedit['name']);
     }
 
@@ -61,13 +61,16 @@ if (isset($_POST['nodegroup'])) {
             'description' => $nodegroupedit['description'],
             SYSLOG::RES_NODEGROUP => $nodegroupedit['id']
         );
-        $LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
+        $updated = $LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?', array_values($args));
-        if ($SYSLOG) {
-            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
+        if ($updated === false) {
+            $error['name'] = trans('Operation failed!');
+        } else {
+            if ($SYSLOG && $updated) {
+                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
+            }
+            $SESSION->redirect('?m=nodegroupinfo&id='.$id);
         }
-
-        $SESSION->redirect('?m=nodegroupinfo&id='.$id);
     }
 
     $nodegroup['description'] = $nodegroupedit['description'];

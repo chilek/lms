@@ -27,59 +27,72 @@
 $from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
 $to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
 
-if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1) {
-    $DB->BeginTrans();
-
-    if ($SYSLOG) {
-        $cids = $DB->GetCol(
-            'SELECT customerid FROM vcustomerassignments a, customerview c
-				WHERE a.customerid = c.id AND a.customergroupid = ?
-				AND NOT EXISTS (SELECT 1 FROM vcustomerassignments ca
-					WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-            array($from, $to)
-        );
-    }
-
-    $DB->Execute(
-        'INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
-			FROM vcustomerassignments a, customerview c
-			WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM vcustomerassignments ca
-				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-        array($to, $from, $to)
-    );
-
-    if ($SYSLOG && $cids) {
-        foreach ($cids as $cid) {
-            $aid = $DB->GetOne('SELECT a.id FROM vcustomerassignments a, customerview c
-				WHERE a.customerid = c.id AND a.customerid = ? AND a.customergroupid = ?', array($cid, $to));
-            $args = array(
-                SYSLOG::RES_CUSTASSIGN => $aid,
-                SYSLOG::RES_CUST => $cid,
-                SYSLOG::RES_CUSTGROUP => $to
-            );
-            $SYSLOG->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
-        }
-
-        $assigns = $DB->GetAll('SELECT id, customerid FROM vcustomerassignments WHERE customergroupid = ?', array($from));
-        if (!empty($assigns)) {
-            foreach ($assigns as $assign) {
-                $args = array(
-                SYSLOG::RES_CUSTASSIGN => $assign['id'],
-                SYSLOG::RES_CUST => $assign['customerid'],
-                SYSLOG::RES_CUSTGROUP => $from
-                );
-                $SYSLOG->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-        }
-    }
-
-    $DB->Execute('UPDATE customerassignments SET enddate = ?NOW? WHERE customergroupid = ? AND enddate = 0', array($from));
-
-    $DB->CommitTrans();
-
-    $SESSION->redirect('?m=customergroupinfo&id=' . $to);
-} else {
+if ($from == $to || ($_GET['is_sure'] ?? 0) != 1 || !$LMS->CustomergroupExists($from) || !$LMS->CustomergroupExists($to)) {
     $SESSION->redirect_to_history_entry();
 }
+
+$DB->BeginTrans();
+$groups = $DB->GetCol('SELECT id FROM customergroups WHERE id IN ? ORDER BY id FOR UPDATE', array(array($from, $to)));
+if (count($groups ?: array()) != 2) {
+    $DB->RollbackTrans();
+    $SESSION->redirect_to_history_entry();
+}
+
+$assignments = $DB->GetAll(
+    'SELECT DISTINCT a.id, a.customerid, dest.id AS destinationid
+    FROM vcustomerassignments a
+    JOIN customerview c ON c.id = a.customerid
+    LEFT JOIN vcustomerassignments dest ON dest.customergroupid = ? AND dest.customerid = a.customerid
+    WHERE a.customergroupid = ?',
+    array($to, $from)
+);
+if ($assignments) {
+    $newMembers = array();
+    foreach ($assignments as $assignment) {
+        if (!$assignment['destinationid']) {
+            $newMembers[] = $assignment['customerid'];
+        }
+    }
+
+    if ($newMembers && $DB->Execute(
+        'INSERT INTO customerassignments (customergroupid, customerid)
+        SELECT ?, customerid FROM vcustomerassignments WHERE customergroupid = ? AND customerid IN ?',
+        array($to, $from, $newMembers)
+    ) != count($newMembers)) {
+        $DB->RollbackTrans();
+        $SESSION->redirect_to_history_entry();
+    }
+
+    if ($DB->Execute(
+        'UPDATE customerassignments SET enddate = ?NOW? WHERE id IN ? AND enddate = 0',
+        array(array_column($assignments, 'id'))
+    ) != count($assignments)) {
+        $DB->RollbackTrans();
+        $SESSION->redirect_to_history_entry();
+    }
+
+    if ($SYSLOG) {
+        if ($newMembers) {
+            $added = $DB->GetAll(
+                'SELECT id, customerid FROM customerassignments WHERE customergroupid = ? AND customerid IN ? AND enddate = 0',
+                array($to, $newMembers)
+            );
+            foreach ($added as $assignment) {
+                $SYSLOG->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, array(
+                    SYSLOG::RES_CUSTASSIGN => $assignment['id'],
+                    SYSLOG::RES_CUST => $assignment['customerid'],
+                    SYSLOG::RES_CUSTGROUP => $to,
+                ));
+            }
+        }
+        foreach ($assignments as $assignment) {
+            $SYSLOG->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, array(
+                SYSLOG::RES_CUSTASSIGN => $assignment['id'],
+                SYSLOG::RES_CUST => $assignment['customerid'],
+                SYSLOG::RES_CUSTGROUP => $from,
+            ));
+        }
+    }
+}
+$DB->CommitTrans();
+$SESSION->redirect('?m=customergroupinfo&id=' . $to);

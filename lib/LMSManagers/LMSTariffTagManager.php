@@ -144,30 +144,22 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
 
     public function TarifftagDelete($id)
     {
-        if (!$this->TarifftagWithTariffGet($id)) {
-            if ($this->syslog) {
-                $tariffassigns = $this->db->GetAll('SELECT tariffid, tarifftagid FROM tariffassignments WHERE tarifftagid = ?', array($id));
-                if (!empty($tariffassigns)) {
-                    foreach ($tariffassigns as $tariffassign) {
-                        $args = array(
-                        SYSLOG::RES_TARIFFASSIGN => $tariffassign['tariffid'],
-                        SYSLOG::RES_TARIFF => $tariffassign['tariffid'],
-                        SYSLOG::RES_TARIFFTAG => $tariffassign['tarifftagid']
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_TARIFFASSIGN, SYSLOG::OPER_DELETE, $args);
-                    }
-                }
-                $this->syslog->AddMessage(
-                    SYSLOG::RES_TARIFFTAG,
-                    SYSLOG::OPER_DELETE,
-                    array(SYSLOG::RES_TARIFFTAG => $id)
-                );
-            }
-            $this->db->Execute('DELETE FROM tarifftags WHERE id=?', array($id));
-            return true;
-        } else {
+        $this->db->BeginTrans();
+        if (!$this->db->GetOne('SELECT id FROM tarifftags WHERE id = ? FOR UPDATE', array($id))
+            || $this->db->GetOne('SELECT 1 FROM tariffassignments WHERE tarifftagid = ? LIMIT 1', array($id))
+            || !$this->db->Execute('DELETE FROM tarifftags WHERE id = ?', array($id))) {
+            $this->db->RollbackTrans();
             return false;
         }
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_TARIFFTAG,
+                SYSLOG::OPER_DELETE,
+                array(SYSLOG::RES_TARIFFTAG => $id)
+            );
+        }
+        $this->db->CommitTrans();
+        return true;
     }
 
     public function TarifftagWithTariffGet($id)

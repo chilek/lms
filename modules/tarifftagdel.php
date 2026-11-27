@@ -26,10 +26,8 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $LMS->TariffTagExists($id)) {
-    if (!$DB->GetOne('SELECT 1 FROM tariffassignments WHERE tarifftagid = ? LIMIT 1', array($id))) {
-        $LMS->TariffTagDelete($id);
-    }
+if ($id) {
+    $LMS->TariffTagDelete($id);
 }
 
 $SESSION->redirect('?m=tarifftaglist');
