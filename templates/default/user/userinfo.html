@@ -13,7 +13,7 @@
 {/if}
 
 {block name="usercallbox"}
-	{if ConfigHelper::checkPrivilege('readonly')
+	{if ConfigHelper::checkPrivilege('read_only')
 		|| ConfigHelper::checkPrivilege('customer_call_view')
 		|| ConfigHelper::checkPrivilege('customer_call_management')}
 		<tr>

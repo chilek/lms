@@ -9,7 +9,7 @@
 {/block}
 
 {block name="usercallbox"}
-	{if ConfigHelper::checkPrivilege('readonly')
+	{if ConfigHelper::checkPrivilege('read_only')
 	|| ConfigHelper::checkPrivilege('customer_call_view')
 	|| ConfigHelper::checkPrivilege('customer_call_management')}
 		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 20)}
