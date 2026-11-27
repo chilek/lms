@@ -643,7 +643,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'prodid' => $tariff['prodid'],
                                 'type' => $tariff['type'],
                                 'netvalue' => str_replace(',', '.', $netValue),
-                                'note' => $note,
                             );
                             $this->db->Execute(
                                 'INSERT INTO liabilities (name, value, flags, taxcategory, currency,
