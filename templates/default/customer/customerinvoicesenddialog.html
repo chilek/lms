@@ -48,7 +48,7 @@
 			</li>
 			<li>
 				<strong>{trans("Body:")}</strong><br>
-				<textarea name="invoicesend[body]" rows="12"></textarea>
+				<textarea name="invoicesend[body]" class="lms-ui-wysiwyg-editor" data-wysiwyg="false" rows="12"></textarea>
 			</li>
 		</ol>
 		<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
@@ -91,8 +91,17 @@
 				return;
 			}
 			$('#invoice-send-form [name="invoicesend[subject]"]').val(result.subject);
-			$('#invoice-send-form [name="invoicesend[body]"]').val(result.body);
+			var invoiceSendBody = $('#invoice-send-form [name="invoicesend[body]"]');
+			invoiceSendBody.trigger('lms:visual_editor_change_required', {
+				ifShow: false
+			});
+			invoiceSendBody.val(result.body);
 			invoiceSendDialog.open();
+			if (result.format == 'html') {
+				invoiceSendBody.trigger('lms:visual_editor_change_required', {
+					ifShow: true
+				});
+			}
 		}).fail(function(jqXHR) {
 			alertDialog($t('AJAX: Invalid result - status: $a', jqXHR.status), button);
 		}).always(function() {
@@ -116,6 +125,10 @@
 
 		$('#invoice-send-form').submit(function() {
 			var form = $(this);
+
+			if (typeof tinymce !== 'undefined') {
+				tinymce.triggerSave();
+			}
 
 			if (!form.find('[name="invoicesend[recipients][]"]:checked').length
 				&& !form.find('[name="invoicesend[extraemail]"]').val().trim().length) {

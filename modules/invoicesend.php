@@ -198,6 +198,7 @@ if ($invoiceSendPreview) {
     die(json_encode(array(
         'subject' => $subject,
         'body' => $body,
+        'format' => $mail_format,
     )));
 }
 
@@ -388,6 +389,9 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     $mail_body = $invoiceSendBody;
                 }
                 $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
+                if (isset($invoiceSend['wysiwyg']['body'])) {
+                    $mail_format = ConfigHelper::checkValue($invoiceSend['wysiwyg']['body']) ? 'html' : 'text';
+                }
                 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
                 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
                 $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
