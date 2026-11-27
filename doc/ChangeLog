@@ -1335,6 +1335,7 @@ version 28-git (????-??-??):
     if selected documents use different mail templates, per-type templates are kept unless
     the operator chooses a common subject and body
     (variable: phpui.document_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
+  - enhancement: visual editor toggle for message body in customer invoice and document send dialogs [interduo]
 
 version 27.0 (2021-08-20):
 
