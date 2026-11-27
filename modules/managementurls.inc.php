@@ -81,7 +81,9 @@ function _delManagementUrl($type, $id)
     $result = new xajaxResponse();
 
     $lms = LMS::getInstance();
-    $lms->DeleteManagementUrl($type, $id);
+    if (in_array($id, array_column($lms->GetManagementUrls($type, $_GET['id']) ?: array(), 'id'))) {
+        $lms->DeleteManagementUrl($type, $id);
+    }
 
     _getManagementUrls($type, $result);
 
@@ -105,7 +107,9 @@ function _updateManagementUrl($type, $id, $params)
         }
 
         $lms = LMS::getInstance();
-        $lms->UpdateManagementUrl($type, $id, $params);
+        if (in_array($id, array_column($lms->GetManagementUrls($type, $_GET['id']) ?: array(), 'id'))) {
+            $lms->UpdateManagementUrl($type, $id, $params);
+        }
 
         _getManagementUrls($type, $result);
     } else {

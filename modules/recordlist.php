@@ -54,13 +54,9 @@ if (empty($recordslist)) {
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
-$listdata['domainName'] = $domain['name'];
+$listdata['domainName'] = $domain['name'] ?? '';
 
-if ($domain['type'] == 'SLAVE') {
-    $showAddEdit = false;
-} else {
-    $showAddEdit = true;
-}
+$showAddEdit = !empty($domain) && $domain['type'] != 'SLAVE';
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.recordlist_pagelimit', $listdata['total']);

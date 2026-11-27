@@ -5559,8 +5559,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             "SELECT DISTINCT docid FROM cash c
 			JOIN documents d ON d.id = c.docid
 			WHERE d.type IN ?
-				AND c.id IN (" . implode(', ', $ids) . ")",
-            array($doctypes)
+				AND c.id IN ?",
+            array($doctypes, $ids)
         ) ?: [];
     }
 

@@ -229,7 +229,9 @@ function delRadioSector($id)
     $result = new xajaxResponse();
 
     $lms = LMS::getInstance();
-    $lms->DeleteRadioSector($id);
+    if (LMSDB::getInstance()->GetOne('SELECT 1 FROM netradiosectors WHERE id = ? AND netdev = ?', array($id, $_GET['id']))) {
+        $lms->DeleteRadioSector($id);
+    }
 
     _getRadioSectors($result);
 
@@ -253,7 +255,9 @@ function updateRadioSector($rsid, $params)
 
     if (!$error) {
         $lms = LMS::getInstance();
-        $lms->UpdateRadioSector($rsid, $params);
+        if (LMSDB::getInstance()->GetOne('SELECT 1 FROM netradiosectors WHERE id = ? AND netdev = ?', array($rsid, $_GET['id']))) {
+            $lms->UpdateRadioSector($rsid, $params);
+        }
 
         _getRadioSectors($result);
     } else {
@@ -312,7 +316,7 @@ function getThroughput($ip)
         return $result;
     }
 
-    $stats = explode(' ', $output[0]);
+    $stats = preg_split('/\s+/', trim($output[0]));
     if (count($stats) != 4) {
         return $result;
     }
@@ -320,7 +324,7 @@ function getThroughput($ip)
     $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
     $speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5);
 
-    array_walk($stats, 'intval');
+    $stats = array_map('intval', $stats);
     foreach (array(0, 2) as $idx) {
         $stats[$idx] = convert_to_units($stats[$idx], $speed_unit_aggregation_threshold, $speed_unit_type) . '/s';
     }
@@ -371,7 +375,12 @@ function getNodeStats($nodeid)
 
 
 $LMS->RegisterXajaxFunction(array(
-    'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
-    'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
-    'getRadioSectorsForNetdev', 'getFirstFreeAddress', 'getThroughput', 'getNodeStats'
+    'getManagementUrls', 'getRadioSectors', 'getRadioSectorsForNetdev',
+    'getFirstFreeAddress', 'getThroughput', 'getNodeStats',
 ));
+if (AccessRights::getInstance()->checkRights('netdevedit', (array) $LMS->GetUserRights(Auth::GetCurrentUser()))) {
+    $LMS->RegisterXajaxFunction(array(
+        'addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
+        'addRadioSector', 'delRadioSector', 'updateRadioSector',
+    ));
+}

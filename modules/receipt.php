@@ -109,36 +109,33 @@ if ($receipt_type == 'pdf') {
     $document = new LMSHtmlReceipt($SMARTY);
 }
 
-if (isset($_GET['print']) && $_GET['print'] == 'cached' && !empty($_POST['marks']) && count($_POST['marks'])) {
-    $SESSION->restore('rlm', $rlm);
-    $SESSION->remove('rlm');
-
-    if (isset($_POST['marks'])) {
-        $marks = $_POST['marks']['receipt'] ?? $_POST['marks'];
-    } else {
-        $marks = array();
-    }
-
-    $ids = Utils::filterIntegers($marks);
-
-    if (empty($ids)) {
-        $SESSION->close();
-        die;
-    }
-
+if (isset($_GET['print']) && $_GET['print'] == 'cached') {
+    $marks = (array) ($_POST['marks'] ?? array());
     if (isset($_GET['cash'])) {
-        $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_RECEIPT));
+        $receiptIds = Utils::filterIntegers(array_keys((array) ($marks['receipt'] ?? array())));
+        $cashIds = Utils::filterIntegers(array_filter($marks, 'is_scalar'));
+        $ids = array_merge($receiptIds, $LMS->GetDocumentsForBalanceRecords($cashIds, array(DOC_RECEIPT)));
+    } else {
+        $SESSION->restore('rlm', $rlm);
+        $SESSION->remove('rlm');
+        $ids = Utils::filterIntegers(array_replace($rlm ?: array(), $marks));
     }
 
     if (!empty($ids)) {
         $ids = $DB->GetCol(
-            'SELECT DISTINCT rc.docid
+            'SELECT rc.docid
             FROM receiptcontents rc
-            JOIN cashrights r ON r.regid = rc.regid
-            WHERE rc.docid IN ? AND r.userid = ? AND r.rights > 0',
-            array($ids, Auth::GetCurrentUser())
+            LEFT JOIN cashrights r ON r.regid = rc.regid AND r.userid = ?
+            WHERE rc.docid IN ? GROUP BY rc.docid
+            HAVING MIN(COALESCE(r.rights, 0)) > 0',
+            array(Auth::GetCurrentUser(), $ids)
         ) ?: [];
         sort($ids);
+    }
+
+    if (empty($ids)) {
+        $SESSION->close();
+        die;
     }
 
     $layout['pagetitle'] = trans('Cash Receipts');
@@ -171,8 +168,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && !empty($_POST['marks'
         }
     }
 } elseif ($receipt = GetReceipt($_GET['id'])) {
-    $regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
-    if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))) {
+    if (!$DB->GetOne(
+        'SELECT MIN(COALESCE(r.rights, 0)) FROM receiptcontents rc
+        LEFT JOIN cashrights r ON r.regid = rc.regid AND r.userid = ?
+        WHERE rc.docid = ?',
+        array(Auth::GetCurrentUser(), $receipt['id'])
+    )) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
         die;

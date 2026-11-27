@@ -48,7 +48,7 @@ if (isset($_POST['record'])) {
         }
     }
 
-    if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
+    if (!ctype_digit($record['ttl']) || (int) $record['ttl'] <= 0) {
         $error['ttl'] = trans('Wrong TTL');
     }
 

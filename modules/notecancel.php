@@ -27,15 +27,33 @@
 $id = intval($_GET['id']);
 
 if ($id) {
+    $DB->BeginTrans();
+    $document = $DB->GetRow(
+        'SELECT id, customerid, cancelled FROM documents
+        WHERE id = ? AND type IN ?
+            AND divisionid IN (SELECT divisionid FROM userdivisions WHERE userid = ?)
+            AND (customerid IS NULL OR customerid IN (SELECT id FROM customerview))
+        FOR UPDATE',
+        array($id, array(DOC_DNOTE), Auth::GetCurrentUser())
+    );
+    if (!$document) {
+        $DB->RollbackTrans();
+        access_denied();
+    }
     if (isset($_GET['recover'])) {
-        if (!$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ? AND cancelled = 1', array($id))) {
+        if (!$document['cancelled'] || !$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id))) {
+            $DB->RollbackTrans();
             $SESSION->redirect('?m=notelist');
         }
 
         $note = $LMS->GetNoteContent($id);
+        if (empty($note['content'])) {
+            $DB->RollbackTrans();
+            $SESSION->redirect('?m=notelist');
+        }
 
         foreach ($note['content'] as $idx => $content) {
-            $LMS->AddBalance(array(
+            if (!$LMS->AddBalance(array(
                 'time' => $note['cdate'],
                 'value' => $content['value'] * -1,
                 'currency' => $note['currency'],
@@ -44,7 +62,10 @@ if ($id) {
                 'comment' => $content['description'],
                 'docid' => $id,
                 'itemid' => $content['itemid'],
-            ));
+            ))) {
+                $DB->RollbackTrans();
+                $SESSION->redirect('?m=notelist');
+            }
         }
         if ($SYSLOG) {
             $args = array(
@@ -55,17 +76,21 @@ if ($id) {
             $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
         }
     } else {
-        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
+        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
+            $DB->RollbackTrans();
             return;
         }
 
         if ($LMS->isArchiveDocument($id)) {
+            $DB->RollbackTrans();
             return;
         }
 
-        $DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
-        $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-        $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
+        if ($document['cancelled'] || !$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id))
+            || $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)) === false) {
+            $DB->RollbackTrans();
+            $SESSION->redirect('?m=notelist');
+        }
         if ($SYSLOG) {
             $args = array(
                 SYSLOG::RES_DOC => $document['id'],
@@ -75,6 +100,7 @@ if ($id) {
             $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
         }
     }
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=notelist');

@@ -24,57 +24,59 @@
  *  $Id$
  */
 
-$SESSION->restore('ilm', $ilm);
-$SESSION->remove('ilm');
+$SESSION->restore('dnlm', $marks);
+$SESSION->remove('dnlm');
+$ids = Utils::filterIntegers(array_replace((array) $marks, (array) ($_POST['marks'] ?? array())));
 
-if (count($_POST['marks'])) {
-    foreach ($_POST['marks'] as $id => $mark) {
-        $ilm[$id] = $mark;
+foreach (array_unique($ids) as $noteid) {
+    $DB->BeginTrans();
+    $document = $DB->GetRow(
+        'SELECT customerid, closed, type, currency, currencyvalue FROM documents
+        WHERE id = ? AND type IN ? AND cancelled = 0
+            AND divisionid IN (SELECT divisionid FROM userdivisions WHERE userid = ?)
+            AND (customerid IS NULL OR customerid IN (SELECT id FROM customerview))
+        FOR UPDATE',
+        array($noteid, array(DOC_DNOTE), Auth::GetCurrentUser())
+    );
+    if (!$document) {
+        $DB->RollbackTrans();
+        continue;
     }
-}
 
-if (count($ilm)) {
-    foreach ($ilm as $mark) {
-        $ids[] = intval($mark);
-    }
-}
-
-if (count($ids)) {
-    foreach ($ids as $noteid) {
-        $note = $DB->GetRow('SELECT customerid, 
-			(SELECT SUM(value) FROM debitnotecontents
-				WHERE docid = d.id) AS value, closed
-			FROM documents d
-			WHERE id = ?', array($noteid));
-        if (empty($note)) {
+    if (ConfigHelper::checkConfig('phpui.note_check_payment') && $document['customerid'] && !$document['closed']) {
+        $value = $DB->GetOne('SELECT SUM(value) FROM debitnotecontents WHERE docid = ?', array($noteid));
+        if ($value === false || $value === null) {
+            $DB->RollbackTrans();
             continue;
         }
-        [$cid, $value, $closed] = array_values($note);
-        // add payment
-        if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
-            if ($value != 0) {
-                $LMS->AddBalance(array(
-                    'type' => 1,
-                    'time' => time(),
-                    'value' => $value,
-                    'customerid' => $cid,
-                    'comment' => trans('Accounted'),
-                ));
-            }
+        if ($value != 0 && !$LMS->AddBalance(array(
+            'type' => 1,
+            'time' => time(),
+            'value' => $value,
+            'currency' => $document['currency'],
+            'currencyvalue' => $document['currencyvalue'],
+            'customerid' => $document['customerid'],
+            'comment' => trans('Accounted'),
+        ))) {
+            $DB->RollbackTrans();
+            continue;
         }
-
-        if ($SYSLOG) {
-            $args = array(
-                SYSLOG::RES_DOC => $noteid,
-                SYSLOG::RES_CUST => $cid,
-                'closed' => intval(!$closed),
-            );
-            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-        }
-        $DB->Execute('UPDATE documents SET closed = 
-			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
-			WHERE id = ?', array($noteid));
     }
+
+    $closed = intval(!$document['closed']);
+    if (!$DB->Execute('UPDATE documents SET closed = ? WHERE id = ?', array($closed, $noteid))) {
+        $DB->RollbackTrans();
+        continue;
+    }
+    if ($SYSLOG) {
+        $args = array(
+            SYSLOG::RES_DOC => $noteid,
+            SYSLOG::RES_CUST => $document['customerid'],
+            'closed' => $closed,
+        );
+        $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+    }
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect_to_history_entry();

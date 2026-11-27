@@ -26,11 +26,15 @@
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'dns.php');
 
-$id = $_GET['id']*1;
+$id = intval($_GET['id'] ?? 0);
 
 $record = $DB->GetRow('SELECT d.name AS domainname, r.*
 	FROM domains d, records r
 	WHERE r.domain_id = d.id AND r.id = ?', array($id));
+
+if (!$record) {
+    $SESSION->redirect('?m=domainlist');
+}
 
 if (isset($_POST['record'])) {
     $rec = $_POST['record'];
@@ -42,7 +46,7 @@ if (isset($_POST['record'])) {
     unset($rec['id'], $rec['domain_id'], $rec['domainname']);
     $record = array_merge($record, $rec);
 
-    if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
+    if (!ctype_digit($record['ttl']) || (int) $record['ttl'] <= 0) {
         $error['ttl'] = trans('Wrong TTL');
     }
 

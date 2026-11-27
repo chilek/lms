@@ -27,15 +27,20 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    if (!$LMS->isDocumentAccessible($id)) {
+    if ($LMS->getDocumentType($id) >= 0 || !$LMS->isDocumentAccessible($id)) {
         access_denied();
     }
 
     if (isset($_GET['recover'])) {
-        $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
+        if (!$DB->Execute(
+            'UPDATE documents SET cancelled = 0 WHERE id = ? AND cancelled = 1 AND closed = ?',
+            array($id, DOC_OPEN)
+        )) {
+            return;
+        }
         $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
     } else {
-        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
+        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
             return;
         }
 
@@ -54,7 +59,12 @@ if ($id) {
             return;
         }
 
-        $DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
+        if (!$DB->Execute(
+            'UPDATE documents SET cancelled = 1 WHERE id = ? AND cancelled = 0 AND closed = ?',
+            array($id, DOC_OPEN)
+        )) {
+            return;
+        }
         $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
     }
 

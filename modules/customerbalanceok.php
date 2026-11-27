@@ -27,12 +27,15 @@
 $customerid = $_GET['id'];
 
 if ($LMS->CustomerExists($customerid)) {
+    $DB->BeginTrans();
+    if (!$DB->GetOne('SELECT id FROM customers WHERE id = ? FOR UPDATE', array($customerid))) {
+        $DB->RollbackTrans();
+        $SESSION->redirect_to_history_entry();
+    }
     $balance = $LMS->GetCustomerBalance($customerid);
 
-    if ($balance<0) {
-        $DB->BeginTrans();
-
-        $DB->Execute(
+    if ($balance < 0) {
+        if (!$DB->Execute(
             'INSERT INTO cash (time, type, userid, value, currency, customerid, comment)
 			VALUES (?NOW?, 1, ?, ?, ?, ?, ?)',
             array(Auth::GetCurrentUser(),
@@ -40,16 +43,16 @@ if ($LMS->CustomerExists($customerid)) {
                 Localisation::getCurrentCurrency(),
                 $customerid,
                 trans('Accounted'))
-        );
-
-        $DB->Execute(
+        ) || $DB->Execute(
             'UPDATE documents SET closed = 1 
 			WHERE customerid = ? AND type IN (?, ?) AND closed = 0',
             array($customerid, DOC_INVOICE, DOC_CNOTE)
-        );
-
-        $DB->CommitTrans();
+        ) === false) {
+            $DB->RollbackTrans();
+            $SESSION->redirect_to_history_entry();
+        }
     }
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect_to_history_entry();

@@ -88,12 +88,18 @@ function valid_pool($p, $id = 0)
         $error['poolend'] = trans('Incorrect format! Only values 0 to 9.');
     }
 
-    if (gmp_cmp($pstart, $pend) == 0 || gmp_cmp($pstart, $pend) == 1) {
-        $error['poolstart'] = trans('Pool start must be lower than end!');
-    }
-
     if (!getPoolTypeNameByNumber($type)) {
         $error['pooltype'] = trans("Incorrect pool type!");
+    }
+
+    if (isset($error['poolstart']) || isset($error['poolend'])) {
+        return $error;
+    }
+    $pstart = gmp_init($pstart, 10);
+    $pend = gmp_init($pend, 10);
+    if (gmp_cmp($pstart, $pend) >= 0) {
+        $error['poolstart'] = trans('Pool start must be lower than end!');
+        return $error;
     }
 
     foreach ($pool_list as $v) {
@@ -101,21 +107,18 @@ function valid_pool($p, $id = 0)
             continue;
         }
 
-        $check1 = gmp_cmp($pstart, $v['poolstart']);
-        $check2 = gmp_cmp($pstart, $v['poolend']);
-
-        if (($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0)) {
+        $start = gmp_init($v['poolstart'], 10);
+        $end = gmp_init($v['poolend'], 10);
+        if (gmp_cmp($pstart, $end) > 0 || gmp_cmp($pend, $start) < 0) {
+            continue;
+        }
+        if (gmp_cmp($pstart, $start) >= 0) {
             $error['poolstart'] = trans('Number coincides with pool `$a` !', $v['name']);
         }
-
-        $check1 = gmp_cmp($pend, $v['poolstart']);
-        $check2 = gmp_cmp($pend, $v['poolend']);
-
-        if (($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0)) {
+        if (gmp_cmp($pend, $end) <= 0) {
             $error['poolend'] = trans('Number coincides with pool `$a` !', $v['name']);
         }
-
-        if (gmp_cmp($pstart, $v['poolstart']) == -1 && $check2 == 1) {
+        if (gmp_cmp($pstart, $start) < 0 && gmp_cmp($pend, $end) > 0) {
             $error['poolstart'] = trans('Number range coincides with pool `$a` !', $v['name']);
         }
     }
@@ -133,13 +136,18 @@ function valid_pool($p, $id = 0)
 function getPoolSize($begin, $end)
 {
     // end - begin + 1
-    $size = gmp_add(gmp_sub($end, $begin), 1);
+    $size = gmp_add(gmp_sub(gmp_init($end, 10), gmp_init($begin, 10)), 1);
 
     return gmp_strval($size);
 }
 
 if (empty($_GET['action'])) {
     $_GET['action'] = 'none';
+}
+
+if (in_array($_GET['action'], array('add', 'edit', 'remove', 'changestate'), true)
+    && !ConfigHelper::checkPrivilege('voip_number_pool_management')) {
+    access_denied();
 }
 
 switch ($_GET['action']) {
@@ -166,13 +174,16 @@ switch ($_GET['action']) {
             $size = getPoolSize($p['poolstart'], $p['poolend']);
             $phones_used = 0;
 
-            $voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
+            $voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;") ?: array();
 
             if (!empty($voip_phones)) {
                 foreach ($voip_phones as $phone) {
-                    $ph = $phone['phone'];
+                    if (!ctype_digit($phone['phone'])) {
+                        continue;
+                    }
+                    $ph = gmp_init($phone['phone'], 10);
 
-                    if (gmp_cmp($ph, $p['poolstart']) != -1 && gmp_cmp($ph, $p['poolend']) != 1) {
+                    if (gmp_cmp($ph, gmp_init($p['poolstart'], 10)) != -1 && gmp_cmp($ph, gmp_init($p['poolend'], 10)) != 1) {
                         ++$phones_used;
                     }
                 }
@@ -231,8 +242,8 @@ switch ($_GET['action']) {
         $query = $DB->Execute("DELETE FROM voip_pool_numbers WHERE id = ?", array($id));
 
         if ($query == 0) {
-            die(json_encode(array( trans("Operation failed!"))));
             $DB->RollbackTrans();
+            die(json_encode(array(trans("Operation failed!"))));
         } else {
             $DB->CommitTrans();
         }
@@ -262,7 +273,7 @@ $pool_list = $DB->GetAll("SELECT id, disabled, name, poolstart, poolend, descrip
                           (select count(*) from voip_numbers where phone between vpn.poolstart AND vpn.poolend) as used_phones
                           FROM voip_pool_numbers vpn;");
 
-$voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
+$voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;") ?: array();
 
 if ($pool_list) {
     global $VOIP_POOL_NUMBER_TYPES;
@@ -274,9 +285,12 @@ if ($pool_list) {
         $pool_list[$i]['phones_used'] = 0;
 
         foreach ($voip_phones as $phone) {
-            $p = $phone['phone'];
+            if (!ctype_digit($phone['phone'])) {
+                continue;
+            }
+            $p = gmp_init($phone['phone'], 10);
 
-            if (gmp_cmp($p, $pool_list[$i]['poolstart']) != -1 && gmp_cmp($p, $pool_list[$i]['poolend']) != 1) {
+            if (gmp_cmp($p, gmp_init($pool_list[$i]['poolstart'], 10)) != -1 && gmp_cmp($p, gmp_init($pool_list[$i]['poolend'], 10)) != 1) {
                 ++$pool_list[$i]['phones_used'];
             }
         }

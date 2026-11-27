@@ -62,7 +62,9 @@ if ($LMS->UserExists($id)) {
             }
             if (!$error) {
                 $LMS->SetUserPassword($id, $passwd['passwd'], $net);
-                $SESSION->remove('session_passwdrequiredchange');
+                if (!$net) {
+                    $SESSION->remove('session_passwdrequiredchange');
+                }
                 $SESSION->redirect_to_history_entry();
             }
         }

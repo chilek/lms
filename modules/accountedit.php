@@ -64,13 +64,14 @@ if (isset($_POST['account'])) {
         $error['login'] = trans('Login contains forbidden characters!');
     } elseif (!$account['domainid']) {
             $error['domainid'] = trans('You have to select domain for account!');
-    } elseif ($account['login'] != $oldlogin || $account['domainid'] != $oldDomainId) {
+    } elseif ($account['login'] != $oldlogin || $account['domainid'] != $oldDomainId
+        || (!($oldtype & 2) && !empty($account['type']) && ($account['type'] & 2))) {
         if ($DB->GetOne(
-            'SELECT id FROM passwd WHERE login = ? AND domainid = ?',
-            array($account['login'], $account['domainid'])
+            'SELECT id FROM passwd WHERE login = ? AND domainid = ? AND id <> ?',
+            array($account['login'], $account['domainid'], $id)
         )) {
             $error['login'] = trans('Account with that login name exists!');
-        } elseif ($account['domainid'] && ($account['type'] & 2)) {
+        } elseif (!empty($account['type']) && ($account['type'] & 2)) {
             // if account is of type mail, check if we've got an alias with the same login@domain
             if ($DB->GetOne('SELECT 1 FROM aliases WHERE login=? AND domainid=?', array($account['login'], $account['domainid']))) {
                 $error['login'] = trans('Alias with that login name already exists in that domain!');

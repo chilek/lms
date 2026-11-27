@@ -230,7 +230,7 @@ function getThroughput($ip)
         return '';
     }
 
-    $stats = explode(' ', $output[0]);
+    $stats = preg_split('/\s+/', trim($output[0]));
     if (count($stats) != 4) {
         return '';
     }
@@ -238,7 +238,7 @@ function getThroughput($ip)
     $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
     $speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5);
 
-    array_walk($stats, 'intval');
+    $stats = array_map('intval', $stats);
     foreach (array(0, 2) as $idx) {
         $stats[$idx] = convert_to_units($stats[$idx], $speed_unit_aggregation_threshold, $speed_unit_type) . '/s';
     }
@@ -414,6 +414,15 @@ if (isset($_GET['action'])) {
 
 $SMARTY->assign('session_state_helper', $session_state_helper);
 
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'updateNodeLock',
-    'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',
-    'getFirstFreeAddress'));
+$LMS->RegisterXajaxFunction(array(
+    'getRadioSectors', 'getFirstFreeAddress',
+));
+if (isset($_GET['id']) && $LMS->NodeExists(intval($_GET['id']))) {
+    $LMS->RegisterXajaxFunction(array('getNodeLocks', 'getManagementUrls'));
+    if (AccessRights::getInstance()->checkRights('nodeedit', (array) $LMS->GetUserRights(Auth::GetCurrentUser()))) {
+        $LMS->RegisterXajaxFunction(array(
+            'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'updateNodeLock',
+            'addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
+        ));
+    }
+}
