@@ -102,8 +102,8 @@ $warning = isset($_GET['warning']) ? 1 : 0;
 if (!empty($_POST['marks'])) {
     $nodes = array_filter($_POST['marks'], 'is_natural');
 
-    $LMS->NodeSetWarn($nodes, $warning);
     if (!empty($nodes)) {
+        $LMS->NodeSetWarn($nodes, $warning);
         $data = array('nodes' => $nodes, 'warning' => $warning);
         $LMS->ExecHook('node_warn_after', $data);
 
