@@ -263,4 +263,7 @@ $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 $SMARTY->assign('proforma', $proforma);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('invoicelist', $invoicelist);
+if (ConfigHelper::checkConfig('phpui.invoice_send_dialog', true)) {
+    $SMARTY->assign('invoiceSendDialog', true);
+}
 $SMARTY->display('invoice/invoicelist.html');

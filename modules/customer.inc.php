@@ -172,6 +172,8 @@ if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocum
 
         if (ConfigHelper::checkConfig('phpui.document_send_dialog', true)) {
             $SMARTY->assign('documentSendContacts', $LMS->GetCustomerContacts($customerid, CONTACT_EMAIL));
+            $SMARTY->assign('documentSendCustomerId', $customerid);
+            $SMARTY->assign('documentSendDialog', true);
         }
     }
 }

@@ -1,3 +1,13 @@
+{if !isset($documentSendDialogPreviewUrl)}
+	{assign var="documentSendDialogPreviewUrl" value="?m=documentsend&action=preview&api=1"}
+{/if}
+{if !isset($documentSendDialogPreviewMarksSelector)}
+	{assign var="documentSendDialogPreviewMarksSelector" value='[form="customerdocuments-form"].document-checkbox:checked'}
+{/if}
+{if !isset($documentSendDialogSubmitMarksSelector)}
+	{assign var="documentSendDialogSubmitMarksSelector" value='[form="customerdocuments-form"].lms-ui-multi-check:checked'}
+{/if}
+
 <style>
 
 	#document-send-dialog {
@@ -23,12 +33,13 @@
 
 <div id="document-send-dialog" class="lms-ui-dialog" title="{trans("Send documents")}">
 	<form method="post" id="document-send-form" action="?m=documentsend" target="_blank">
-		<input type="hidden" name="documentsend[customerid]" value="{$customerinfo.id}">
+		<input type="hidden" name="documentsend[customerid]" value="{$documentSendCustomerId|default:''}">
 		<div class="document-send-marks"></div>
 		<ol class="dialog-box">
-			<li>
+			<li id="document-send-recipients-box">
 				<strong>{trans("Recipients:")}</strong>
-				{foreach $documentSendContacts as $contact}
+				<div id="document-send-recipients">
+				{foreach $documentSendContacts|default:[] as $contact}
 					{$contactDisabled = ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED}
 					{$contactDocuments = ($contact.type & $smarty.const.CONTACT_DOCUMENTS) == $smarty.const.CONTACT_DOCUMENTS}
 					<label class="document-send-recipient{if $contactDisabled} blend{/if}">
@@ -37,8 +48,9 @@
 						{$contact.fullname|escape}
 					</label>
 				{/foreach}
+				</div>
 			</li>
-			<li>
+			<li id="document-send-extraemail-box">
 				<strong>{trans("Additional e-mail:")}</strong><br>
 				<input type="email" name="documentsend[extraemail]">
 			</li>
@@ -72,6 +84,28 @@
 <script>
 
 	var documentSendDialog;
+	var documentSendMixedCustomers = false;
+	var documentSendDialogPreviewUrl = {json_encode($documentSendDialogPreviewUrl)};
+	var documentSendDialogPreviewMarksSelector = {json_encode($documentSendDialogPreviewMarksSelector)};
+	var documentSendDialogSubmitMarksSelector = {json_encode($documentSendDialogSubmitMarksSelector)};
+
+	function renderDocumentSendContacts(contacts) {
+		var box = $('#document-send-recipients').empty();
+		if (!contacts) {
+			return;
+		}
+		$.each(contacts, function() {
+			var label = $('<label>', { 'class': 'document-send-recipient' + (this.disabled ? ' blend' : '') });
+			$('<input>', {
+				type: 'checkbox',
+				name: 'documentsend[recipients][]',
+				value: this.contact,
+				checked: !!this.checked
+			}).appendTo(label);
+			label.append(document.createTextNode(' ' + this.fullname));
+			box.append(label);
+		});
+	}
 
 	function openDocumentSendDialog() {
 		var button = $('#send-documents');
@@ -80,15 +114,17 @@
 		}
 		button.prop('disabled', true);
 
-		var data = [
-			{ name: 'customerid', value: $('#document-send-form [name="documentsend[customerid]"]').val() }
-		];
-		$('[form="customerdocuments-form"].document-checkbox:checked').each(function() {
+		var data = [];
+		var documentSendCustomerId = $('#document-send-form [name="documentsend[customerid]"]').val();
+		if (documentSendCustomerId) {
+			data.push({ name: 'customerid', value: documentSendCustomerId });
+		}
+		$(documentSendDialogPreviewMarksSelector).each(function() {
 			data.push({ name: $(this).attr('name'), value: $(this).val() });
 		});
 
 		$.ajax({
-			url: '?m=documentsend&action=preview&api=1',
+			url: documentSendDialogPreviewUrl,
 			method: 'POST',
 			dataType: 'json',
 			data: data
@@ -96,6 +132,17 @@
 			if (result.error) {
 				alertDialog(result.error, button);
 				return;
+			}
+			documentSendMixedCustomers = !!result.mixedCustomers;
+			if (documentSendMixedCustomers) {
+				$('#document-send-recipients-box, #document-send-extraemail-box').hide();
+				$('#document-send-form [name="documentsend[customerid]"]').val('');
+				$('#document-send-form [name="documentsend[extraemail]"]').val('');
+				renderDocumentSendContacts([]);
+			} else {
+				$('#document-send-recipients-box, #document-send-extraemail-box').show();
+				$('#document-send-form [name="documentsend[customerid]"]').val(result.customerid || '');
+				renderDocumentSendContacts(result.contacts);
 			}
 			var documentSendSubject = $('#document-send-form [name="documentsend[subject]"]');
 			var documentSendBody = $('#document-send-form [name="documentsend[body]"]');
@@ -164,7 +211,8 @@
 				tinymce.triggerSave();
 			}
 
-			if (!form.find('[name="documentsend[recipients][]"]:checked').length
+			if (!documentSendMixedCustomers
+				&& !form.find('[name="documentsend[recipients][]"]:checked').length
 				&& !form.find('[name="documentsend[extraemail]"]').val().trim().length) {
 				$('#document-send-apply-button').prop('disabled', false);
 				alertDialog($t('Unable to send message. No recipients selected!'), this);
@@ -172,7 +220,7 @@
 			}
 
 			var marks = form.find('.document-send-marks').empty();
-			$('[form="customerdocuments-form"].lms-ui-multi-check:checked').each(function() {
+			$(documentSendDialogSubmitMarksSelector).each(function() {
 				$('<input>', {
 					type: 'hidden',
 					name: $(this).attr('name'),

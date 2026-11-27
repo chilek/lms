@@ -32,7 +32,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'preview' && isset($_GET['api']
     $documentSendCustomerId = intval($_POST['customerid'] ?? 0);
     $documentSendIds = isset($_POST['marks']) ? Utils::filterIntegers(array_values($_POST['marks'])) : array();
 
-    if (empty($documentSendIds) || empty($documentSendCustomerId)) {
+    if (empty($documentSendIds)) {
         die(json_encode(array(
             'error' => trans("Fatal error: No documents were selected!"),
         )));
@@ -57,8 +57,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'preview' && isset($_GET['api']
         JOIN customers c ON c.id = d.customerid
         JOIN docrights r ON r.doctype = d.type AND r.userid = ' . $userId . '
         LEFT JOIN numberplans n ON n.id = d.numberplanid
-        WHERE d.id IN ?
-            AND d.customerid = ' . $documentSendCustomerId . '
+        WHERE d.id IN ?'
+            . ($documentSendCustomerId ? ' AND d.customerid = ' . $documentSendCustomerId : '') . '
             AND d.cancelled = 0
             AND (r.rights & ?) > 0
         ORDER BY d.id',
@@ -72,6 +72,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'preview' && isset($_GET['api']
         die(json_encode(array(
             'error' => trans("Fatal error: No documents were selected!"),
         )));
+    }
+
+    $customerIds = array_unique(array_map('intval', array_column($docs, 'customerid')));
+    $mixedCustomers = count($customerIds) > 1;
+    if (!$mixedCustomers) {
+        $documentSendCustomerId = reset($customerIds);
+    }
+
+    $documentSendContacts = array();
+    if (!$mixedCustomers && $documentSendCustomerId) {
+        foreach ($LMS->GetCustomerContacts($documentSendCustomerId, CONTACT_EMAIL) as $contact) {
+            $contactDisabled = ($contact['type'] & CONTACT_DISABLED) == CONTACT_DISABLED;
+            $contactDocuments = ($contact['type'] & CONTACT_DOCUMENTS) == CONTACT_DOCUMENTS;
+            $documentSendContacts[] = array(
+                'contact' => $contact['contact'],
+                'fullname' => $contact['fullname'],
+                'disabled' => $contactDisabled,
+                'checked' => $contactDocuments && !$contactDisabled,
+            );
+        }
     }
 
     $doc = reset($docs);
@@ -129,6 +149,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'preview' && isset($_GET['api']
         'body' => $body,
         'format' => $mail_format,
         'mixedTemplates' => $mixedTemplates,
+        'mixedCustomers' => $mixedCustomers,
+        'customerid' => $mixedCustomers ? 0 : $documentSendCustomerId,
+        'contacts' => $documentSendContacts,
     )));
 }
 
@@ -145,20 +168,22 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         $documentSend = $_POST['documentsend'];
         $documentSendCustomerId = intval($documentSend['customerid'] ?? 0);
 
-        $documentSendEmails = empty($documentSend['recipients']) ? array() : (array) $documentSend['recipients'];
-        if (!empty($documentSend['extraemail'])) {
-            $extraEmail = is_string($documentSend['extraemail']) ? trim($documentSend['extraemail']) : '';
-            if (check_email($extraEmail)) {
-                $documentSendEmails[] = $extraEmail;
-            } else {
-                $documentSendInvalidExtraEmail = true;
+        if (!empty($documentSendCustomerId)) {
+            $documentSendEmails = empty($documentSend['recipients']) ? array() : (array) $documentSend['recipients'];
+            if (!empty($documentSend['extraemail'])) {
+                $extraEmail = is_string($documentSend['extraemail']) ? trim($documentSend['extraemail']) : '';
+                if (check_email($extraEmail)) {
+                    $documentSendEmails[] = $extraEmail;
+                } else {
+                    $documentSendInvalidExtraEmail = true;
+                }
             }
-        }
-        $documentSendRecipients = array();
-        foreach ($documentSendEmails as $email) {
-            $email = is_string($email) ? trim($email) : '';
-            if (check_email($email)) {
-                $documentSendRecipients[$email] = $email;
+            $documentSendRecipients = array();
+            foreach ($documentSendEmails as $email) {
+                $email = is_string($email) ? trim($email) : '';
+                if (check_email($email)) {
+                    $documentSendRecipients[$email] = $email;
+                }
             }
         }
 
