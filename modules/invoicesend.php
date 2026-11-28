@@ -29,6 +29,24 @@ use \Lms\KSeF\KSeF;
 $layout['pagetitle'] = trans('Invoice send');
 
 if (isset($_POST['marks'])) {
+    $proformaIds = array();
+    if (isset($_GET['marks']) && $_GET['marks'] == 'cash' && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
+        $proformaIds = Utils::filterIntegers(array_keys((array) ($_POST['marks']['proforma'] ?? array()) + (array) ($_POST['marks']['invoice'] ?? array())));
+        if (!empty($proformaIds)) {
+            $proformaIds = $DB->GetCol(
+                'SELECT id FROM documents WHERE type = ? AND id IN ?',
+                array(DOC_INVOICE_PRO, $proformaIds)
+            ) ?? array();
+        }
+        unset($_POST['marks']['proforma']);
+        if (isset($_POST['marks']['invoice'])) {
+            $_POST['marks']['invoice'] = array_diff_key((array) $_POST['marks']['invoice'], array_flip($proformaIds));
+            if (empty($_POST['marks']['invoice'])) {
+                unset($_POST['marks']['invoice']);
+            }
+        }
+    }
+
     if (!empty($_POST['marks']['invoice']) || !empty($_POST['marks']['note'])) {
         $marks = [];
         if (!empty($_POST['marks']['invoice'])) {
@@ -48,6 +66,10 @@ if (isset($_POST['marks'])) {
     if ($_GET['marks'] == 'cash' && !empty($ids)) {
         $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
     }
+
+    if (!empty($proformaIds)) {
+        $ids = array_unique(array_merge($ids ?? array(), $proformaIds));
+    }
 } elseif (isset($_GET['id']) && intval($_GET['id'])) {
     $ids = array(intval($_GET['id']));
 } else {
@@ -61,7 +83,7 @@ if ($invoiceSendPreview) {
 
     $invoiceSendCustomerId = intval($_POST['customerid'] ?? $_GET['customerid'] ?? 0);
 
-    if (empty($ids) || empty($invoiceSendCustomerId)) {
+    if (empty($ids)) {
         die(json_encode(array(
             'error' => trans("Fatal error: No invoices nor debit notes were selected!"),
         )));
@@ -101,8 +123,8 @@ if ($invoiceSendPreview) {
                     OR c.type = ? AND (COALESCE(kc.allconsumers, 0) = ? AND NOT EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = d.customerid AND cc.type = ?) OR kd.status IS NOT NULL)
                     OR c.type = ? AND kd.status IS NOT NULL
                 ) OR d.type IN ?
-            ) AND d.id IN (" . implode(',', $ids) . ")
-            AND d.customerid = ?
+            ) AND d.id IN (" . implode(',', $ids) . ")"
+            . ($invoiceSendCustomerId ? " AND d.customerid = " . $invoiceSendCustomerId : "") . "
         ORDER BY d.cdate, d.id",
         [
             [
@@ -121,7 +143,6 @@ if ($invoiceSendPreview) {
                 DOC_DNOTE,
                 DOC_INVOICE_PRO,
             ],
-            $invoiceSendCustomerId,
         ]
     );
 
@@ -129,6 +150,26 @@ if ($invoiceSendPreview) {
         die(json_encode(array(
             'error' => trans("Fatal error: No invoices nor debit notes were selected!"),
         )));
+    }
+
+    $customerIds = array_unique(array_map('intval', array_column($docs, 'customerid')));
+    $mixedCustomers = count($customerIds) > 1;
+    if (!$mixedCustomers) {
+        $invoiceSendCustomerId = reset($customerIds);
+    }
+
+    $invoiceSendContacts = array();
+    if (!$mixedCustomers && $invoiceSendCustomerId) {
+        foreach ($LMS->GetCustomerContacts($invoiceSendCustomerId, CONTACT_EMAIL) as $contact) {
+            $contactDisabled = ($contact['type'] & CONTACT_DISABLED) == CONTACT_DISABLED;
+            $contactInvoices = ($contact['type'] & CONTACT_INVOICES) == CONTACT_INVOICES;
+            $invoiceSendContacts[] = array(
+                'contact' => $contact['contact'],
+                'fullname' => $contact['fullname'],
+                'disabled' => $contactDisabled,
+                'checked' => $contactInvoices && !$contactDisabled,
+            );
+        }
     }
 
     $doc = $docs[count($docs) - 1];
@@ -198,6 +239,10 @@ if ($invoiceSendPreview) {
     die(json_encode(array(
         'subject' => $subject,
         'body' => $body,
+        'format' => $mail_format,
+        'mixedCustomers' => $mixedCustomers,
+        'customerid' => $mixedCustomers ? 0 : $invoiceSendCustomerId,
+        'contacts' => $invoiceSendContacts,
     )));
 }
 
@@ -212,20 +257,22 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         $invoiceSend = $_POST['invoicesend'];
         $invoiceSendCustomerId = intval($invoiceSend['customerid'] ?? 0);
 
-        $invoiceSendEmails = empty($invoiceSend['recipients']) ? array() : (array) $invoiceSend['recipients'];
-        if (!empty($invoiceSend['extraemail'])) {
-            $extraEmail = is_string($invoiceSend['extraemail']) ? trim($invoiceSend['extraemail']) : '';
-            if (check_email($extraEmail)) {
-                $invoiceSendEmails[] = $extraEmail;
-            } else {
-                $invoiceSendInvalidExtraEmail = true;
+        if (!empty($invoiceSendCustomerId)) {
+            $invoiceSendEmails = empty($invoiceSend['recipients']) ? array() : (array) $invoiceSend['recipients'];
+            if (!empty($invoiceSend['extraemail'])) {
+                $extraEmail = is_string($invoiceSend['extraemail']) ? trim($invoiceSend['extraemail']) : '';
+                if (check_email($extraEmail)) {
+                    $invoiceSendEmails[] = $extraEmail;
+                } else {
+                    $invoiceSendInvalidExtraEmail = true;
+                }
             }
-        }
-        $invoiceSendRecipients = array();
-        foreach ($invoiceSendEmails as $email) {
-            $email = is_string($email) ? trim($email) : '';
-            if (check_email($email)) {
-                $invoiceSendRecipients[$email] = $email;
+            $invoiceSendRecipients = array();
+            foreach ($invoiceSendEmails as $email) {
+                $email = is_string($email) ? trim($email) : '';
+                if (check_email($email)) {
+                    $invoiceSendRecipients[$email] = $email;
+                }
             }
         }
 
@@ -388,6 +435,9 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     $mail_body = $invoiceSendBody;
                 }
                 $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
+                if (isset($invoiceSend['wysiwyg']['body'])) {
+                    $mail_format = ConfigHelper::checkValue($invoiceSend['wysiwyg']['body']) ? 'html' : 'text';
+                }
                 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
                 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
                 $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);

@@ -1330,6 +1330,14 @@ version 28-git (????-??-??):
   - enhancement: invoice send dialog with recipient picker and editable subject/body with substituted
     placeholders, sending one e-mail with all selected invoices attached
     (variable: phpui.invoice_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
+  - enhancement: document send dialog with recipient picker and editable subject/body with substituted
+    placeholders, each selected document is sent in a separate e-mail to the chosen recipients;
+    if selected documents use different mail templates, per-type templates are kept unless
+    the operator chooses a common subject and body
+    (variable: phpui.document_send_dialog, default: true; false restores previous confirmation and direct send) [interduo]
+  - enhancement: visual editor toggle for message body in customer invoice and document send dialogs [interduo]
+  - enhancement: invoice and document send dialogs are also available on invoice list and document list;
+    for a single customer the recipient picker is shown, for multiple customers default addresses are used [interduo]
 
 version 27.0 (2021-08-20):
 

@@ -209,4 +209,7 @@ $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('filter', $filter);
+if (ConfigHelper::checkConfig('phpui.document_send_dialog', true)) {
+    $SMARTY->assign('documentSendDialog', true);
+}
 $SMARTY->display('document/documentlist.html');

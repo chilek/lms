@@ -38,6 +38,10 @@ $(function() {
 			alertDialog($t('No document has been selected!'), this);
 			return;
 		}
+		if (typeof openDocumentSendDialog === 'function') {
+			openDocumentSendDialog();
+			return;
+		}
 		if (!parseInt($(this).attr('data-send-documents'))) {
 			alertDialog($t('Customer has not any assigned email contacts with "documents" flag!'), this);
 			return;

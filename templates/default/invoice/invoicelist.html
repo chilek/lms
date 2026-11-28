@@ -700,6 +700,11 @@
 			return;
 		}
 
+		{if isset($invoiceSendDialog)}
+			openInvoiceSendDialog();
+			return;
+		{/if}
+
 		confirmDialog($t("Are you sure, you want to send invoices to customers?"), this).done(function () {
 			var add = "";
 			var which = 0;
@@ -801,5 +806,13 @@
 	});
 
 </script>
+
+{if isset($invoiceSendDialog)}
+	{include file="customer/customerinvoicesenddialog.html"
+		invoiceSendDialogPreviewUrl="?m=invoicesend&action=preview&api=1&marks=invoice"
+		invoiceSendDialogMarksSelector='form[name="page"] input.lms-ui-multi-check:checked'
+		invoiceSendDialogWhichSelector='form[name="page"] [name^="which"]:checked'
+		invoiceSendDialogMarksParam="invoice"}
+{/if}
 
 {/block}

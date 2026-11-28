@@ -419,6 +419,11 @@
 			return;
 		}
 
+		{if isset($documentSendDialog)}
+			openDocumentSendDialog();
+			return;
+		{/if}
+
 		confirmDialog($t("Are you sure, you want to send documents to customer?"), this).done(function() {
 			document.page.action="?m=documentsend";
 			document.page.target="_blank";
@@ -551,5 +556,11 @@
 	});
 
 </script>
+
+{if isset($documentSendDialog)}
+	{include file="customer/customerdocumentsenddialog.html"
+		documentSendDialogPreviewUrl="?m=documentsend&action=preview&api=1"
+		documentSendDialogMarksSelector='form[name="page"] .lms-ui-multi-check:checked'}
+{/if}
 
 {/block}
