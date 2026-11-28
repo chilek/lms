@@ -1,11 +1,8 @@
 {if !isset($documentSendDialogPreviewUrl)}
 	{assign var="documentSendDialogPreviewUrl" value="?m=documentsend&action=preview&api=1"}
 {/if}
-{if !isset($documentSendDialogPreviewMarksSelector)}
-	{assign var="documentSendDialogPreviewMarksSelector" value='[form="customerdocuments-form"].document-checkbox:checked'}
-{/if}
-{if !isset($documentSendDialogSubmitMarksSelector)}
-	{assign var="documentSendDialogSubmitMarksSelector" value='[form="customerdocuments-form"].lms-ui-multi-check:checked'}
+{if !isset($documentSendDialogMarksSelector)}
+	{assign var="documentSendDialogMarksSelector" value='[form="customerdocuments-form"].lms-ui-multi-check:checked'}
 {/if}
 
 <style>
@@ -32,8 +29,9 @@
 </style>
 
 <div id="document-send-dialog" class="lms-ui-dialog" title="{trans("Send documents")}">
-	<form method="post" id="document-send-form" action="?m=documentsend" target="_blank">
-		<input type="hidden" name="documentsend[customerid]" value="{$documentSendCustomerId|default:''}">
+	<form method="post" id="document-send-form" action="?m=documentsend" target="_blank"
+		data-customer-id="{$documentSendCustomerId|default:''}">
+		<input type="hidden" name="documentsend[customerid]" value="">
 		<div class="document-send-marks"></div>
 		<ol class="dialog-box">
 			<li id="document-send-recipients-box">
@@ -86,8 +84,7 @@
 	var documentSendDialog;
 	var documentSendMixedCustomers = false;
 	var documentSendDialogPreviewUrl = {json_encode($documentSendDialogPreviewUrl)};
-	var documentSendDialogPreviewMarksSelector = {json_encode($documentSendDialogPreviewMarksSelector)};
-	var documentSendDialogSubmitMarksSelector = {json_encode($documentSendDialogSubmitMarksSelector)};
+	var documentSendDialogMarksSelector = {json_encode($documentSendDialogMarksSelector)};
 
 	function renderDocumentSendContacts(contacts) {
 		var box = $('#document-send-recipients').empty();
@@ -114,14 +111,13 @@
 		}
 		button.prop('disabled', true);
 
-		var data = [];
-		var documentSendCustomerId = $('#document-send-form [name="documentsend[customerid]"]').val();
-		if (documentSendCustomerId) {
-			data.push({ name: 'customerid', value: documentSendCustomerId });
+		var form = $('#document-send-form');
+		var marks = $(documentSendDialogMarksSelector).serializeArray();
+		var data = marks.slice();
+		var customerId = form.attr('data-customer-id');
+		if (customerId) {
+			data.push({ name: 'customerid', value: customerId });
 		}
-		$(documentSendDialogPreviewMarksSelector).each(function() {
-			data.push({ name: $(this).attr('name'), value: $(this).val() });
-		});
 
 		$.ajax({
 			url: documentSendDialogPreviewUrl,
@@ -133,11 +129,15 @@
 				alertDialog(result.error, button);
 				return;
 			}
+			var markFields = form.find('.document-send-marks').empty();
+			$.each(marks, function() {
+				$('<input>', { type: 'hidden', name: this.name, value: this.value }).appendTo(markFields);
+			});
+			form.find('[name="documentsend[extraemail]"]').val('');
 			documentSendMixedCustomers = !!result.mixedCustomers;
 			if (documentSendMixedCustomers) {
 				$('#document-send-recipients-box, #document-send-extraemail-box').hide();
 				$('#document-send-form [name="documentsend[customerid]"]').val('');
-				$('#document-send-form [name="documentsend[extraemail]"]').val('');
 				renderDocumentSendContacts([]);
 			} else {
 				$('#document-send-recipients-box, #document-send-extraemail-box').show();
@@ -218,15 +218,6 @@
 				alertDialog($t('Unable to send message. No recipients selected!'), this);
 				return false;
 			}
-
-			var marks = form.find('.document-send-marks').empty();
-			$(documentSendDialogSubmitMarksSelector).each(function() {
-				$('<input>', {
-					type: 'hidden',
-					name: $(this).attr('name'),
-					value: $(this).val()
-				}).appendTo(marks);
-			});
 
 			setTimeout(function() {
 				documentSendDialog.close();

@@ -35,8 +35,9 @@
 </style>
 
 <div id="invoice-send-dialog" class="lms-ui-dialog" title="{trans("Send invoices")}">
-	<form method="post" id="invoice-send-form" target="_blank">
-		<input type="hidden" name="invoicesend[customerid]" value="{$invoiceSendCustomerId|default:''}">
+	<form method="post" id="invoice-send-form" target="_blank"
+		data-customer-id="{$invoiceSendCustomerId|default:''}">
+		<input type="hidden" name="invoicesend[customerid]" value="">
 		<div class="invoice-send-marks"></div>
 		<ol class="dialog-box">
 			<li id="invoice-send-recipients-box">
@@ -111,14 +112,13 @@
 		}
 		button.prop('disabled', true);
 
-		var data = [];
-		var invoiceSendCustomerId = $('#invoice-send-form [name="invoicesend[customerid]"]').val();
-		if (invoiceSendCustomerId) {
-			data.push({ name: 'customerid', value: invoiceSendCustomerId });
+		var form = $('#invoice-send-form');
+		var marks = $(invoiceSendDialogMarksSelector).serializeArray();
+		var data = marks.slice();
+		var customerId = form.attr('data-customer-id');
+		if (customerId) {
+			data.push({ name: 'customerid', value: customerId });
 		}
-		$(invoiceSendDialogMarksSelector).each(function() {
-			data.push({ name: $(this).attr('name'), value: $(this).val() });
-		});
 
 		$.ajax({
 			url: invoiceSendDialogPreviewUrl,
@@ -130,11 +130,15 @@
 				alertDialog(result.error, button);
 				return;
 			}
+			var markFields = form.find('.invoice-send-marks').empty();
+			$.each(marks, function() {
+				$('<input>', { type: 'hidden', name: this.name, value: this.value }).appendTo(markFields);
+			});
+			form.find('[name="invoicesend[extraemail]"]').val('');
 			invoiceSendMixedCustomers = !!result.mixedCustomers;
 			if (invoiceSendMixedCustomers) {
 				$('#invoice-send-recipients-box, #invoice-send-extraemail-box').hide();
 				$('#invoice-send-form [name="invoicesend[customerid]"]').val('');
-				$('#invoice-send-form [name="invoicesend[extraemail]"]').val('');
 				renderInvoiceSendContacts([]);
 			} else {
 				$('#invoice-send-recipients-box, #invoice-send-extraemail-box').show();
@@ -202,15 +206,6 @@
 				}
 			}
 			form.attr('action', '?m=invoicesend&marks=' + invoiceSendDialogMarksParam + add);
-
-			var marks = form.find('.invoice-send-marks').empty();
-			$(invoiceSendDialogMarksSelector).each(function() {
-				$('<input>', {
-					type: 'hidden',
-					name: $(this).attr('name'),
-					value: $(this).val()
-				}).appendTo(marks);
-			});
 
 			setTimeout(function() {
 				invoiceSendDialog.close();
