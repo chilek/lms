@@ -895,7 +895,7 @@ class LMSSmartyPlugins
         $result = '<table style="width: 100%;" class="lms-ui-mac-address-selection" data-node-empty-mac="' . $node_empty_mac . '">';
 
         if (empty($params['macs'])) {
-            $params['mac'] = array();
+            $params['macs'] = array();
         }
 
         $form = $params['form'];

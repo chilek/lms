@@ -109,7 +109,11 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='' && !isset($nodedata['wholenetwork'])) {
+    if (!ConfigHelper::checkConfig('nodes.public_ip', ConfigHelper::checkConfig('phpui.public_ip', true))) {
+        $nodedata['ipaddr_pub'] = '';
+    }
+
+    if ($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] == '' && $nodedata['mac']=='' && $nodedata['name']=='' && !isset($nodedata['wholenetwork'])) {
         if ($_GET['ownerid']) {
             $SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
         } else {
@@ -160,7 +164,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['ipaddr_pub']!='0.0.0.0' && $nodedata['ipaddr_pub']!='') {
+    if ($nodedata['ipaddr_pub'] != '0.0.0.0' && $nodedata['ipaddr_pub'] != '') {
         if (!check_ip($nodedata['ipaddr_pub'])) {
             $error['ipaddr_pub'] = trans('Incorrect node IP address!');
         } else if (!$LMS->IsIPValid($nodedata['ipaddr_pub'])) {
