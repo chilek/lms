@@ -368,7 +368,7 @@ function writesyslog($message, $type)
                 ? str_replace(array("\r", "\n"), '', (string) $_SERVER['HTTP_USER_AGENT'])
                 : '';
             syslog($type, $message . ' (at ' . $access . ' from ' . $remoteAddress
-                . ($userAgent === '' ? '' : ' (' . $userAgent . '))'));
+                . ($userAgent === '' ? '' : ' (' . $userAgent . ')') . ')');
             closelog();
             break;
         default:
