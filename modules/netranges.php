@@ -194,7 +194,8 @@ function getBuildings(array $filter)
         $where[] = 'lst.ident = ' . $DB->Escape($street_ident);
     }
     if (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
-        $where[] = 'b.city_id = ' . intval($filter['cityid']);
+        $cityid = intval($filter['cityid']);
+        $where[] = 'b.city_id = ' . $cityid;
     } elseif (isset($filter['boroughid']) && is_numeric($filter['boroughid'])) {
         $where[] = 'lc.boroughid = ' . intval($filter['boroughid']);
     }
@@ -411,10 +412,6 @@ function getBuildings(array $filter)
 
         return $result;
     } else {
-        if (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
-            $cityid = intval($filter['cityid']);
-        }
-
         $limit = isset($filter['limit']) && is_numeric($filter['limit']) ? intval($filter['limit']) : null;
         $offset = isset($filter['offset']) && is_numeric($filter['offset']) ? intval($filter['offset']) : null;
 

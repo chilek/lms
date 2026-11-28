@@ -63,7 +63,7 @@ if ($id && $LMS->NodeExists($id)) {
 // Selected nodes
     $nodes = array();
     foreach ($_POST['marks'] as $id) {
-        if ($LMS->NodeSet($id, $access)) {
+        if ($LMS->NodeExists($id) && $LMS->NodeSet($id, $access)) {
             $nodes[] = $id;
         }
     }

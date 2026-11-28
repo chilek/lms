@@ -219,7 +219,7 @@ CREATE TABLE users (
   position varchar(255) NOT NULL DEFAULT '',
   rights text           NOT NULL DEFAULT '',
   hosts varchar(255)    NOT NULL DEFAULT '',
-  trustedhosts varchar(255) DEFAULT NULL,
+  trustedhosts varchar(256) DEFAULT NULL,
   passwd varchar(255)   NOT NULL DEFAULT '',
   netpasswd varchar(255)   DEFAULT NULL,
   passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -1056,7 +1056,6 @@ CREATE TABLE voip_cdr (
 	KEY voip_cdr_callee_idx (callee),
 	KEY voip_cdr_call_start_time_idx (call_start_time),
 	KEY voip_cdr_creationdate_idx (creationdate),
-	KEY voip_cdr_direction_idx (direction),
 	KEY voip_cdr_type_idx (type),
 	KEY voip_cdr_incremental_idx (incremental),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1187,7 +1186,8 @@ CREATE TABLE voip_pool_numbers (
 	poolend varchar(20) NOT NULL,
 	description text,
 	type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	UNIQUE (name)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1209,7 +1209,7 @@ CREATE TABLE voip_emergency_numbers (
 #
 CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
-	value decimal(9,2)      NOT NULL DEFAULT '0',
+	value decimal(9,3)      NOT NULL DEFAULT '0',
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
@@ -1385,7 +1385,6 @@ CREATE TABLE invoicecontents (
 	tariffid int(11) DEFAULT NULL,
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3,
-	INDEX docid (docid),
 	INDEX invoicecontents_tariffid_idx (tariffid),
 	INDEX invoicecontents_docid_itemid_idx (docid, itemid),
 	CONSTRAINT invoicecontents_docid_fkey
@@ -1449,7 +1448,6 @@ CREATE TABLE cashimport (
 	UNIQUE KEY cashimport_sourceid_extid_ukey (sourceid, extid),
 	INDEX hash (hash),
 	INDEX customerid (customerid),
-	INDEX sourceid (sourceid),
 	INDEX sourcefileid (sourcefileid),
 	INDEX cashimport_extid_idx (extid),
 	CONSTRAINT cashimport_customerid_fkey
@@ -1496,9 +1494,7 @@ CREATE TABLE cash (
   notification smallint DEFAULT 1,
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
-  INDEX docid (docid),
   INDEX time (time),
-  INDEX importid (importid),
   INDEX sourceid (sourceid),
   INDEX cash_linktechnology_idx (linktechnology),
   INDEX cash_notification_idx (notification),
@@ -1537,7 +1533,7 @@ CREATE TABLE pna (
 	PRIMARY KEY (id),
 	INDEX fromnumber (fromnumber),
 	INDEX tonumber (tonumber),
-	UNIQUE KEY zip (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity),
+	UNIQUE KEY zip (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity),
 	FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -1828,7 +1824,6 @@ CREATE TABLE netdevicemacs (
 	    FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE KEY netdevicemacs_mac_ukey (mac),
 	UNIQUE KEY netdevicemacs_netdevid_label_ukey (netdevid, label),
-	INDEX netdevicemacs_netdevid_idx (netdevid),
 	INDEX netdevicemacs_label_idx (label)
 ) ENGINE=InnoDB;
 
@@ -2914,7 +2909,6 @@ CREATE TABLE customercontacts (
 	type        int(11) 	DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
-	INDEX contact (contact),
 	INDEX customercontacts_contact_type_idx (contact, type),
 	CONSTRAINT customercontacts_customerid_fkey
 		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -3181,7 +3175,6 @@ CREATE TABLE userdivisions (
 	userid int(11) NOT NULL,
 	divisionid int(11) NOT NULL,
 	PRIMARY KEY (id),
-	INDEX userdivisions_userid_idx (userid),
 	CONSTRAINT userdivisions_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT userdivisions_divisionid_fkey
@@ -3365,7 +3358,6 @@ CREATE TABLE ksefinvoices (
     UNIQUE KEY ksefinvoices_ksef_number_ukey (ksef_number),
     KEY ksefinvoices_issue_date_idx (issue_date),
     KEY ksefinvoices_permanent_storage_date_idx (permanent_storage_date),
-    KEY ksefinvoices_ksef_number_idx (ksef_number),
     KEY ksefinvoices_corrected_ksef_number_idx (corrected_ksef_number),
     KEY ksefinvoices_seller_ten_idx (seller_ten),
     KEY ksefinvoices_buyer_identifier_value_idx (buyer_identifier_value),
@@ -4829,4 +4821,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112702');

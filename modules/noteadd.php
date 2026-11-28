@@ -180,7 +180,7 @@ switch ($action) {
 
             $note['currencyvalue'] = $LMS->getCurrencyValue($note['currency'], $note['cdate']);
             if (!isset($note['currencyvalue'])) {
-                die('Fatal error: couldn\'t get quote for ' . $note['currency'] . ' currency!<br>');
+                die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($note['currency']) . ' currency!<br>');
             }
 
             $DB->BeginTrans();

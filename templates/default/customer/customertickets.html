@@ -139,7 +139,7 @@
 						{if !empty($ticket.imagecount)}
 							{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery" data-ticket-id="{$ticket.id}"}
 						{/if}
-						{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+						{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 							{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
 							{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
 						{else}

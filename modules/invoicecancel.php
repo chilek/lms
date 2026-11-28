@@ -27,41 +27,70 @@
 $id = intval($_GET['id']);
 
 if ($id) {
+    $DB->BeginTrans();
+    $document = $DB->GetRow(
+        'SELECT id, customerid, cancelled FROM documents
+        WHERE id = ? AND type IN ?
+            AND divisionid IN (SELECT divisionid FROM userdivisions WHERE userid = ?)
+            AND (customerid IS NULL OR customerid IN (SELECT id FROM customerview))
+        FOR UPDATE',
+        array($id, array(DOC_INVOICE, DOC_CNOTE), Auth::GetCurrentUser())
+    );
+    if (!$document) {
+        $DB->RollbackTrans();
+        access_denied();
+    }
     if (isset($_GET['recover'])) {
-        $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
+        if (!$document['cancelled'] || !$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id))) {
+            $DB->RollbackTrans();
+            $SESSION->redirect('?m=invoicelist');
+        }
 
         $invoice = $LMS->GetInvoiceContent($id);
+        if (empty($invoice['content'])) {
+            $DB->RollbackTrans();
+            $SESSION->redirect('?m=invoicelist');
+        }
 
         foreach ($invoice['content'] as $idx => $content) {
             if ($invoice['doctype'] == DOC_CNOTE) {
-                $value = $content['total'] - $invoice['invoice']['content'][$idx]['total'];
+                $value = $content['total'] - ($invoice['invoice']['content'][$idx]['total'] ?? 0);
             } else {
                 $value = $content['total'];
             }
-            $LMS->AddBalance(array(
+            if (!$LMS->AddBalance(array(
                 'time' => $invoice['cdate'],
                 'value' => $value * -1,
+                'currency' => $invoice['currency'],
+                'currencyvalue' => $invoice['currencyvalue'],
                 'taxid' => $content['taxid'],
                 'customerid' => $invoice['customerid'],
                 'comment' => $content['description'],
                 'docid' => $id,
                 'itemid' => $content['itemid'],
-            ));
+            ))) {
+                $DB->RollbackTrans();
+                $SESSION->redirect('?m=invoicelist');
+            }
         }
     } else {
-        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
+        if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
+            $DB->RollbackTrans();
             return;
         }
 
         if ($LMS->isDocumentReferenced($id)) {
+            $DB->RollbackTrans();
             return;
         }
 
         if ($LMS->isArchiveDocument($id)) {
+            $DB->RollbackTrans();
             return;
         }
 
         if ($LMS->isKsefDocument($id)) {
+            $DB->RollbackTrans();
             return;
         }
 
@@ -69,12 +98,15 @@ if ($id) {
             'id' => $id,
         ));
         if (isset($hook_data['continue']) && empty($hook_data['continue'])) {
+            $DB->RollbackTrans();
             return;
         }
 
-        $DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
-        $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-        $document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
+        if ($document['cancelled'] || !$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id))
+            || $DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)) === false) {
+            $DB->RollbackTrans();
+            $SESSION->redirect('?m=invoicelist');
+        }
     }
     if ($SYSLOG) {
         $args = array(
@@ -84,6 +116,7 @@ if ($id) {
         );
         $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
     }
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=invoicelist');

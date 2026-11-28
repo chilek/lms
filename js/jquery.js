@@ -1964,7 +1964,7 @@ $(function() {
 			}
 
 			if (lms.settings.tooltipTimeout === 0) {
-				$(this).attr('data-tooltip', title).removeAttr('title');
+				$(this).attr('data-tooltip', $(this).attr('title')).removeAttr('title');
 
 				return;
 			}

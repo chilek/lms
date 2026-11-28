@@ -13,7 +13,7 @@
 				id: {$device.id},
 				type: "netdevinfo",
 				url: escapeHtml("{$device.url|replace:'"':'\\"'}"),
-				comment: "{$device.comment}",
+				comment: escapeHtml("{$device.comment|replace:'"':'\\"'}"),
 				radiosectors: [
 				{foreach $device.radiosectors as $radiosector}
 					{
@@ -69,7 +69,7 @@
 				id: {$node.id},
 				type: "nodeinfo",
 				url: escapeHtml("{$node.url|replace:'"':'\\"'}"),
-				comment: "{$node.comment}",
+				comment: escapeHtml("{$node.comment|replace:'"':'\\"'}"),
 				linktype: "{$node.linktype}",
 				linktypeicon: "{$node.linktypeicon}",
 				linktypename: "{$node.linktypename}",

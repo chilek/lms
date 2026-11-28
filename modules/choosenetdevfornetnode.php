@@ -55,7 +55,7 @@ if ($p == 'main') {
         }
     }
 
-    $list['total'] = count($list);
+    $list['total'] = empty($list) ? 0 : count($list);
     $SMARTY->assign('netdevlist', $list);
 }
 

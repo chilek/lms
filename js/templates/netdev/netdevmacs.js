@@ -52,7 +52,7 @@ function showLabels(macid, label) {
         var select = $('#label_edit_' + macid);
 
         $.each(data, function(index, value) {
-            select.append('<option value="'+ value.label + '"'+ (label === value.label ? ' selected' : '') +'>' + value.label + '</option>');
+            select.append('<option value="'+ escapeHtml(value.label) + '"'+ (label === value.label ? ' selected' : '') +'>' + escapeHtml(value.label) + '</option>');
         });
 
         init_comboboxes(select);
@@ -77,7 +77,7 @@ function showAddLabels() {
         var select = $('#mac-label');
 
         $.each(data, function(index, value) {
-            select.append('<option value="'+ value.label + '"'+ (index === 1 ? ' selected' : '') +'>' + value.label + '</option>');
+            select.append('<option value="'+ escapeHtml(value.label) + '"'+ (index === 1 ? ' selected' : '') +'>' + escapeHtml(value.label) + '</option>');
         });
 
         init_comboboxes(select);

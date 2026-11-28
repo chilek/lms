@@ -32,7 +32,7 @@ $notes = array();
 
 if (!empty($_GET['id']) && intval($_GET['id'])) {
     $ids = array($_GET['id']);
-} elseif (count($_POST['marks'])) {
+} elseif (!empty($_POST['marks'])) {
     foreach ($_POST['marks'] as $markid => $mark) {
         switch ($markid) {
             case 'invoice':
@@ -83,6 +83,39 @@ $invoices = $hook_data['invoices'];
 $receipts = $hook_data['receipts'];
 $notes = $hook_data['notes'];
 
+$canDeleteDocument = function ($id, $allowedTypes, $checkReference = false) use ($DB, $LMS) {
+    $type = $DB->GetOne(
+        'SELECT type FROM documents WHERE id = ? AND type IN ?
+            AND (type = ? OR (divisionid IN (SELECT divisionid FROM userdivisions WHERE userid = ?)
+                AND (customerid IS NULL OR customerid IN (SELECT id FROM customerview))))
+        FOR UPDATE',
+        array($id, $allowedTypes, DOC_RECEIPT, Auth::GetCurrentUser())
+    );
+    if (!$type) {
+        return false;
+    }
+    if ($type == DOC_RECEIPT) {
+        return (int) $DB->GetOne(
+            'SELECT MIN(CASE WHEN (COALESCE(r.rights, 0) & 256) <> 0 THEN 1 ELSE 0 END)
+            FROM receiptcontents rc
+            LEFT JOIN cashrights r ON r.regid = rc.regid AND r.userid = ?
+            WHERE rc.docid = ?',
+            array(Auth::GetCurrentUser(), $id)
+        ) === 1;
+    }
+    if ($LMS->isArchiveDocument($id) || $LMS->isKsefDocument($id)) {
+        return false;
+    }
+    if ($LMS->isDocumentPublished($id)
+        && !ConfigHelper::checkPrivilege('published_document_modification')) {
+        return false;
+    }
+    return !$checkReference || $type == DOC_INVOICE_PRO || !$LMS->isDocumentReferenced($id);
+};
+$invoiceTypes = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE);
+
+$balanceTypes = array_merge($invoiceTypes, array(DOC_RECEIPT, DOC_DNOTE));
+
 $DB->BeginTrans();
 
 sort($ids);
@@ -91,11 +124,18 @@ if (!empty($ids)) {
     $refdocs = array();
 
     foreach ($ids as $cashid) {
-        if ($LMS->isKsefDocumentByCashId($cashid)) {
+        $cash = $DB->GetRow(
+            'SELECT docid FROM cash WHERE id = ?
+                AND (customerid IS NULL OR customerid IN (SELECT id FROM customerview))',
+            array($cashid)
+        );
+        if (!$cash || ($cash['docid'] && !$canDeleteDocument($cash['docid'], $balanceTypes))) {
             continue;
         }
 
-        $refdocs = array_merge($refdocs, $LMS->getDocumentReferences(null, $cashid));
+        if ($cash['docid'] && isset($_GET['documents'])) {
+            $refdocs = array_merge($refdocs, $LMS->getDocumentReferences($cash['docid']));
+        }
 
         $LMS->DelBalance($cashid);
     }
@@ -109,7 +149,7 @@ if (!empty($ids)) {
 
 if (!empty($docitems)) {
     foreach ($docitems as $docid => $items) {
-        if ($LMS->isKsefDocument($docid)) {
+        if (!$canDeleteDocument($docid, array(DOC_INVOICE_PRO))) {
             continue;
         }
 
@@ -120,7 +160,9 @@ if (!empty($docitems)) {
         }
 
         foreach ($items as $itemid) {
-            $LMS->InvoiceContentDelete($docid, $itemid);
+            if (ctype_digit((string) $itemid) && (int) $itemid > 0) {
+                $LMS->InvoiceContentDelete($docid, $itemid);
+            }
         }
 
         if (!empty($refdocs)) {
@@ -132,8 +174,9 @@ if (!empty($docitems)) {
 }
 
 if (!empty($invoices)) {
+    rsort($invoices);
     foreach ($invoices as $invoiceid) {
-        if ($LMS->isKsefDocument($invoiceid)) {
+        if (!$canDeleteDocument($invoiceid, $invoiceTypes, true)) {
             continue;
         }
 
@@ -155,12 +198,20 @@ if (!empty($invoices)) {
 
 if (!empty($receipts)) {
     foreach ($receipts as $receiptid) {
+        if (!$canDeleteDocument($receiptid, array(DOC_RECEIPT))) {
+            continue;
+        }
+
         $LMS->ReceiptDelete($receiptid);
     }
 }
 
 if (!empty($notes)) {
     foreach ($notes as $noteid) {
+        if (!$canDeleteDocument($noteid, array(DOC_DNOTE))) {
+            continue;
+        }
+
         $LMS->DebitNoteDelete($noteid);
     }
 }

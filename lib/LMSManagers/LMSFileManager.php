@@ -314,6 +314,7 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
                 }
                 if (filesize($name) != $filesize
                     || hash_file('sha256', $name) != $sha256sum) {
+                    $this->db->Execute('DELETE FROM filecontainers WHERE id = ?', array($containerid));
                     die(trans('Specified file exists in database!'));
                     break;
                 }
@@ -326,9 +327,11 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             if (!file_exists($name)) {
                 if (isset($file['data'])) {
                     if (file_put_contents($name, $file['data']) === false) {
+                        $this->db->Execute('DELETE FROM filecontainers WHERE id = ?', array($containerid));
                         die(trans('Can\'t save file in "$a" directory!', $path));
                     }
                 } elseif (!@rename($file['name'], $name)) {
+                    $this->db->Execute('DELETE FROM filecontainers WHERE id = ?', array($containerid));
                     die(trans('Can\'t save file in "$a" directory!', $path));
                 }
             }

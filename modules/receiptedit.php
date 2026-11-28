@@ -385,7 +385,7 @@ switch ($action) {
     case 'save':
         $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
         if (!isset($receipt['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+            die('Fatal error: couldn\'t get quote for ' . htmlspecialchars($receipt['currency']) . ' currency!<br>');
         }
 
         if ($contents && $customer) {

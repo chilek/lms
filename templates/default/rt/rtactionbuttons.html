@@ -13,7 +13,7 @@
                 {button icon="read" class="group-action-mark-as-read" label="Mark as read" tip="Mark as read"}
                 {button icon="status-resolved" class="group-action-status-resolved" label="Resolve" tip="Resolve"}
                 {button icon="reply-all" class="group-action-run" label="Run group action" tip="Run group action"}
-                {if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+                {if ConfigHelper::checkPrivilege('helpdesk_advanced_operation')}
                     {button icon="delete" class="group-action-delete" label="Delete" tip="Delete"}
                     {button icon="delete" class="group-action-delete-permanently" label="Delete permanently" tip="Delete permanently"}
                 {/if}

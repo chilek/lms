@@ -26,9 +26,12 @@
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'dns.php');
 
-$d = $_GET['d']*1;
+$d = intval($_GET['d']);
 
 $record = $DB->GetRow('SELECT name AS domainname, id AS domain_id FROM domains WHERE id = ?', array($d));
+if (!$record) {
+    $SESSION->redirect('?m=domainlist');
+}
 
 if (isset($_POST['record'])) {
     $rec = $_POST['record'];
@@ -37,7 +40,7 @@ if (isset($_POST['record'])) {
                 $rec[$idx] = trim(strip_tags($val));
     }
 
-    $record = array_merge($record, $rec);
+    $record = array_merge($rec, $record);
 
     if ($record['type'] == 'SOA') {
         if ($DB->GetOne('SELECT 1 FROM records WHERE type=\'SOA\' AND domain_id=?', array($record['domain_id']))) {
@@ -45,7 +48,7 @@ if (isset($_POST['record'])) {
         }
     }
 
-    if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
+    if (!ctype_digit($record['ttl']) || (int) $record['ttl'] <= 0) {
         $error['ttl'] = trans('Wrong TTL');
     }
 

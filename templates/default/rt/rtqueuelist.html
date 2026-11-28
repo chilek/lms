@@ -82,7 +82,7 @@
     </THEAD>
     <TBODY>
 	{foreach $queues as $queue}
-	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}"
+	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}-partly-deleted{else}{/if}"
 		data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}"
 		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
 		<TD class="nobr bold">
@@ -127,7 +127,7 @@
 				{if $queue.unread}
 				{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" tip="Mark queue as read"}
 				{/if}
-				{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 				{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" tip="Restore<!RT>"}
 				{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" tip="Delete permanently" class="remove-rtqueue"}
 				{else}

@@ -69,6 +69,6 @@ $SESSION->add_history_entry();
 $SMARTY->assign('usergroup', $usergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('users', $users);
-$SMARTY->assign('userscount', count($users));
+$SMARTY->assign('userscount', empty($users) ? 0 : count($users));
 $SMARTY->assign('usergroups', $LMS->getAllUserGroups());
 $SMARTY->display('user/usergroupedit.html');

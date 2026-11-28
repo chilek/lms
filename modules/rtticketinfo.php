@@ -47,7 +47,7 @@ $ticket = array_merge(
     $DB->GetRow(
         'SELECT contenttype, body AS message FROM rtmessages
                 WHERE ticketid = ?'
-        . (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '' : ' AND deleted = 0')
+        . (ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? '' : ' AND deleted = 0')
         . ' ORDER BY createtime DESC LIMIT 1',
         array($id)
     ) ?: array()

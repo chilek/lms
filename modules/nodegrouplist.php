@@ -50,6 +50,9 @@ function GroupList()
 }
 
 if (isset($_POST['nodegroupids'])) {
+    if (!AccessRights::getInstance()->checkRights('nodegroupmove', $LMS->GetUserRights(Auth::GetCurrentUser()))) {
+        access_denied();
+    }
     $nodegroupids = $_POST['nodegroupids'];
     if (empty($nodegroupids)) {
         die;

@@ -336,7 +336,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $watchingfilter = '';
         }
 
-        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation')) {
             $removedfilter = ' AND t.deleted = 0';
         } else {
             switch ($removed) {
@@ -729,7 +729,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtqueues q
 				' . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
-                . ' WHERE ' . (!$deleted ? 'q.deleted = 0' : (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '1=1' : 'q.deleted = 0'))
+                . ' WHERE ' . (!$deleted ? 'q.deleted = 0' : (ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? '1=1' : 'q.deleted = 0'))
                 . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
                 . ' ORDER BY name')) {
@@ -748,7 +748,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueNames()
     {
-        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation')) {
             $join = 'JOIN rtrights r ON r.queueid = q.id WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?';
             $args = array(Auth::GetCurrentUser(), 0);
         } else {
@@ -1365,7 +1365,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $RT_STATES;
 
         $userid = Auth::GetCurrentUser();
-        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operation');
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
             t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
@@ -1456,7 +1456,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticketid = intval($ticketid);
         $hide_attachments = !empty($params['hide_attachments']);
-        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operation');
 
         $messages = $this->db->GetAll(
             '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, contenttype, createtime, '

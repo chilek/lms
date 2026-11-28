@@ -52,22 +52,23 @@ if (isset($_POST['nodegroupadd'])) {
             'description' => $nodegroupadd['description'],
             'prio' => ($prio != null ? $prio : 1)
         );
-        $DB->Execute('INSERT INTO nodegroups (name, description, prio)
+        $inserted = $DB->Execute('INSERT INTO nodegroups (name, description, prio)
 				VALUES (?, ?, ?)', array_values($args));
-        $id = $DB->GetLastInsertID('nodegroups');
-        if ($SYSLOG) {
-            $args[SYSLOG::RES_NODEGROUP] = $id;
-            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_ADD, $args);
-        }
+        if (!$inserted) {
+            $error['name'] = trans('Operation failed!');
+        } else {
+            $id = $DB->GetLastInsertID('nodegroups');
+            if ($SYSLOG) {
+                $args[SYSLOG::RES_NODEGROUP] = $id;
+                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_ADD, $args);
+            }
 
-        if (isset($nodegroupadd['reuse'])) {
-            unset($nodegroupadd);
-            $nodegroupadd['reuse'] = 1;
-            $SMARTY->assign('nodegroupadd', $nodegroupadd);
-            $SMARTY->display('node/nodegroupadd.html');
+            if (isset($nodegroupadd['reuse'])) {
+                $nodegroupadd = array('reuse' => 1);
+            } else {
+                $SESSION->redirect('?m=nodegrouplist&id='.$id);
+            }
         }
-
-        $SESSION->redirect('?m=nodegrouplist&id='.$id);
     }
 
     $SMARTY->assign('error', $error);

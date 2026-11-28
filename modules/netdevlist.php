@@ -94,9 +94,9 @@ if ($api) {
         $producer = mb_strtoupper($producer);
     }
 
-    $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
+    $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer") ?: array();
     $models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
-        . ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
+        . ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model") ?: array();
     if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
         $SESSION->save('ndfmodel', '-1');
         $SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));

@@ -31,7 +31,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
         access_denied();
     }
 
-    $deletedSql = ConfigHelper::checkPrivilege('helpdesk_advanced_operations')
+    $deletedSql = ConfigHelper::checkPrivilege('helpdesk_advanced_operation')
         ? ''
         : ' AND m.deleted = 0 AND t.deleted = 0';
 
@@ -94,7 +94,7 @@ if (empty($message)) {
     access_denied();
 }
 
-$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operation');
 if (!$helpdesk_advanced_operations && !empty($message['deleted'])) {
     access_denied();
 }

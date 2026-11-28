@@ -59,7 +59,7 @@ if ($id && $LMS->VoipAccountExists($id)) {
     // Selected voipaccounts
     $voipaccounts = array();
     foreach ($_POST['marks'] as $id) {
-        if ($LMS->VoipAccountSet($id, $access)) {
+        if ($LMS->VoipAccountExists($id) && $LMS->VoipAccountSet($id, $access)) {
             $voipaccounts[] = $id;
         }
     }
@@ -69,8 +69,4 @@ if ($id && $LMS->VoipAccountExists($id)) {
     }
 }
 
-if (!empty($_GET['shortlist'])) {
-    $SESSION->redirect('?m=voipaccountlistshort&id=' . $LMS->GetVoipAccountOwner($id));
-} else {
-    $SESSION->redirect('?' . $SESSION->remove_history_entry() . (isset($backid) ? '#'.$backid : ''));
-}
+$SESSION->redirect('?' . $SESSION->remove_history_entry() . (isset($backid) ? '#'.$backid : ''));

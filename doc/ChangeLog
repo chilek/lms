@@ -2,6 +2,27 @@ $Id$
 
 version 28-git (????-??-??):
 
+  - security: sending documents requires document view right for the document type and access
+    to the document customer [interduo]
+  - security: permanent ticket removal and ticket restore require ticket delete right in queue
+    (RT_RIGHT_DELETE) [interduo]
+  - security: invoice and debit note cancel, recover, paid status change and removal require user
+    assignment to the document division and access to the document customer [interduo]
+  - security: cancelling published documents requires 'published_document_modification' privilege
+    instead of superuser privilege [interduo]
+  - security: receipt removal and multiple receipt printing require cash registry rights [interduo]
+  - security: adding, editing, removing and state change of voip number pools require
+    'voip_number_pool_management' privilege [interduo]
+  - security: phone call recording download, node and voip account batch operations and customer
+    assignment edit/removal are restricted to customers accessible to user [interduo]
+  - bugfix: invoices with corrections can't be removed from customer balance until their
+    corrections are removed (cash records can still be removed) [interduo]
+  - bugfix: customer and node group move moves only members visible to user (hidden customers
+    and their nodes stay in source group), nodes without owner are moved too [interduo]
+  - bugfix: 'helpdesk_advanced_operation' privilege is checked by its real name [interduo]
+  - bugfix: upgraded database schema is aligned with fresh install (missing foreign keys and
+    indexes are added; in MySQL foreign keys with orphaned rows are not added and reported to syslog,
+    except SET NULL keys whose orphaned values are cleared) [interduo]
   - security: client IP is taken from X-Forwarded-For only when REMOTE_ADDR is listed in new
     'phpui.trusted_proxies' (set it for reverse proxy!) [interduo]
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]

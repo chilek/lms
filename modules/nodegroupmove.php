@@ -27,63 +27,73 @@
 $from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
 $to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
 
-if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
-    && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to))
-    && $_GET['is_sure'] == 1) {
-    $DB->BeginTrans();
-
-    if ($SYSLOG) {
-        $nids = $DB->GetCol(
-            'SELECT nodeid FROM nodegroupassignments a
-				WHERE a.nodegroupid = ?
-				AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga
-					WHERE nga.nodegroupid = a.nodegroupid AND nga.nodegroupid = ?)',
-            array($from, $to)
-        );
-    }
-
-    $DB->Execute(
-        'INSERT INTO nodegroupassignments (nodegroupid, nodeid)
-			SELECT ?, nodeid 
-			FROM nodegroupassignments a
-			JOIN nodes n ON (a.nodeid = n.id)
-			JOIN customerview c ON (n.ownerid = c.id)
-			WHERE a.nodegroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
-				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
-        array($to, $from, $to)
-    );
-
-    if ($SYSLOG && $nids) {
-        foreach ($nids as $nid) {
-            $aid = $DB->GetOne('SELECT a.id FROM nodegroupassignments a
-				WHERE a.nodeid = ? AND a.nodegroupid = ?', array($nid, $to));
-            $args = array(
-                SYSLOG::RES_NODEGROUPASSIGN => $aid,
-                SYSLOG::RES_NODE => $nid,
-                SYSLOG::RES_NODEGROUP => $to
-            );
-            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
-        }
-
-        $assigns = $DB->GetAll('SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
-        if (!empty($assigns)) {
-            foreach ($assigns as $assign) {
-                $args = array(
-                SYSLOG::RES_NODEGROUPASSIGN => $assign['id'],
-                SYSLOG::RES_NODE => $assign['nodeid'],
-                SYSLOG::RES_NODEGROUP => $from
-                );
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-        }
-    }
-
-    $DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
-
-        $DB->CommitTrans();
-
-    $SESSION->redirect('?m=nodegroupinfo&id='.$to);
-} else {
+if ($from == $to || ($_GET['is_sure'] ?? 0) != 1 || !$from || !$to) {
     $SESSION->redirect_to_history_entry();
 }
+
+$DB->BeginTrans();
+$groups = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN ? ORDER BY id FOR UPDATE', array(array($from, $to)));
+if (count($groups ?: array()) != 2) {
+    $DB->RollbackTrans();
+    $SESSION->redirect_to_history_entry();
+}
+
+$assignments = $DB->GetAll(
+    'SELECT DISTINCT a.id, a.nodeid, dest.id AS destinationid
+    FROM nodegroupassignments a
+    JOIN nodes n ON n.id = a.nodeid
+    LEFT JOIN customerview c ON c.id = n.ownerid
+    LEFT JOIN nodegroupassignments dest ON dest.nodegroupid = ? AND dest.nodeid = a.nodeid
+    WHERE a.nodegroupid = ? AND (n.ownerid IS NULL OR c.id IS NOT NULL)',
+    array($to, $from)
+);
+if ($assignments) {
+    $newMembers = array();
+    foreach ($assignments as $assignment) {
+        if (!$assignment['destinationid']) {
+            $newMembers[] = $assignment['nodeid'];
+        }
+    }
+
+    if ($newMembers && $DB->Execute(
+        'INSERT INTO nodegroupassignments (nodegroupid, nodeid)
+        SELECT ?, nodeid FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid IN ?',
+        array($to, $from, $newMembers)
+    ) != count($newMembers)) {
+        $DB->RollbackTrans();
+        $SESSION->redirect_to_history_entry();
+    }
+
+    if ($DB->Execute(
+        'DELETE FROM nodegroupassignments WHERE id IN ?',
+        array(array_column($assignments, 'id'))
+    ) != count($assignments)) {
+        $DB->RollbackTrans();
+        $SESSION->redirect_to_history_entry();
+    }
+
+    if ($SYSLOG) {
+        if ($newMembers) {
+            $added = $DB->GetAll(
+                'SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid IN ?',
+                array($to, $newMembers)
+            );
+            foreach ($added as $assignment) {
+                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, array(
+                    SYSLOG::RES_NODEGROUPASSIGN => $assignment['id'],
+                    SYSLOG::RES_NODE => $assignment['nodeid'],
+                    SYSLOG::RES_NODEGROUP => $to,
+                ));
+            }
+        }
+        foreach ($assignments as $assignment) {
+            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, array(
+                SYSLOG::RES_NODEGROUPASSIGN => $assignment['id'],
+                SYSLOG::RES_NODE => $assignment['nodeid'],
+                SYSLOG::RES_NODEGROUP => $from,
+            ));
+        }
+    }
+}
+$DB->CommitTrans();
+$SESSION->redirect('?m=nodegroupinfo&id=' . $to);

@@ -33,6 +33,10 @@ $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARAT
 if ($maction == 'delperm') {
     $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($id));
 
+    if (!$LMS->CheckTicketAccess($ticket, RT_RIGHT_DELETE)) {
+        access_denied();
+    }
+
     if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $id) {
         if (!empty($rt_dir)) {
             rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $id));
@@ -45,6 +49,10 @@ if ($maction == 'delperm') {
 }
 
 if ($taction == 'delperm') {
+    if (!$LMS->CheckTicketAccess($id, RT_RIGHT_DELETE)) {
+        access_denied();
+    }
+
     $DB->BeginTrans();
 
     $LMS->deleteTicket($id);

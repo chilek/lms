@@ -19,7 +19,7 @@ CREATE TABLE users (
 	position varchar(255) 	DEFAULT '' NOT NULL,
 	rights text 	DEFAULT '' NOT NULL,
 	hosts varchar(255) 	DEFAULT '' NOT NULL,
-	trustedhosts varchar(255) DEFAULT NULL,
+	trustedhosts varchar(256) DEFAULT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
 	netpasswd varchar(255) DEFAULT NULL,
 	passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -38,8 +38,8 @@ CREATE TABLE users (
 	persistentsettings text NOT NULL DEFAULT '',
 	twofactorauth smallint NOT NULL DEFAULT 0,
 	twofactorauthsecretkey varchar(255) DEFAULT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (login)
+	CONSTRAINT users_pkey PRIMARY KEY (id),
+	CONSTRAINT users_login_key UNIQUE (login)
 );
 
 /* --------------------------------------------------------
@@ -56,7 +56,7 @@ CREATE TABLE twofactorauthcodehistory (
     uts bigint NOT NULL,
     ipaddr bigint DEFAULT NULL,
     success smallint NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
+    CONSTRAINT twofactorauthcodehistory_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -76,7 +76,7 @@ CREATE TABLE twofactorauthtrusteddevices (
     tokenhash varchar(64) DEFAULT NULL,
     fingerprint text DEFAULT NULL,
     fingerprintversion integer DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT twofactorauthtrusteddevices_pkey PRIMARY KEY (id)
 );
 CREATE INDEX twofactorauthtrusteddevices_tokenhash_idx ON twofactorauthtrusteddevices (tokenhash);
 
@@ -90,8 +90,8 @@ CREATE TABLE countries (
 	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
 	name    varchar(255) NOT NULL DEFAULT '',
 	ccode   varchar(5),
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT countries_pkey PRIMARY KEY (id),
+	CONSTRAINT countries_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -104,8 +104,8 @@ CREATE TABLE location_states (
 	id integer          DEFAULT nextval('location_states_id_seq'::text) NOT NULL,
 	ident varchar(8)    NOT NULL, -- TERYT: WOJ
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT location_states_pkey PRIMARY KEY (id),
+	CONSTRAINT location_states_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -119,9 +119,9 @@ CREATE TABLE location_districts (
 	name varchar(64)    NOT NULL, --TERYT: NAZWA
 	ident varchar(8)    NOT NULL, --TERYT: POW
 	stateid integer     NOT NULL  --TERYT: WOJ
-		REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (stateid, name)
+		CONSTRAINT location_districts_stateid_fkey REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT location_districts_pkey PRIMARY KEY (id),
+	CONSTRAINT location_districts_stateid_name_key UNIQUE (stateid, name)
 );
 
 /* --------------------------------------------------------
@@ -135,10 +135,10 @@ CREATE TABLE location_boroughs (
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
 	ident varchar(8)    NOT NULL, -- TERYT: GMI
 	districtid integer  NOT NULL
-		REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT location_boroughs_districtid_fkey REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	type smallint       NOT NULL, -- TERYT: RODZ
-	PRIMARY KEY (id),
-	UNIQUE (districtid, name, type)
+	CONSTRAINT location_boroughs_pkey PRIMARY KEY (id),
+	CONSTRAINT location_boroughs_districtid_name_type_key UNIQUE (districtid, name, type)
 );
 
 /* --------------------------------------------------------
@@ -151,7 +151,7 @@ CREATE TABLE location_city_types (
     id integer DEFAULT nextval('location_city_types_id_seq'::text) NOT NULL,
     ident varchar(8) NOT NULL,
     name varchar(64) NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT location_city_types_pkey PRIMARY KEY (id),
     CONSTRAINT location_city_types_name_ukey UNIQUE (name)
 );
 
@@ -169,8 +169,8 @@ CREATE TABLE location_cities (
 	type integer        DEFAULT NULL
 		CONSTRAINT location_cities_type_fkey REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	boroughid integer   DEFAULT NULL
-		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+		CONSTRAINT location_cities_boroughid_fkey REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT location_cities_pkey PRIMARY KEY (id)
 );
 CREATE INDEX location_cities_cityid ON location_cities (cityid);
 CREATE INDEX location_cities_boroughid ON location_cities (boroughid, name);
@@ -184,7 +184,7 @@ DROP TABLE IF EXISTS location_street_types CASCADE;
 CREATE TABLE location_street_types (
 	id integer          DEFAULT nextval('location_street_types_id_seq'::text) NOT NULL,
 	name varchar(8)     NOT NULL, -- TERYT: CECHA
-	PRIMARY KEY (id)
+	CONSTRAINT location_street_types_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -199,11 +199,11 @@ CREATE TABLE location_streets (
 	name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
 	ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
 	typeid integer      DEFAULT NULL
-		REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT location_streets_typeid_fkey REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	cityid integer      NOT NULL
-		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (cityid, name, ident)
+		CONSTRAINT location_streets_cityid_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT location_streets_pkey PRIMARY KEY (id),
+	CONSTRAINT location_streets_cityid_name_ident_key UNIQUE (cityid, name, ident)
 );
 
 /* --------------------------------------------------------
@@ -224,9 +224,10 @@ CREATE TABLE location_buildings (
 	longitude    numeric(10,6) NULL,
 	updated      smallint DEFAULT 0,
 	extid        varchar(128) DEFAULT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT location_buildings_pkey PRIMARY KEY (id),
 	CONSTRAINT location_buildings_extid_ukey UNIQUE (extid)
 );
+CREATE INDEX location_buildings_street_id_idx ON location_buildings (street_id);
 DROP INDEX IF EXISTS location_cityid_index;
 CREATE INDEX location_cityid_index ON location_buildings (city_id);
 
@@ -240,18 +241,20 @@ CREATE TABLE addresses (
 	id         integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
 	name       text NULL,
 	state      varchar(64) NULL,
-	state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	state_id   integer CONSTRAINT addresses_state_id_fkey REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	city       varchar(100) NULL,
-	city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	city_id    integer CONSTRAINT addresses_city_id_fkey REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	postoffice varchar(32) DEFAULT NULL,
 	street     varchar(255) NULL,
-	street_id  integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	street_id  integer CONSTRAINT addresses_street_id_fkey REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	zip        varchar(10) NULL,
-	country_id integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	country_id integer CONSTRAINT addresses_country_id_fkey REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	house      varchar(20) NULL,
 	flat       varchar(20) NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT addresses_pkey PRIMARY KEY (id)
 );
+CREATE INDEX addresses_city_id_idx ON addresses (city_id);
+CREATE INDEX addresses_street_id_idx ON addresses (street_id);
 
 /* ---------------------------------------------------
  Structure of table "divisions"
@@ -291,10 +294,10 @@ CREATE TABLE divisions (
 	url text DEFAULT NULL,
 	userpanel_url text DEFAULT NULL,
 	address_id integer DEFAULT NULL
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT divisions_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	office_address_id integer DEFAULT NULL
 		CONSTRAINT divisions_office_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT divisions_pkey PRIMARY KEY (id),
 	CONSTRAINT divisions_shortname_label_ukey UNIQUE (shortname, label)
 );
 
@@ -307,7 +310,7 @@ CREATE SEQUENCE serviceproviders_id_seq;
 CREATE TABLE serviceproviders (
 	id integer DEFAULT nextval('serviceproviders_id_seq') NOT NULL,
 	name varchar(64) NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT serviceproviders_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -352,9 +355,10 @@ CREATE TABLE customers (
     flags smallint NOT NULL DEFAULT 0,
     karma smallint NOT NULL DEFAULT 0,
     origin smallint DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT customers_pkey PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
+CREATE INDEX customers_divisionid_idx ON customers (divisionid);
 
 /* --------------------------------------------------------
   Structure of table "customerconsents" (customerconsents)
@@ -401,7 +405,7 @@ CREATE TABLE customernotes (
     moddate bigint DEFAULT NULL,
     moduserid integer DEFAULT NULL
         CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    PRIMARY KEY (id)
+    CONSTRAINT customernotes_pkey PRIMARY KEY (id)
 );
 CREATE INDEX customernotes_customerid_idx ON customernotes (customerid);
 
@@ -418,7 +422,7 @@ CREATE TABLE customerkarmalastchanges (
         CONSTRAINT customerkarmalastchanges_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     userid integer NOT NULL
         CONSTRAINT customerkarmalastchanges_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
+    CONSTRAINT customerkarmalastchanges_pkey PRIMARY KEY (id)
 );
 CREATE INDEX customerkarmalastchanges_timestamp_idx ON customerkarmalastchanges (timestamp);
 
@@ -438,7 +442,7 @@ CREATE TABLE customercalls (
     phone varchar(20) NOT NULL,
     duration integer DEFAULT 0 NOT NULL,
     notes text DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT customercalls_pkey PRIMARY KEY (id)
 );
 CREATE INDEX customercalls_dt_idx ON customercalls (dt);
 CREATE INDEX customercalls_filename_idx ON customercalls (filename);
@@ -456,10 +460,11 @@ CREATE TABLE customercallassignments (
         CONSTRAINT customercallassignments_customercallid_fkey REFERENCES customercalls (id) ON UPDATE CASCADE ON DELETE CASCADE,
     customerid integer NOT NULL
         CONSTRAINT customercallassignments_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (id),
+    CONSTRAINT customercallassignments_pkey PRIMARY KEY (id),
     CONSTRAINT customercallassignments_customercallid_ukey
         UNIQUE (customercallid, customerid)
 );
+CREATE INDEX customercallassignments_customerid_idx ON customercallassignments (customerid);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -477,7 +482,7 @@ CREATE TABLE numberplans (
 	dateto bigint DEFAULT 0 NOT NULL,
 	customertype smallint DEFAULT NULL,
 	refflag smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id)
+	CONSTRAINT numberplans_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -490,8 +495,8 @@ CREATE TABLE states (
 	id 		integer 	DEFAULT nextval('states_id_seq'::text) NOT NULL,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
 	description 	text 		NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT states_pkey PRIMARY KEY (id),
+	CONSTRAINT states_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -505,8 +510,8 @@ CREATE TABLE zipcodes (
 	zip 		varchar(10) 	NOT NULL DEFAULT '',
 	stateid 	integer 	DEFAULT NULL
 		CONSTRAINT zipcodes_stateid_fkey REFERENCES states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (zip)
+	CONSTRAINT zipcodes_pkey PRIMARY KEY (id),
+	CONSTRAINT zipcodes_zip_key UNIQUE (zip)
 );
 CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 
@@ -520,13 +525,14 @@ CREATE TABLE customer_addresses (
     id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
     customer_id integer
     	CONSTRAINT customer_addresses_customer_id_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    address_id  integer CONSTRAINT customer_addresses_address_id_fkey REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type        smallint NULL,
     ten varchar(50) DEFAULT NULL,
     entity_type smallint DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE(customer_id, address_id)
+    CONSTRAINT customer_addresses_pkey PRIMARY KEY (id),
+    CONSTRAINT customer_addresses_customer_id_address_id_key UNIQUE(customer_id, address_id)
 );
+CREATE INDEX customer_addresses_address_id_idx ON customer_addresses (address_id);
 
 /* --------------------------------------------------------
   Structure of table "documents"
@@ -585,7 +591,7 @@ CREATE TABLE documents (
 	cuserid integer		DEFAULT NULL
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT documents_recipient_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_ten varchar(50) DEFAULT NULL,
 	recipient_type smallint DEFAULT NULL,
 	recipient_address_id2 integer DEFAULT NULL
@@ -593,7 +599,7 @@ CREATE TABLE documents (
 	recipient_ten2 varchar(50) DEFAULT NULL,
 	recipient_type2 smallint DEFAULT NULL,
 	post_address_id integer DEFAULT NULL
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT documents_post_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
 	commitflags smallint DEFAULT 0 NOT NULL,
 	archived smallint DEFAULT 0 NOT NULL,
@@ -608,7 +614,7 @@ CREATE TABLE documents (
     flags smallint DEFAULT 0 NOT NULL,
     origin smallint DEFAULT NULL,
     extid varchar(64) DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT documents_pkey PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
@@ -617,6 +623,9 @@ CREATE INDEX documents_closed_idx ON documents(closed);
 CREATE INDEX documents_reference_idx ON documents(reference);
 CREATE INDEX documents_type_idx ON documents (type);
 CREATE INDEX documents_fullnumber_idx ON documents (fullnumber);
+CREATE INDEX documents_divisionid_idx ON documents (divisionid);
+CREATE INDEX documents_recipient_address_id_idx ON documents (recipient_address_id);
+CREATE INDEX documents_post_address_id_idx ON documents (post_address_id);
 
 /* --------------------------------------------------------
   Structure of table "documentcontents"
@@ -624,14 +633,14 @@ CREATE INDEX documents_fullnumber_idx ON documents (fullnumber);
 DROP TABLE IF EXISTS documentcontents CASCADE;
 CREATE TABLE documentcontents (
 	docid integer		NOT NULL
-		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT documentcontents_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	title text 		DEFAULT '' NOT NULL,
 	fromdate bigint 	DEFAULT 0 NOT NULL,
 	todate bigint 		DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	dynamicperiod smallint DEFAULT 0 NOT NULL,
 	attributes text DEFAULT NULL,
-	UNIQUE (docid)
+	CONSTRAINT documentcontents_docid_key UNIQUE (docid)
 );
 CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
 CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
@@ -645,14 +654,14 @@ DROP TABLE IF EXISTS documentattachments CASCADE;
 CREATE TABLE documentattachments (
 	id integer DEFAULT nextval('documentattachments_id_seq'::text) NOT NULL,
 	docid integer NOT NULL
-		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT documentattachments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) NOT NULL,
 	contenttype varchar(255) NOT NULL,
 	md5sum varchar(32) NOT NULL,
 	type smallint DEFAULT 1 NOT NULL,
 	cdate bigint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (docid, md5sum)
+	CONSTRAINT documentattachments_pkey PRIMARY KEY (id),
+	CONSTRAINT documentattachments_docid_md5sum_key UNIQUE (docid, md5sum)
 );
 CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
 
@@ -669,8 +678,8 @@ CREATE TABLE cashsources (
 	account varchar(48) NOT NULL DEFAULT '',
 	deleted smallint	NOT NULL DEFAULT 0,
 	isdefault smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT cashsources_pkey PRIMARY KEY (id),
+	CONSTRAINT cashsources_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -692,8 +701,8 @@ CREATE TABLE cashregs (
 	cashsourceid integer DEFAULT NULL
 		CONSTRAINT cashregs_cashsourceid_fkey REFERENCES cashsources (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	receiptdatesource smallint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT cashregs_pkey PRIMARY KEY (id),
+	CONSTRAINT cashregs_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -702,7 +711,7 @@ CREATE TABLE cashregs (
 DROP TABLE IF EXISTS receiptcontents CASCADE;
 CREATE TABLE receiptcontents (
 	docid integer		NOT NULL
-		CONSTRAINT receiptcontents_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT receiptcontents_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2)	DEFAULT 0 NOT NULL,
 	regid integer		DEFAULT NULL
@@ -726,7 +735,7 @@ CREATE TABLE taxes (
 	validfrom bigint DEFAULT 0 NOT NULL,
 	validto bigint DEFAULT 0 NOT NULL,
 	reversecharge smallint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT taxes_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -752,13 +761,15 @@ CREATE TABLE voipaccounts (
 	flags		smallint NOT NULL DEFAULT 0,
 	cost_limit	numeric(12,2) NULL DEFAULT NULL,
 	address_id integer
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT voipaccounts_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	description text NOT NULL DEFAULT '',
 	serviceproviderid integer DEFAULT NULL
 		CONSTRAINT voipaccounts_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	extid varchar(64) DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voipaccounts_pkey PRIMARY KEY (id)
 );
+CREATE INDEX voipaccounts_ownerid_idx ON voipaccounts (ownerid);
+CREATE INDEX voipaccounts_address_id_idx ON voipaccounts (address_id);
 
 /* --------------------------------------------------------
   Structure of table "voip_rule_groups"
@@ -770,7 +781,7 @@ CREATE TABLE voip_rule_groups (
 	id integer DEFAULT nextval('voip_rule_groups_id_seq'::text) NOT NULL,
 	name text NOT NULL,
 	description text NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voip_rule_groups_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -783,7 +794,7 @@ CREATE TABLE voip_prefix_groups (
 	id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
 	name text NOT NULL,
 	description text NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voip_prefix_groups_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -795,11 +806,11 @@ DROP TABLE IF EXISTS voip_rules CASCADE;
 CREATE TABLE voip_rules (
 	id integer DEFAULT nextval('voip_rules_id_seq'::text) NOT NULL,
 	rule_group_id integer NOT NULL
-		REFERENCES voip_rule_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_rules_rule_group_id_fkey REFERENCES voip_rule_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prefix_group_id integer NOT NULL
-		REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_rules_prefix_group_id_fkey REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	settings text NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voip_rules_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -812,7 +823,7 @@ CREATE TABLE voip_tariffs (
 	id          integer      DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
 	name        varchar(100) NOT NULL,
 	description text         NULL DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voip_tariffs_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -824,12 +835,12 @@ DROP TABLE IF EXISTS voip_rule_states CASCADE;
 CREATE TABLE voip_rule_states (
 	id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
 	voip_account_id integer NOT NULL
-		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_rule_states_voip_account_id_fkey REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	rule_id         integer NOT NULL
-		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_rule_states_rule_id_fkey REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	units_left      integer NULL DEFAULT NULL,
-	PRIMARY KEY(id),
-	UNIQUE(voip_account_id, rule_id)
+	CONSTRAINT voip_rule_states_pkey PRIMARY KEY(id),
+	CONSTRAINT voip_rule_states_voip_account_id_rule_id_key UNIQUE(voip_account_id, rule_id)
 );
 
 /* --------------------------------------------------------
@@ -842,9 +853,9 @@ CREATE TABLE voip_prefixes (
 	id integer DEFAULT nextval('voip_prefixes_id_seq'::text) NOT NULL,
 	prefix varchar(30) NOT NULL,
 	groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (prefix, groupid)
+		CONSTRAINT voip_prefixes_groupid_fkey REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT voip_prefixes_pkey PRIMARY KEY (id),
+	CONSTRAINT voip_prefixes_prefix_groupid_key UNIQUE (prefix, groupid)
 );
 
 /* --------------------------------------------------------
@@ -866,9 +877,9 @@ CREATE TABLE voip_cdr (
 	direction smallint NOT NULL,
 	type smallint NOT NULL DEFAULT 0,
 	callervoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT voip_cdr_callervoipaccountid_fkey REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	calleevoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT voip_cdr_calleevoipaccountid_fkey REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	caller_flags smallint NOT NULL DEFAULT 0,
 	callee_flags smallint NOT NULL DEFAULT 0,
 	caller_prefix_group varchar(100) NULL,
@@ -878,16 +889,17 @@ CREATE TABLE voip_cdr (
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
 	incremental smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (direction, uniqueid)
+	CONSTRAINT voip_cdr_pkey PRIMARY KEY (id),
+	CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (uniqueid, direction)
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time);
 CREATE INDEX voip_cdr_creationdate_idx ON voip_cdr (creationdate);
-CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction);
 CREATE INDEX voip_cdr_type_idx ON voip_cdr (type);
 CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental);
+CREATE INDEX voip_cdr_callervoipaccountid_idx ON voip_cdr (callervoipaccountid);
+CREATE INDEX voip_cdr_calleevoipaccountid_idx ON voip_cdr (calleevoipaccountid);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -898,12 +910,12 @@ DROP TABLE IF EXISTS voip_price_groups CASCADE;
 CREATE TABLE voip_price_groups (
 	id              integer       DEFAULT nextval('voip_price_groups_id_seq'::text) NOT NULL,
 	voip_tariff_id  integer       NOT NULL
-		REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_price_groups_voip_tariff_id_fkey REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prefix_group_id integer       NOT NULL
-		REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_price_groups_prefix_group_id_fkey REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	price           numeric(12,5) DEFAULT 0 NOT NULL,
 	unitsize        smallint      DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT voip_price_groups_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -922,7 +934,7 @@ CREATE TABLE tariffs (
 	taxid integer 		NOT NULL
 		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	numberplanid integer DEFAULT NULL
-		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT tariffs_numberplanid_fkey REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
@@ -966,7 +978,7 @@ CREATE TABLE tariffs (
 	description text	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	voip_tariff_id integer      DEFAULT NULL
-		REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT tariffs_voip_tariff_id_fkey REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	voip_tariff_rule_id integer DEFAULT NULL
 		CONSTRAINT tariffs_voip_tariff_rule_id_fkey REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	datefrom bigint	NOT NULL DEFAULT 0,
@@ -979,7 +991,7 @@ CREATE TABLE tariffs (
     serviceproviderid integer DEFAULT NULL
         CONSTRAINT tariffs_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
     extid varchar(64) DEFAULT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT tariffs_pkey PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
 CREATE INDEX tariffs_type_idx ON tariffs (type);
@@ -993,15 +1005,15 @@ DROP TABLE IF EXISTS voip_numbers CASCADE;
 CREATE TABLE voip_numbers (
 	id integer DEFAULT nextval('voip_numbers_id_seq'::text) NOT NULL,
 	voip_account_id integer NOT NULL
-		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_numbers_voip_account_id_fkey REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	phone varchar(20) NOT NULL,
 	number_index smallint,
 	info varchar(255) DEFAULT NULL,
 	tariff_id integer NULL
-		REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	UNIQUE(phone),
-	UNIQUE(voip_account_id, number_index),
-	PRIMARY KEY (id)
+		CONSTRAINT voip_numbers_tariff_id_fkey REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voip_numbers_phone_key UNIQUE(phone),
+	CONSTRAINT voip_numbers_voip_account_id_number_index_key UNIQUE(voip_account_id, number_index),
+	CONSTRAINT voip_numbers_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -1018,8 +1030,8 @@ CREATE TABLE voip_pool_numbers (
 	poolend varchar(20) NOT NULL,
 	description text,
 	type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT voip_pool_numbers_pkey PRIMARY KEY (id),
+	CONSTRAINT voip_pool_numbers_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -1028,10 +1040,10 @@ CREATE TABLE voip_pool_numbers (
 DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
 CREATE TABLE voip_emergency_numbers (
 	location_borough integer NOT NULL
-		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT voip_emergency_numbers_location_borough_fkey REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	number integer NOT NULL,
 	fullnumber varchar(20) NOT NULL,
-	UNIQUE (location_borough, number)
+	CONSTRAINT voip_emergency_numbers_location_borough_number_key UNIQUE (location_borough, number)
 );
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
@@ -1054,7 +1066,7 @@ CREATE TABLE liabilities (
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
     netvalue numeric(9,3) DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT liabilities_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -1071,8 +1083,8 @@ CREATE TABLE promotions (
     deleted smallint    DEFAULT 0 NOT NULL,
     datefrom bigint	DEFAULT 0 NOT NULL,
     dateto bigint		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
+    CONSTRAINT promotions_pkey PRIMARY KEY (id),
+    CONSTRAINT promotions_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -1087,13 +1099,13 @@ CREATE TABLE promotionschemas (
     description text    DEFAULT NULL,
     data text           DEFAULT NULL,
     promotionid integer DEFAULT NULL
-        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT promotionschemas_promotionid_fkey REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     disabled smallint   DEFAULT 0 NOT NULL,
     deleted smallint    DEFAULT 0 NOT NULL,
     length smallint     DEFAULT NULL,
     datefrom bigint	DEFAULT 0 NOT NULL,
     dateto bigint		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT promotionschemas_pkey PRIMARY KEY (id),
     CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
 );
 
@@ -1106,15 +1118,15 @@ DROP TABLE IF EXISTS promotionassignments CASCADE;
 CREATE TABLE promotionassignments (
     id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
     promotionschemaid integer DEFAULT NULL
-        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT promotionassignments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
     tariffid integer    DEFAULT NULL
-        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT promotionassignments_tariffid_fkey REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data text           DEFAULT NULL,
     optional smallint   DEFAULT 0 NOT NULL,
     label varchar(60) DEFAULT NULL,
     orderid integer     NOT NULL DEFAULT 0,
     backwardperiod smallint DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT promotionassignments_pkey PRIMARY KEY (id)
 );
 CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
 
@@ -1134,7 +1146,7 @@ CREATE TABLE promotionattachments (
         CONSTRAINT promotionattachments_promotionid_fkey REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     promotionschemaid integer DEFAULT NULL
         CONSTRAINT promotionattachments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
+    CONSTRAINT promotionattachments_pkey PRIMARY KEY (id)
 );
 
 /* ----------------------------------------------------
@@ -1165,7 +1177,7 @@ CREATE TABLE assignments (
 	paytime smallint    DEFAULT NULL,
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
-		REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT assignments_numberplanid_fkey REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id integer DEFAULT NULL
 		CONSTRAINT assignments_recipient_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1179,11 +1191,15 @@ CREATE TABLE assignments (
 	promotionschemaid integer DEFAULT NULL
 		CONSTRAINT assignments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	separateitem smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id)
+	CONSTRAINT assignments_pkey PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
+CREATE INDEX assignments_promotionschemaid_idx ON assignments (promotionschemaid);
+CREATE INDEX assignments_docid_idx ON assignments (docid);
+CREATE INDEX assignments_liabilityid_idx ON assignments (liabilityid);
+CREATE INDEX assignments_recipient_address_id_idx ON assignments (recipient_address_id);
 
 /* --------------------------------------------------------
   Structure of table "voip_number_assignments"
@@ -1193,9 +1209,9 @@ CREATE SEQUENCE voip_number_assignments_id_seq;
 DROP TABLE IF EXISTS voip_number_assignments CASCADE;
 CREATE TABLE voip_number_assignments (
 	id            integer DEFAULT nextval('voip_number_assignments_id_seq'::text) NOT NULL,
-	number_id     integer NOT NULL REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	assignment_id integer NOT NULL REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	number_id     integer NOT NULL CONSTRAINT voip_number_assignments_number_id_fkey REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	assignment_id integer NOT NULL CONSTRAINT voip_number_assignments_assignment_id_fkey REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT voip_number_assignments_pkey PRIMARY KEY (id),
 	CONSTRAINT voip_number_assignments_assignment_id_key
 		UNIQUE (assignment_id, number_id)
 );
@@ -1222,7 +1238,6 @@ CREATE TABLE invoicecontents (
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3
 );
-CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 CREATE INDEX invoicecontents_tariffid_idx ON invoicecontents (tariffid);
 CREATE INDEX invoicecontents_docid_itemid_idx ON invoicecontents(docid, itemid);
 
@@ -1239,7 +1254,7 @@ CREATE TABLE debitnotecontents (
 	itemid smallint         DEFAULT 0 NOT NULL,
 	value numeric(9,2)      DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT debitnotecontents_pkey PRIMARY KEY (id),
 	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
 );
 
@@ -1252,10 +1267,10 @@ DROP TABLE IF EXISTS sourcefiles CASCADE;
 CREATE TABLE sourcefiles (
 	id integer      	DEFAULT nextval('sourcefiles_id_seq'::text) NOT NULL,
 	userid integer     DEFAULT NULL
-		REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT sourcefiles_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	name varchar(255)   NOT NULL,
 	idate bigint	    NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT sourcefiles_pkey PRIMARY KEY (id),
 	CONSTRAINT sourcefiles_idate_key UNIQUE (idate, name)
 );
 
@@ -1278,20 +1293,19 @@ CREATE TABLE cashimport (
 	hash varchar(50) 		DEFAULT '' NOT NULL,
 	closed smallint 		DEFAULT 0 NOT NULL,
 	sourceid integer		DEFAULT NULL
-		REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT cashimport_sourceid_fkey REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	sourcefileid integer    DEFAULT NULL
-		REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT cashimport_sourcefileid_fkey REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	srcaccount varchar(60) DEFAULT NULL,
 	operdate bigint DEFAULT NULL,
 	extid varchar(64) DEFAULT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT cashimport_pkey PRIMARY KEY (id),
 	CONSTRAINT cashimport_sourceid_extid_ukey UNIQUE (sourceid, extid)
 );
 
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
 CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
-CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 CREATE INDEX cashimport_extid_idx ON cashimport (extid);
 
 /* ---------------------------------------------------
@@ -1302,7 +1316,7 @@ CREATE TABLE customerbalances (
     customerid integer NOT NULL
         CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     balance numeric(12,2) NOT NULL,
-    PRIMARY KEY (customerid)
+    CONSTRAINT customerbalances_pkey PRIMARY KEY (customerid)
 );
 
 /* --------------------------------------------------------
@@ -1335,12 +1349,10 @@ CREATE TABLE cash (
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
 	notification smallint DEFAULT 1,
-	PRIMARY KEY (id),
+	CONSTRAINT cash_pkey PRIMARY KEY (id),
 	CONSTRAINT cash_importid_ukey UNIQUE (importid)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);
-CREATE INDEX cash_docid_idx ON cash (docid);
-CREATE INDEX cash_importid_idx ON cash (importid);
 CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
 CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
@@ -1357,22 +1369,24 @@ CREATE TABLE pna (
 	id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
 	zip varchar(10) NOT NULL,
 	cityid integer DEFAULT NULL
-		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT pna_cityid_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	cityname varchar(100) DEFAULT NULL,
 	streetid integer DEFAULT NULL
-		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT pna_streetid_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	streetname varchar(100) DEFAULT NULL,
 	fromnumber smallint DEFAULT NULL,
 	fromletter varchar(8) DEFAULT NULL,
 	tonumber smallint DEFAULT NULL,
 	toletter varchar(8) DEFAULT NULL,
 	parity smallint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT pna_pkey PRIMARY KEY (id),
 	CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_key
 		UNIQUE (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
 );
 CREATE INDEX pna_fromnumber_idx ON pna (fromnumber);
 CREATE INDEX pna_tonumber_idx ON pna (tonumber);
+CREATE INDEX pna_cityid_idx ON pna (cityid);
+CREATE INDEX pna_streetid_idx ON pna (streetid);
 
 /* ---------------------------------------------------
  Structure of table "ewx_channels" (EtherWerX(R))
@@ -1388,8 +1402,8 @@ CREATE TABLE ewx_channels (
     upceil_n 	integer         DEFAULT NULL,
     downceil_n 	integer        	DEFAULT NULL,
     halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
+    CONSTRAINT ewx_channels_pkey PRIMARY KEY (id),
+    CONSTRAINT ewx_channels_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -1405,8 +1419,8 @@ CREATE TABLE ewx_stm_channels (
     upceil 	integer         DEFAULT 0 NOT NULL,
     downceil 	integer        	DEFAULT 0 NOT NULL,
     halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (cid)
+    CONSTRAINT ewx_stm_channels_pkey PRIMARY KEY (id),
+    CONSTRAINT ewx_stm_channels_cid_key UNIQUE (cid)
 );
 
 /* ---------------------------------------------------
@@ -1421,8 +1435,8 @@ CREATE TABLE hosts (
     description text 		DEFAULT '' NOT NULL,
     lastreload bigint 		DEFAULT 0 NOT NULL,
     reload smallint 		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
+    CONSTRAINT hosts_pkey PRIMARY KEY (id),
+    CONSTRAINT hosts_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -1436,9 +1450,9 @@ CREATE TABLE invprojects (
 	name varchar(255) NOT NULL,
 	type smallint DEFAULT 0,
 	divisionid integer DEFAULT NULL
-		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT invprojects_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	cdate bigint DEFAULT NULL,
-	PRIMARY KEY(id)
+	CONSTRAINT invprojects_pkey PRIMARY KEY(id)
 );
 
 /* --------------------------------------------------------
@@ -1460,7 +1474,7 @@ CREATE TABLE netranges (
     foreignentity varchar(20) DEFAULT '' NOT NULL,
     invprojectid integer DEFAULT NULL
         CONSTRAINT netranges_invprojectid_fkey REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
+    CONSTRAINT netranges_pkey PRIMARY KEY (id)
 );
 CREATE INDEX netranges_linktype_idx ON netranges (linktype);
 CREATE INDEX netranges_linktechnology_idx ON netranges (linktechnology);
@@ -1468,6 +1482,7 @@ CREATE INDEX netranges_downlink_idx ON netranges (downlink);
 CREATE INDEX netranges_uplink_idx ON netranges (uplink);
 CREATE INDEX netranges_type_idx ON netranges (type);
 CREATE INDEX netranges_services_idx ON netranges (services);
+CREATE INDEX netranges_buildingid_idx ON netranges (buildingid);
 
 /* ---------------------------------------------------
  Structure of table "netnodes"
@@ -1480,7 +1495,7 @@ CREATE TABLE netnodes (
 	name varchar(255) NOT NULL,
 	type smallint DEFAULT 0,
 	invprojectid integer
-		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netnodes_invprojectid_fkey REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	status smallint DEFAULT 0,
 	longitude numeric(10,6) DEFAULT NULL,
 	latitude numeric(10,6) DEFAULT NULL,
@@ -1491,16 +1506,17 @@ CREATE TABLE netnodes (
 	createtime bigint,
 	lastinspectiontime bigint DEFAULT NULL,
 	divisionid integer
-		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netnodes_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netnodes_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	info text DEFAULT NULL,
 	ownerid integer DEFAULT NULL
 		CONSTRAINT netnodes_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	flags smallint NOT NULL DEFAULT 0,
 	services varchar(100) NOT NULL DEFAULT '',
-	PRIMARY KEY(id)
+	CONSTRAINT netnodes_pkey PRIMARY KEY(id)
 );
+CREATE INDEX netnodes_address_id_idx ON netnodes (address_id);
 
 /* --------------------------------------------------------
 Structure of table "netnodecontacts"
@@ -1515,7 +1531,7 @@ CREATE TABLE netnodecontacts (
     contact varchar(255) NOT NULL DEFAULT '',
     name text NOT NULL,
     type integer DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT netnodecontacts_pkey PRIMARY KEY (id)
 );
 CREATE INDEX netnodecontacts_netnodeid_idx ON netnodecontacts (netnodeid);
 CREATE INDEX netnodecontacts_contact_idx ON netnodecontacts (contact);
@@ -1534,7 +1550,7 @@ CREATE TABLE vlans (
         CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
     netnodeid integer DEFAULT NULL
         CONSTRAINT vlans_netnodeid_fkey REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    PRIMARY KEY (id),
+    CONSTRAINT vlans_pkey PRIMARY KEY (id),
     CONSTRAINT vlans_customerid_ukey UNIQUE (vlanid, customerid),
     CONSTRAINT vlans_netnodeid_ukey UNIQUE (vlanid, netnodeid)
 );
@@ -1564,13 +1580,13 @@ CREATE TABLE networks (
 	vlanid smallint DEFAULT NULL
 	    CONSTRAINT networks_vlanid_fkey REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	hostid integer NULL
-		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT networks_hostid_fkey REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	authtype smallint 	DEFAULT 0 NOT NULL,
 	pubnetid integer DEFAULT NULL
 		CONSTRAINT networks_pubnetid_fkey REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	allassignable smallint NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (name),
+	CONSTRAINT networks_pkey PRIMARY KEY (id),
+	CONSTRAINT networks_name_key UNIQUE (name),
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
@@ -1585,8 +1601,8 @@ CREATE TABLE netdeviceproducers (
 	id integer DEFAULT nextval('netdeviceproducers_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	alternative_name VARCHAR(255),
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT netdeviceproducers_pkey PRIMARY KEY (id),
+	CONSTRAINT netdeviceproducers_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -1599,7 +1615,7 @@ CREATE TABLE netdevicetypes (
     id integer DEFAULT nextval('netdevicetypes_id_seq'::text) NOT NULL,
     name varchar(50) NOT NULL,
     passive smallint NOT NULL DEFAULT 0,
-    PRIMARY KEY (id),
+    CONSTRAINT netdevicetypes_pkey PRIMARY KEY (id),
     CONSTRAINT netdevicetypes_name_ukey UNIQUE (name)
 );
 
@@ -1616,10 +1632,10 @@ CREATE TABLE netdevicemodels (
 	alternative_name VARCHAR(255),
 	type integer DEFAULT NULL
 		CONSTRAINT netdevicemodels_type_fkey REFERENCES netdevicetypes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	FOREIGN KEY (netdeviceproducerid)
+	CONSTRAINT netdevicemodels_pkey PRIMARY KEY (id),
+	CONSTRAINT netdevicemodels_netdeviceproducerid_fkey FOREIGN KEY (netdeviceproducerid)
 		REFERENCES netdeviceproducers(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE (name, netdeviceproducerid)
+	CONSTRAINT netdevicemodels_name_netdeviceproducerid_key UNIQUE (name, netdeviceproducerid)
 );
 
 /* ---------------------------------------------------
@@ -1645,25 +1661,28 @@ CREATE TABLE netdevices (
 	secret varchar(60) 	DEFAULT '' NOT NULL,
 	community varchar(50) 	DEFAULT '' NOT NULL,
 	channelid integer 	DEFAULT NULL
-	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	    CONSTRAINT netdevices_channelid_fkey REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
 	netnodeid integer	DEFAULT NULL
-	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	    CONSTRAINT netdevices_netnodeid_fkey REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	invprojectid integer	DEFAULT NULL
-	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	    CONSTRAINT netdevices_invprojectid_fkey REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	status smallint		DEFAULT 0,
 	netdevicemodelid integer DEFAULT NULL
-		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
+		CONSTRAINT netdevices_netdevicemodelid_fkey REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	ownerid integer DEFAULT NULL
 		CONSTRAINT netdevices_ownerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	address_id integer DEFAULT NULL
 		CONSTRAINT netdevices_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	divisionid integer DEFAULT NULL
 		CONSTRAINT netdevices_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+	CONSTRAINT netdevices_pkey PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
+CREATE INDEX netdevices_ownerid_idx ON netdevices (ownerid);
+CREATE INDEX netdevices_netnodeid_idx ON netdevices (netnodeid);
+CREATE INDEX netdevices_address_id_idx ON netdevices (address_id);
 
 /* ---------------------------------------------------
  Structure of table "netdevicemacs"
@@ -1678,11 +1697,10 @@ CREATE TABLE netdevicemacs (
     label       varchar(30) NOT NULL,
     mac         varchar(17) NOT NULL,
     main        smallint     DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT netdevicemacs_pkey PRIMARY KEY (id),
     CONSTRAINT netdevicemacs_mac_ukey UNIQUE (mac),
     CONSTRAINT netdevicemacs_netdevid_label_ukey UNIQUE (netdevid, label)
 );
-CREATE INDEX netdevicemacs_netdevid_idx ON netdevicemacs (netdevid);
 CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label);
 
 /* ---------------------------------------------------
@@ -1705,10 +1723,10 @@ CREATE TABLE netradiosectors (
 	frequency2 numeric(9,5) DEFAULT NULL,
 	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev integer NOT NULL
-		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT netradiosectors_netdev_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	secret varchar(64) DEFAULT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name, netdev)
+	CONSTRAINT netradiosectors_pkey PRIMARY KEY (id),
+	CONSTRAINT netradiosectors_name_netdev_key UNIQUE (name, netdev)
 );
 CREATE INDEX netradiosectors_netdev_idx ON netradiosectors (netdev);
 
@@ -1731,7 +1749,7 @@ CREATE TABLE nodes (
 		CONSTRAINT nodes_netdev_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linktype smallint	DEFAULT NULL,
 	linkradiosector integer DEFAULT NULL
-		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT nodes_linkradiosector_fkey REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linkspeed integer	DEFAULT NULL,
 	linktechnology integer	DEFAULT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
@@ -1752,14 +1770,14 @@ CREATE TABLE nodes (
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
 	netid integer		DEFAULT 0 NOT NULL
-		REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT nodes_netid_fkey REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	invprojectid integer DEFAULT NULL
-		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT nodes_invprojectid_fkey REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
-		REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (name),
-	UNIQUE (ipaddr, netid)
+		CONSTRAINT nodes_address_id_fkey REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT nodes_pkey PRIMARY KEY (id),
+	CONSTRAINT nodes_name_key UNIQUE (name),
+	CONSTRAINT nodes_ipaddr_netid_key UNIQUE (ipaddr, netid)
 );
 CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
@@ -1767,6 +1785,7 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 CREATE INDEX nodes_netid_idx ON nodes (netid);
+CREATE INDEX nodes_address_id_idx ON nodes (address_id);
 
 /* --------------------------------------------------------
   Structure of table "routednetworks"
@@ -1781,7 +1800,7 @@ CREATE TABLE routednetworks (
     netid integer NOT NULL
         CONSTRAINT routednetworks_netid_fkey REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
     comment varchar(256) DEFAULT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT routednetworks_pkey PRIMARY KEY (id),
     CONSTRAINT routednetworks_netid_key UNIQUE (netid)
 );
 
@@ -1804,8 +1823,8 @@ CREATE TABLE ewx_stm_nodes (
 	downrate 	integer        	DEFAULT 0 NOT NULL,
 	downceil 	integer        	DEFAULT 0 NOT NULL,
 	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (nodeid)
+	CONSTRAINT ewx_stm_nodes_pkey PRIMARY KEY (id),
+	CONSTRAINT ewx_stm_nodes_nodeid_key UNIQUE (nodeid)
 );
 
 /* ----------------------------------------------------
@@ -1817,13 +1836,14 @@ DROP TABLE IF EXISTS nodelocks CASCADE;
 CREATE TABLE nodelocks (
 	id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
 	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT nodelocks_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec integer		DEFAULT 0 NOT NULL,
 	tosec integer		DEFAULT 0 NOT NULL,
 	disabled 		smallint	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT nodelocks_pkey PRIMARY KEY (id)
 );
+CREATE INDEX nodelocks_nodeid_idx ON nodelocks (nodeid);
 
 /* --------------------------------------------------------
   Structure of table "macs"
@@ -1835,8 +1855,8 @@ CREATE TABLE macs (
 	id integer		DEFAULT nextval('macs_id_seq'::text) NOT NULL,
 	mac varchar(17)		DEFAULT '' NOT NULL,
 	nodeid integer		NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+		CONSTRAINT macs_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT macs_pkey PRIMARY KEY (id),
 	CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 );
 CREATE INDEX macs_nodeid_idx ON macs (nodeid);
@@ -1852,8 +1872,8 @@ CREATE TABLE nodegroups (
 	name            varchar(255)    NOT NULL DEFAULT '',
 	prio		integer		NOT NULL DEFAULT 0,
 	description     text            NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT nodegroups_pkey PRIMARY KEY (id),
+	CONSTRAINT nodegroups_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -1868,7 +1888,7 @@ CREATE TABLE nodegroupassignments (
 		CONSTRAINT nodegroupassignments_nodegroupid_fkey REFERENCES nodegroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	nodeid          integer         NOT NULL
 		CONSTRAINT nodegroupassignments_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT nodegroupassignments_pkey PRIMARY KEY (id),
 	CONSTRAINT nodegroupassignments_nodeid_key UNIQUE (nodeid, nodegroupid)
 );
 
@@ -1881,10 +1901,10 @@ DROP TABLE IF EXISTS nodeassignments CASCADE;
 CREATE TABLE nodeassignments (
         id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
 	nodeid integer          NOT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT nodeassignments_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	assignmentid integer    NOT NULL
-		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+		CONSTRAINT nodeassignments_assignmentid_fkey REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT nodeassignments_pkey PRIMARY KEY (id),
 	CONSTRAINT nodeassignments_nodeid_key UNIQUE (nodeid, assignmentid)
 );
 
@@ -1902,8 +1922,8 @@ CREATE TABLE tarifftags (
 	id integer DEFAULT nextval('tarifftags_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	description text NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT tarifftags_pkey PRIMARY KEY (id),
+	CONSTRAINT tarifftags_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -1916,10 +1936,10 @@ DROP TABLE IF EXISTS tariffassignments CASCADE;
 CREATE TABLE tariffassignments (
 	id integer DEFAULT nextval('tariffassignments_id_seq'::text) NOT NULL,
         tariffid integer NOT NULL
-            REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT tariffassignments_tariffid_fkey REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         tarifftagid integer NOT NULL
-            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        PRIMARY KEY (id),
+            CONSTRAINT tariffassignments_tarifftagid_fkey REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT tariffassignments_pkey PRIMARY KEY (id),
         CONSTRAINT tariffassignments_tarifftagid_key UNIQUE (tariffid,tarifftagid)
 );
 
@@ -1939,7 +1959,7 @@ CREATE TABLE tariffpricevariants (
     quantity_threshold integer NOT NULL,
     net_price numeric(9,3) DEFAULT 0 NOT NULL,
     gross_price numeric(9,3) DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT tariffpricevariants_pkey PRIMARY KEY (id),
     CONSTRAINT tariffpricevariants_tariffid_quantity_threshold_ukey UNIQUE (tariffid, quantity_threshold),
     CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
 );
@@ -1958,7 +1978,7 @@ CREATE TABLE payments (
 	period smallint		DEFAULT 0 NOT NULL,
 	at smallint 		DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT payments_pkey PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -1973,7 +1993,7 @@ CREATE TABLE numberplanassignments (
 		CONSTRAINT numberplanassignments_planid_fkey REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	divisionid integer NOT NULL
 		CONSTRAINT numberplanassignments_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT numberplanassignments_pkey PRIMARY KEY (id),
 	CONSTRAINT numberplanassignments_planid_key UNIQUE (planid, divisionid)
 );
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
@@ -2001,8 +2021,8 @@ CREATE TABLE customergroups (
 	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL,
 	name varchar(255) DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT customergroups_pkey PRIMARY KEY (id),
+	CONSTRAINT customergroups_name_key UNIQUE (name)
 );
 
 /* --------------------------------------------------------
@@ -2014,12 +2034,12 @@ DROP TABLE IF EXISTS customerassignments CASCADE;
 CREATE TABLE customerassignments (
 	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
 	customergroupid integer NOT NULL
-	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    CONSTRAINT customerassignments_customergroupid_fkey REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     startdate bigint DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::bigint NOT NULL,
     enddate bigint DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT customerassignments_pkey PRIMARY KEY (id),
 	CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)
 );
 
@@ -2053,7 +2073,7 @@ CREATE TABLE nodesessions (
     nasid text          DEFAULT NULL,
     location text       DEFAULT NULL,
     nassessionid varchar(253) DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT nodesessions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
@@ -2101,15 +2121,16 @@ CREATE TABLE netlinks (
 	usedlines smallint DEFAULT NULL,
 	availablelines smallint DEFAULT NULL,
 	srcradiosector integer	DEFAULT NULL
-		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netlinks_srcradiosector_fkey REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	dstradiosector integer	DEFAULT NULL
-		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netlinks_dstradiosector_fkey REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	foreignentity varchar(255) DEFAULT NULL,
-	PRIMARY KEY  (id),
+	CONSTRAINT netlinks_pkey PRIMARY KEY  (id),
 	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
 CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
 CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector);
+CREATE INDEX netlinks_dst_idx ON netlinks (dst);
 
 DROP SEQUENCE IF EXISTS netlinkpoints_id_seq;
 CREATE SEQUENCE netlinkpoints_id_seq;
@@ -2118,7 +2139,7 @@ CREATE TABLE netlinkpoints (
 	id integer DEFAULT nextval('netlinkpoints_id_seq'::text) NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT netlinkpoints_pkey PRIMARY KEY (id),
 	netlinkid integer NOT NULL
 		CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -2185,8 +2206,8 @@ CREATE TABLE rtqueues (
   verifierid integer DEFAULT NULL
     CONSTRAINT rtqueues_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   uiconfigsection varchar(64) DEFAULT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (name)
+  CONSTRAINT rtqueues_pkey PRIMARY KEY (id),
+  CONSTRAINT rtqueues_name_key UNIQUE (name)
 );
 
 DROP SEQUENCE IF EXISTS rttickets_id_seq;
@@ -2195,7 +2216,7 @@ DROP TABLE IF EXISTS rttickets CASCADE;
 CREATE TABLE rttickets (
   id integer default nextval('rttickets_id_seq'::text) NOT NULL,
   queueid integer 	NOT NULL
-    REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT rttickets_queueid_fkey REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
   requestor varchar(255) DEFAULT NULL,
   requestor_mail varchar(255) DEFAULT NULL,
   requestor_phone varchar(32) DEFAULT NULL,
@@ -2239,13 +2260,20 @@ CREATE TABLE rttickets (
         CONSTRAINT rttickets_parentid_fkey REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   invprojectid integer DEFAULT NULL
         CONSTRAINT rttickets_invprojectid_fkey REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  PRIMARY KEY (id)
+  CONSTRAINT rttickets_pkey PRIMARY KEY (id)
 );
 
 CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
+CREATE INDEX rttickets_owner_idx ON rttickets (owner);
+CREATE INDEX rttickets_verifierid_idx ON rttickets (verifierid);
+CREATE INDEX rttickets_nodeid_idx ON rttickets (nodeid);
+CREATE INDEX rttickets_netnodeid_idx ON rttickets (netnodeid);
+CREATE INDEX rttickets_netdevid_idx ON rttickets (netdevid);
+CREATE INDEX rttickets_address_id_idx ON rttickets (address_id);
+CREATE INDEX rttickets_parentid_idx ON rttickets (parentid);
 
 DROP TABLE IF EXISTS rtticketlastview CASCADE;
 CREATE TABLE rtticketlastview (
@@ -2264,7 +2292,7 @@ DROP TABLE IF EXISTS rtmessages CASCADE;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	NOT NULL
-    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT rtmessages_ticketid_fkey REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
   userid integer 	DEFAULT NULL
 	CONSTRAINT rtmessages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   customerid integer 	DEFAULT NULL
@@ -2286,10 +2314,12 @@ CREATE TABLE rtmessages (
 	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   contenttype varchar(255) DEFAULT 'text/plain',
   extid varchar(64)	DEFAULT NULL,
-  PRIMARY KEY (id)
+  CONSTRAINT rtmessages_pkey PRIMARY KEY (id)
 );
 
 CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
+CREATE INDEX rtmessages_customerid_idx ON rtmessages (customerid);
+CREATE INDEX rtmessages_inreplyto_idx ON rtmessages (inreplyto);
 
 DROP SEQUENCE IF EXISTS rtrights_id_seq;
 CREATE SEQUENCE rtrights_id_seq;
@@ -2297,18 +2327,18 @@ DROP TABLE IF EXISTS rtrights CASCADE;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL,
     userid integer NOT NULL
-        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT rtrights_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     queueid integer NOT NULL
-        REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT rtrights_queueid_fkey REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights integer DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT rtrights_pkey PRIMARY KEY (id),
     CONSTRAINT rtrights_userid_key UNIQUE (userid, queueid)
 );
 
 DROP TABLE IF EXISTS rtattachments CASCADE;
 CREATE TABLE rtattachments (
 	messageid integer 	    NOT NULL
-	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    CONSTRAINT rtattachments_messageid_fkey REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) 	DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT '' NOT NULL,
 	cid varchar(255) DEFAULT NULL
@@ -2324,8 +2354,8 @@ CREATE TABLE rtcategories (
 	name varchar(255)	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	style text	DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT rtcategories_pkey PRIMARY KEY (id),
+	CONSTRAINT rtcategories_name_key UNIQUE (name)
 );
 
 DROP SEQUENCE IF EXISTS rtcategoryusers_id_seq;
@@ -2334,10 +2364,10 @@ DROP TABLE IF EXISTS rtcategoryusers CASCADE;
 CREATE TABLE rtcategoryusers (
 	id integer		DEFAULT nextval('rtcategoryusers_id_seq'::text) NOT NULL,
 	userid integer		NOT NULL
-		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT rtcategoryusers_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	categoryid integer	NOT NULL
-		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+		CONSTRAINT rtcategoryusers_categoryid_fkey REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rtcategoryusers_pkey PRIMARY KEY (id),
 	CONSTRAINT rtcategories_userid_key UNIQUE (userid, categoryid)
 );
 
@@ -2347,10 +2377,10 @@ DROP TABLE IF EXISTS rtticketcategories CASCADE;
 CREATE TABLE rtticketcategories (
 	id integer		DEFAUlT nextval('rtticketcategories_id_seq'::text) NOT NULL,
 	ticketid integer	NOT NULL
-		REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT rtticketcategories_ticketid_fkey REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	categoryid integer	NOT NULL
-		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+		CONSTRAINT rtticketcategories_categoryid_fkey REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rtticketcategories_pkey PRIMARY KEY (id),
 	CONSTRAINT rtticketcategories_ticketid_key UNIQUE (ticketid, categoryid)
 );
 
@@ -2359,9 +2389,9 @@ CREATE SEQUENCE rtqueuecategories_id_seq;
 DROP TABLE IF EXISTS rtqueuecategories CASCADE;
 CREATE TABLE rtqueuecategories (
 	id integer DEFAULT nextval('rtqueuecategories_id_seq'::text) NOT NULL,
-	queueid integer NOT NULL REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	categoryid integer NOT NULL REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+	queueid integer NOT NULL CONSTRAINT rtqueuecategories_queueid_fkey REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	categoryid integer NOT NULL CONSTRAINT rtqueuecategories_categoryid_fkey REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rtqueuecategories_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2377,7 +2407,7 @@ CREATE TABLE rtticketwatchers (
 		CONSTRAINT rtticketwatchers_rttickets_fkey REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid integer	NOT NULL
 		CONSTRAINT rtticketwatchers_users_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT rtticketwatchers_pkey PRIMARY KEY (id),
 	CONSTRAINT rtticketwatchers_ticketid_ukey UNIQUE (ticketid, userid)
 );
 
@@ -2401,8 +2431,8 @@ CREATE TABLE domains (
 	mxbackup smallint	DEFAULT 0 NOT NULL,
 	options text DEFAULT NULL,
 	catalog text DEFAULT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name),
+	CONSTRAINT domains_pkey PRIMARY KEY (id),
+	CONSTRAINT domains_name_key UNIQUE (name),
 	CONSTRAINT domains_name_check CHECK (((name)::text = LOWER((name)::text)))
 );
 CREATE INDEX domains_ownerid_idx ON domains (ownerid);
@@ -2438,7 +2468,7 @@ CREATE TABLE passwd (
 	mail_forward varchar(255) DEFAULT '' NOT NULL,
 	mail_bcc varchar(255) 	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT passwd_pkey PRIMARY KEY (id),
 	CONSTRAINT passwd_login_key UNIQUE (login, domainid)
 );
 CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
@@ -2452,7 +2482,7 @@ DROP TABLE IF EXISTS records CASCADE;
 CREATE TABLE records (
 	id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
 	domain_id integer	DEFAULT NULL
-		REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT records_domain_id_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name varchar(255)	DEFAULT NULL,
 	type varchar(10)		DEFAULT NULL,
 	content varchar(65535)	DEFAULT NULL,
@@ -2462,7 +2492,7 @@ CREATE TABLE records (
 	disabled boolean	DEFAULT '0',
 	auth boolean		DEFAULT '1',
 	ordername varchar(255) DEFAULT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT records_pkey PRIMARY KEY (id),
 	CONSTRAINT records_name_check CHECK (((name)::text = LOWER((name)::text)))
 );
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
@@ -2475,9 +2505,9 @@ CREATE INDEX records_domain_id_ordername_idx ON records (domain_id, ordername te
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS domainmetadata CASCADE;
 CREATE TABLE domainmetadata (
-	id SERIAL PRIMARY KEY,
+	id SERIAL CONSTRAINT domainmetadata_pkey PRIMARY KEY,
 	domain_id integer
-		REFERENCES domains(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT domainmetadata_domain_id_fkey REFERENCES domains(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	kind varchar(32),
 	content text
 );
@@ -2494,7 +2524,7 @@ CREATE TABLE supermasters (
 	ip inet			NOT NULL,
 	nameserver varchar(255) NOT NULL,
 	account varchar(40)	DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT supermasters_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2512,7 +2542,7 @@ CREATE TABLE comments (
 	modified_at		integer NOT NULL,
 	account			varchar(40) DEFAULT NULL,
 	comment			varchar(65535) NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT comments_pkey PRIMARY KEY (id),
 	CONSTRAINT comments_lowercase_name CHECK (((name)::text = LOWER((name)::text)))
 );
 CREATE INDEX comments_domain_id_idx ON comments (domain_id);
@@ -2533,7 +2563,7 @@ CREATE TABLE cryptokeys (
 	active			boolean,
 	published       boolean DEFAULT 't',
 	content			text,
-	PRIMARY KEY (id)
+	CONSTRAINT cryptokeys_pkey PRIMARY KEY (id)
 );
 CREATE INDEX cryptokeys_domain_id_idx ON cryptokeys (domain_id);
 
@@ -2563,7 +2593,7 @@ CREATE TABLE aliases (
 	login 		varchar(255) 	DEFAULT '' NOT NULL,
 	domainid 	integer 	NOT NULL
 		CONSTRAINT aliases_domainid_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT aliases_pkey PRIMARY KEY (id),
 	CONSTRAINT aliases_login_key UNIQUE (login, domainid)
 );
 
@@ -2580,7 +2610,7 @@ CREATE TABLE aliasassignments (
 	accountid       integer         DEFAULT NULL
 		CONSTRAINT aliasassignments_accountid_fkey REFERENCES passwd (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	mail_forward    varchar(255)    DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT aliasassignments_pkey PRIMARY KEY (id),
 	CONSTRAINT aliasassignments_aliasid_key UNIQUE (aliasid, accountid, mail_forward)
 );
 
@@ -2604,7 +2634,7 @@ CREATE TABLE uiconfig (
         CONSTRAINT uiconfig_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     configid    integer         DEFAULT NULL
         CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id),
+    CONSTRAINT uiconfig_pkey PRIMARY KEY (id),
     CONSTRAINT uiconfig_section_var_userid_divisionid_ukey UNIQUE (section, var, userid, divisionid)
 );
 
@@ -2638,7 +2668,7 @@ CREATE TABLE events (
 		CONSTRAINT events_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	type		smallint	DEFAULT 1 NOT NULL,
 	nodeid		integer		DEFAULT NULL
-		REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT events_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
 		CONSTRAINT events_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	ticketid integer DEFAULT NULL
@@ -2649,7 +2679,7 @@ CREATE TABLE events (
 		CONSTRAINT events_netdevid_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	divisionid integer DEFAULT NULL
 		CONSTRAINT events_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+	CONSTRAINT events_pkey PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
 CREATE INDEX events_nodeid_idx ON events(nodeid);
@@ -2658,6 +2688,7 @@ CREATE INDEX events_netdevid_idx ON events (netdevid);
 CREATE INDEX events_divisionid_idx ON events (divisionid);
 CREATE INDEX events_customerid_idx ON events (customerid);
 CREATE INDEX events_ticketid_idx ON events (ticketid);
+CREATE INDEX events_address_id_idx ON events (address_id);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2670,6 +2701,7 @@ CREATE TABLE eventassignments (
 		CONSTRAINT eventassignments_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT eventassignments_eventid_key UNIQUE (eventid, userid)
 );
+CREATE INDEX eventassignments_userid_idx ON eventassignments (userid);
 
 /* ---------------------------------------------------
  Structure of table "sessions"
@@ -2682,7 +2714,7 @@ CREATE TABLE sessions (
     atime 	bigint 	NOT NULL DEFAULT 0,
     vdata 	text 		NOT NULL,
     content 	text 		NOT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT sessions_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2701,7 +2733,7 @@ CREATE TABLE daemoninstances (
     priority integer 		DEFAULT 0 NOT NULL,
     description text 		DEFAULT '' NOT NULL,
     disabled smallint 		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT daemoninstances_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2718,7 +2750,7 @@ CREATE TABLE daemonconfig (
     value 	text 		DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
     disabled 	smallint 	DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT daemonconfig_pkey PRIMARY KEY (id),
     CONSTRAINT daemonconfig_instanceid_key UNIQUE(instanceid, var)
 );
 
@@ -2734,7 +2766,7 @@ CREATE TABLE docrights (
 		CONSTRAINT docrights_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     doctype     integer         DEFAULT 0 NOT NULL,
     rights      integer         DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT docrights_pkey PRIMARY KEY (id),
     CONSTRAINT docrights_userid_key UNIQUE (userid, doctype)
 );
 
@@ -2751,7 +2783,7 @@ CREATE TABLE cashrights (
     regid 	integer 	NOT NULL
 		CONSTRAINT cashrights_regid_fkey REFERENCES cashregs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     rights 	integer 	DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT cashrights_pkey PRIMARY KEY (id),
     CONSTRAINT cashrights_userid_key UNIQUE (userid, regid)
 );
 
@@ -2771,7 +2803,7 @@ CREATE TABLE cashreglog (
     value 	numeric(9,2)    DEFAULT 0 NOT NULL,
     snapshot 	numeric(9,2)    DEFAULT 0 NOT NULL,
     description text		DEFAULT '' NOT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT cashreglog_pkey PRIMARY KEY (id),
     CONSTRAINT cashreglog_regid_key UNIQUE (regid, time)
 );
 
@@ -2789,8 +2821,8 @@ CREATE TABLE ewx_pt_config (
     mac 	varchar(20)     DEFAULT '' NOT NULL,
     ipaddr 	bigint          DEFAULT 0 NOT NULL,
     passwd 	varchar(32)     DEFAULT '' NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (nodeid)
+    CONSTRAINT ewx_pt_config_pkey PRIMARY KEY (id),
+    CONSTRAINT ewx_pt_config_nodeid_key UNIQUE (nodeid)
 );
 
 /* ---------------------------------------------------
@@ -2800,7 +2832,7 @@ DROP TABLE IF EXISTS dbinfo CASCADE;
 CREATE TABLE dbinfo (
     keytype 	varchar(255) 	DEFAULT '' NOT NULL,
     keyvalue 	varchar(255) 	DEFAULT '' NOT NULL,
-    PRIMARY KEY (keytype)
+    CONSTRAINT dbinfo_pkey PRIMARY KEY (keytype)
 );
 
 /* ---------------------------------------------------
@@ -2816,10 +2848,9 @@ CREATE TABLE customercontacts (
     name 	varchar(10000) 	NOT NULL DEFAULT '',
     contact	varchar(255) 	NOT NULL DEFAULT '',
     type    integer         DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT customercontacts_pkey PRIMARY KEY (id)
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
-CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
 CREATE INDEX customercontacts_contact_type_idx ON customercontacts (contact, type);
 
 /* ---------------------------------------------------
@@ -2845,10 +2876,10 @@ DROP TABLE IF EXISTS excludedgroups CASCADE;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
 	customergroupid integer NOT NULL
-	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    CONSTRAINT excludedgroups_customergroupid_fkey REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid 		integer NOT NULL
 		CONSTRAINT excludedgroups_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT excludedgroups_pkey PRIMARY KEY (id),
 	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
 );
 CREATE INDEX excludedgroups_customergroupid_idx ON excludedgroups (customergroupid);
@@ -2870,7 +2901,7 @@ CREATE TABLE messages (
 	sender 	varchar(255) 	DEFAULT NULL,
 	contenttype 	varchar(255) 	DEFAULT 'text/plain',
 	startdate bigint DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT messages_pkey PRIMARY KEY (id)
 );
 CREATE INDEX messages_cdate_idx ON messages (cdate, type);
 CREATE INDEX messages_userid_idx ON messages (userid);
@@ -2898,7 +2929,7 @@ CREATE TABLE messageitems (
 	body 		text		DEFAULT NULL,
 	attributes text DEFAULT NULL,
 	attempts smallint DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT messageitems_pkey PRIMARY KEY (id)
 );
 CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
@@ -2913,8 +2944,8 @@ DROP TABLE IF EXISTS nastypes CASCADE;
 CREATE TABLE nastypes (
     	id 	integer 	DEFAULT nextval('nastypes_id_seq'::text) NOT NULL,
 	name 	varchar(255) 	NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT nastypes_pkey PRIMARY KEY (id),
+	CONSTRAINT nastypes_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -2926,12 +2957,12 @@ DROP TABLE IF EXISTS managementurls;
 CREATE TABLE managementurls (
 	id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
 	netdevid integer	DEFAULT NULL
-		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT managementurls_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	nodeid integer		DEFAULT NULL
-		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT managementurls_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT managementurls_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2943,10 +2974,10 @@ DROP TABLE IF EXISTS logtransactions CASCADE;
 CREATE TABLE logtransactions (
 	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
 	userid integer		DEFAULT NULL
-		CONSTRAINT logtransactions REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT logtransactions_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	time bigint		DEFAULT 0 NOT NULL,
 	module varchar(50)	DEFAULT '' NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT logtransactions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX logtransactions_userid_idx ON logtransactions (userid);
 CREATE INDEX logtransactions_time_idx ON logtransactions (time);
@@ -2960,10 +2991,10 @@ DROP TABLE IF EXISTS logmessages CASCADE;
 CREATE TABLE logmessages (
 	id integer		DEFAULT nextval('logmessages_id_seq'::text) NOT NULL,
 	transactionid integer	NOT NULL
-		REFERENCES logtransactions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT logmessages_transactionid_fkey REFERENCES logtransactions (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	resource integer	DEFAULT 0 NOT NULL,
 	operation integer	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT logmessages_pkey PRIMARY KEY (id)
 );
 CREATE INDEX logmessages_transactionid_idx ON logmessages (transactionid);
 CREATE INDEX logmessages_resource_idx ON logmessages (resource);
@@ -2975,7 +3006,7 @@ CREATE INDEX logmessages_operation_idx ON logmessages (operation);
 DROP TABLE IF EXISTS logmessagekeys;
 CREATE TABLE logmessagekeys (
 	logmessageid integer	NOT NULL
-		REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT logmessagekeys_logmessageid_fkey REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name varchar(32)	NOT NULL,
 	value integer		NOT NULL
 );
@@ -2989,7 +3020,7 @@ CREATE INDEX logmessagekeys_value_idx ON logmessagekeys (value);
 DROP TABLE IF EXISTS logmessagedata;
 CREATE TABLE logmessagedata (
 	logmessageid integer	NOT NULL
-		REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT logmessagedata_logmessageid_fkey REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name varchar(32)	NOT NULL,
 	value text		DEFAULT ''
 );
@@ -3009,8 +3040,8 @@ CREATE TABLE templates (
 	subject varchar(255) DEFAULT '' NOT NULL,
 	message	text		 DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (type, name)
+	CONSTRAINT templates_pkey PRIMARY KEY (id),
+	CONSTRAINT templates_type_name_key UNIQUE (type, name)
 );
 
 /* ---------------------------------------------------
@@ -3025,7 +3056,7 @@ CREATE TABLE templateattachments (
 		CONSTRAINT templateattachments_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) 	DEFAULT '' NOT NULL,
 	contenttype varchar(255) DEFAULT '' NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT templateattachments_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3039,7 +3070,7 @@ CREATE TABLE rttemplatetypes (
 	templateid  integer                                               NOT NULL
 		CONSTRAINT rttemplatetypes_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	messagetype integer                                               NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT rttemplatetypes_pkey PRIMARY KEY (id),
 	CONSTRAINT rttemplatetypes_templateid_key UNIQUE (templateid, messagetype)
 );
 
@@ -3055,7 +3086,7 @@ CREATE TABLE rttemplatequeues (
 		CONSTRAINT rttemplatequeues_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	queueid  integer                                               NOT NULL
 		CONSTRAINT rttemplatequeues_queueid_fkey REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CONSTRAINT rttemplatequeues_pkey PRIMARY KEY (id),
 	CONSTRAINT rttemplatequeues_templateid_key UNIQUE (templateid, queueid)
 );
 
@@ -3069,8 +3100,8 @@ CREATE TABLE usergroups (
 	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
 	name varchar(255) DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (name)
+	CONSTRAINT usergroups_pkey PRIMARY KEY (id),
+	CONSTRAINT usergroups_name_key UNIQUE (name)
 );
 
 /* ---------------------------------------------------
@@ -3082,11 +3113,11 @@ DROP TABLE IF EXISTS userassignments CASCADE;
 CREATE TABLE userassignments (
 	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
 	usergroupid integer NOT NULL
-		REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT userassignments_usergroupid_fkey REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	userid integer NOT NULL
-		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	UNIQUE (usergroupid, userid)
+		CONSTRAINT userassignments_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT userassignments_pkey PRIMARY KEY (id),
+	CONSTRAINT userassignments_usergroupid_userid_key UNIQUE (usergroupid, userid)
 );
 CREATE INDEX userassignments_userid_idx ON userassignments (userid);
 
@@ -3102,11 +3133,9 @@ CREATE TABLE userdivisions (
         CONSTRAINT userdivisions_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     divisionid  integer     NOT NULL
         CONSTRAINT userdivisions_divisionid_fkey REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    PRIMARY KEY (id),
+    CONSTRAINT userdivisions_pkey PRIMARY KEY (id),
     CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
 );
-DROP INDEX IF EXISTS userdivisions_userid_idx;
-CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
 
 /* ---------------------------------------------------
  Structure of table passwdhistory
@@ -3117,9 +3146,9 @@ DROP TABLE IF EXISTS passwdhistory CASCADE;
 CREATE TABLE passwdhistory (
 	id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
 	userid integer NOT NULL
-		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT passwdhistory_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	hash varchar(255) DEFAULT '' NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT passwdhistory_pkey PRIMARY KEY (id)
 );
 CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
 
@@ -3143,8 +3172,9 @@ CREATE TABLE filecontainers (
 		CONSTRAINT filecontainers_messageid_fkey REFERENCES messages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	netdevmodelid integer DEFAULT NULL
 		CONSTRAINT filecontainers_netdevmodelid_fkey REFERENCES netdevicemodels (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+	CONSTRAINT filecontainers_pkey PRIMARY KEY (id)
 );
+CREATE INDEX filecontainers_messageid_idx ON filecontainers (messageid);
 
 /* ---------------------------------------------------
  Structure of table files
@@ -3159,7 +3189,7 @@ CREATE TABLE files (
 	filename varchar(255) NOT NULL,
 	contenttype varchar(255) NOT NULL,
 	md5sum varchar(32) NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT files_pkey PRIMARY KEY (id),
 	CONSTRAINT files_containerid_key UNIQUE (containerid, md5sum)
 );
 CREATE INDEX files_md5sum_idx ON files (md5sum);
@@ -3178,7 +3208,7 @@ CREATE TABLE ksefbatchsessions (
     status smallint NOT NULL DEFAULT 0,
     statusdescription text DEFAULT NULL,
     environment smallint NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefbatchsessions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX ksefbatchsessions_ksefnumber_idx ON ksefbatchsessions (ksefnumber);
 CREATE INDEX ksefbatchsessions_status_idx ON ksefbatchsessions (status);
@@ -3203,9 +3233,11 @@ CREATE TABLE ksefdocuments
     statusdescription text        DEFAULT NULL,
     statusdetails     text        DEFAULT NULL,
     permanent_storage_date timestamptz DEFAULT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefdocuments_pkey PRIMARY KEY (id)
 );
 CREATE INDEX ksefdocuments_status_idx ON ksefdocuments (status);
+CREATE INDEX ksefdocuments_docid_idx ON ksefdocuments (docid);
+CREATE INDEX ksefdocuments_batchsessionid_idx ON ksefdocuments (batchsessionid);
 
 /* ---------------------------------------------------
  Structure of table ksefconfig
@@ -3222,7 +3254,7 @@ CREATE TABLE ksefconfig (
     boundarydate bigint NOT NULL,
     showbalancesummary smallint NOT NULL,
     xmladdallvalues smallint NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefconfig_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3270,12 +3302,11 @@ CREATE TABLE ksefinvoices (
     posting smallint DEFAULT 1,
     settled smallint DEFAULT 0,
     notes text DEFAULT NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT ksefinvoices_pkey PRIMARY KEY (id),
     CONSTRAINT ksefinvoices_ksef_number_ukey UNIQUE (ksef_number)
 );
 CREATE INDEX ksefinvoices_issue_date_idx ON ksefinvoices (issue_date);
 CREATE INDEX ksefinvoices_permanent_storage_date_idx ON ksefinvoices (permanent_storage_date);
-CREATE INDEX ksefinvoices_ksef_number_idx ON ksefinvoices (ksef_number);
 CREATE INDEX ksefinvoices_corrected_ksef_number_idx ON ksefinvoices (corrected_ksef_number);
 CREATE INDEX ksefinvoices_seller_ten_idx ON ksefinvoices (seller_ten);
 CREATE INDEX ksefinvoices_buyer_identifier_value_idx ON ksefinvoices (buyer_identifier_value);
@@ -3295,11 +3326,12 @@ CREATE TABLE ksefinvoicethirdsubjects (
     identifier_value varchar(50) NOT NULL,
     name varchar(512) NOT NULL,
     role integer NOT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefinvoicethirdsubjects_pkey PRIMARY KEY (id)
 );
 CREATE INDEX ksefinvoicethirdsubjects_identifier_type_idx ON ksefinvoicethirdsubjects (identifier_type);
 CREATE INDEX ksefinvoicethirdsubjects_identifier_value_idx ON ksefinvoicethirdsubjects (identifier_value);
 CREATE INDEX ksefinvoicethirdsubjects_role_idx ON ksefinvoicethirdsubjects (role);
+CREATE INDEX ksefinvoicethirdsubjects_ksefinvoiceid_idx ON ksefinvoicethirdsubjects (ksefinvoiceid);
 
 /* ---------------------------------------------------
  Structure of table ksefinvoicesummaries
@@ -3357,7 +3389,7 @@ DROP TABLE IF EXISTS ksefinvoicetags CASCADE;
 CREATE TABLE ksefinvoicetags (
     id integer DEFAULT nextval('ksefinvoicetags_id_seq'::text) NOT NULL,
     name text NOT NULL,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefinvoicetags_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3372,8 +3404,9 @@ CREATE TABLE ksefinvoicetagassignments (
         CONSTRAINT ksefinvoicetagassignments_ksef_invoice_id_fkey REFERENCES ksefinvoices (id) ON DELETE CASCADE ON UPDATE CASCADE,
     ksef_invoice_tag_id integer NOT NULL
         CONSTRAINT ksefinvoicetagassignments_ksef_invoice_tag_id_fkey REFERENCES ksefinvoicetags (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
+    CONSTRAINT ksefinvoicetagassignments_pkey PRIMARY KEY (id)
 );
+CREATE INDEX ksefinvoicetagassignments_ksef_invoice_id_idx ON ksefinvoicetagassignments (ksef_invoice_id);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
@@ -3387,7 +3420,7 @@ CREATE TABLE up_rights (
         name varchar(255) 	DEFAULT 0 NOT NULL,
         description varchar(255) DEFAULT 0,
 	setdefault smallint 	DEFAULT 0,
-	PRIMARY KEY (id)
+	CONSTRAINT up_rights_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3401,7 +3434,7 @@ CREATE TABLE up_rights_assignments (
 	customerid integer DEFAULT NULL
 		CONSTRAINT up_rights_assignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	rightid integer 	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
+	CONSTRAINT up_rights_assignments_pkey PRIMARY KEY (id),
 	CONSTRAINT up_rights_assignments_customerid_key UNIQUE (customerid, rightid)
 );
 
@@ -3420,7 +3453,7 @@ CREATE TABLE up_customers (
 	failedlogindate bigint DEFAULT 0 NOT NULL,
 	failedloginip varchar(40) DEFAULT '' NOT NULL,
 	enabled smallint 	    DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT up_customers_pkey PRIMARY KEY (id)
 );
 CREATE INDEX up_customers_customerid_idx ON up_customers (customerid);
 CREATE INDEX up_customers_failedlogindate_idx ON up_customers (failedlogindate);
@@ -3437,7 +3470,7 @@ CREATE TABLE up_help (
 		CONSTRAINT up_help_reference_fkey REFERENCES up_help (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	title varchar(128) 	DEFAULT 0 NOT NULL,
 	body text 		    DEFAULT '' NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT up_help_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3453,7 +3486,7 @@ CREATE TABLE up_info_changes (
 	fieldname varchar(255) 	DEFAULT 0 NOT NULL,
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
 	cdate bigint DEFAULT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT up_info_changes_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -3469,7 +3502,7 @@ CREATE TABLE up_sessions (
 	atime 	bigint		NOT NULL DEFAULT 0,
 	vdata	text		NOT NULL,
 	content 	text		NOT NULL,
-	PRIMARY KEY (id)
+	CONSTRAINT up_sessions_pkey PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -5014,6 +5047,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2026112702');
 
 COMMIT;

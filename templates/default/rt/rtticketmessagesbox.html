@@ -221,7 +221,7 @@
 								<div class="message-buttons">
 									{if $message.type == $smarty.const.RTMESSAGE_NOTE}
 										{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
-										{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+										{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 											{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
 											{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
@@ -232,7 +232,7 @@
 										{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 										{button icon="details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
 										{if $msgidx > 0}
-											{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+											{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 												{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
 												{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}

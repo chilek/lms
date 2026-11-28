@@ -55,13 +55,13 @@ if (isset($setwarnings['mnodeid'])) {
                 if (empty($msgtmplid)) {
                     break;
                 }
-                $LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, '', $setwarnings['message']);
+                $LMS->UpdateMessageTemplate($msgtmplid, TMPL_WARNING, null, '', null, null, $setwarnings['message']);
                 break;
             case 3:
                 if (!strlen($msgtmplname)) {
                     break;
                 }
-                $LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, '', $setwarnings['message']);
+                $LMS->AddMessageTemplate(TMPL_WARNING, $msgtmplname, '', null, null, $setwarnings['message']);
                 break;
         }
     }
@@ -102,8 +102,8 @@ $warning = isset($_GET['warning']) ? 1 : 0;
 if (!empty($_POST['marks'])) {
     $nodes = array_filter($_POST['marks'], 'is_natural');
 
-    $LMS->NodeSetWarn($nodes, $warning);
     if (!empty($nodes)) {
+        $LMS->NodeSetWarn($nodes, $warning);
         $data = array('nodes' => $nodes, 'warning' => $warning);
         $LMS->ExecHook('node_warn_after', $data);
 

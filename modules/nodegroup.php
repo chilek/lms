@@ -27,53 +27,31 @@
 $action = $_GET['action'] ?? '';
 
 if ($action == 'delete') {
-    if (isset($_GET['nodegroupid'])) {
-        $nodegroupids = array($_GET['nodegroupid']);
-    } elseif (isset($_POST['markednodegroupid'])) {
-        $nodegroupids = $_POST['markednodegroupid'];
-    }
-    if (!empty($nodegroupids)) {
-        foreach ($nodegroupids as $nodegroupid) {
-            $params = array(
-            SYSLOG::RES_NODE => $_GET['id'],
-            SYSLOG::RES_NODEGROUP => $nodegroupid,
-            );
-            if ($SYSLOG) {
-                $id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?', array_values($params));
-                $args = $params;
-                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-            $DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?', array_values($params));
+    $nodegroupids = isset($_GET['nodegroupid']) ? array($_GET['nodegroupid']) : ($_POST['markednodegroupid'] ?? array());
+    if ($LMS->NodeExists($_GET['id'])) {
+        foreach (Utils::filterIntegers((array) $nodegroupids) as $nodegroupid) {
+            $LMS->deleteNodeGroupAssignment(array(
+                'nodeid' => $_GET['id'],
+                'nodegroupid' => $nodegroupid,
+            ));
         }
     }
-} elseif ($action ==  'add') {
-    if ($LMS->NodeExists($_GET['id']) && $_POST['nodegroupid']) {
-        if (is_array($_POST['nodegroupid'])) {
-            $nodegroupid = $_POST['nodegroupid'];
-        } else {
-            $nodegroupid = array($_POST['nodegroupid']);
-        }
-        $nodegroupid = Utils::filterIntegers($nodegroupid);
-        if ($nodegroupids = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN (' . implode(',', $nodegroupid) . ')')) {
-            foreach ($nodegroupids as $nodegroupid) {
-                $params = array(
-                SYSLOG::RES_NODE => $_GET['id'],
-                SYSLOG::RES_NODEGROUP => $nodegroupid,
-                );
-                $DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
-					VALUES (?, ?)', array_values($params));
-                if ($SYSLOG) {
-                    $id = $DB->GetLastInsertID('nodegroupassignments');
-                    $args = $params;
-                    $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                    $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
+} elseif ($action == 'add') {
+    $nodegroupids = Utils::filterIntegers((array) ($_POST['nodegroupid'] ?? array()));
+    if ($nodegroupids && $LMS->NodeExists($_GET['id'])) {
+        $groups = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN ?', array($nodegroupids));
+        foreach ($groups ?: array() as $nodegroupid) {
+            $LMS->addNodeGroupAssignment(array(
+                'nodeid' => $_GET['id'],
+                'nodegroupid' => $nodegroupid,
+            ));
         }
     }
 } elseif (!empty($_POST['marks']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['groupid'])))) {
     foreach ($_POST['marks'] as $mark) {
+        if (!$LMS->NodeExists($mark)) {
+            continue;
+        }
         if ($action == 'unsetgroup') {
             $LMS->deleteNodeGroupAssignment(array(
                 'nodeid' => $mark,
@@ -92,31 +70,14 @@ if ($action == 'delete') {
 
     if (isset($nodeassignments['gmnodeid']) && $oper=='0') {
         foreach ($nodeassignments['gmnodeid'] as $nodeid) {
-            $params = array(
-                SYSLOG::RES_NODEGROUP => $_GET['id'],
-                SYSLOG::RES_NODE => $nodeid
-            );
-            if ($SYSLOG) {
-                $id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid = ?', array_values($params));
-                $args = $params;
-                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
+            if ($LMS->NodeExists($nodeid)) {
+                $LMS->deleteNodeGroupAssignment(array('nodegroupid' => $_GET['id'], 'nodeid' => $nodeid));
             }
-            $DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid = ?', array_values($params));
         }
     } elseif (isset($nodeassignments['mnodeid']) && $oper=='1') {
         foreach ($nodeassignments['mnodeid'] as $nodeid) {
-            $params = array(
-                SYSLOG::RES_NODEGROUP => $_GET['id'],
-                SYSLOG::RES_NODE => $nodeid
-            );
-            $DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
-				VALUES (?, ?)', array_values($params));
-            if ($SYSLOG) {
-                $id = $DB->GetLastInsertID('nodegroupassignments');
-                $args = $params;
-                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
+            if ($LMS->NodeExists($nodeid)) {
+                $LMS->addNodeGroupAssignment(array('nodegroupid' => $_GET['id'], 'nodeid' => $nodeid));
             }
         }
     } elseif (isset($nodeassignments['membersnetid']) && $oper=='2') {

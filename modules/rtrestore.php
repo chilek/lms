@@ -31,6 +31,9 @@ $qaction = empty($_GET['qaction']) ? null : $_GET['qaction'];
 if ($maction == 'restore') {
     $msg = intval($_GET['id']);
     $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
+    if (!$LMS->CheckTicketAccess($ticket, RT_RIGHT_DELETE)) {
+        access_denied();
+    }
     $del = 0;
     $deltime = 0;
     $deluserid = null;
@@ -41,6 +44,9 @@ if ($maction == 'restore') {
 
 if ($taction == 'restore') {
     $ticket = intval($_GET['id']);
+    if (!$LMS->CheckTicketAccess($ticket, RT_RIGHT_DELETE)) {
+        access_denied();
+    }
     $del = 1;
     $nodel = 0;
     $deltime = 0;

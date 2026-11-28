@@ -83,7 +83,7 @@ if (isset($_POST['domain'])) {
             if ($limits['domain_limit'] > 0) {
                     $cnt = $DB->GetOne(
                         'SELECT COUNT(*) FROM domains WHERE ownerid = ?',
-                        array($domainadd['ownerid'])
+                        array($domain['ownerid'])
                     );
             }
 
@@ -96,16 +96,12 @@ if (isset($_POST['domain'])) {
     if (!$error) {
         $DB->Execute(
             'UPDATE domains SET name = ?, ownerid = ?, description = ?,
-			master = ?, last_check = ?, type = ?, notified_serial = ?,
-			account = ?, mxbackup = ? WHERE id = ?',
+			master = ?, type = ?, mxbackup = ? WHERE id = ?',
             array(  $domain['name'],
                 empty($domain['ownerid']) ? null : $domain['ownerid'],
                 $domain['description'],
                 $domain['master'],
-                $domain['last_check'],
                 $domain['type'],
-                $domain['notified_serial'],
-                $domain['account'],
                 empty($domain['mxbackup']) ? 0 : 1,
                 $domain['id']
                 )

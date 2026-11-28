@@ -244,7 +244,7 @@
 								</TD>
 							</TR>
 							{/if}
-							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									{icon name="user" label="Remover"}
@@ -498,7 +498,7 @@
 				{if $ticket.images|size}
 					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{base64_encode(json_encode($ticket.images))}"}
 				{/if}
-				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 					{button id="restore-rtticket" icon="restore" label="Restore<!RT>" tip="Restore<!RT>"
 						data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"
 						data_confirmation_text=trans('Are you sure, you want to restore ticket $a?', $ticket.ticketid)

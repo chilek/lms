@@ -41,7 +41,7 @@ $alias = $_POST['alias'] ?? null;
 if ($alias) {
     $alias['login'] = trim($alias['login']);
     $alias['accounts'] = $SESSION->get('aliasaccounts');
-    $alias['mailforwards'] = $SESSION->get('aliasmailforwards');
+    $alias['mailforwards'] = $SESSION->get('aliasmailforwards') ?: array();
 
     if ($alias['login']=='' && !$alias['domainid'] && !$alias['accountid']) {
         $SESSION->redirect('?m=aliaslist');
@@ -77,7 +77,10 @@ if ($alias) {
     }
 
     if (!empty($_GET['delmailforward'])) {
-        unset($alias['mailforwards'][array_search($_GET['delmailforward'], $alias['mailforwards'])]);
+        $key = array_search($_GET['delmailforward'], $alias['mailforwards'], true);
+        if ($key !== false) {
+            unset($alias['mailforwards'][$key]);
+        }
     }
 
     if ($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards']))) {

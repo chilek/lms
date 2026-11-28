@@ -34,11 +34,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
 
     if (isset($_POST['marks'])) {
-        $docids = $DB->GetCol(
-            "SELECT id
-            FROM documents
-            WHERE id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")"
-        );
+        $docids = Utils::filterIntegers(array_values($_POST['marks']));
     } elseif (isset($_GET['id']) && intval($_GET['id'])) {
         $docids = array(intval($_GET['id']));
     }
@@ -71,8 +67,12 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 WHERE (type & ?) = ?
                 GROUP BY customerid
             ) p ON p.customerid = d.customerid
+            JOIN docrights r ON r.doctype = d.type
+            JOIN customerview c ON c.id = d.customerid
             WHERE d.id IN ?
                 AND d.cancelled = 0
+                AND r.userid = ?
+                AND (r.rights & ?) > 0
             ORDER BY d.id",
             array(
                 CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED,
@@ -80,6 +80,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 CONTACT_MOBILE | CONTACT_DOCUMENTS | CONTACT_DISABLED,
                 CONTACT_MOBILE | CONTACT_DOCUMENTS,
                 $docids,
+                Auth::GetCurrentUser(),
+                DOCRIGHT_VIEW,
             )
         );
 

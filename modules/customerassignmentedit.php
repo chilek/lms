@@ -25,7 +25,7 @@
  */
 
 // get customer name and check privileges using customerview
-$aids = $_POST['customerassignments'] ?? array($_GET['id']);
+$aids = isset($_GET['action'], $_POST['customerassignments']) && $_GET['action'] == 'suspend' ? $_POST['customerassignments'] : array($_GET['id']);
 $aids = Utils::filterIntegers($aids);
 if (empty($aids)) {
     $SESSION->redirect_to_history_entry();

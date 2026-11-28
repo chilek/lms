@@ -144,11 +144,13 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
                 SYSLOG::RES_NODEGROUP => $params['nodegroupid'],
                 SYSLOG::RES_NODE => $params['nodeid'],
             );
-            $this->db->Execute(
+            if (!$this->db->Execute(
                 'INSERT INTO nodegroupassignments
                 (nodegroupid, nodeid) VALUES (?, ?)',
                 array_values($args)
-            );
+            )) {
+                return null;
+            }
             $id = $this->db->GetLastInsertID('nodegroupassignments');
             if ($this->syslog) {
                 $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;

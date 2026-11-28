@@ -643,7 +643,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'prodid' => $tariff['prodid'],
                                 'type' => $tariff['type'],
                                 'netvalue' => str_replace(',', '.', $netValue),
-                                'note' => $note,
                             );
                             $this->db->Execute(
                                 'INSERT INTO liabilities (name, value, flags, taxcategory, currency,
@@ -5559,9 +5558,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             "SELECT DISTINCT docid FROM cash c
 			JOIN documents d ON d.id = c.docid
 			WHERE d.type IN ?
-				AND c.id IN (" . implode(', ', $ids) . ")",
-            array($doctypes)
-        );
+				AND c.id IN ?",
+            array($doctypes, $ids)
+        ) ?: [];
     }
 
     public function GetDocumentLastReference($docid)

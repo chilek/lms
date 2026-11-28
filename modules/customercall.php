@@ -53,5 +53,15 @@ if (isset($_GET['delete'])) {
         access_denied();
     }
 } else {
-    $LMS->getCustomerCallContent($_GET['id']);
+    $callId = intval($_GET['id']);
+    if ($DB->GetOne('SELECT 1 FROM customercallassignments WHERE customercallid = ?', array($callId))
+        && !$DB->GetOne(
+            'SELECT 1 FROM customercallassignments a
+            JOIN customerview c ON c.id = a.customerid
+            WHERE a.customercallid = ?',
+            array($callId)
+        )) {
+        access_denied();
+    }
+    $LMS->getCustomerCallContent($callId);
 }

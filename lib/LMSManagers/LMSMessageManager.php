@@ -252,7 +252,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             'name' => $name,
             'subject' => $subject,
             'message' => $message,
-            'contenttype' => $contenttype == 'html' ? 'text/html' : 'text/plain',
+            'contenttype' => stripos($contenttype, 'html') === false ? 'text/plain' : 'text/html',
             SYSLOG::RES_TMPL => intval($id),
         );
         if (empty($name)) {

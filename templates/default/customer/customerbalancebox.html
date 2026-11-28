@@ -346,7 +346,7 @@
 										{/if}
 									{else}
 										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
-											{button type="link" icon="restore" href="?m=invoicunearchive&id={$item.docid}" tip="Unarchive"}
+											{button type="link" icon="restore" href="?m=invoiceunarchive&id={$item.docid}" tip="Unarchive"}
 										{/if}
 									{/if}
 								{/if}
@@ -539,7 +539,7 @@
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
 					{button icon="archive" id="archive-invoices" label="Archive"}&nbsp;
 				{/if}
-				{if ConfigHelper::checkPrivilege('trade_document_uarchiving')}
+				{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
 					{button icon="restore" id="unarchive-invoices" label="Unarchive"}&nbsp;
 				{/if}
 				{trans("Print")}:

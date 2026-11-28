@@ -51,7 +51,7 @@ if (isset($_POST['alias'])) {
     $alias['id'] = $aliasold['id'];
     $alias['login'] = trim($alias['login']);
     $alias['accounts'] = $SESSION->get('aliasaccounts');
-    $alias['mailforwards'] = $SESSION->get('aliasmailforwards');
+    $alias['mailforwards'] = $SESSION->get('aliasmailforwards') ?: array();
 
     if (!isset($alias['domainalias'])) {
         if ($alias['login'] == '') {
@@ -60,7 +60,7 @@ if (isset($_POST['alias'])) {
                 $error['login'] = trans('Login contains forbidden characters!');
         }
     } else {
-        $alias['login'] == '';
+        $alias['login'] = '';
     }
     if (!$alias['domainid']) {
         $error['domainid'] = trans('You have to select domain for alias!');
@@ -85,7 +85,10 @@ if (isset($_POST['alias'])) {
     }
 
     if (!empty($_GET['delmailforward'])) {
-        unset($alias['mailforwards'][array_search($_GET['delmailforward'], $alias['mailforwards'])]);
+        $key = array_search($_GET['delmailforward'], $alias['mailforwards'], true);
+        if ($key !== false) {
+            unset($alias['mailforwards'][$key]);
+        }
     }
 
     if ($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards']))) {
@@ -93,9 +96,8 @@ if (isset($_POST['alias'])) {
     }
 
     if (empty($_GET['addaccount']) && empty($_GET['delaccount'])
-        && empty($_GET['addaccount']) && empty($_GET['delaccount'])
-        && (!is_array($alias['accounts']) || !count($alias['accounts']))
-        && (!is_array($alias['mailforward']) || !count($alias['mailforwards']))) {
+        && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])
+        && empty($alias['accounts']) && empty($alias['mailforwards'])) {
         $error['accountid'] = trans('You have to select destination account!');
         $error['mailforward'] = trans('You have to specify forward e-mail!');
     }
@@ -117,14 +119,14 @@ if (isset($_POST['alias'])) {
             array($alias['id'])
         );
 
-        if (count($alias['accounts'])) {
+        if (!empty($alias['accounts'])) {
             foreach ($alias['accounts'] as $account) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
 					VALUES(?,?)', array($alias['id'], $account['id']));
             }
         }
 
-        if (count($alias['mailforwards'])) {
+        if (!empty($alias['mailforwards'])) {
             foreach ($alias['mailforwards'] as $mailforward) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
 					VALUES(?,?)', array($alias['id'], $mailforward));

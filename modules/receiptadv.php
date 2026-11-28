@@ -119,7 +119,7 @@ if (isset($_POST['receipt'])) {
             if ($diff > 0) {
                 $sum = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($regid));
                 if ($sum < $diff) {
-                                    $error['value'] = trans('There is only $a in registry!', money_format($sum));
+                                    $error['value'] = trans('There is only $a in registry!', moneyf($sum, $record['currency']));
                 }
             }
         }

@@ -26,12 +26,11 @@
 
 $reglog = $DB->GetRow('SELECT * FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
 
+if (!$reglog) {
+    $SESSION->redirect('?m=cashreglist');
+}
 $regid = $reglog['regid'];
 $reglog['time'] = date('Y/m/d H:i', $reglog['time']);
-
-if (!$regid) {
-        $SESSION->redirect('?m=cashreglist');
-}
 
 if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256) {
         $SMARTY->display('noaccess.html');
@@ -64,14 +63,22 @@ if (isset($_POST['reglog'])) {
     }
 
     if (!$error) {
+        $snapshot = $DB->GetOne(
+            'SELECT SUM(value) FROM receiptcontents
+			LEFT JOIN documents ON (docid = documents.id)
+			WHERE cdate <= ? AND regid = ?',
+            array($time, $regid)
+        );
+
         $args = array(
             'time' => $time,
             'description' => $reglog['description'],
             'value' => $reglog['value'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            'snapshot' => str_replace(',', '.', floatval($snapshot)),
             SYSLOG::RES_CASHREGHIST => intval($_GET['id'])
         );
-        $DB->Execute('UPDATE cashreglog SET time=?, description=?, value=?, userid=?
+        $DB->Execute('UPDATE cashreglog SET time=?, description=?, value=?, userid=?, snapshot=?
 				WHERE id=?', array_values($args));
         if ($SYSLOG) {
             $args[SYSLOG::RES_CASHREG] = $regid;
